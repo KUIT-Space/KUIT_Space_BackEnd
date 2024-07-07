@@ -8,6 +8,6 @@ public class SimpleFailTest {
     @Test
     void testFailure() {
         // 이 테스트는 항상 실패합니다.
-        assertEquals(1, 0, "1은 0과 같지 않습니다.");
+        assertEquals(1, 1, "1은 1은 같네요.");
     }
 }

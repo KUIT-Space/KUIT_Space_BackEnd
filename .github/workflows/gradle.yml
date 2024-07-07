@@ -55,7 +55,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           source: "*.jar"
           target: "/home/ec2-user/cicd"
       
@@ -64,7 +64,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           source: "deploy.sh"
           target: "/home/ec2-user/cicd"
       
@@ -73,7 +73,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           script: |
             chmod +x /home/ec2-user/cicd/deploy.sh
             /home/ec2-user/cicd/deploy.sh

@@ -57,7 +57,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           source: "*.jar"
-          target: "/home/ec2-user/cicd"
+          target: "/home/ubuntu/cicd"
       
       - name: Copy deploy script to EC2
         uses: appleboy/scp-action@master
@@ -66,7 +66,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           source: "deploy.sh"
-          target: "/home/ec2-user/cicd"
+          target: "/home/ubuntu/cicd"
       
       - name: Execute deploy script
         uses: appleboy/ssh-action@master
@@ -75,8 +75,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            chmod +x /home/ec2-user/cicd/deploy.sh
-            /home/ec2-user/cicd/deploy.sh
+            chmod +x /home/ubuntu/cicd/deploy.sh
+            /home/ubuntu/cicd/deploy.sh
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

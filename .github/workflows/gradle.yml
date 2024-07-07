@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "*.jar"
+          source: "./build/libs/*.jar"
           target: "/home/ubuntu/cicd"
       
       - name: Copy deploy script to EC2

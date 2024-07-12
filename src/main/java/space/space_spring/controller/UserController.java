@@ -3,6 +3,7 @@ package space.space_spring.controller;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ public class UserController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public BaseResponse<PostUserResponse> signup(@RequestBody PostUserRequest postUserRequest) {
+    public BaseResponse<PostUserResponse> signup(@Validated @RequestBody PostUserRequest postUserRequest) {
         return new BaseResponse<>(userService.signup(postUserRequest));
     }
 

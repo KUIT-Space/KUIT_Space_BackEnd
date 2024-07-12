@@ -1,14 +1,17 @@
 package space.space_spring.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
 @Table(name = "Users")
+@Getter
 public class User extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "user_id")
-    private Long id;
+    private Long userId;
 
     @Column(name = "email")
     private String email;
@@ -20,6 +23,13 @@ public class User extends BaseEntity {
     private String userName;
 
     @Column(name = "jwt_token")
+    @Nullable
     private String jwt;
+
+    public void saveUser(String email, String password, String userName) {
+        this.email = email;
+        this.password = password;
+        this.userName = userName;
+    }
 
 }

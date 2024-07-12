@@ -16,6 +16,8 @@ public class UserService {
     @Transactional
     public PostUserResponse signup(PostUserRequest postUserRequest) {
         Long savedUserId = userDao.saveUser(postUserRequest);
-        return new PostUserResponse(savedUserId);
+        String jwt = null;
+        return new PostUserResponse(savedUserId, jwt);
     }
+
 }

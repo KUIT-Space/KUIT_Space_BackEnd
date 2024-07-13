@@ -8,5 +8,5 @@ import lombok.Getter;
 public class PostUserResponse {
 
     private Long userId;
-    private String jwt;
+    private String jwt;         // 이게 있어야할까?
 }

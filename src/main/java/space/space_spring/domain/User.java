@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "Users")
@@ -27,6 +28,7 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "user_name")
+    @Length(min = 1, max = 10, message = "이름은 10자이내의 문자열이어야 합니다.")
     private String userName;
 
     @Column(name = "jwt_token")
@@ -37,6 +39,7 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.userName = userName;
+        initializeBaseEntityFields();
     }
 
 }

@@ -56,7 +56,7 @@ public class UserService {
         String jwt = jwtProvider.generateToken(userByEmail);
 
         // TODO 4. JWT db에 insert
-        
+        userByEmail.saveJWTtoLoginUser(jwt);
 
         return new PostUserLoginResponse(jwt);
     }

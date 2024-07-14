@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PostUserResponse {
+public class PostUserSignupResponse {
 
     private Long userId;
     private String jwt;         // 이게 있어야할까?

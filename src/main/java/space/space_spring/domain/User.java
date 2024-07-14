@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "jwt_token")
+    @Column(name = "jwt")
     @Nullable
     private String jwt;
 

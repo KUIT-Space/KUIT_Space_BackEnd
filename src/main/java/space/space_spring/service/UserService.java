@@ -45,7 +45,7 @@ public class UserService {
     }
 
     @Transactional
-    public PostUserLoginResponse login(PostUserLoginRequest postUserLoginRequest) {
+    public String login(PostUserLoginRequest postUserLoginRequest) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
         User userByEmail = findUserByEmail(postUserLoginRequest.getEmail());
 
@@ -58,7 +58,7 @@ public class UserService {
         // TODO 4. JWT db에 insert
         userByEmail.saveJWTtoLoginUser(jwt);
 
-        return new PostUserLoginResponse(jwt);
+        return jwt;
     }
 
     private User findUserByEmail(String email) {

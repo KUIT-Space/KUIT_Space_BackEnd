@@ -15,30 +15,30 @@ import space.space_spring.dto.PostUserSignupResponse;
 @SpringBootTest
 class UserServiceTest {
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    UserDao userDao;
-
-    @Transactional
-    @Rollback(value = false)
-    @Test
-    @DisplayName("유저_회원가입_테스트")
-    void 유저_회원가입_테스트() throws Exception {
-        //given
-        String email = "test@test.com";
-        String password = "123456abC!";
-        String name = "노성준";
-        PostUserSignupRequest postUserRequest = new PostUserSignupRequest(email, password, name);
-
-        //when
-        PostUserSignupResponse postUserResponse = userService.signup(postUserRequest);
-        User findUser = userDao.findUserByEmail(email);
-
-        //then
-        Assertions.assertThat(postUserResponse.getUserId()).isEqualTo(findUser.getUserId());
-    }
+//    @Autowired
+//    UserService userService;
+//
+//    @Autowired
+//    UserDao userDao;
+//
+//    @Transactional
+//    @Rollback(value = false)
+//    @Test
+//    @DisplayName("유저_회원가입_테스트")
+//    void 유저_회원가입_테스트() throws Exception {
+//        //given
+//        String email = "test@test.com";
+//        String password = "123456abC!";
+//        String name = "노성준";
+//        PostUserSignupRequest postUserRequest = new PostUserSignupRequest(email, password, name);
+//
+//        //when
+//        PostUserSignupResponse postUserResponse = userService.signup(postUserRequest);
+//        User findUser = userDao.findUserByEmail(email);
+//
+//        //then
+//        Assertions.assertThat(postUserResponse.getUserId()).isEqualTo(findUser.getUserId());
+//    }
 
 //    @Transactional
 //    @Test

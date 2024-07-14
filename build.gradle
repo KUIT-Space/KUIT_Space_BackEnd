@@ -29,12 +29,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+//	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA 스타터 추가
+	runtimeOnly 'com.h2database:h2'		// test용 db인 h2Database 추가
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'		// p6spy 설정 추가
+	implementation 'org.springframework.boot:spring-boot-starter-validation'		// validation 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+//JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }

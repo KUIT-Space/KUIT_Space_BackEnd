@@ -9,17 +9,15 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserDao;
 import space.space_spring.domain.User;
-import space.space_spring.dto.PostUserRequest;
-import space.space_spring.dto.PostUserResponse;
-import space.space_spring.exception.UserException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import space.space_spring.dto.PostUserSignupRequest;
+import space.space_spring.dto.PostUserSignupResponse;
 
 @SpringBootTest
 class UserServiceTest {
 
     @Autowired
     UserService userService;
+
     @Autowired
     UserDao userDao;
 
@@ -32,10 +30,10 @@ class UserServiceTest {
         String email = "test@test.com";
         String password = "123456abC!";
         String name = "노성준";
-        PostUserRequest postUserRequest = new PostUserRequest(email, password, name);
+        PostUserSignupRequest postUserRequest = new PostUserSignupRequest(email, password, name);
 
         //when
-        PostUserResponse postUserResponse = userService.signup(postUserRequest);
+        PostUserSignupResponse postUserResponse = userService.signup(postUserRequest);
         User findUser = userDao.findUserByEmail(email);
 
         //then

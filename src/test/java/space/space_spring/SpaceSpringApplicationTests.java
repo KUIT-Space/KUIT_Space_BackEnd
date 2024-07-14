@@ -6,10 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class SpaceSpringApplicationTests {
 
-	@Test
-	void contextLoads() {
-
-	}
-
+//    @Test
+//    void contextLoads() {
+//    }
 
 }

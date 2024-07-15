@@ -11,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-          ddl-auto: update          # table을 전부 drop했다가 다시 생성 -> 테스트용
+          ddl-auto: update          # create : 존재하는 table을 전부 drop했다가 다시 생성 -> 테스트용
     properties:
       hibernate:
         format_sql: true

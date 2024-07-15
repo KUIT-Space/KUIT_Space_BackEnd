@@ -36,4 +36,8 @@ public class User extends BaseEntity {
         initializeBaseEntityFields();
     }
 
+    public void saveJWTtoLoginUser(String jwt) {
+        this.jwt = jwt;
+    }
+
 }

@@ -3,11 +3,10 @@ package space.space_spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.JwtProvider;
+import space.space_spring.jwt.JwtProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.domain.User;
 import space.space_spring.dto.PostUserLoginRequest;
-import space.space_spring.dto.PostUserLoginResponse;
 import space.space_spring.dto.PostUserSignupRequest;
 import space.space_spring.dto.PostUserSignupResponse;
 import space.space_spring.exception.UserException;
@@ -45,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public PostUserLoginResponse login(PostUserLoginRequest postUserLoginRequest) {
+    public String login(PostUserLoginRequest postUserLoginRequest) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
         User userByEmail = findUserByEmail(postUserLoginRequest.getEmail());
 
@@ -55,7 +54,10 @@ public class UserService {
         // TODO 3. JWT 발급
         String jwt = jwtProvider.generateToken(userByEmail);
 
-        return new PostUserLoginResponse(jwt);
+        // TODO 4. JWT db에 insert -> db에 저장해야할까??
+        userByEmail.saveJWTtoLoginUser(jwt);
+
+        return jwt;
     }
 
     private User findUserByEmail(String email) {

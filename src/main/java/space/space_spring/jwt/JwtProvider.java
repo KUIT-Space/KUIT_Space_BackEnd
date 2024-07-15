@@ -1,4 +1,4 @@
-package space.space_spring;
+package space.space_spring.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;

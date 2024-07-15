@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import space.space_spring.JwtProvider;
+import space.space_spring.jwt.JwtProvider;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;

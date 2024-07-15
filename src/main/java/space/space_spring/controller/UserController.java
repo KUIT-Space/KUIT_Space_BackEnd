@@ -1,5 +1,6 @@
 package space.space_spring.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -32,7 +33,6 @@ public class UserController {
      */
     @PostMapping("/signup")
     public BaseResponse<PostUserSignupResponse> signup(@Validated @RequestBody PostUserSignupRequest postUserSignupRequest, BindingResult bindingResult) {
-        log.info("<UserController> Signup request: {}", postUserSignupRequest);
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessage(bindingResult));
         }
@@ -43,11 +43,14 @@ public class UserController {
      * 로그인
      */
     @PostMapping("/login")
-    public BaseResponse<PostUserLoginResponse> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult) {
+    public BaseResponse<PostUserLoginResponse> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessage(bindingResult));
         }
-        return new BaseResponse<>(userService.login(postUserLoginRequest));
+
+        String jwt = userService.login(postUserLoginRequest);
+        response.setHeader("Authorization", "Bearer " + jwt);
+        return new BaseResponse<>(new PostUserLoginResponse("로그인 성공"));
     }
 
 

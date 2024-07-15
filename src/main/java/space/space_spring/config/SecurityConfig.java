@@ -23,14 +23,14 @@ public class SecurityConfig {
                         headerConfig.frameOptions(frameOptionsConfig ->
                                 frameOptionsConfig.disable()
                         )
-                )
-                // 요청별 권한 설정
-                .authorizeHttpRequests((authorizeRequests) ->
-                        authorizeRequests
-                                .requestMatchers(PathRequest.toH2Console()).permitAll()
-                                .requestMatchers("/", "/user/signup", "/user/login").permitAll()
-                                .anyRequest().authenticated()
                 );
+                // 요청별 권한 설정
+//                .authorizeHttpRequests((authorizeRequests) ->
+//                        authorizeRequests
+//                                .requestMatchers(PathRequest.toH2Console()).permitAll()
+//                                .requestMatchers("/", "/user/signup", "/user/login").permitAll()
+////                                .anyRequest().authenticated()
+//                );
 
         return http.build();
     }

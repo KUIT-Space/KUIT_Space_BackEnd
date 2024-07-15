@@ -1,10 +1,13 @@
 package space.space_spring.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import space.space_spring.argument_resolver.JwtPreAuth;
 import space.space_spring.response.BaseResponse;
 
 @RestController
+@Slf4j
 public class TestController {
 
     @GetMapping("/test")
@@ -13,7 +16,8 @@ public class TestController {
     }
 
     @GetMapping("/test/jwt")
-    public BaseResponse<String> jwtTest() {
+    public BaseResponse<String> jwtTest(@JwtPreAuth Long userId) {
+        log.info("userId = {}", userId);
         return new BaseResponse<>("jwt test 성공");
     }
 }

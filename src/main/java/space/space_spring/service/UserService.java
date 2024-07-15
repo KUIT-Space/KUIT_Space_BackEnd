@@ -55,7 +55,7 @@ public class UserService {
         // TODO 3. JWT 발급
         String jwt = jwtProvider.generateToken(userByEmail);
 
-        // TODO 4. JWT db에 insert
+        // TODO 4. JWT db에 insert -> db에 저장해야할까??
         userByEmail.saveJWTtoLoginUser(jwt);
 
         return jwt;

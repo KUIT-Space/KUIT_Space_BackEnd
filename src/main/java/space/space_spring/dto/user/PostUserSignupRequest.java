@@ -1,4 +1,4 @@
-package space.space_spring.dto;
+package space.space_spring.dto.user;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;

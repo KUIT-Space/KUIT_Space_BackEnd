@@ -48,8 +48,8 @@ public class UserController {
             throw new UserException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
         }
 
-        String jwt = userService.login(postUserLoginRequest);
-        response.setHeader("Authorization", "Bearer " + jwt);
+        String jwtLogin = userService.login(postUserLoginRequest);
+        response.setHeader("Authorization", "Bearer " + jwtLogin);
         return new BaseResponse<>(new PostUserLoginResponse("로그인 성공"));
     }
 

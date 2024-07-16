@@ -37,7 +37,7 @@ public class UserSpace extends BaseEntity {
     @Column(name = "user_auth")
     private String userSpaceAuth;
 
-    // 스페이스 선택화면에서의 배치 순서
+    // 스페이스 선택화면에서의 배치 순서 -> 일단 개발 후순위 (계속 0으로 저장)
     @Column(name = "space_order")
     private int spaceOrder;
 

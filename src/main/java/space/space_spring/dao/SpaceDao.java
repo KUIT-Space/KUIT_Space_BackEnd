@@ -24,10 +24,11 @@ public class SpaceDao {
         return space;
     }
 
-    public void createUserSpace(User manager, Space saveSpace) {
+    public UserSpace createUserSpace(User manager, Space saveSpace) {
         UserSpace userSpace = new UserSpace();
         userSpace.createUserSpace(manager, saveSpace, MANAGER);
 
         em.persist(userSpace);
+        return userSpace;
     }
 }

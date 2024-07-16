@@ -14,6 +14,14 @@ public class SpaceService {
 
     public PostSpaceCreateResponse createSpace(Long userId, PostSpaceCreateRequest postSpaceCreateRequest) {
 
+        // TODO 1. 스페이스 생성 정보 db insert
+        Long spaceId = spaceDao.saveSpace(postSpaceCreateRequest);
 
+        // TODO 2. 유저_스페이스 매핑 정보 db insert
+
+
+        // TODO 3. jwt에 space 정보 추가
+
+        return new PostSpaceCreateResponse(spaceId);
     }
 }

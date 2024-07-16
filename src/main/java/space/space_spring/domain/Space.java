@@ -19,4 +19,11 @@ public class Space extends BaseEntity {
     @Column(name = "space_profile_img")
     @Nullable
     private String spaceProfileImg;
+
+    public void saveSpace(String spaceName, String spaceProfileImg) {
+        this.spaceName = spaceName;
+        this.spaceProfileImg = spaceProfileImg;
+        initializeBaseEntityFields();
+    }
+
 }

@@ -9,9 +9,13 @@ name: CI/CD gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "develop"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "develop"
     
 env:
   AWS_REGION: ap-northeast-2
@@ -62,6 +66,7 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     needs: build
+    if: github.ref == 'refs/heads/main'
     environment: production
     steps:
     # (1) 기본 체크아웃

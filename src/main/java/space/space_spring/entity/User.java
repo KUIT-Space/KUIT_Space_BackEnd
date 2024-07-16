@@ -1,11 +1,8 @@
-package space.space_spring.domain;
+package space.space_spring.entity;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "Users")

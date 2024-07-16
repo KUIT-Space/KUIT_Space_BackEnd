@@ -2,7 +2,9 @@ package space.space_spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.argument_resolver.JwtPreAuth;
@@ -24,7 +26,7 @@ public class SpaceController {
     private final SpaceService spaceService;
 
     @PostMapping("/create")
-    public BaseResponse<PostSpaceCreateResponse> createSpace(@JwtPreAuth Long userId, PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) {
+    public BaseResponse<PostSpaceCreateResponse> createSpace(@JwtPreAuth Long userId, @Validated @RequestBody PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new SpaceException(INVALID_SPACE_CREATE, getErrorMessage(bindingResult));
         }

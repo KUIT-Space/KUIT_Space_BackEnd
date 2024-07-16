@@ -1,4 +1,4 @@
-package space.space_spring.domain;
+package space.space_spring.entity;
 
 import jakarta.persistence.*;
 

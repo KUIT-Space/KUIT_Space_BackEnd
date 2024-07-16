@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.jwt.JwtProvider;
 import space.space_spring.dao.UserDao;
-import space.space_spring.domain.User;
+import space.space_spring.entity.User;
 import space.space_spring.dto.user.PostUserLoginRequest;
 import space.space_spring.dto.user.PostUserSignupRequest;
 import space.space_spring.dto.user.PostUserSignupResponse;
@@ -29,12 +29,12 @@ public class UserService {
 
 
         // TODO 2. 회원정보 db insert
-        Long savedUserId = userDao.saveUser(postUserSignupRequest);
+        User saveUser = userDao.saveUser(postUserSignupRequest);
 
         // TODO 3. JWT 토큰 초기화 (회원가입시에는 토큰 발급 X)
         String jwt = null;
 
-        return new PostUserSignupResponse(savedUserId, jwt);
+        return new PostUserSignupResponse(saveUser.getUserId(), jwt);
     }
 
     private void validateEmail(String email) {

@@ -6,7 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.User;
-import space.space_spring.dto.PostUserSignupRequest;
+import space.space_spring.dto.user.PostUserSignupRequest;
 
 @Repository
 public class UserDao {

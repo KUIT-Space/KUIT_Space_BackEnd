@@ -6,9 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.jwt.JwtProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.domain.User;
-import space.space_spring.dto.PostUserLoginRequest;
-import space.space_spring.dto.PostUserSignupRequest;
-import space.space_spring.dto.PostUserSignupResponse;
+import space.space_spring.dto.user.PostUserLoginRequest;
+import space.space_spring.dto.user.PostUserSignupRequest;
+import space.space_spring.dto.user.PostUserSignupResponse;
 import space.space_spring.exception.UserException;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;

@@ -5,7 +5,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import space.space_spring.domain.User;
+import space.space_spring.entity.User;
 import space.space_spring.dto.user.PostUserSignupRequest;
 
 @Repository
@@ -14,12 +14,12 @@ public class UserDao {
     @PersistenceContext
     private EntityManager em;
 
-    public Long saveUser(PostUserSignupRequest postUserSignupRequest) {
+    public User saveUser(PostUserSignupRequest postUserSignupRequest) {
         User user = new User();
         user.saveUser(postUserSignupRequest.getEmail(), postUserSignupRequest.getPassword(), postUserSignupRequest.getUserName());
 
         em.persist(user);
-        return user.getUserId();
+        return user;
     }
 
     public User findUserByEmail(String email) {
@@ -42,5 +42,11 @@ public class UserDao {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public User findUserByUserId(Long userId) {
+        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.userId = :userId", User.class);
+        query.setParameter("userId", userId);
+        return query.getSingleResult();
     }
 }

@@ -32,11 +32,15 @@ public class UserSpace extends BaseEntity {
     @Nullable
     private String userProfileMsg;
 
+    // 스페이스의 관리자 vs 일반 멤버
     @Column(name = "user_auth")
     private String userAuth;
 
+    // 스페이스 선택화면에서의 배치 순서
     @Column(name = "space_order")
     private int spaceOrder;
+
+
 
 
 }

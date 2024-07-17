@@ -71,7 +71,7 @@ spring:
 secret:
   jwt-secret-key: ${JWT_SECRET_KEY}
   jwt-login-secret-key: ${JWT_SECRET_KEY_LOGIN}
-  jwt-user-secret-key: ${JWT_SECRET_KEY_USER}
+  jwt-user-space-secret-key: ${JWT_SECRET_KEY_USER_SPACE}
   jwt-expired-in: ${JWT_EXPIRED_IN:3600000}
 ---
 

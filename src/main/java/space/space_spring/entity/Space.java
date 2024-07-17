@@ -1,6 +1,5 @@
-package space.space_spring.domain;
+package space.space_spring.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -17,6 +16,12 @@ public class Space extends BaseEntity {
     private String spaceName;
 
     @Column(name = "space_profile_img")
-    @Nullable
     private String spaceProfileImg;
+
+    public void saveSpace(String spaceName, String spaceProfileImg) {
+        this.spaceName = spaceName;
+        this.spaceProfileImg = spaceProfileImg;
+        initializeBaseEntityFields();
+    }
+
 }

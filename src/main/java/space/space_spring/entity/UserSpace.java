@@ -1,8 +1,9 @@
-package space.space_spring.domain;
+package space.space_spring.entity;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
+import space.space_spring.entity.enumStatus.UserSpaceAuth;
 
 @Entity
 @Getter
@@ -32,11 +33,20 @@ public class UserSpace extends BaseEntity {
     @Nullable
     private String userProfileMsg;
 
+    // 스페이스의 관리자 vs 일반 멤버
     @Column(name = "user_auth")
-    private String userAuth;
+    private String userSpaceAuth;
 
+    // 스페이스 선택화면에서의 배치 순서 -> 일단 개발 후순위 (계속 0으로 저장)
     @Column(name = "space_order")
     private int spaceOrder;
+
+    public void createUserSpace(User user, Space space, UserSpaceAuth userSpaceAuth) {
+        this.user = user;
+        this.space = space;
+        this.userName = user.getUserName();
+        this.userSpaceAuth = userSpaceAuth.getAuth();
+    }
 
 
 }

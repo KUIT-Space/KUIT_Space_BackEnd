@@ -3,12 +3,14 @@ package space.space_spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.jwt.JwtProvider;
+import space.space_spring.dto.jwt.JwtPayloadDto;
+import space.space_spring.jwt.JwtLoginProvider;
+import space.space_spring.jwt.JwtUserSpaceProvider;
 import space.space_spring.dao.UserDao;
-import space.space_spring.domain.User;
-import space.space_spring.dto.PostUserLoginRequest;
-import space.space_spring.dto.PostUserSignupRequest;
-import space.space_spring.dto.PostUserSignupResponse;
+import space.space_spring.entity.User;
+import space.space_spring.dto.user.PostUserLoginRequest;
+import space.space_spring.dto.user.PostUserSignupRequest;
+import space.space_spring.dto.user.PostUserSignupResponse;
 import space.space_spring.exception.UserException;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
@@ -18,7 +20,7 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 public class UserService {
 
     private final UserDao userDao;
-    private final JwtProvider jwtProvider;
+    private final JwtLoginProvider jwtLoginProvider;
 
     @Transactional
     public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
@@ -29,12 +31,12 @@ public class UserService {
 
 
         // TODO 2. 회원정보 db insert
-        Long savedUserId = userDao.saveUser(postUserSignupRequest);
+        User saveUser = userDao.saveUser(postUserSignupRequest);
 
         // TODO 3. JWT 토큰 초기화 (회원가입시에는 토큰 발급 X)
         String jwt = null;
 
-        return new PostUserSignupResponse(savedUserId, jwt);
+        return new PostUserSignupResponse(saveUser.getUserId(), jwt);
     }
 
     private void validateEmail(String email) {
@@ -52,12 +54,12 @@ public class UserService {
         validatePassword(userByEmail, postUserLoginRequest.getPassword());
 
         // TODO 3. JWT 발급
-        String jwt = jwtProvider.generateToken(userByEmail);
+        String jwtLogin = jwtLoginProvider.generateToken(userByEmail);
 
         // TODO 4. JWT db에 insert -> db에 저장해야할까??
-        userByEmail.saveJWTtoLoginUser(jwt);
+        userByEmail.saveJWTtoLoginUser(jwtLogin);
 
-        return jwt;
+        return jwtLogin;
     }
 
     private User findUserByEmail(String email) {

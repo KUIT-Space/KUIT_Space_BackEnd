@@ -40,13 +40,37 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /**
      * 5000: User 오류
      */
-    INVALID_USER_VALUE(5000, HttpStatus.BAD_REQUEST.value(), "회원가입 요청에서 잘못된 값이 존재합니다."),
+    INVALID_USER_SIGNUP(5000, HttpStatus.BAD_REQUEST.value(), "회원가입 요청에서 잘못된 값이 존재합니다."),
     DUPLICATE_EMAIL(5001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
     DUPLICATE_NICKNAME(5002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
     USER_NOT_FOUND(4003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     PASSWORD_NO_MATCH(4004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_USER_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
-    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
+    INVALID_USER_LOGIN(4007, HttpStatus.BAD_REQUEST.value(), "로그인 요청에서 잘못된 값이 존재합니다."),
+
+    /**
+     * 6000: Space 오류
+     */
+    INVALID_SPACE_CREATE(6000, HttpStatus.BAD_REQUEST.value(), "스페이스 생성 요청에서 잘못된 값이 존재합니다."),
+    safd(6001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
+    adff(6002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
+    baab(6003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
+    nff(6004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
+    gnf(6005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
+    fb(6006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
+
+
+    /**
+     * 7000:  오류
+     */
+    A(7000, HttpStatus.BAD_REQUEST.value(), "회원가입 요청에서 잘못된 값이 존재합니다."),
+    B(7001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
+    C(7002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
+    D(7003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
+    E(7004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
+    F(7005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
+    G(7006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
 
     private final int code;
     private final int status;

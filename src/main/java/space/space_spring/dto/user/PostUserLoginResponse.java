@@ -1,4 +1,4 @@
-package space.space_spring.dto;
+package space.space_spring.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PostUserLoginResponse {
 
-    private String jwt;
+    private String successMsg;
 }

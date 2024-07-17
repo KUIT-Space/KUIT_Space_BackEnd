@@ -3,7 +3,9 @@ package space.space_spring.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.argument_resolver.JwtPreAuth;
+import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argument_resolver.jwtUserSpace.JwtUserSpaceAuth;
+import space.space_spring.dto.jwt.JwtPayloadDto;
 import space.space_spring.response.BaseResponse;
 
 @RestController
@@ -16,8 +18,14 @@ public class TestController {
     }
 
     @GetMapping("/test/jwt")
-    public BaseResponse<String> jwtTest(@JwtPreAuth Long userId) {
+    public BaseResponse<String> jwtLoginTest(@JwtLoginAuth Long userId) {
         log.info("userId = {}", userId);
-        return new BaseResponse<>("jwt test 성공");
+        return new BaseResponse<>("jwt login test 성공");
+    }
+
+    @GetMapping("/test111")
+    public BaseResponse<String> jwtUserSpaceTest(@JwtUserSpaceAuth JwtPayloadDto jwtPayloadDto) {
+        log.info("jwtPayloadDto = {}", jwtPayloadDto);
+        return new BaseResponse<>("jwt user space test 성공");
     }
 }

@@ -22,6 +22,7 @@ env:
   S3_BUCKET_NAME: github-action-sample-s3-bucket
   CODE_DEPLOY_APPLICATION_NAME: space-code-deploy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: space-code-deploy
+  RESOURCE_PATH: ./src/main/resources/application.yml
   
 permissions:
   contents: read

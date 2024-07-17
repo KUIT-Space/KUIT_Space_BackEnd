@@ -20,10 +20,10 @@ spring:
       on-profile: "devRDB"
 
   datasource:
-      url:  ${DATASOURCE_URL_LOCAL}
+      url:  ${DATASOURCE_URL}
       username: ${DATASOURCE_USERNAME}
       password: ${DATASOURCE_PASSWORD}
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      driver-class-name: jdbc:mysql://com.mysql.cj.jdbc.Driver
 logging:
   level:
     org.hibernate.sql: debug
@@ -69,6 +69,8 @@ spring:
 
 secret:
   jwt-secret-key: ${JWT_SECRET_KEY}
+  jwt-login-secret-key: ${JWT_SECRET_KEY_LOGIN}
+  jwt-user-secret-key: ${JWT_SECRET_KEY_USER}
   jwt-expired-in: ${JWT_EXPIRED_IN:3600000}
 ---
 

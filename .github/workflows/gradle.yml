@@ -16,6 +16,7 @@ on:
     branches:
       - "main"
       - "develop"
+      - "deploy"
     
 env:
   AWS_REGION: ap-northeast-2
@@ -90,19 +91,23 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     # (4.5) application.yml file 설정
-    - name: Set yml file
-      uses: microsoft/variable-substitution@v1
-      with:
-        files: ${{ env.RESOURCE_PATH }}
-      env:
-        spring.datasource.url: ${{ secrets.RDS_HOST }}
-        spring.datasource.username: ${{ secrets.RDS_USERNAME }}
-        spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
-        secret.jwt-secret-key: ${{secrets.JWT_SECRET_KEY}}
-        secret.jwt-login-secret-key: ${{secrets.JWT_SECRET_KEY_1}}
-        secret.jwt-user-space-secret-key: ${{secrets.JWT_SECRET_KEY_2}}
-        secret.jwt-expired-in: ${{secrets.JWT_EXPIRED_IN}}
-        spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+    #- name: Set yml file
+    #  uses: microsoft/variable-substitution@v1
+    #  with:
+    #    files: ${{ env.RESOURCE_PATH }}
+    #  env:
+    #    spring.datasource.url: ${{ secrets.RDS_HOST }}
+    #    spring.datasource.username: ${{ secrets.RDS_USERNAME }}
+    #    spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
+    #    secret.jwt-secret-key: ${{secrets.JWT_SECRET_KEY}}
+    #    secret.jwt-login-secret-key: ${{secrets.JWT_SECRET_KEY_1}}
+    #    secret.jwt-user-space-secret-key: ${{secrets.JWT_SECRET_KEY_2}}
+    #    secret.jwt-expired-in: ${{secrets.JWT_EXPIRED_IN}}
+    #    spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+
+    - name: Set YML
+      run: |
+        echo "${{ secrets.APPLICATION_YML_DEV }}" | base64 --decode > src/main/resources/application.yml
 
       # (5) Gradle build (Test 제외)
     - name: Build with Gradle

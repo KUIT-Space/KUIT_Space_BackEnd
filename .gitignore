@@ -39,3 +39,5 @@ out/
 ### application-local.yml ###
 src/main/resource/application-local.yml
 /**/application-local.yml
+src/main/resource/application-dev.yml
+/**/application-dev.yml

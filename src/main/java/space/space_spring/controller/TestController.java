@@ -38,13 +38,13 @@ public class TestController {
 
     @MessageMapping("/chat/{spaceChatId}") // {spaceChatId} 채팅방으로 보낸 메세지 매핑
     @SendTo("/topic/chat/{spaceChatId}") // {spaceChatId} 채팅방을 구독한 곳들로 메세지 전송
-    public ChatTestResponse webSocketTest(@Payload ChatTestRequest chat, @DestinationVariable String spaceChatId) {
+    public ChatTestResponse sendMsgTest(@Payload ChatTestRequest chat, @DestinationVariable String spaceChatId) {
         log.info(spaceChatId + " 채팅방으로 " + chat.getMsg() + " 전송");
         return ChatTestResponse.of(chat.getMsg());
     }
 
     @SubscribeMapping("/topic/chat/{spaceChatId}") // {spaceChatId} 채팅방을 구독
-    public void webSocketTest(@DestinationVariable String spaceChatId) {
+    public void subscribeTest(@DestinationVariable String spaceChatId) {
         log.info(spaceChatId + " 채팅방 구독");
     }
 }

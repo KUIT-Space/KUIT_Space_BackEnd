@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtLoginAuthInterceptor)
                 .order(1)
-                .addPathPatterns("/space/**", "/test/**");
+                .addPathPatterns("/space/**", "/test/**", "/user/space");
 
     }
 

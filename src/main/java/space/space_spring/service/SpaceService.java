@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
+import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.space.PostSpaceCreateResponse;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
@@ -17,6 +18,7 @@ public class SpaceService {
 
     private final SpaceDao spaceDao;
     private final UserDao userDao;
+    private final UserSpaceDao userSpaceDao;
 
     @Transactional
     public PostSpaceCreateResponse createSpace(Long userId, PostSpaceCreateRequest postSpaceCreateRequest) {
@@ -26,7 +28,7 @@ public class SpaceService {
 
         // TODO 2. 유저_스페이스 매핑 정보 db insert
         User manager = userDao.findUserByUserId(userId);
-        UserSpace userSpace = spaceDao.createUserSpace(manager, saveSpace);
+        UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace);
 
         return new PostSpaceCreateResponse(saveSpace.getSpaceId());
     }

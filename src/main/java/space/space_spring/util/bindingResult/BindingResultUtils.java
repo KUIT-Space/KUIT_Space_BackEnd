@@ -1,4 +1,4 @@
-package space.space_spring.util;
+package space.space_spring.util.bindingResult;
 
 import org.springframework.validation.BindingResult;
 

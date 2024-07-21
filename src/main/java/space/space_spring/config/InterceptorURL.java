@@ -1,5 +1,8 @@
 package space.space_spring.config;
 
+import lombok.Getter;
+
+@Getter
 public enum InterceptorURL {
     SPACE("/space/**"),
     TEST("/test/**"),
@@ -9,9 +12,5 @@ public enum InterceptorURL {
 
     InterceptorURL(String urlPattern) {
         this.urlPattern = urlPattern;
-    }
-
-    public String getUrlPattern() {
-        return urlPattern;
     }
 }

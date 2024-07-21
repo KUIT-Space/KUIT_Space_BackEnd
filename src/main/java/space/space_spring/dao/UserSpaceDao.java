@@ -66,6 +66,11 @@ public class UserSpaceDao {
             newLastUserSpaceId = userSpaceId;
         }
 
+        // 데이터가 마지막임을 알리기 위해 -1 설정
+        if (results.isEmpty()) {
+            newLastUserSpaceId = -1L;
+        }
+
         return new SpaceChoiceViewDto(responseList, newLastUserSpaceId);
     }
 

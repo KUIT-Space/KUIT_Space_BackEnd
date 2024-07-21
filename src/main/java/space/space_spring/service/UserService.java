@@ -5,17 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.user.GetSpaceInfoForUserResponse;
+import space.space_spring.dto.user.*;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
-import space.space_spring.dto.user.PostUserLoginRequest;
-import space.space_spring.dto.user.PostUserSignupRequest;
-import space.space_spring.dto.user.PostUserSignupResponse;
 import space.space_spring.exception.UserException;
 import space.space_spring.response.BaseResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
@@ -84,12 +82,18 @@ public class UserService {
     }
 
     @Transactional
-    public List<GetSpaceInfoForUserResponse> getSpaceListForUser(Long userId, int size, Long lastUserSpaceId) {
+    public GetSpaceInfoForUserResponse getSpaceListForUser(Long userId, int size, Long lastUserSpaceId) {
         // TODO 1. userId로 User find
         User userByUserId = findUserByUserId(userId);
 
-        // TODO 2. 특정 유저가 속해있는 스페이스 정보들을 return -> 무한 스크롤 구현
-        return userSpaceDao.getSpaceNameAndProfileImgList(userByUserId, size, lastUserSpaceId);
+        // TODO 2. 특정 유저가 속해있는 스페이스 정보들을 get -> 무한 스크롤 구현
+        SpaceChoiceViewDto spaceChoiceViewDto = userSpaceDao.getSpaceChoiceView(userByUserId, size, lastUserSpaceId);
+
+        // TODO 3. find userName
+        String userName = userByUserId.getUserName();
+
+        // TODO 4. return
+        return new GetSpaceInfoForUserResponse(userName, spaceChoiceViewDto.getLastUserSpaceId(), spaceChoiceViewDto.getSpaceNameAndProfileImgList());
     }
 
     private User findUserByUserId(Long userId) {

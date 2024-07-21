@@ -86,7 +86,8 @@ public class UserService {
         // TODO 1. userId로 User find
         User userByUserId = findUserByUserId(userId);
 
-        // TODO 2. user가 속한 스페이스가 없는 경우 -> 예외처리 ?? (현재 lastUserSpaceId가 null & 스페이스 info list는 빈 껍데기로 response가 전달됨)
+        // TODO 2. user가 속한 스페이스가 없는 경우 -> 예외처리 ??
+        // (현재 lastUserSpaceId가 -1 & 스페이스 info list는 빈 껍데기로 response가 전달됨)
         validateSpaceListForUser(userByUserId);
 
         // TODO 3. 특정 유저가 속해있는 스페이스 정보들을 get -> 무한 스크롤 구현

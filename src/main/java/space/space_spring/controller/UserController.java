@@ -18,7 +18,7 @@ import space.space_spring.response.BaseResponse;
 import space.space_spring.service.UserService;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
-import static space.space_spring.util.BindingResultUtils.getErrorMessage;
+import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @Slf4j
 @RestController

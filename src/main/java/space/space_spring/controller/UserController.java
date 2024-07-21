@@ -56,7 +56,7 @@ public class UserController {
      * 유저가 속한 스페이스 리스트
      * (유저별 스페이스 선택 뷰)
      */
-    @GetMapping("/space")
+    @GetMapping("/space-choice")
     public BaseResponse<List<GetSpaceInfoForUserResponse>> showUserSpaceList(@JwtLoginAuth Long userId) {
 
         log.info("userId = {}", userId);

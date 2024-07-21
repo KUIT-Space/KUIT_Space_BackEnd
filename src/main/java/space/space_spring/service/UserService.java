@@ -1,8 +1,11 @@
 package space.space_spring.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.user.GetSpaceInfoForUserResponse;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
@@ -10,15 +13,20 @@ import space.space_spring.dto.user.PostUserLoginRequest;
 import space.space_spring.dto.user.PostUserSignupRequest;
 import space.space_spring.dto.user.PostUserSignupResponse;
 import space.space_spring.exception.UserException;
+import space.space_spring.response.BaseResponse;
+
+import java.util.List;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserDao userDao;
     private final JwtLoginProvider jwtLoginProvider;
+    private final UserSpaceDao userSpaceDao;
 
     @Transactional
     public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
@@ -47,6 +55,7 @@ public class UserService {
     public String login(PostUserLoginRequest postUserLoginRequest) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
         User userByEmail = findUserByEmail(postUserLoginRequest.getEmail());
+        log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
 
         // TODO 2. 비밀번호 일치 여부 확인
         validatePassword(userByEmail, postUserLoginRequest.getPassword());
@@ -69,8 +78,26 @@ public class UserService {
     }
 
     private void validatePassword(User userByEmail, String password) {
-        if (!userByEmail.getPassword().equals(password)) {
+        if (!userByEmail.passwordMatch(password)) {
             throw new UserException(PASSWORD_NO_MATCH);
         }
     }
+
+    @Transactional
+    public List<GetSpaceInfoForUserResponse> getSpaceListForUser(Long userId) {
+        // TODO 1. userId로 User find
+        User userByUserId = findUserByUserId(userId);
+
+        // TODO 2. 특정 유저가 속해있는 모든 스페이스들 정보 return
+        return userSpaceDao.getSpaceNameAndProfileImgList(userByUserId);
+    }
+
+    private User findUserByUserId(Long userId) {
+        User userByUserId = userDao.findUserByUserId(userId);
+        if (userByUserId == null) {
+            throw new UserException(USER_NOT_FOUND);
+        }
+        return userByUserId;
+    }
+
 }

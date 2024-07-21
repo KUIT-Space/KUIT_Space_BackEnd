@@ -84,12 +84,12 @@ public class UserService {
     }
 
     @Transactional
-    public List<GetSpaceInfoForUserResponse> getSpaceListForUser(Long userId) {
+    public List<GetSpaceInfoForUserResponse> getSpaceListForUser(Long userId, int size, Long lastUserSpaceId) {
         // TODO 1. userId로 User find
         User userByUserId = findUserByUserId(userId);
 
-        // TODO 2. 특정 유저가 속해있는 모든 스페이스들 정보 return
-        return userSpaceDao.getSpaceNameAndProfileImgList(userByUserId);
+        // TODO 2. 특정 유저가 속해있는 스페이스 정보들을 return -> 무한 스크롤 구현
+        return userSpaceDao.getSpaceNameAndProfileImgList(userByUserId, size, lastUserSpaceId);
     }
 
     private User findUserByUserId(Long userId) {

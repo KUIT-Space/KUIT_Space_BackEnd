@@ -39,7 +39,7 @@ public class UserSpaceDao {
     }
 
 
-    public List<GetSpaceInfoForUserResponse> getSpaceNameAndProfileImgList(User userByUserId) {
+    public List<GetSpaceInfoForUserResponse> getSpaceNameAndProfileImgList(User userByUserId, int size, Long lastUserSpaceId) {
         String jpql = "SELECT s.spaceName, s.spaceProfileImg " +
                 "FROM UserSpace us JOIN us.space s " +
                 "WHERE us.user = :user";

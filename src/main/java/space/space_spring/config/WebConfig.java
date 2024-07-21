@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuthHandlerArgumentResolver;
@@ -23,10 +24,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtLoginAuthInterceptor)
-                .order(1)
-                .addPathPatterns("/space/**", "/test/**");
+        InterceptorRegistration registration =
+                registry.addInterceptor(jwtLoginAuthInterceptor)
+                .order(1);
 
+        for (InterceptorURL interceptorURL : InterceptorURL.values()) {
+            registration.addPathPatterns(interceptorURL.getUrlPattern());
+        }
     }
 
     @Override

@@ -5,13 +5,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import space.space_spring.dto.user.GetSpaceInfoForUserResponse;
+import space.space_spring.dto.user.SpaceChoiceViewDto;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
 
@@ -39,23 +38,35 @@ public class UserSpaceDao {
     }
 
 
-    public List<GetSpaceInfoForUserResponse> getSpaceNameAndProfileImgList(User userByUserId, int size, Long lastUserSpaceId) {
-        String jpql = "SELECT s.spaceName, s.spaceProfileImg " +
+    public SpaceChoiceViewDto getSpaceChoiceView(User userByUserId, int size, Long lastUserSpaceId) {
+
+        // 유저가 현재 속해있는 스페이스의 정보만을 return하기 위해 status가 active인 것만 select
+        String jpql = "SELECT us.userSpaceId, s.spaceName, s.spaceProfileImg " +
                 "FROM UserSpace us JOIN us.space s " +
-                "WHERE us.user = :user";
+                "WHERE us.user = :user AND us.status = 'ACTIVE' " +
+                "AND us.userSpaceId > :lastUserSpaceId ORDER BY us.userSpaceId ASC";
+
         TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
         query.setParameter("user", userByUserId);
+        query.setParameter("lastUserSpaceId", lastUserSpaceId);
+        query.setMaxResults(size);
 
         List<Object[]> results = query.getResultList();
-        List<GetSpaceInfoForUserResponse> responseList = new ArrayList<>();
+        List<Map<String, String>> responseList = new ArrayList<>();
+        Long newLastUserSpaceId = null;
 
         for (Object[] result : results) {
-            String spaceName = (String) result[0];
-            String spaceImgUrl = (String) result[1];
-            responseList.add(new GetSpaceInfoForUserResponse(spaceName, spaceImgUrl));
+            Long userSpaceId = (Long) result[0];
+            String spaceName = (String) result[1];
+            String spaceProfileImg = (String) result[2];
+            Map<String, String> spaceNameAndProfileImgMap = new HashMap<>();
+            spaceNameAndProfileImgMap.put("spaceName", spaceName);
+            spaceNameAndProfileImgMap.put("spaceProfileImg", spaceProfileImg);
+            responseList.add(spaceNameAndProfileImgMap);
+            newLastUserSpaceId = userSpaceId;
         }
 
-        return responseList;
+        return new SpaceChoiceViewDto(responseList, newLastUserSpaceId);
     }
 
 }

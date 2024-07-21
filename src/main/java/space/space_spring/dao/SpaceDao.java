@@ -24,11 +24,8 @@ public class SpaceDao {
         return space;
     }
 
-    public UserSpace createUserSpace(User manager, Space saveSpace) {
-        UserSpace userSpace = new UserSpace();
-        userSpace.createUserSpace(manager, saveSpace, MANAGER);
-
-        em.persist(userSpace);
-        return userSpace;
+    public Space findSpaceBySpaceId(Long spaceId) {
+        return em.find(Space.class, spaceId);
     }
+
 }

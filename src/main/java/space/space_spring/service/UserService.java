@@ -11,6 +11,7 @@ import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.exception.UserException;
 import space.space_spring.response.BaseResponse;
+import space.space_spring.util.user.UserUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class UserService {
     private final UserDao userDao;
     private final JwtLoginProvider jwtLoginProvider;
     private final UserSpaceDao userSpaceDao;
+    private final UserUtils userUtils;
 
     @Transactional
     public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
@@ -52,7 +54,7 @@ public class UserService {
     @Transactional
     public String login(PostUserLoginRequest postUserLoginRequest) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
-        User userByEmail = findUserByEmail(postUserLoginRequest.getEmail());
+        User userByEmail = userUtils.findUserByEmail(postUserLoginRequest.getEmail());
         log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
 
         // TODO 2. 비밀번호 일치 여부 확인
@@ -67,14 +69,6 @@ public class UserService {
         return jwtLogin;
     }
 
-    private User findUserByEmail(String email) {
-        User findUser = userDao.getUserByEmail(email);
-        if (findUser == null) {
-            throw new UserException(EMAIL_NOT_FOUND);
-        }
-        return findUser;
-    }
-
     private void validatePassword(User userByEmail, String password) {
         if (!userByEmail.passwordMatch(password)) {
             throw new UserException(PASSWORD_NO_MATCH);
@@ -84,7 +78,7 @@ public class UserService {
     @Transactional
     public GetSpaceInfoForUserResponse getSpaceListForUser(Long userId, int size, Long lastUserSpaceId) {
         // TODO 1. userId로 User find
-        User userByUserId = findUserByUserId(userId);
+        User userByUserId = userUtils.findUserByUserId(userId);
 
         // TODO 2. user가 속한 스페이스가 없는 경우 -> 예외처리 ??
         // (현재 lastUserSpaceId가 -1 & 스페이스 info list는 빈 껍데기로 response가 전달됨)
@@ -103,14 +97,6 @@ public class UserService {
     private void validateSpaceListForUser(User userByUserId) {
         // 프론트 개발자 분들과 상의해서 결정해야할 거 같음
 
-    }
-
-    private User findUserByUserId(Long userId) {
-        User userByUserId = userDao.findUserByUserId(userId);
-        if (userByUserId == null) {
-            throw new UserException(USER_NOT_FOUND);
-        }
-        return userByUserId;
     }
 
 }

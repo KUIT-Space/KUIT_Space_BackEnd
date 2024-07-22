@@ -15,7 +15,11 @@ public class PayService {
     private final PayDao payDao;
 
     public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId) {
-        // TODO 1. 유저가 생성한
+        // TODO 1. userId에 해당하는 user find
+
+
+        // TODO 1. 유저가 요청한 정산 중 진행 중인 정산 리스트 select
+        payDao.findPayRequestListByUser()
 
     }
 

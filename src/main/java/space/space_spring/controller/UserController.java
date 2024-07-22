@@ -58,8 +58,8 @@ public class UserController {
      */
     @GetMapping("/space-choice")
     public BaseResponse<GetSpaceInfoForUserResponse> showUserSpaceList(@JwtLoginAuth Long userId,
-                                                                             @RequestParam int size,
-                                                                             @RequestParam Long lastUserSpaceId) {
+                                                                       @RequestParam int size,
+                                                                       @RequestParam Long lastUserSpaceId) {
 
         log.info("userId = {}", userId);
 

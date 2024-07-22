@@ -2,7 +2,6 @@ package space.space_spring.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import space.space_spring.response.BaseResponse;
 
 @Entity
 @Getter

@@ -15,7 +15,8 @@ public class PayService {
     private final PayDao payDao;
 
     public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId) {
-        
+        // TODO 1. 유저가 생성한
+
     }
 
     public List<PayReceiveInfoDto> getPayReceiveInfoForUser(Long userId, Long spaceId) {

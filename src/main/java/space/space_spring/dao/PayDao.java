@@ -25,12 +25,21 @@ public class PayDao {
     }
 
 
-    public List<PayRequestTarget> findPayRequestTargetList(PayRequest payRequest) {
+    public List<PayRequestTarget> findPayRequestTargetListByPayRequest(PayRequest payRequest) {
         // 해당 정산 요청의 모든 타겟 엔티티를 select
         String jpql = "SELECT prt FROM PayRequestTarget prt WHERE prt.payRequest = :payRequest";
 
         return em.createQuery(jpql, PayRequestTarget.class)
                 .setParameter("payRequest", payRequest)
+                .getResultList();
+    }
+
+    public List<PayRequestTarget> findPayRequestTargetListByUser(User userByUserId) {
+        // 유저가 요청받은 정산 중 아직 완료되지 않은 payRequestTarget 엔티티만 select
+        String jpql = "SELECT prt FROM PayRequestTarget prt WHERE prt.targetUserId = :userId AND prt.isComplete = false";
+
+        return em.createQuery(jpql, PayRequestTarget.class)
+                .setParameter("userId", userByUserId.getUserId())
                 .getResultList();
     }
 

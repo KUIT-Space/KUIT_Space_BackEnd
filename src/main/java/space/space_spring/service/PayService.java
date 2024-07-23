@@ -38,7 +38,7 @@ public class PayService {
             int totalTargetNum = 0;
             int receiveTargetNum = 0;
 
-            List<PayRequestTarget> payRequestTargetList = payDao.findPayRequestTargetList(payRequest);
+            List<PayRequestTarget> payRequestTargetList = payDao.findPayRequestTargetListByPayRequest(payRequest);
             for (PayRequestTarget payRequestTarget : payRequestTargetList) {
                 if (payRequestTarget.isComplete()) {
                     // 해당 타겟이 돈을 낸 경우
@@ -57,7 +57,25 @@ public class PayService {
     }
 
     public List<PayReceiveInfoDto> getPayReceiveInfoForUser(Long userId, Long spaceId) {
+        // TODO 1. userId에 해당하는 유저 find
+        User userByUserId = userUtils.findUserByUserId(userId);
 
+        // TODO 2. 유저가 요청받은 정산 중 진행 중인 정산 리스트 select
+        List<PayRequestTarget> payRequestTargetListByUser = payDao.findPayRequestTargetListByUser(userByUserId);
 
+        // TODO 3. return 타입 구성
+        // 3-1. 각 payRequestTarget 에 해당하는 정산 요청자, 정산 요청 금액 을 loop를 돌면서 데이터 수집
+        List<PayReceiveInfoDto> payReceiveInfoDtoList = new ArrayList<>();
+
+        for (PayRequestTarget payRequestTarget : payRequestTargetListByUser) {
+            String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
+            int requestAmount = payRequestTarget.getRequestAmount();
+
+            PayReceiveInfoDto payReceiveInfoDto = new PayReceiveInfoDto(payCreatorName, requestAmount);
+
+            payReceiveInfoDtoList.add(payReceiveInfoDto);
+        }
+
+        return payReceiveInfoDtoList;
     }
 }

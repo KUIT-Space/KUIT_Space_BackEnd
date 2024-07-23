@@ -14,48 +14,61 @@ import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.util.user.UserUtils;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
-class PayServiceTest {
-
-    @InjectMocks
-    private PayService payService;
-
-    @Mock
-    private PayDao payDao;
-
-    @Mock
-    private UserUtils userUtils;
-
-    @BeforeEach
-    public void 테스트_셋업() {
-        User user1 = new User();
-        user1.saveUser("test1@test.com", "abcDEF123!@", "user1");
-
-        User user2 = new User();
-        user2.saveUser("test2@test.com", "abcDEF123!@", "user2");
-
-        Space testSpace = new Space();
-        testSpace.saveSpace("testSpace", "test_profile_img_url");
-
-        // user2가 요청한 정산 -> user1 에게
-        PayRequest testPayRequest = new PayRequest();
-        testPayRequest.savePayRequest(user2, testSpace, 30000, "우리은행", "111-111-111", false);
-
-        PayRequestTarget testPayRequestTarget = new PayRequestTarget();
-        testPayRequestTarget.savePayRequestTarget(testPayRequest, user1.getUserId(), 10000, false);
-    }
-
-    @Test
-    @DisplayName("getPayRequestInfoForUser_메서드_테스트")
-    void getPayRequestInfoForUser_메서드_테스트() throws Exception {
-        //given
-        
-
-        //when
-        
-        //then
-    }
-    
-}
+//@ExtendWith(MockitoExtension.class)
+//class PayServiceTest {
+//
+//    @InjectMocks
+//    private PayService payService;
+//
+//    @Mock
+//    private PayDao payDao;
+//
+//    @Mock
+//    private UserUtils userUtils;
+//
+//    private User user1;
+//    private User user2;
+//    private Space testSpace;
+//    private PayRequest testPayRequest;
+//    private PayRequestTarget testPayRequestTarget;
+//
+//    @BeforeEach
+//    public void 테스트_셋업() {
+//        user1 = new User();
+//        user1.saveUser("test1@test.com", "abcDEF123!@", "user1");
+//
+//        user2 = new User();
+//        user2.saveUser("test2@test.com", "abcDEF123!@", "user2");
+//
+//        testSpace = new Space();
+//        testSpace.saveSpace("testSpace", "test_profile_img_url");
+//
+//        // user2가 요청한 정산 -> user1 에게
+//        testPayRequest = new PayRequest();
+//        testPayRequest.savePayRequest(user2, testSpace, 30000, "우리은행", "111-111-111", false);
+//
+//        testPayRequestTarget = new PayRequestTarget();
+//        testPayRequestTarget.savePayRequestTarget(testPayRequest, user1.getUserId(), 10000, false);
+//    }
+//
+//    @Test
+//    @DisplayName("getPayRequestInfoForUser_메서드_테스트")
+//    void 유저가_요청한_정산_중_진행중인_정산리스트_찾는_메서드_테스트() throws Exception {
+//        //given
+//
+//        //when
+//        List<PayRequest> payRequestListByUser = payDao.findPayRequestListByUser(user2, testSpace);
+//
+//        //then
+//        assertThat(payRequestListByUser).isNotEmpty();
+//        assertThat(payRequestListByUser.size()).isEqualTo(1);
+//        assertThat(payRequestListByUser.get(0)).isEqualTo(testPayRequest);
+//    }
+//
+//}

@@ -7,7 +7,9 @@ import space.space_spring.dto.pay.PayReceiveInfoDto;
 import space.space_spring.dto.pay.PayRequestInfoDto;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
+import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
+import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
@@ -19,15 +21,19 @@ public class PayService {
 
     private final PayDao payDao;
     private final UserUtils userUtils;
+    private final SpaceUtils spaceUtils;
 
     public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId) {
         // TODO 1. userId에 해당하는 user find
         User userByUserId = userUtils.findUserByUserId(userId);
+        
+        // TODO 2. spaceId에 해당하는 space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 2. 유저가 요청한 정산 중 진행 중인 정산 리스트 select
-        List<PayRequest> payRequestListByUser = payDao.findPayRequestListByUser(userByUserId);
+        // TODO 3. 유저가 요청한 정산 중 진행 중인 정산 리스트 select
+        List<PayRequest> payRequestListByUser = payDao.findPayRequestListByUser(userByUserId, spaceBySpaceId);
 
-        // TODO 3. return 타입 구성
+        // TODO 4. return 타입 구성
         // 3-1. 각 payRequest 에 해당하는 모든 payRequestTarget 을 loop로 돌면서 데이터 수집
         List<PayRequestInfoDto> payRequestInfoDtoList = new ArrayList<>();
 
@@ -60,10 +66,13 @@ public class PayService {
         // TODO 1. userId에 해당하는 유저 find
         User userByUserId = userUtils.findUserByUserId(userId);
 
-        // TODO 2. 유저가 요청받은 정산 중 진행 중인 정산 리스트 select
-        List<PayRequestTarget> payRequestTargetListByUser = payDao.findPayRequestTargetListByUser(userByUserId);
+        // TODO 2. spaceId에 해당하는 space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+        
+        // TODO 3. 유저가 요청받은 정산 중 진행 중인 정산 리스트 select
+        List<PayRequestTarget> payRequestTargetListByUser = payDao.findPayRequestTargetListByUser(userByUserId, spaceBySpaceId);
 
-        // TODO 3. return 타입 구성
+        // TODO 4. return 타입 구성
         // 3-1. 각 payRequestTarget 에 해당하는 정산 요청자, 정산 요청 금액 을 loop를 돌면서 데이터 수집
         List<PayReceiveInfoDto> payReceiveInfoDtoList = new ArrayList<>();
 

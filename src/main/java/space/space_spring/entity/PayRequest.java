@@ -21,8 +21,8 @@ public class PayRequest extends BaseEntity {
     @JoinColumn(name = "space_id")
     private Space space;                // 정산이 이루어지는 스페이스
 
-    @Column(name = "total_price")
-    private int totalPrice;             // 정산의 총 금액
+    @Column(name = "total_amount")
+    private int totalAmount;             // 정산의 총 금액
 
     @Column(name = "pay_request_bank")
     private String bankName;            // 정산 받을 은행 이름

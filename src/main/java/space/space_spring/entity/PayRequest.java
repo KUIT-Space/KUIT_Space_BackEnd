@@ -32,4 +32,13 @@ public class PayRequest extends BaseEntity {
 
     @Column(name = "is_complete")
     private boolean isComplete;
+
+    public void savePayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, boolean isComplete) {
+        this.payCreateUser = payCreateUser;
+        this.space = space;
+        this.totalAmount = totalAmount;
+        this.bankName = bankName;
+        this.bankAccountNum = bankAccountNum;
+        this.isComplete = isComplete;
+    }
 }

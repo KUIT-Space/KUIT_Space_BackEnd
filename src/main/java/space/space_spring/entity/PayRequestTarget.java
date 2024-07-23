@@ -17,12 +17,11 @@ public class PayRequestTarget extends BaseEntity {
     private PayRequest payRequest;
 
     @Column(name = "target_user_id")
-    private Long targetUserId;
+    private Long targetUserId;              // User 객체를 필드로 가지는 것보다 이게 더 낫나??
 
     @Column(name = "request_amount")
     private int requestAmount;
 
     @Column(name = "is_complete")
     private boolean isComplete;
-
 }

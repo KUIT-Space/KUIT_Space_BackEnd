@@ -38,6 +38,9 @@ public class SpaceController {
         return new BaseResponse<>(spaceService.createSpace(userId, postSpaceCreateRequest));
     }
 
+    /**
+     *  테스트 용
+     */
     @GetMapping("/{spaceId}")
     public BaseResponse<String> getSpaceHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
         Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);

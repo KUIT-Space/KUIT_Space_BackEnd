@@ -2,7 +2,9 @@ package space.space_spring.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.validator.internal.constraintvalidators.bv.AssertFalseValidator;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;

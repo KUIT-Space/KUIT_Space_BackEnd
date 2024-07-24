@@ -1,0 +1,55 @@
+spring:
+  config:
+    activate:
+      on-profile: "localPort"
+
+server:
+  port: 8080
+---
+spring:
+  config:
+    activate:
+      on-profile: "localRDB"
+
+  datasource:
+    url:  ${DATASOURCE_URL_LOCAL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driver-class-name: ${DATASOURCE_DRIVER:com.mysql.cj.jdbc.Driver}
+logging:
+  level:
+    org.hibernate.sql: debug
+---
+spring:
+  config:
+    activate:
+      on-profile: "localMongoDB"
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "localJPA"
+
+  jpa:
+    hibernate:
+      ddl-auto: update        # table을 전부 drop했다가 다시 생성 -> 테스트용
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "localSecret"
+
+secret:
+  jwt-secret-key: ${JWT_SECRET_KEY:b237a73895f5e617b7364708413fff71c228721a5f8c84a7bb2a3b84f1bb1c23}
+  jwt-login-secret-key: ${JWT_SECRET_KEY_LOGIN}
+  jwt-user-space-secret-key: ${JWT_SECRET_KEY_USER_SPACE}
+  jwt-expired-in: ${JWT_EXPIRED_IN:3600000}

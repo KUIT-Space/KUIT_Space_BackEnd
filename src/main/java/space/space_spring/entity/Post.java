@@ -8,19 +8,27 @@ import lombok.Getter;
 @Getter
 public class Post extends BaseEntity {
     @Id @GeneratedValue
-    @Column(name = "post_id")
+    @Column(name = "space_post_id")
     private Long postId;
 
-    @Column(name = "title")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "space_id")
+    private Space space;
+
+    @Column(name = "post_title")
     private String title;
 
     @Column(name = "content")
     private String content;
 
-    @Column(name = "type")
+    @Column(name = "post_type")
     private String type;
 
-    @Column(name = "like")
+    @Column(name = "post_like")
     private int like;
 
 

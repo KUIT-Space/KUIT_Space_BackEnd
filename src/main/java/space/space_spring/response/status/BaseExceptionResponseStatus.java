@@ -53,7 +53,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 6000: Space 오류
      */
     INVALID_SPACE_CREATE(6000, HttpStatus.BAD_REQUEST.value(), "스페이스 생성 요청에서 잘못된 값이 존재합니다."),
-    safd(6001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
+    SPACE_NOT_FOUND(6001, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 스페이스입니다."),
     adff(6002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
     baab(6003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     nff(6004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
@@ -62,9 +62,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
 
     /**
-     * 7000:  오류
+     * 7000: UserSpace 오류
      */
-    A(7000, HttpStatus.BAD_REQUEST.value(), "회원가입 요청에서 잘못된 값이 존재합니다."),
+    USER_IS_NOT_IN_SPACE(7000, HttpStatus.BAD_REQUEST.value(), "해당 스페이스에 속하지 않는 유저입니다."),
     B(7001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
     C(7002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
     D(7003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),

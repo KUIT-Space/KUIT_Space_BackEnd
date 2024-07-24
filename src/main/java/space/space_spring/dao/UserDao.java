@@ -45,8 +45,6 @@ public class UserDao {
     }
 
     public User findUserByUserId(Long userId) {
-        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.userId = :userId", User.class);
-        query.setParameter("userId", userId);
-        return query.getSingleResult();
+        return em.find(User.class, userId);
     }
 }

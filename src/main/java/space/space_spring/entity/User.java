@@ -37,4 +37,8 @@ public class User extends BaseEntity {
         this.jwt = jwt;
     }
 
+    public boolean passwordMatch(String password) {
+        return this.password.equals(password);
+    }
+
 }

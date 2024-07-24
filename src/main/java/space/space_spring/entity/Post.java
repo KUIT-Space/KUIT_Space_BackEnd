@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class Post extends BaseEntity {
     @Id @GeneratedValue
-    @Column(name = "space_post_id")
+    @Column(name = "post_id")
     private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -19,13 +19,13 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "space_id")
     private Space space;
 
-    @Column(name = "post_title")
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "post_content")
     private String content;
 
-    @Column(name = "post_type")
+    @Column(name = "type")
     private String type;
 
     @Column(name = "post_like")

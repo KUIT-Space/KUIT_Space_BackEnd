@@ -22,6 +22,7 @@ env:
   S3_BUCKET_NAME: github-action-sample-s3-bucket
   CODE_DEPLOY_APPLICATION_NAME: space-code-deploy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: space-code-deploy
+  RESOURCE_PATH: ./src/main/resources/application.yml
   
 permissions:
   contents: read
@@ -99,7 +100,7 @@ jobs:
         spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
         secret.jwt-secret-key: ${{secrets.JWT_SECRET_KEY}}
         secret.jwt-login-secret-key: ${{secrets.JWT_SECRET_KEY_1}}
-        secret.jwt-user-secret-key: ${{secrets.JWT_SECRET_KEY_2}}
+        secret.jwt-user-space-secret-key: ${{secrets.JWT_SECRET_KEY_2}}
         secret.jwt-expired-in: ${{secrets.JWT_EXPIRED_IN}}
         spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
 

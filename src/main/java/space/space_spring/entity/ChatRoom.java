@@ -37,7 +37,7 @@ public class ChatRoom extends BaseEntity{
     @Column(name = "last_msg_id")
     private int lastMsgId;
 
-    // 양방향 매핑
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
-    private List<UserChatRoom> userChatRooms;
+//    // 양방향 매핑
+//    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+//    private List<UserChatRoom> userChatRooms;
 }

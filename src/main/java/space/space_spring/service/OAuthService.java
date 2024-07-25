@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -95,6 +96,7 @@ public class OAuthService {
         return new KakaoInfo(nickname, email);
     }
 
+    @Transactional
     public User findUserByOAuthInfo(KakaoInfo kakaoInfo) {
         String email = kakaoInfo.getEmail();
         String nickname = kakaoInfo.getNickName();
@@ -109,7 +111,7 @@ public class OAuthService {
         return userDao.saveUser(email, password, nickname);
     }
 
-    public void provideJwtToOAuthUser(User userByOAuthInfo) {
-        jwtLoginProvider.generateToken(userByOAuthInfo);
+    public String provideJwtToOAuthUser(User userByOAuthInfo) {
+        return jwtLoginProvider.generateToken(userByOAuthInfo);
     }
 }

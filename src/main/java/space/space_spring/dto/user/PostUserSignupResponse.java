@@ -8,5 +8,4 @@ import lombok.Getter;
 public class PostUserSignupResponse {
 
     private Long userId;
-    private String jwt;         // 이게 있어야할까?
 }

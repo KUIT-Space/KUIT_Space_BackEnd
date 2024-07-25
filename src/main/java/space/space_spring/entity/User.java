@@ -22,19 +22,11 @@ public class User extends BaseEntity {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "jwt")
-    @Nullable
-    private String jwt;
-
     public void saveUser(String email, String password, String userName) {
         this.email = email;
         this.password = password;
         this.userName = userName;
         initializeBaseEntityFields();
-    }
-
-    public void saveJWTtoLoginUser(String jwt) {
-        this.jwt = jwt;
     }
 
     public boolean passwordMatch(String password) {

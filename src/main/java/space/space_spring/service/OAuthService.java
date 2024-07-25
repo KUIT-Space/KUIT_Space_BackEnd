@@ -14,12 +14,19 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dto.oAuthInfo.KakaoInfo;
+import space.space_spring.entity.User;
+import space.space_spring.jwt.JwtLoginProvider;
+import space.space_spring.util.user.UserUtils;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
 
+    private final UserUtils userUtils;
     private final UserDao userDao;
+    private final JwtLoginProvider jwtLoginProvider;
 
     /**
      * 카카오 인증 서버가 전달해준 유저의 인가코드로 토큰 발급 요청
@@ -88,11 +95,21 @@ public class OAuthService {
         return new KakaoInfo(nickname, email);
     }
 
-    public void findUserByOAuthInfo(KakaoInfo kakaoInfo) {
+    public User findUserByOAuthInfo(KakaoInfo kakaoInfo) {
         String email = kakaoInfo.getEmail();
+        String nickname = kakaoInfo.getNickName();
 
         // TODO 1. db에 중복되는 email이 있는지 확인
-        validate
+        userUtils.validateEmail(email);
 
+        // TODO 2. 없으면, 회원정보를 db에 insert
+        // 2-1. password 임의로 설정
+        String password = UUID.randomUUID().toString();
+
+        return userDao.saveUser(email, password, nickname);
+    }
+
+    public void provideJwtToOAuthUser(User userByOAuthInfo) {
+        jwtLoginProvider.generateToken(userByOAuthInfo);
     }
 }

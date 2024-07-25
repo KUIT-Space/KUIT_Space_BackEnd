@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import space.space_spring.dto.oAuthDto.KakaoLoginDto;
 import space.space_spring.dto.oAuthInfo.KakaoInfo;
+import space.space_spring.entity.User;
 import space.space_spring.service.OAuthService;
 
 @Controller
@@ -75,8 +76,11 @@ public class OAuthController {
         // TODO 4. 카카오 사용자 정보 확인
         // 유저 email 정보가 db에 없을 시 -> 새로 계정 생성
         // 유저 email 정보가 db에 있을 시 -> 같은 계정으로 판단
-        oAuthService.findUserByOAuthInfo(kakaoInfo);
+        User userByOAuthInfo = oAuthService.findUserByOAuthInfo(kakaoInfo);
 
-        return "redirect:/";
+        // TODO 5. 카카오 로그인 유저에게 jwt 발급
+        oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
+
+        return "카카오 로그인 성공";
     }
 }

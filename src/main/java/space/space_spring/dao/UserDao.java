@@ -14,9 +14,9 @@ public class UserDao {
     @PersistenceContext
     private EntityManager em;
 
-    public User saveUser(PostUserSignupRequest postUserSignupRequest) {
+    public User saveUser(String email, String password, String userName) {
         User user = new User();
-        user.saveUser(postUserSignupRequest.getEmail(), postUserSignupRequest.getPassword(), postUserSignupRequest.getUserName());
+        user.saveUser(email, password, userName);
 
         em.persist(user);
         return user;

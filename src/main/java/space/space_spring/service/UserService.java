@@ -36,7 +36,11 @@ public class UserService {
         // password 암호화도??
 
         // TODO 2. 회원정보 db insert
-        User saveUser = userDao.saveUser(postUserSignupRequest);
+        String email = postUserSignupRequest.getEmail();
+        String password = postUserSignupRequest.getPassword();
+        String userName = postUserSignupRequest.getUserName();
+
+        User saveUser = userDao.saveUser(email, password, userName);
 
         // TODO 3. JWT 토큰 초기화 (회원가입시에는 토큰 발급 X)
         String jwt = null;

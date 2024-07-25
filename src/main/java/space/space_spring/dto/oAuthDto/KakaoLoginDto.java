@@ -1,8 +1,7 @@
-package space.space_spring.dto.oauthDto;
+package space.space_spring.dto.oAuthDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import space.space_spring.dto.pay.PayReceiveInfoDto;
 
 @Getter
 @AllArgsConstructor

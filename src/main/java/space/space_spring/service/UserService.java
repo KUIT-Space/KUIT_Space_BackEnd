@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.user.*;
+import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
@@ -16,6 +17,7 @@ import space.space_spring.util.user.UserUtils;
 import java.util.List;
 import java.util.Map;
 
+import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
@@ -40,7 +42,7 @@ public class UserService {
         String password = postUserSignupRequest.getPassword();
         String userName = postUserSignupRequest.getUserName();
 
-        User saveUser = userDao.saveUser(email, password, userName);
+        User saveUser = userDao.saveUser(email, password, userName, LOCAL);
 
         return new PostUserSignupResponse(saveUser.getUserId());
     }

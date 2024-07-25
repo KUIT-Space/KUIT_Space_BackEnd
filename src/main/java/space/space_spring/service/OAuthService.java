@@ -21,6 +21,8 @@ import space.space_spring.util.user.UserUtils;
 
 import java.util.UUID;
 
+import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;
+
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
@@ -108,7 +110,7 @@ public class OAuthService {
         // 2-1. password 임의로 설정
         String password = UUID.randomUUID().toString();
 
-        return userDao.saveUser(email, password, nickname);
+        return userDao.saveUser(email, password, nickname, KAKAO);
     }
 
     public String provideJwtToOAuthUser(User userByOAuthInfo) {

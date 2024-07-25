@@ -7,6 +7,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import space.space_spring.entity.User;
 import space.space_spring.dto.user.PostUserSignupRequest;
+import space.space_spring.entity.enumStatus.UserSignupType;
 
 @Repository
 public class UserDao {
@@ -14,9 +15,9 @@ public class UserDao {
     @PersistenceContext
     private EntityManager em;
 
-    public User saveUser(String email, String password, String userName) {
+    public User saveUser(String email, String password, String userName, UserSignupType signupType) {
         User user = new User();
-        user.saveUser(email, password, userName);
+        user.saveUser(email, password, userName, signupType);
 
         em.persist(user);
         return user;

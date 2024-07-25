@@ -17,12 +17,9 @@ import space.space_spring.response.BaseResponse;
 import space.space_spring.service.OAuthService;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/oauth")
 @Slf4j
 public class OAuthController {
-
-    private final OAuthService oAuthService;
 
     @Value("${oauth.kakao.client.id}")
     private String clientId;

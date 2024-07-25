@@ -11,11 +11,7 @@ import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.exception.UserException;
-import space.space_spring.response.BaseResponse;
 import space.space_spring.util.user.UserUtils;
-
-import java.util.List;
-import java.util.Map;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
@@ -33,7 +29,7 @@ public class UserService {
     @Transactional
     public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
         // TODO 1. 이메일 중복 검사(아이디 중복 검사)
-        userUtils.validateEmail(postUserSignupRequest.getEmail());
+        validateEmailForLocalSignup(postUserSignupRequest.getEmail());
 
         // password 암호화도??
 
@@ -45,6 +41,12 @@ public class UserService {
         User saveUser = userDao.saveUser(email, password, userName, LOCAL);
 
         return new PostUserSignupResponse(saveUser.getUserId());
+    }
+
+    private void validateEmailForLocalSignup(String email) {
+        if (userDao.hasDuplicateEmail(email, UserSignupType.LOCAL)) {
+            throw new UserException(DUPLICATE_EMAIL);
+        }
     }
 
     @Transactional

@@ -28,7 +28,6 @@ import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;
 public class OAuthService {
 
     private final UserUtils userUtils;
-    private final UserDao userDao;
     private final JwtLoginProvider jwtLoginProvider;
 
     /**
@@ -103,14 +102,8 @@ public class OAuthService {
         String email = kakaoInfo.getEmail();
         String nickname = kakaoInfo.getNickName();
 
-        // TODO 1. db에 중복되는 email이 있는지 확인
-        userUtils.validateEmail(email);
-
-        // TODO 2. 없으면, 회원정보를 db에 insert
-        // 2-1. password 임의로 설정
-        String password = UUID.randomUUID().toString();
-
-        return userDao.saveUser(email, password, nickname, KAKAO);
+        // 카카오 서버로부터 얻은 정보로 회원가입 or 로그인
+        return userUtils.findOrCreateUserForOAuthInfo(email, nickname, KAKAO);
     }
 
     public String provideJwtToOAuthUser(User userByOAuthInfo) {

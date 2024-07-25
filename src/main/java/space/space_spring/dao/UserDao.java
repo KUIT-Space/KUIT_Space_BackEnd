@@ -23,15 +23,19 @@ public class UserDao {
         return user;
     }
 
-    public User findUserByEmail(String email) {
-        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
+    public User findUserByEmailAndSignupType(String email, UserSignupType signupType) {
+        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email AND u.signupType = :signupType", User.class);
         query.setParameter("email", email);
+        query.setParameter("signupType", signupType.getSignupType());
         return query.getSingleResult();
     }
 
-    public boolean hasDuplicateEmail(String email) {
-        String jpql = "SELECT COUNT(u) FROM User u WHERE u.email = :email";
-        Long count = em.createQuery(jpql, Long.class).setParameter("email", email).getSingleResult();
+    public boolean hasDuplicateEmail(String email, UserSignupType signupType) {
+        String jpql = "SELECT COUNT(u) FROM User u WHERE u.email = :email AND u.signupType = :signupType";
+        Long count = em.createQuery(jpql, Long.class)
+                .setParameter("email", email)
+                .setParameter("signupType", signupType.getSignupType())
+                .getSingleResult();
         return count > 0;
     }
 

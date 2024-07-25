@@ -1,4 +1,4 @@
-package space.space_spring.dto.oauthInfo;
+package space.space_spring.dto.oAuthInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoInfo {
-
-    private Long id;
 
     private String nickName;
 

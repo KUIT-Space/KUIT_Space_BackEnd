@@ -31,10 +31,9 @@ public class UserService {
     @Transactional
     public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
         // TODO 1. 이메일 중복 검사(아이디 중복 검사)
-        validateEmail(postUserSignupRequest.getEmail());
+        userUtils.validateEmail(postUserSignupRequest.getEmail());
 
         // password 암호화도??
-
 
         // TODO 2. 회원정보 db insert
         User saveUser = userDao.saveUser(postUserSignupRequest);
@@ -43,12 +42,6 @@ public class UserService {
         String jwt = null;
 
         return new PostUserSignupResponse(saveUser.getUserId(), jwt);
-    }
-
-    private void validateEmail(String email) {
-        if (userDao.hasDuplicateEmail(email)) {
-            throw new UserException(DUPLICATE_EMAIL);
-        }
     }
 
     @Transactional

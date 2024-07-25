@@ -69,10 +69,13 @@ public class OAuthController {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        log.info("kakaoInfo = {}", kakaoInfo);
+        log.info("kakaoInfo.getEmail = {}", kakaoInfo.getEmail());
+        log.info("kakaoInfo.getNickname = {}", kakaoInfo.getNickName());
 
         // TODO 4. 카카오 사용자 정보 확인
-
+        // 유저 email 정보가 db에 없을 시 -> 새로 계정 생성
+        // 유저 email 정보가 db에 있을 시 -> 같은 계정으로 판단
+        oAuthService.findUserByOAuthInfo(kakaoInfo);
 
         return "redirect:/";
     }

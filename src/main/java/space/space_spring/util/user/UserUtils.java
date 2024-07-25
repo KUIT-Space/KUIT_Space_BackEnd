@@ -7,8 +7,7 @@ import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.exception.UserException;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.EMAIL_NOT_FOUND;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_NOT_FOUND;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Component
 @RequiredArgsConstructor
@@ -32,5 +31,12 @@ public class UserUtils {
             throw new UserException(USER_NOT_FOUND);
         }
         return userByUserId;
+    }
+
+    @Transactional
+    public void validateEmail(String email) {
+        if (userDao.hasDuplicateEmail(email)) {
+            throw new UserException(DUPLICATE_EMAIL);
+        }
     }
 }

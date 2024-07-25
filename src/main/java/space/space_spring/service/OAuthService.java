@@ -3,6 +3,7 @@ package space.space_spring.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,10 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import space.space_spring.dao.UserDao;
 import space.space_spring.dto.oAuthInfo.KakaoInfo;
 
 @Service
+@RequiredArgsConstructor
 public class OAuthService {
+
+    private final UserDao userDao;
 
     /**
      * 카카오 인증 서버가 전달해준 유저의 인가코드로 토큰 발급 요청
@@ -83,4 +88,11 @@ public class OAuthService {
         return new KakaoInfo(nickname, email);
     }
 
+    public void findUserByOAuthInfo(KakaoInfo kakaoInfo) {
+        String email = kakaoInfo.getEmail();
+
+        // TODO 1. db에 중복되는 email이 있는지 확인
+        validate
+
+    }
 }

@@ -42,10 +42,7 @@ public class UserService {
 
         User saveUser = userDao.saveUser(email, password, userName);
 
-        // TODO 3. JWT 토큰 초기화 (회원가입시에는 토큰 발급 X)
-        String jwt = null;
-
-        return new PostUserSignupResponse(saveUser.getUserId(), jwt);
+        return new PostUserSignupResponse(saveUser.getUserId());
     }
 
     @Transactional
@@ -59,9 +56,7 @@ public class UserService {
 
         // TODO 3. JWT 발급
         String jwtLogin = jwtLoginProvider.generateToken(userByEmail);
-
-        // TODO 4. JWT db에 insert -> db에 저장해야할까??
-        userByEmail.saveJWTtoLoginUser(jwtLogin);
+        log.info("jwtLogin: {}", jwtLogin);
 
         return jwtLogin;
     }

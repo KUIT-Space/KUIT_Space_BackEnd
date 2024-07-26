@@ -2,13 +2,20 @@ package space.space_spring.entity;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import space.space_spring.dto.chat.CreateChatRoomRequest;
 
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Comment("채팅방")
 @Table(name = "Chat_Room")
 public class ChatRoom extends BaseEntity{
@@ -36,6 +43,16 @@ public class ChatRoom extends BaseEntity{
     @Nullable
     @Column(name = "last_msg_id")
     private int lastMsgId;
+
+    public static ChatRoom of(Space space, CreateChatRoomRequest createChatRoomRequest) {
+        return ChatRoom.builder()
+                .space(space)
+                .name(createChatRoomRequest.getName())
+                .img(createChatRoomRequest.getImg())
+                // TODO: 메시지 관련 처리 예정
+                .lastMsgId(0)
+                .build();
+    }
 
 //    // 양방향 매핑
 //    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)

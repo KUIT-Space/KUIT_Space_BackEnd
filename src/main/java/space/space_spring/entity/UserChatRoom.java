@@ -37,7 +37,7 @@ public class UserChatRoom extends BaseEntity{
     @Column(name = "last_read_msg_id")
     private Long lastReadMsgId;
 
-    public UserChatRoom of(ChatRoom chatRoom, User user, Long lastReadMsgId) {
+    public static UserChatRoom of(ChatRoom chatRoom, User user, Long lastReadMsgId) {
         return UserChatRoom.builder()
                 .chatRoom(chatRoom)
                 .user(user)

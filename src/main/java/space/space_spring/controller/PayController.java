@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.pay.GetPayViewResponse;
+import space.space_spring.dto.pay.GetRequestPayViewResponse;
 import space.space_spring.dto.pay.PayReceiveInfoDto;
 import space.space_spring.dto.pay.PayRequestInfoDto;
 import space.space_spring.entity.UserSpace;
@@ -54,16 +55,17 @@ public class PayController {
     /**
      * 내가 요청한 정산 view
      */
-//    @GetMapping("/space/{spaceId}/pay/request")
-//    public BaseResponse<GetRequestPayViewResponse> showRequestPayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
-//        // TODO 1. 유저가 스페이스에 속하는 지 검증 -> 추후에 인터셉터에서 처리하게끔 리펙토링 필요
-//        validateIsUserInSpace(userId, spaceId);
-//
-//        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get
-//
-//
-//        // TODO 3. 유저가 요청한 정산 중 완료한 정산 리스트 get
-//
-//
-//    }
+    @GetMapping("/space/{spaceId}/pay/request")
+    public BaseResponse<GetRequestPayViewResponse> showRequestPayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
+        // TODO 1. 유저가 스페이스에 속하는 지 검증 -> 추후에 인터셉터에서 처리하게끔 리펙토링 필요
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get
+        List<PayRequestInfoDto> payRequestInfoDtoListInComplete = payService.getPayRequestInfoForUser(userId, spaceId, false);
+
+        // TODO 3. 유저가 요청한 정산 중 완료한 정산 리스트 get
+        List<PayRequestInfoDto> payRequestInfoDtoListComplete = payService.getPayRequestInfoForUser(userId, spaceId, true);
+
+        return new BaseResponse<>(new GetRequestPayViewResponse(payRequestInfoDtoListInComplete, payRequestInfoDtoListComplete));
+    }
 }

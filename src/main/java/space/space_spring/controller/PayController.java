@@ -60,10 +60,10 @@ public class PayController {
         // TODO 1. 유저가 스페이스에 속하는 지 검증 -> 추후에 인터셉터에서 처리하게끔 리펙토링 필요
         validateIsUserInSpace(userId, spaceId);
 
-        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get
+        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get -> 아직 완료되지 않은 정산 : isComplete = false
         List<PayRequestInfoDto> payRequestInfoDtoListInComplete = payService.getPayRequestInfoForUser(userId, spaceId, false);
 
-        // TODO 3. 유저가 요청한 정산 중 완료한 정산 리스트 get
+        // TODO 3. 유저가 요청한 정산 중 완료한 정산 리스트 get -> 완료된 정산 : isComplete = true
         List<PayRequestInfoDto> payRequestInfoDtoListComplete = payService.getPayRequestInfoForUser(userId, spaceId, true);
 
         return new BaseResponse<>(new GetRequestPayViewResponse(payRequestInfoDtoListInComplete, payRequestInfoDtoListComplete));

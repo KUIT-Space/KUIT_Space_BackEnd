@@ -30,7 +30,7 @@ public class PayService {
         // TODO 2. spaceId에 해당하는 space find
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 3. 유저가 요청한 정산 중 진행 중인 정산 리스트 select
+        // TODO 3. 유저가 요청한 정산 리스트 select
         List<PayRequest> payRequestListByUser = payDao.findPayRequestListByUser(userByUserId, spaceBySpaceId, isComplete);
 
         // TODO 4. return 타입 구성
@@ -69,7 +69,7 @@ public class PayService {
         // TODO 2. spaceId에 해당하는 space find
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
         
-        // TODO 3. 유저가 요청받은 정산 중 진행 중인 정산 리스트 select
+        // TODO 3. 유저가 요청받은 정산 리스트 select
         List<PayRequestTarget> payRequestTargetListByUser = payDao.findPayRequestTargetListByUser(userByUserId, spaceBySpaceId, isComplete);
 
         // TODO 4. return 타입 구성

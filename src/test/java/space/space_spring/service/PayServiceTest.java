@@ -72,11 +72,11 @@ class PayServiceTest {
         //given
         when(userUtils.findUserByUserId(user2.getUserId())).thenReturn(user2);
         when(spaceUtils.findSpaceBySpaceId(testSpace.getSpaceId())).thenReturn(testSpace);
-        when(payDao.findPayRequestListByUser(user2, testSpace)).thenReturn(List.of(testPayRequest));
+        when(payDao.findPayRequestListByUser(user2, testSpace, false)).thenReturn(List.of(testPayRequest));
         when(payDao.findPayRequestTargetListByPayRequest(testPayRequest)).thenReturn(List.of(testPayRequestTarget));
 
         //when
-        List<PayRequestInfoDto> payRequestInfoForUser = payService.getPayRequestInfoForUser(user2.getUserId(), testSpace.getSpaceId());
+        List<PayRequestInfoDto> payRequestInfoForUser = payService.getPayRequestInfoForUser(user2.getUserId(), testSpace.getSpaceId(), false);
 
         //then
         assertThat(payRequestInfoForUser.size()).isEqualTo(1);
@@ -95,10 +95,10 @@ class PayServiceTest {
         //given
         when(userUtils.findUserByUserId(user1.getUserId())).thenReturn(user1);
         when(spaceUtils.findSpaceBySpaceId(testSpace.getSpaceId())).thenReturn(testSpace);
-        when(payDao.findPayRequestTargetListByUser(user1, testSpace)).thenReturn(List.of(testPayRequestTarget));
+        when(payDao.findPayRequestTargetListByUser(user1, testSpace, false)).thenReturn(List.of(testPayRequestTarget));
 
         //when
-        List<PayReceiveInfoDto> payReceiveInfoForUser = payService.getPayReceiveInfoForUser(user1.getUserId(), testSpace.getSpaceId());
+        List<PayReceiveInfoDto> payReceiveInfoForUser = payService.getPayReceiveInfoForUser(user1.getUserId(), testSpace.getSpaceId(), false);
 
         //then
         assertThat(payReceiveInfoForUser.size()).isEqualTo(1);

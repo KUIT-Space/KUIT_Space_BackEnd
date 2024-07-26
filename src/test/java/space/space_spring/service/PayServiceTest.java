@@ -14,6 +14,7 @@ import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
+import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -50,10 +51,10 @@ class PayServiceTest {
          * user2이 같은 스페이스에 속한 user1에게 정산을 요청한 상황 가정
          */
         user1 = new User();
-        user1.saveUser("test1@test.com", "abcDEF123!@", "user1");
+        user1.saveUser("test1@test.com", "abcDEF123!@", "user1", UserSignupType.LOCAL);
 
         user2 = new User();
-        user2.saveUser("test2@test.com", "abcDEF123!@", "user2");
+        user2.saveUser("test2@test.com", "abcDEF123!@", "user2", UserSignupType.LOCAL);
 
         testSpace = new Space();
         testSpace.saveSpace("testSpace", "test_profile_img_url");

@@ -23,7 +23,7 @@ public class PayService {
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
 
-    public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId) {
+    public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId, boolean isComplete) {
         // TODO 1. userId에 해당하는 user find
         User userByUserId = userUtils.findUserByUserId(userId);
         
@@ -31,7 +31,7 @@ public class PayService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3. 유저가 요청한 정산 중 진행 중인 정산 리스트 select
-        List<PayRequest> payRequestListByUser = payDao.findPayRequestListByUser(userByUserId, spaceBySpaceId);
+        List<PayRequest> payRequestListByUser = payDao.findPayRequestListByUser(userByUserId, spaceBySpaceId, isComplete);
 
         // TODO 4. return 타입 구성
         // 3-1. 각 payRequest 에 해당하는 모든 payRequestTarget 을 loop로 돌면서 데이터 수집
@@ -62,7 +62,7 @@ public class PayService {
         return payRequestInfoDtoList;
     }
 
-    public List<PayReceiveInfoDto> getPayReceiveInfoForUser(Long userId, Long spaceId) {
+    public List<PayReceiveInfoDto> getPayReceiveInfoForUser(Long userId, Long spaceId, boolean isComplete) {
         // TODO 1. userId에 해당하는 유저 find
         User userByUserId = userUtils.findUserByUserId(userId);
 
@@ -70,7 +70,7 @@ public class PayService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
         
         // TODO 3. 유저가 요청받은 정산 중 진행 중인 정산 리스트 select
-        List<PayRequestTarget> payRequestTargetListByUser = payDao.findPayRequestTargetListByUser(userByUserId, spaceBySpaceId);
+        List<PayRequestTarget> payRequestTargetListByUser = payDao.findPayRequestTargetListByUser(userByUserId, spaceBySpaceId, isComplete);
 
         // TODO 4. return 타입 구성
         // 3-1. 각 payRequestTarget 에 해당하는 정산 요청자, 정산 요청 금액 을 loop를 돌면서 데이터 수집

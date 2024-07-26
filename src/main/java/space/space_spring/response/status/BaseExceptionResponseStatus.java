@@ -70,7 +70,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     D(7003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     E(7004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     F(7005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
-    G(7006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+    G(7006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
+
+    /**
+     * 8000: Chat 오류
+     */
+    INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST.value(), "채팅방 생성 요청에서 잘못된 값이 존재합니다.");
+
 
     private final int code;
     private final int status;

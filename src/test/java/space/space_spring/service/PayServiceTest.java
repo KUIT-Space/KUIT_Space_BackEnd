@@ -109,7 +109,7 @@ class PayServiceTest {
     }
 
     @Test
-    @DisplayName("Test name")
+    @DisplayName("user2가_testSpace에서_요청받은_정산중_현재진행중인_정산리스트_찾기")
     void user2가_testSpace에서_요청받은_정산중_현재진행중인_정산리스트_찾기() throws Exception {
         //given
         when(userUtils.findUserByUserId(user2.getUserId())).thenReturn(user2);
@@ -127,6 +127,36 @@ class PayServiceTest {
         }
     }
 
+    @Test
+    @DisplayName("user2가_testSpace에서_요청한_정산중_완료된_정산리스트_찾기")
+    void user2가_TestSpace에서_요청한_정산중_완료된_정산리스트_찾기() throws Exception {
+        //given
+        /**
+         * user2 가 testSpace에서 user1에게 정산을 요청 & 이 정산은 완료된 상황을 가정
+         */
+        PayRequest testPayRequest = new PayRequest();
+        testPayRequest.savePayRequest(user2, testSpace, 10000, "우리은행", "111-111-111", true);
+        PayRequestTarget testPayRequestTarget = new PayRequestTarget();
+        testPayRequestTarget.savePayRequestTarget(testPayRequest, user1.getUserId(), 10000, true);
+
+        when(userUtils.findUserByUserId(user2.getUserId())).thenReturn(user2);
+        when(spaceUtils.findSpaceBySpaceId(testSpace.getSpaceId())).thenReturn(testSpace);
+        when(payDao.findPayRequestListByUser(user2, testSpace, true)).thenReturn(List.of(testPayRequest));
+        when(payDao.findPayRequestTargetListByPayRequest(testPayRequest)).thenReturn(List.of(testPayRequestTarget));
+
+        //when
+        List<PayRequestInfoDto> payRequestInfoForUser = payService.getPayRequestInfoForUser(user2.getUserId(), testSpace.getSpaceId(), true);
+
+        //then
+        assertThat(payRequestInfoForUser.size()).isEqualTo(1);
+
+        for (PayRequestInfoDto payRequestInfoDto : payRequestInfoForUser) {
+            assertThat(payRequestInfoDto.getTotalAmount()).isEqualTo(10000);
+            assertThat(payRequestInfoDto.getReceiveAmount()).isEqualTo(10000);
+            assertThat(payRequestInfoDto.getTotalTargetNum()).isEqualTo(1);
+            assertThat(payRequestInfoDto.getReceiveTargetNum()).isEqualTo(1);
+        }
+    }
 
 
 }

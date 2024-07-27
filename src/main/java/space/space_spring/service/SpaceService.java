@@ -30,6 +30,6 @@ public class SpaceService {
         User manager = userDao.findUserByUserId(userId);
         UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace);
 
-        return new PostSpaceCreateResponse(saveSpace.getSpaceId());
+        return new PostSpaceCreateResponse(saveSpace.getSpaceId(), spaceImgUrl);
     }
 }

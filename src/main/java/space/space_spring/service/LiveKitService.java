@@ -8,9 +8,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import retrofit2.Response;
-import space.space_spring.dto.VoiceRoom.LiveKitSession;
-import space.space_spring.dto.VoiceRoom.LiveKitSessionResponse;
-import space.space_spring.dto.VoiceRoom.TokenRequest;
+import space.space_spring.dto.VoiceRoom.*;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -69,16 +67,17 @@ public class LiveKitService {
     //라이브러리에서 host URL로 request를 보내고 response를 받아옵니다.
     //https://docs.livekit.io/realtime/server/managing-rooms/
     //
-    public List<LivekitModels.Room> getRoomList(){
+    public List<RoomDto> getRoomList(){
         String liveKitHost = "https://space-biwhq7u2.livekit.cloud";
         RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost,apiKey,apiSecretKey);
 
         try {
             Response<List<LivekitModels.Room>> response = roomServiceClient.listRooms().execute();
             System.out.print(response.body());
+
             //response.body().get(0).
             //response.body().get(0).toString();
-            return response.body();
+            return RoomDto.convertRoomList(response.body());
         }catch (Exception e){
             System.out.println("There was a problem: " + e.getMessage());
             return null;
@@ -88,16 +87,17 @@ public class LiveKitService {
     //LiveKit room에 참여한 사용자 정보를 가져오는 함수입니다.
     //내부적으로 LiveKit Server에 request를 보내고 response를 받아 정보를 확인합니다.
     //https://docs.livekit.io/realtime/server/managing-participants/
-    public List<LivekitModels.ParticipantInfo> getParticipantInfo(String roomName){
+    public List<ParticipantDto> getParticipantInfo(String roomName){
         String liveKitHost = "https://space-biwhq7u2.livekit.cloud";
         RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost,apiKey,apiSecretKey);
         String identity = roomName;
         try {
             Response<List<LivekitModels.ParticipantInfo>> response = roomServiceClient.listParticipants(roomName).execute();
             System.out.print(response.toString());
-            //response.body().get(0).
+            //response.body().get(0).getTracksList().get(0).getMuted();
+            //response.body().get(0).getTracksList().get(0).;
             //response.body().get(0).toString();
-            return response.body();
+            return ParticipantDto.convertParticipantList(response.body());
         }catch (Exception e){
             System.out.println("There was a problem: " + e.getMessage());
             return null;

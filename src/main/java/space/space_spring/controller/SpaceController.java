@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.dto.space.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.space.PostSpaceCreateRequest;
 import space.space_spring.dto.space.PostSpaceCreateResponse;
 
@@ -47,7 +48,7 @@ public class SpaceController {
     }
 
     /**
-     *  테스트 용
+     * 테스트 용
      */
     @GetMapping("/{spaceId}")
     public BaseResponse<String> getSpaceHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
@@ -57,4 +58,14 @@ public class SpaceController {
 
         return new BaseResponse<>("스페이스에 속한 유저만 걸러내는 작업 테스트 성공");
     }
+
+    /**
+     * 스페이스의 모든 유저 정보 조회
+     */
+    @GetMapping("/{spaceId}/all-member")
+    public BaseResponse<GetUserInfoBySpaceResponse> getAllUserInfoBySpace(@PathVariable Long spaceId) {
+
+        return new BaseResponse<>(spaceService.findUserInfoBySpace(spaceId));
+    }
+
 }

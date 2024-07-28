@@ -13,13 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import space.space_spring.dao.UserDao;
-import space.space_spring.dto.oAuthInfo.KakaoInfo;
+import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.util.user.UserUtils;
-
-import java.util.UUID;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;
 

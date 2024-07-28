@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.dto.oAuthInfo.KakaoInfo;
+import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.OAuthService;

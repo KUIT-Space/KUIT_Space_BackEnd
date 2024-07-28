@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.dto.pay.GetPayViewResponse;
-import space.space_spring.dto.pay.GetRequestPayViewResponse;
-import space.space_spring.dto.pay.PayReceiveInfoDto;
-import space.space_spring.dto.pay.PayRequestInfoDto;
+import space.space_spring.dto.pay.*;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PayService;
@@ -67,5 +64,15 @@ public class PayController {
         List<PayRequestInfoDto> payRequestInfoDtoListComplete = payService.getPayRequestInfoForUser(userId, spaceId, true);
 
         return new BaseResponse<>(new GetRequestPayViewResponse(payRequestInfoDtoListInComplete, payRequestInfoDtoListComplete));
+    }
+
+    /**
+     * 유저가 최근 정산받은 은행 계좌 정보 조회
+     * 해당 api는 유저가 속한 스페이스의 정보가 필요없다고 판단해서 spaceId 를 request로 받지 않음
+     */
+    @GetMapping("/space/pay/recent-bank-info")
+    public BaseResponse<GetRecentPayRequestBankInfoResponse> showRecentBankInfo(@JwtLoginAuth Long userId) {
+
+        return new BaseResponse<>(payService.getRecentPayRequestBankInfoForUser(userId));
     }
 }

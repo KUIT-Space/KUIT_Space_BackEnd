@@ -12,9 +12,11 @@ import space.space_spring.dto.space.PostSpaceCreateResponse;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.SpaceException;
 import space.space_spring.response.BaseResponse;
+import space.space_spring.service.S3Uploader;
 import space.space_spring.service.SpaceService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_SPACE_CREATE;
@@ -28,14 +30,20 @@ public class SpaceController {
 
     private final SpaceService spaceService;
     private final UserSpaceUtils userSpaceUtils;
+    private final S3Uploader s3Uploader;
+    private final String spaceImgDirName = "spaceImg";
 
     @PostMapping("/create")
-    public BaseResponse<PostSpaceCreateResponse> createSpace(@JwtLoginAuth Long userId, @Validated @RequestBody PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) {
+    public BaseResponse<PostSpaceCreateResponse> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             throw new SpaceException(INVALID_SPACE_CREATE, getErrorMessage(bindingResult));
         }
 
-        return new BaseResponse<>(spaceService.createSpace(userId, postSpaceCreateRequest));
+        // TODO 1. 스페이스 썸네일을 s3에 upload
+        String spaceImgUrl = s3Uploader.upload(postSpaceCreateRequest.getSpaceProfileImg(), spaceImgDirName);
+
+        // TODO 2. s3에 저장하고 받은 이미지 url 정보와 spaceName 정보로 space create 작업 수행
+        return new BaseResponse<>(spaceService.createSpace(userId, postSpaceCreateRequest.getSpaceName(), spaceImgUrl));
     }
 
     /**

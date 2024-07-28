@@ -3,8 +3,10 @@ package space.space_spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PayDao;
+import space.space_spring.dto.pay.GetRecentPayRequestBankInfoResponse;
 import space.space_spring.dto.pay.PayReceiveInfoDto;
 import space.space_spring.dto.pay.PayRequestInfoDto;
+import space.space_spring.dto.pay.RecentPayRequestBankInfoDto;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
@@ -86,5 +88,18 @@ public class PayService {
         }
 
         return payReceiveInfoDtoList;
+    }
+
+    public GetRecentPayRequestBankInfoResponse getRecentPayRequestBankInfoForUser(Long userId) {
+        // TODO 1. userId에 해당하는 유저 find
+        User userByUserId = userUtils.findUserByUserId(userId);
+
+        // TODO 2. 유저의 최근 정산받은 은행 계좌 목록 fine
+        List<RecentPayRequestBankInfoDto> recentPayRequestBankInfoByUser = payDao.findRecentPayRequestBankInfoByUser(userByUserId);
+
+        // TODO 3. 2에서 찾은 은행에 맞는 이미지 url find -> ??
+        // 프론트분들과 상의 필요할 듯
+
+        return new GetRecentPayRequestBankInfoResponse(recentPayRequestBankInfoByUser);
     }
 }

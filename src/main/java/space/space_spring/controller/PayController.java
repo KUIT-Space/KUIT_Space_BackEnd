@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.pay.GetPayViewResponse;
+import space.space_spring.dto.pay.GetRequestPayViewResponse;
 import space.space_spring.dto.pay.PayReceiveInfoDto;
 import space.space_spring.dto.pay.PayRequestInfoDto;
 import space.space_spring.entity.UserSpace;
@@ -26,16 +27,21 @@ public class PayController {
     private final PayService payService;
     private final UserSpaceUtils userSpaceUtils;
 
+    /**
+     * 정산 홈 view
+     */
     @GetMapping("/space/{spaceId}/pay")
     public BaseResponse<GetPayViewResponse> showPayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
         // TODO 1. 유저가 스페이스에 속하는 지 검증
         validateIsUserInSpace(userId, spaceId);
 
-        // TODO 2. 유저가 요청한 정산 리스트 get
-        List<PayRequestInfoDto> payRequestInfoDtoList = payService.getPayRequestInfoForUser(userId, spaceId);
+        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get
+        // 현재 진행중인 정산 -> isComplete = false
+        List<PayRequestInfoDto> payRequestInfoDtoList = payService.getPayRequestInfoForUser(userId, spaceId, false);
 
-        // TODO 3. 유저가 요청받은 정산 리스트 get
-        List<PayReceiveInfoDto> payReceiveInfoDtoList = payService.getPayReceiveInfoForUser(userId, spaceId);
+        // TODO 3. 유저가 요청받은 정산 중 현재 진행중인 정산 리스트 get
+        // 현재 진행중인 정산 -> isComplete = false
+        List<PayReceiveInfoDto> payReceiveInfoDtoList = payService.getPayReceiveInfoForUser(userId, spaceId, false);
 
         return new BaseResponse<>(new GetPayViewResponse(payRequestInfoDtoList, payReceiveInfoDtoList));
     }
@@ -46,4 +52,20 @@ public class PayController {
         userSpaceUtils.isUserInSpace(userId, spaceId);
     }
 
+    /**
+     * 내가 요청한 정산 view
+     */
+    @GetMapping("/space/{spaceId}/pay/request")
+    public BaseResponse<GetRequestPayViewResponse> showRequestPayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
+        // TODO 1. 유저가 스페이스에 속하는 지 검증 -> 추후에 인터셉터에서 처리하게끔 리펙토링 필요
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get -> 아직 완료되지 않은 정산 : isComplete = false
+        List<PayRequestInfoDto> payRequestInfoDtoListInComplete = payService.getPayRequestInfoForUser(userId, spaceId, false);
+
+        // TODO 3. 유저가 요청한 정산 중 완료한 정산 리스트 get -> 완료된 정산 : isComplete = true
+        List<PayRequestInfoDto> payRequestInfoDtoListComplete = payService.getPayRequestInfoForUser(userId, spaceId, true);
+
+        return new BaseResponse<>(new GetRequestPayViewResponse(payRequestInfoDtoListInComplete, payRequestInfoDtoListComplete));
+    }
 }

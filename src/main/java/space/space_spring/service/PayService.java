@@ -2,6 +2,7 @@ package space.space_spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.PayDao;
 import space.space_spring.dto.pay.GetRecentPayRequestBankInfoResponse;
 import space.space_spring.dto.pay.PayReceiveInfoDto;
@@ -25,6 +26,7 @@ public class PayService {
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
 
+    @Transactional
     public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId, boolean isComplete) {
         // TODO 1. userId에 해당하는 user find
         User userByUserId = userUtils.findUserByUserId(userId);
@@ -64,6 +66,7 @@ public class PayService {
         return payRequestInfoDtoList;
     }
 
+    @Transactional
     public List<PayReceiveInfoDto> getPayReceiveInfoForUser(Long userId, Long spaceId, boolean isComplete) {
         // TODO 1. userId에 해당하는 유저 find
         User userByUserId = userUtils.findUserByUserId(userId);
@@ -90,6 +93,7 @@ public class PayService {
         return payReceiveInfoDtoList;
     }
 
+    @Transactional
     public GetRecentPayRequestBankInfoResponse getRecentPayRequestBankInfoForUser(Long userId) {
         // TODO 1. userId에 해당하는 유저 find
         User userByUserId = userUtils.findUserByUserId(userId);

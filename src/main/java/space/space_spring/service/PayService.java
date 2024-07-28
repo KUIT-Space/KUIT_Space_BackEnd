@@ -97,9 +97,6 @@ public class PayService {
         // TODO 2. 유저의 최근 정산받은 은행 계좌 목록 fine
         List<RecentPayRequestBankInfoDto> recentPayRequestBankInfoByUser = payDao.findRecentPayRequestBankInfoByUser(userByUserId);
 
-        // TODO 3. 2에서 찾은 은행에 맞는 이미지 url find -> ??
-        // 프론트분들과 상의 필요할 듯
-
         return new GetRecentPayRequestBankInfoResponse(recentPayRequestBankInfoByUser);
     }
 }

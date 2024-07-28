@@ -73,5 +73,4 @@ public class PayDao {
                         (String) result[1]))
                 .collect(Collectors.toList());
     }
-
 }

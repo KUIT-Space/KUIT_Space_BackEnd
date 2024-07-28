@@ -160,15 +160,4 @@ class PayServiceTest {
         }
     }
 
-    @Test
-    @DisplayName("유저가_최근_정산받은_은행_계좌정보_조회_테스트")
-    void 유저가_최근_정산받은_은행_계좌정보_조회_테스트() throws Exception {
-        //given
-
-
-        //when
-
-        //then
-    }
-
 }

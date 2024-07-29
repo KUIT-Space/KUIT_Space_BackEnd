@@ -44,15 +44,11 @@ public class ChatRoomService {
 
         return ReadChatRoomResponse.of(result.stream()
                 .map(cr -> {
-                    Long id = cr.getId();
-                    String name = cr.getName();
-                    String imgUrl = cr.getImg();
                     // TODO: chatting message 처리
-                    // String lastMsg = cr.get
                     String lastMsg = "메시지 관련 처리 예정";
                     String lastTime = "메시지 관련 처리 예정";
                     int unreadMsgCount = 1;
-                    return ChatRoomResponse.of(id, name, imgUrl, lastMsg, lastTime, unreadMsgCount);
+                    return ChatRoomResponse.of(cr, lastMsg, lastTime, unreadMsgCount);
                 })
                 .toList()
         );

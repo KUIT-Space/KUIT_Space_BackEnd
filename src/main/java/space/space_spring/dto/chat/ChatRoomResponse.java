@@ -3,6 +3,7 @@ package space.space_spring.dto.chat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import space.space_spring.entity.ChatRoom;
 
 @Builder
 @Getter
@@ -20,11 +21,11 @@ public class ChatRoomResponse {
 
     private int unreadMsgCount;
 
-    public static ChatRoomResponse of(Long id, String name, String imgUrl, String lastMsg, String lastTime, int unreadMsgCount) {
+    public static ChatRoomResponse of(ChatRoom chatRoom, String lastMsg, String lastTime, int unreadMsgCount) {
         return ChatRoomResponse.builder()
-                .id(id)
-                .name(name)
-                .imgUrl(imgUrl)
+                .id(chatRoom.getId())
+                .name(chatRoom.getName())
+                .imgUrl(chatRoom.getImg())
                 .lastMsg(lastMsg)
                 .lastTime(lastTime)
                 .unreadMsgCount(unreadMsgCount)

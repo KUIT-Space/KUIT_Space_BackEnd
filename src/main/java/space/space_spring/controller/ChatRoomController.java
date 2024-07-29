@@ -18,16 +18,16 @@ import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorM
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/chatroom")
+@RequestMapping("/space/{spaceId}/chat")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
-    @GetMapping("/space/{spaceId}/chat/chatroom")
+    @GetMapping("/chatroom")
     public BaseResponse<ReadChatRoomResponse> readChatRooms(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
         return new BaseResponse<>(chatRoomService.readChatRooms(userId, spaceId));
     }
 
-    @PostMapping("/space/{spaceId}/chat/chatroom")
+    @PostMapping("/chatroom")
     public BaseResponse<CreateChatRoomResponse> createChatRoom(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,

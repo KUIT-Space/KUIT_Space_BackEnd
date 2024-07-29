@@ -6,16 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.user.*;
+import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.exception.UserException;
-import space.space_spring.response.BaseResponse;
 import space.space_spring.util.user.UserUtils;
 
-import java.util.List;
-import java.util.Map;
-
+import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
@@ -31,22 +29,22 @@ public class UserService {
     @Transactional
     public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
         // TODO 1. 이메일 중복 검사(아이디 중복 검사)
-        validateEmail(postUserSignupRequest.getEmail());
+        validateEmailForLocalSignup(postUserSignupRequest.getEmail());
 
         // password 암호화도??
 
-
         // TODO 2. 회원정보 db insert
-        User saveUser = userDao.saveUser(postUserSignupRequest);
+        String email = postUserSignupRequest.getEmail();
+        String password = postUserSignupRequest.getPassword();
+        String userName = postUserSignupRequest.getUserName();
 
-        // TODO 3. JWT 토큰 초기화 (회원가입시에는 토큰 발급 X)
-        String jwt = null;
+        User saveUser = userDao.saveUser(email, password, userName, LOCAL);
 
-        return new PostUserSignupResponse(saveUser.getUserId(), jwt);
+        return new PostUserSignupResponse(saveUser.getUserId());
     }
 
-    private void validateEmail(String email) {
-        if (userDao.hasDuplicateEmail(email)) {
+    private void validateEmailForLocalSignup(String email) {
+        if (userDao.hasDuplicateEmail(email, UserSignupType.LOCAL)) {
             throw new UserException(DUPLICATE_EMAIL);
         }
     }
@@ -62,9 +60,7 @@ public class UserService {
 
         // TODO 3. JWT 발급
         String jwtLogin = jwtLoginProvider.generateToken(userByEmail);
-
-        // TODO 4. JWT db에 insert -> db에 저장해야할까??
-        userByEmail.saveJWTtoLoginUser(jwtLogin);
+        log.info("jwtLogin: {}", jwtLogin);
 
         return jwtLogin;
     }

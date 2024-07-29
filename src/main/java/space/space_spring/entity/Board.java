@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
-@Table(name = "Posts")
+@Table(name = "Boards")
 @Getter
-public class Post extends BaseEntity {
+public class Board extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "post_id")
     private Long postId;

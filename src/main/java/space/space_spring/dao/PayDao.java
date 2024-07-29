@@ -6,12 +6,14 @@ import jakarta.persistence.TypedQuery;
 import org.hibernate.validator.internal.constraintvalidators.bv.AssertFalseValidator;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.dto.pay.PayRequestTargetInfoDto;
 import space.space_spring.dto.pay.RecentPayRequestBankInfoDto;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,5 +74,30 @@ public class PayDao {
                         (String) result[0],
                         (String) result[1]))
                 .collect(Collectors.toList());
+    }
+
+    public PayRequest createPayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, boolean isComplete) {
+        PayRequest payRequest = new PayRequest();
+        payRequest.savePayRequest(payCreateUser, space, totalAmount, bankName, bankAccountNum, isComplete);
+
+        em.persist(payRequest);
+        return payRequest;
+    }
+
+    public List<PayRequestTarget> createPayRequestTarget(PayRequest payRequest, List<PayRequestTargetInfoDto> payRequestTargetInfoDtoList, boolean isComplete) {
+        // PayRequest 에 해당하는 모든 PayRequestTarget 을 save
+        List<PayRequestTarget> payRequestTargetList = new ArrayList<>();
+
+        for (PayRequestTargetInfoDto payRequestTargetInfoDto : payRequestTargetInfoDtoList) {
+            PayRequestTarget payRequestTarget = new PayRequestTarget();
+            Long targetUserId = payRequestTargetInfoDto.getTargetUserId();
+            int requestAmount = payRequestTargetInfoDto.getRequestAmount();
+            payRequestTarget.savePayRequestTarget(payRequest, targetUserId, requestAmount, isComplete);
+
+            em.persist(payRequestTarget);
+            payRequestTargetList.add(payRequestTarget);
+        }
+
+        return payRequestTargetList;
     }
 }

@@ -3,6 +3,7 @@ package space.space_spring.entity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
+import space.space_spring.entity.enumStatus.UserSignupType;
 
 @Entity
 @Table(name = "Users")
@@ -22,19 +23,15 @@ public class User extends BaseEntity {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "jwt")
-    @Nullable
-    private String jwt;
+    @Column(name = "signup_type")
+    private String signupType;              // 유저가 회원가입을 진행한 방식 (local, kakao, naver, google 등등)
 
-    public void saveUser(String email, String password, String userName) {
+    public void saveUser(String email, String password, String userName, UserSignupType signupType) {
         this.email = email;
         this.password = password;
         this.userName = userName;
+        this.signupType = signupType.getSignupType();
         initializeBaseEntityFields();
-    }
-
-    public void saveJWTtoLoginUser(String jwt) {
-        this.jwt = jwt;
     }
 
     public boolean passwordMatch(String password) {

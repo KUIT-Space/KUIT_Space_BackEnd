@@ -16,9 +16,9 @@ public class SpaceDao {
     @PersistenceContext
     private EntityManager em;
 
-    public Space saveSpace(PostSpaceCreateRequest postSpaceCreateRequest) {
+    public Space saveSpace(String spaceName, String spaceImgUrl) {
         Space space = new Space();
-        space.saveSpace(postSpaceCreateRequest.getSpaceName(), postSpaceCreateRequest.getSpaceProfileImg());
+        space.saveSpace(spaceName, spaceImgUrl);
 
         em.persist(space);
         return space;

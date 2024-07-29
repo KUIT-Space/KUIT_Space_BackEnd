@@ -21,15 +21,15 @@ public class SpaceService {
     private final UserSpaceDao userSpaceDao;
 
     @Transactional
-    public PostSpaceCreateResponse createSpace(Long userId, PostSpaceCreateRequest postSpaceCreateRequest) {
+    public PostSpaceCreateResponse createSpace(Long userId, String spaceName, String spaceImgUrl) {
 
         // TODO 1. 스페이스 생성 정보 db insert
-        Space saveSpace = spaceDao.saveSpace(postSpaceCreateRequest);
+        Space saveSpace = spaceDao.saveSpace(spaceName, spaceImgUrl);
 
         // TODO 2. 유저_스페이스 매핑 정보 db insert
         User manager = userDao.findUserByUserId(userId);
         UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace);
 
-        return new PostSpaceCreateResponse(saveSpace.getSpaceId());
+        return new PostSpaceCreateResponse(saveSpace.getSpaceId(), spaceImgUrl);
     }
 }

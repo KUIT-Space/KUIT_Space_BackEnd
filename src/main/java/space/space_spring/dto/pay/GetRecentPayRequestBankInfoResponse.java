@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 public class GetRecentPayRequestBankInfoResponse {
 
-    private List<RecentPayRequestBankInfoDto> recentPayRequestBankInfoDtos = new ArrayList<>();
+    private List<RecentPayRequestBankInfoDto> recentPayRequestBankInfoDtoList = new ArrayList<>();
 
 }

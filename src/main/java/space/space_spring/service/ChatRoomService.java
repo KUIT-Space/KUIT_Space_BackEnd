@@ -38,10 +38,8 @@ public class ChatRoomService {
         // TODO 2: spaceId에 해당하는 space find
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 select
+        // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 return
         List<ChatRoom> result = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
-        log.info(result.toString());
-
         return ReadChatRoomResponse.of(result.stream()
                 .map(cr -> {
                     // TODO: chatting message 처리
@@ -55,7 +53,7 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public CreateChatRoomResponse createChatRoom(Long userId, Long spaceId, CreateChatRoomRequest createChatRoomRequest) {
+    public CreateChatRoomResponse createChatRoom(Long userId, Long spaceId, CreateChatRoomRequest createChatRoomRequest, String chatRoomImgUrl) {
         // TODO 1: userId에 해당하는 user find
         User userByUserId = userUtils.findUserByUserId(userId);
 
@@ -63,13 +61,11 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: chatRoom 생성 및 저장
-        ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest));
-        log.info(chatRoom.toString());
+        ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest, chatRoomImgUrl));
 
         // TODO 4: user_chatRoom 매핑 정보 저장
         // TODO: 메시지 관련 처리 예정
         UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, null));
-        log.info(userChatRoom.toString());
 
         // TODO 5: chatroom id 반환
         return CreateChatRoomResponse.of(chatRoom.getId());

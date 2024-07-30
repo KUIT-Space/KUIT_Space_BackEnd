@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import space.space_spring.dao.PayDao;
 import space.space_spring.dto.pay.PayReceiveInfoDto;
 import space.space_spring.dto.pay.PayRequestInfoDto;
+import space.space_spring.dto.pay.PostPayCreateRequest;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
@@ -18,7 +19,10 @@ import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -43,6 +47,9 @@ class PayServiceTest {
     private User user2;
     private User user3;
     private User user4;
+    private User user5;
+    private User user6;
+    private User user7;
     private Space testSpace;
     private PayRequest testPayRequest_user1;
     private PayRequest testPayRequest_user2;
@@ -89,6 +96,16 @@ class PayServiceTest {
 
         testPayRequestTarget_user1 = new PayRequestTarget();
         testPayRequestTarget_user1.savePayRequestTarget(testPayRequest_user2, user1.getUserId(), 10000, true);
+
+        /**
+         * 추가로 user5,6,7 생성
+         */
+        User user5 = new User();
+        User user6 = new User();
+        User user7 = new User();
+        user5.saveUser("test5@test.com", "abcDEF123!@", "user5", UserSignupType.LOCAL);
+        user6.saveUser("test6@test.com", "abcDEF123!@", "user6", UserSignupType.LOCAL);
+        user7.saveUser("test7@test.com", "abcDEF123!@", "user7", UserSignupType.LOCAL);
 
     }
 
@@ -159,5 +176,38 @@ class PayServiceTest {
             assertThat(payRequestInfoDto.getReceiveTargetNum()).isEqualTo(1);
         }
     }
+
+//    @Test
+//    @DisplayName("정산_생성_테스트")
+//    void 정산_생성_테스트() throws Exception {
+//        //given
+//        // user5가 user6, 7 에게 정산 생성
+//        Map<Long, Integer> testTargetInfo1 = new HashMap<>();
+//        testTargetInfo1.put(user6.getUserId(), 10000);
+//        Map<Long, Integer> testTargetInfo2 = new HashMap<>();
+//        testTargetInfo2.put(user7.getUserId(), 10000);
+//
+//        List<Map<Long, Integer>> testTargetInfoList = new ArrayList<>();
+//        testTargetInfoList.add(testTargetInfo1);
+//        testTargetInfoList.add(testTargetInfo2);
+//
+//        PostPayCreateRequest testDto = new PostPayCreateRequest(
+//                20000,
+//                "우리은행",
+//                "111-111-111",
+//                testTargetInfoList
+//        );
+//
+//        PayRequest testPayRequest = new PayRequest();
+//        testPayRequest.savePayRequest(user5, testSpace, testDto.getTotalAmount(), testDto.getBankName(), testDto.getBankAccountNum(), false);
+//
+//        when(userUtils.findUserByUserId(user5.getUserId())).thenReturn(user5);
+//        when(spaceUtils.findSpaceBySpaceId(testSpace.getSpaceId())).thenReturn(testSpace);
+//        when(payDao.createPayRequest(user5, testSpace, testDto.getTotalAmount(), testDto.getBankName(), testDto.getBankAccountNum(), false)).thenReturn(testPayRequest);
+//
+//        //when
+//
+//        //then
+//    }
 
 }

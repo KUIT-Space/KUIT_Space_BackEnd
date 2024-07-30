@@ -80,6 +80,10 @@ public class PayController {
     @PostMapping("/space/{spaceId}/pay")
     public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestBody PostPayCreateRequest postPayCreateRequest) {
 
+        // TODO 1. PostPayCreateRequest의 targetInfoList 유저들이 모두 해당 스페이스에 속하는지 검증
+        // 코드 추가,,,
+
+        // TODO 2, 정산 생성
         payService.createPay(userId, spaceId, postPayCreateRequest);
 
         return new BaseResponse<>("정산 생성 성공");

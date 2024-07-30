@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,5 +26,13 @@ public class PostPayCreateRequest {
      * PayRequestTarget 엔티티 생성 시 필요한 정보
      * <targetUserId requestAmount> 쌍
      */
-    private List<Map<Long, Integer>> targetInfoList;
+    private List<TargetInfo> targetInfoList = new ArrayList<>();
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TargetInfo {
+        private Long targetUserId;
+        private int requestAmount;
+    }
 }

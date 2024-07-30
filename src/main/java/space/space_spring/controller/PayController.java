@@ -2,10 +2,7 @@ package space.space_spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.pay.*;
 import space.space_spring.entity.UserSpace;
@@ -74,5 +71,17 @@ public class PayController {
     public BaseResponse<GetRecentPayRequestBankInfoResponse> showRecentBankInfo(@JwtLoginAuth Long userId) {
 
         return new BaseResponse<>(payService.getRecentPayRequestBankInfoForUser(userId));
+    }
+
+    /**
+     * 정산 생성
+     * response 추가 협의 필요 -> 굳이 PayRequestId를 response 안해도 될꺼같음
+     */
+    @PostMapping("/space/{spaceId}/pay")
+    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestBody PostPayCreateRequest postPayCreateRequest) {
+
+        payService.createPay(userId, spaceId, postPayCreateRequest);
+
+        return new BaseResponse<>("정산 생성 성공");
     }
 }

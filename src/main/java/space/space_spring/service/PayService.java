@@ -114,7 +114,7 @@ public class PayService {
         boolean isComplete = false;
         PayRequest payRequest = payDao.createPayRequest(payCreateUser, spaceBySpaceId, postPayCreateRequest.getTotalAmount(), postPayCreateRequest.getBankName(), postPayCreateRequest.getBankAccountNum(), isComplete);
 
-        // TODO 4. PayRequestTarget 엔티티 생성
+        // TODO 4. PayRequestTarget 엔티티 생성 -> 이 부분 코드 추후 리펙토링 필요 ??
         for (Map<Long, Integer> targetInfo : postPayCreateRequest.getTargetInfoList()) {
             for (Map.Entry<Long, Integer> entry : targetInfo.entrySet()) {
                 Long targetUserId = entry.getKey();
@@ -123,5 +123,6 @@ public class PayService {
             }
         }
     }
+
 
 }

@@ -9,7 +9,6 @@ import space.space_spring.entity.User;
 import java.util.List;
 
 import static space.space_spring.entity.QChatRoom.chatRoom;
-import static space.space_spring.entity.QUser.user;
 import static space.space_spring.entity.QUserChatRoom.userChatRoom;
 
 @RequiredArgsConstructor
@@ -21,8 +20,8 @@ public class ChatRoomDaoImpl implements ChatRoomDaoCustom {
     public List<ChatRoom> findByUserAndSpace(User who, Space where) {
         return jpaQueryFactory
                 .selectFrom(chatRoom)
-                .join(chatRoom, userChatRoom.chatRoom)
-                .where(user.eq(who)
+                .join(userChatRoom).on(userChatRoom.chatRoom.eq(chatRoom))
+                .where(userChatRoom.user.eq(who)
                         .and(chatRoom.space.eq(where)))
                 .orderBy(chatRoom.lastModifiedAt.desc())
                 .fetch();

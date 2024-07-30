@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.PayDao;
-import space.space_spring.dto.pay.GetRecentPayRequestBankInfoResponse;
-import space.space_spring.dto.pay.PayReceiveInfoDto;
-import space.space_spring.dto.pay.PayRequestInfoDto;
-import space.space_spring.dto.pay.RecentPayRequestBankInfoDto;
+import space.space_spring.dto.pay.*;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
@@ -17,6 +14,7 @@ import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -102,6 +100,28 @@ public class PayService {
         List<RecentPayRequestBankInfoDto> recentPayRequestBankInfoByUser = payDao.findRecentPayRequestBankInfoByUser(userByUserId);
 
         return new GetRecentPayRequestBankInfoResponse(recentPayRequestBankInfoByUser);
+    }
+
+    @Transactional
+    public void createPay(Long userId, Long spaceId, PostPayCreateRequest postPayCreateRequest) {
+        // TODO 1. userId로 User find (user : 정산 생성한 유저)
+        User payCreateUser = userUtils.findUserByUserId(userId);
+
+        // TODO 2. spaceId로 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 3. PayRequest 엔티티 생성
+        boolean isComplete = false;
+        PayRequest payRequest = payDao.createPayRequest(payCreateUser, spaceBySpaceId, postPayCreateRequest.getTotalAmount(), postPayCreateRequest.getBankName(), postPayCreateRequest.getBankAccountNum(), isComplete);
+
+        // TODO 4. PayRequestTarget 엔티티 생성
+        for (Map<Long, Integer> targetInfo : postPayCreateRequest.getTargetInfoList()) {
+            for (Map.Entry<Long, Integer> entry : targetInfo.entrySet()) {
+                Long targetUserId = entry.getKey();
+                int requestAmount = entry.getValue();
+                payDao.createPayRequestTarget(payRequest, targetUserId, requestAmount, isComplete);
+            }
+        }
     }
 
 }

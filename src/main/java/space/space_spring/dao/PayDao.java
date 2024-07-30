@@ -3,10 +3,7 @@ package space.space_spring.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.hibernate.validator.internal.constraintvalidators.bv.AssertFalseValidator;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.dto.pay.PayRequestTargetInfoDto;
 import space.space_spring.dto.pay.RecentPayRequestBankInfoDto;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
@@ -84,20 +81,11 @@ public class PayDao {
         return payRequest;
     }
 
-    public List<PayRequestTarget> createPayRequestTarget(PayRequest payRequest, List<PayRequestTargetInfoDto> payRequestTargetInfoDtoList, boolean isComplete) {
-        // PayRequest 에 해당하는 모든 PayRequestTarget 을 save
-        List<PayRequestTarget> payRequestTargetList = new ArrayList<>();
+    public PayRequestTarget createPayRequestTarget(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {
+        PayRequestTarget payRequestTarget = new PayRequestTarget();
+        payRequestTarget.savePayRequestTarget(payRequest, targetUserId, requestAmount, isComplete);
 
-        for (PayRequestTargetInfoDto payRequestTargetInfoDto : payRequestTargetInfoDtoList) {
-            PayRequestTarget payRequestTarget = new PayRequestTarget();
-            Long targetUserId = payRequestTargetInfoDto.getTargetUserId();
-            int requestAmount = payRequestTargetInfoDto.getRequestAmount();
-            payRequestTarget.savePayRequestTarget(payRequest, targetUserId, requestAmount, isComplete);
-
-            em.persist(payRequestTarget);
-            payRequestTargetList.add(payRequestTarget);
-        }
-
-        return payRequestTargetList;
+        em.persist(payRequestTarget);
+        return payRequestTarget;
     }
 }

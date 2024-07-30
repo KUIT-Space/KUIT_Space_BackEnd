@@ -44,11 +44,11 @@ public class ChatRoom extends BaseEntity{
     @Column(name = "last_msg_id")
     private int lastMsgId;
 
-    public static ChatRoom of(Space space, CreateChatRoomRequest createChatRoomRequest) {
+    public static ChatRoom of(Space space, CreateChatRoomRequest createChatRoomRequest, String chatRoomImgUrl) {
         return ChatRoom.builder()
                 .space(space)
                 .name(createChatRoomRequest.getName())
-                .img(createChatRoomRequest.getImg())
+                .img(chatRoomImgUrl)
                 // TODO: 메시지 관련 처리 예정
                 .lastMsgId(0)
                 .build();

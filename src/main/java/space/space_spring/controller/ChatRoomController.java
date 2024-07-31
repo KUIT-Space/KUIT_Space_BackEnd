@@ -41,7 +41,7 @@ public class ChatRoomController {
             BindingResult bindingResult) throws IOException {
 
         if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new ChatException(UNAUTHORIZED_USER, getErrorMessage(bindingResult));
+            throw new ChatException(UNAUTHORIZED_USER);
         }
 
         if (bindingResult.hasErrors()) {

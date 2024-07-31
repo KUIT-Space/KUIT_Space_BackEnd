@@ -13,9 +13,9 @@ public class ReadBoardResponse {
 
     private Long postId;
 
-    private User user;
+    private Long userId;
 
-    private Space space;
+    private Long spaceId;
 
     private String title;
 

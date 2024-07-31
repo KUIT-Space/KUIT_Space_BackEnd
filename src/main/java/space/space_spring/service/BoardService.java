@@ -18,19 +18,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
     private final BoardDao boardDao;
 
-    public List<ReadBoardResponse> getAllPosts(Long userId, Long spaceId) {
-        // TODO 1: userId에 해당하는 user find
-        User userByUserId = userUtils.findUserByUserId(userId);
+    public List<ReadBoardResponse> getAllPosts(Long spaceId) {
 
-        // TODO 2: spaceId에 해당하는 space find
+        // TODO 1: spaceId에 해당하는 space find
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 3: 해당 user의 해당 space 내의 게시판 게시글 리스트 return
-        List<Board> posts = boardDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
+        // TODO 2: 해당 user의 해당 space 내의 게시판 게시글 리스트 return
+        List<Board> posts = boardDao.findBySpace(spaceBySpaceId);
         return posts.stream()
                 .map(this::convertToReadResponse)
                 .collect(Collectors.toList());
@@ -39,7 +36,6 @@ public class BoardService {
     public ReadBoardResponse convertToReadResponse(Board board) {
         return ReadBoardResponse.builder()
                 .postId(board.getPostId())
-                .userId(board.getUser().getUserId())
                 .spaceId(board.getSpace().getSpaceId())
                 .title(board.getTitle())
                 .content(board.getContent())

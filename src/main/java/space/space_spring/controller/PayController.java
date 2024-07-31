@@ -80,10 +80,21 @@ public class PayController {
     @PostMapping("/space/{spaceId}/pay")
     public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestBody PostPayCreateRequest postPayCreateRequest) {
 
-        // TODO 1. PostPayCreateRequest의 targetInfoList 유저들이 모두 해당 스페이스에 속하는지 검증
-        // 코드 추가,,,
+        // TODO 1. 유저가 스페이스에 속하는 지 검증
+        validateIsUserInSpace(userId, spaceId);
 
-        // TODO 2, 정산 생성
+        // TODO 2. PostPayCreateRequest의 targetInfoList 유저들이 모두 해당 스페이스에 속하는지 검증
+        // 현재 검증 시 에러가 발생하면 그냥 "스페이스에 속하는 유저가 아닙니다" 라는 에러메시지만 나오고,
+        // 어떤 유저가 스페이스에 속하지 않는지에 대한 정보가 없음
+        // => 추후 에러메시지의 수정이 필요할듯??
+        for (PostPayCreateRequest.TargetInfo targetInfo : postPayCreateRequest.getTargetInfoList()) {
+            validateIsUserInSpace(targetInfo.getTargetUserId(), spaceId);
+        }
+
+        // TODO 3. PostPayCreateRequest의 bankName, bankAccountNum 검증
+        // 이거 해야할까?? 프론트단 분들과 논의 필요
+
+        // TODO 4. 정산 생성
         payService.createPay(userId, spaceId, postPayCreateRequest);
 
         return new BaseResponse<>("정산 생성 성공");

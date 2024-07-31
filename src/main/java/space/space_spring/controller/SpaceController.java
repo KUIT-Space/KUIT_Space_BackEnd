@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.space.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.space.PostSpaceCreateRequest;
@@ -43,19 +44,25 @@ public class SpaceController {
         }
 
         // TODO 1. 스페이스 썸네일을 s3에 upload
-        String spaceImgUrl;
-        if (postSpaceCreateRequest.getSpaceProfileImg() == null) {
-            spaceImgUrl = null;
-        } else {
-            if (s3Uploader.isFileImage(postSpaceCreateRequest.getSpaceProfileImg())) {
-                spaceImgUrl = s3Uploader.upload(postSpaceCreateRequest.getSpaceProfileImg(), spaceImgDirName);
-            } else {
-                throw new MultipartFileException(IS_NOT_IMAGE_FILE);
-            }
-        }
+        String spaceImgUrl = processSpaceImage(postSpaceCreateRequest.getSpaceProfileImg());
 
         // TODO 2. s3에 저장하고 받은 이미지 url 정보와 spaceName 정보로 space create 작업 수행
         return new BaseResponse<>(spaceService.createSpace(userId, postSpaceCreateRequest.getSpaceName(), spaceImgUrl));
+    }
+
+    private String processSpaceImage(MultipartFile spaceProfileImg) throws IOException {
+        if (spaceProfileImg == null) {
+            return null;
+        }
+        validateImageFile(spaceProfileImg);
+        return s3Uploader.upload(spaceProfileImg, spaceImgDirName);
+
+    }
+
+    private void validateImageFile(MultipartFile spaceProfileImg) {
+        if (!s3Uploader.isFileImage(spaceProfileImg)) {
+            throw new MultipartFileException(IS_NOT_IMAGE_FILE);
+        }
     }
 
     /**

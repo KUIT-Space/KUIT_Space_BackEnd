@@ -27,7 +27,7 @@ public class S3Uploader {
     private String bucket;
 
     //MultipartFile을 전달 받아 File로 전환 후 S3 업로드
-    public  String upload(MultipartFile multipartFile, String dirName) throws IOException{// dirName의 디렉토리가 S3 Bucket 내부에 생성됨
+    public String upload(MultipartFile multipartFile, String dirName) throws IOException{// dirName의 디렉토리가 S3 Bucket 내부에 생성됨
 
         File uploadFile = convert(multipartFile).orElseThrow(()-> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
         //System.out.p
@@ -66,9 +66,12 @@ public class S3Uploader {
         return Optional.empty();
     }
 
+    // MultipartFile이 지원하는 이미지 파일 형식인지 검증
     public boolean isFileImage(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        String extension = fileName.substring(fileName.lastIndexOf("."));
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        log.info("extension : {}", extension);
 
         return AllowedImageFileExtensions.contains(extension);
     }

@@ -12,10 +12,12 @@ import space.space_spring.exception.ChatException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.ChatRoomService;
 import space.space_spring.service.S3Uploader;
+import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_CHATROOM_CREATE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.UNAUTHORIZED_USER;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
@@ -24,6 +26,7 @@ import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorM
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final S3Uploader s3Uploader;
+    private final UserSpaceUtils userSpaceUtils;
 
     @GetMapping("/chatroom")
     public BaseResponse<ReadChatRoomResponse> readChatRooms(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
@@ -36,6 +39,10 @@ public class ChatRoomController {
             @PathVariable Long spaceId,
             @Validated @ModelAttribute CreateChatRoomRequest createChatRoomRequest,
             BindingResult bindingResult) throws IOException {
+
+        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
+            throw new ChatException(UNAUTHORIZED_USER, getErrorMessage(bindingResult));
+        }
 
         if (bindingResult.hasErrors()) {
             throw new ChatException(INVALID_CHATROOM_CREATE, getErrorMessage(bindingResult));

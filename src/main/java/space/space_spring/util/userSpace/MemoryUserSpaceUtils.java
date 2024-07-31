@@ -9,6 +9,7 @@ import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.entity.enumStatus.UserSpaceAuth;
 import space.space_spring.exception.UserSpaceException;
 
 import java.util.Optional;
@@ -31,5 +32,17 @@ public class MemoryUserSpaceUtils implements UserSpaceUtils {
 
         return Optional.ofNullable(userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId)
                 .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE)));
+    }
+
+    @Override
+    public boolean isUserManager(Long userId, Long spaceId) {
+        User userByUserId = userDao.findUserByUserId(userId);
+        Space spaceBySpaceId = spaceDao.findSpaceBySpaceId(spaceId);
+
+        // userId와 spaceId를 통해 UserSpace에서 권한 확인
+        Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
+
+        String userSpaceAuth = userSpace.get().getUserSpaceAuth();
+        return userSpaceAuth.equals(UserSpaceAuth.MANAGER.getAuth());
     }
 }

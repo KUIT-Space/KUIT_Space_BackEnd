@@ -7,14 +7,11 @@ import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.space.GetUserInfoBySpaceResponse;
-import space.space_spring.dto.space.PostSpaceCreateResponse;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
-import space.space_spring.dto.space.PostSpaceCreateRequest;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.util.space.SpaceUtils;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class SpaceService {
     private final SpaceUtils spaceUtils;
 
     @Transactional
-    public PostSpaceCreateResponse createSpace(Long userId, String spaceName, String spaceImgUrl) {
+    public Long createSpace(Long userId, String spaceName, String spaceImgUrl) {
 
         // TODO 1. 스페이스 생성 정보 db insert
         Space saveSpace = spaceDao.saveSpace(spaceName, spaceImgUrl);
@@ -35,7 +32,7 @@ public class SpaceService {
         User manager = userDao.findUserByUserId(userId);
         UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace);
 
-        return new PostSpaceCreateResponse(saveSpace.getSpaceId(), spaceImgUrl);
+        return saveSpace.getSpaceId();
     }
 
     @Transactional

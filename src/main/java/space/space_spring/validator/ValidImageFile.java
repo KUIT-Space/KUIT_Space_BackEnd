@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidFileValidator.class)
-public @interface ValidFile {
+@Constraint(validatedBy = ValidImageFileValidator.class)
+public @interface ValidImageFile {
     String message() default "유효하지 않은 파일입니다.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

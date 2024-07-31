@@ -2,7 +2,6 @@ package space.space_spring.controller;
 
 import io.livekit.server.AccessToken;
 import jakarta.annotation.Nullable;
-import livekit.LivekitModels;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import space.space_spring.dto.VoiceRoom.LiveKitSession;
 import space.space_spring.dto.VoiceRoom.ParticipantDto;
 import space.space_spring.dto.VoiceRoom.RoomDto;
-import space.space_spring.dto.VoiceRoom.TokenRequest;
+import space.space_spring.dto.VoiceRoom.GetTokenRequest;
 import space.space_spring.service.LiveKitService;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class LiveKitController {
     private final LiveKitService liveKitService;
 
     @GetMapping("/token")
-    public ResponseEntity<String> showUserForm(@RequestBody @Nullable TokenRequest tokenRequest){
+    public ResponseEntity<String> showUserForm(@RequestBody @Nullable GetTokenRequest getTokenRequest){
         AccessToken token = new AccessToken("APIS272JhrVicJF", "b8q8i1TDsPi5jTd6gq0kDMJF58Bc0wtgg4DJfEwfCf9B");
 
         // Fill in token information.
@@ -38,7 +37,7 @@ public class LiveKitController {
         //liveKitService.getRoomToken(TokenRequest);
         // Sign and create token string.
         System.out.println("New access token: " + token.toJwt());
-        return ResponseEntity.ok(liveKitService.getRoomToken(tokenRequest).toJwt());
+        return ResponseEntity.ok(liveKitService.getRoomToken(getTokenRequest).toJwt());
     }
 
     @GetMapping("/sessions")
@@ -53,7 +52,7 @@ public class LiveKitController {
 
     @GetMapping("/roomList")
     public ResponseEntity<String> getLiveKitRoomList(){
-        List<RoomDto> roomList = liveKitService.getRoomList();
+        List<RoomDto> roomList = liveKitService.getRoomDtoList();
         if (roomList != null) {
             return ResponseEntity.ok(roomList.toString());
         } else {

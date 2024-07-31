@@ -31,11 +31,14 @@ public class UserController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public BaseResponse<PostUserSignupResponse> signup(@Validated @RequestBody PostUserSignupRequest postUserSignupRequest, BindingResult bindingResult) {
+    public BaseResponse<String> signup(@Validated @RequestBody PostUserSignupRequest postUserSignupRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_SIGNUP, getErrorMessage(bindingResult));
         }
-        return new BaseResponse<>(userService.signup(postUserSignupRequest));
+
+        Long signup = userService.signup(postUserSignupRequest);
+
+        return new BaseResponse<>("로컬 회원가입 성공");
     }
 
     /**

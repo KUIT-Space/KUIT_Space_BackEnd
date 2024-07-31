@@ -49,6 +49,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
     INVALID_USER_LOGIN(4007, HttpStatus.BAD_REQUEST.value(), "로그인 요청에서 잘못된 값이 존재합니다."),
 
+
     /**
      * 6000: Space 오류
      */
@@ -65,7 +66,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 7000: UserSpace 오류
      */
     USER_IS_NOT_IN_SPACE(7000, HttpStatus.BAD_REQUEST.value(), "해당 스페이스에 속하지 않는 유저입니다."),
-    B(7001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
+    UNAUTHORIZED_USER(7001, HttpStatus.UNAUTHORIZED.value(), "해당 스페이스에 관리자 권한이 없는 유저입니다."),
     C(7002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
     D(7003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     E(7004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),

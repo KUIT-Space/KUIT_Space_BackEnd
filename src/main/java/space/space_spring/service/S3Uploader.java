@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import space.space_spring.validator.AllowedImageFileExtensions;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,5 +64,12 @@ public class S3Uploader {
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+
+    public boolean isFileImage(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+
+        return AllowedImageFileExtensions.contains(extension);
     }
 }

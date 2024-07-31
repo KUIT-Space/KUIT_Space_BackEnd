@@ -23,4 +23,13 @@ public enum AllowedImageFileExtensions {
     AllowedImageFileExtensions(String extension) {
         this.extension = extension;
     }
+
+    public static boolean contains(String extension) {
+        for (AllowedImageFileExtensions allowedImageFileExtensions : AllowedImageFileExtensions.values()) {
+            if (allowedImageFileExtensions.getExtension().equals(extension)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

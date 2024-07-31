@@ -42,7 +42,10 @@ public class MemoryUserSpaceUtils implements UserSpaceUtils {
         // userId와 spaceId를 통해 UserSpace에서 권한 확인
         Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
 
-        String userSpaceAuth = userSpace.get().getUserSpaceAuth();
-        return userSpaceAuth.equals(UserSpaceAuth.MANAGER.getAuth());
+        if (userSpace.isPresent()) {
+            String userSpaceAuth = userSpace.get().getUserSpaceAuth();
+            return userSpaceAuth.equals(UserSpaceAuth.MANAGER.getAuth());
+        }
+        return false;
     }
 }

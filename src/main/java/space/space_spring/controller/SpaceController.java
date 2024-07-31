@@ -34,7 +34,7 @@ public class SpaceController {
     private final S3Uploader s3Uploader;
     private final String spaceImgDirName = "spaceImg";
 
-    @PostMapping("/create")
+    @PostMapping("")
     public BaseResponse<PostSpaceCreateResponse> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             throw new SpaceException(INVALID_SPACE_CREATE, getErrorMessage(bindingResult));
@@ -45,18 +45,6 @@ public class SpaceController {
 
         // TODO 2. s3에 저장하고 받은 이미지 url 정보와 spaceName 정보로 space create 작업 수행
         return new BaseResponse<>(spaceService.createSpace(userId, postSpaceCreateRequest.getSpaceName(), spaceImgUrl));
-    }
-
-    /**
-     * 테스트 용
-     */
-    @GetMapping("/{spaceId}")
-    public BaseResponse<String> getSpaceHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
-        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
-        log.info("userInSpace.get().getUserName() = {}", userInSpace.get().getUserName());
-        log.info("userInspace.get().getUserSpaceAuth() = {}", userInSpace.get().getUserSpaceAuth());
-
-        return new BaseResponse<>("스페이스에 속한 유저만 걸러내는 작업 테스트 성공");
     }
 
     /**

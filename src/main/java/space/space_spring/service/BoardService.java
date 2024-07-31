@@ -39,8 +39,8 @@ public class BoardService {
     public ReadBoardResponse convertToReadResponse(Board board) {
         return ReadBoardResponse.builder()
                 .postId(board.getPostId())
-                .user(board.getUser())
-                .space(board.getSpace())
+                .userId(board.getUser().getUserId())
+                .spaceId(board.getSpace().getSpaceId())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .type(board.getType())

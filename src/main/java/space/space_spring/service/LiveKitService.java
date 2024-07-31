@@ -67,7 +67,7 @@ public class LiveKitService {
     //라이브러리에서 host URL로 request를 보내고 response를 받아옵니다.
     //https://docs.livekit.io/realtime/server/managing-rooms/
     //
-    public List<RoomDto> getRoomList(){
+    public List<RoomDto> getRoomDtoList(){
         String liveKitHost = "https://space-biwhq7u2.livekit.cloud";
         RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost,apiKey,apiSecretKey);
 
@@ -77,7 +77,7 @@ public class LiveKitService {
 
             //response.body().get(0).
             //response.body().get(0).toString();
-            return RoomDto.convertRoomList(response.body());
+            return RoomDto.convertRoomDtoListByRoom(response.body());
         }catch (Exception e){
             System.out.println("There was a problem: " + e.getMessage());
             return null;
@@ -105,24 +105,24 @@ public class LiveKitService {
     }
     //LiveKit Room에 참여하기 위함 Token을 발행하는 함수 입니다.
     //여기서 생성된 JWT를 프론트에서 URL(LiveKit Cloud)로 보내면 room에 참여 가능합니다.
-    public AccessToken getRoomToken(TokenRequest tokenRequest){
-        if(tokenRequest==null){
-            tokenRequest = new TokenRequest();
+    public AccessToken getRoomToken(GetTokenRequest getTokenRequest){
+        if(getTokenRequest ==null){
+            getTokenRequest = new GetTokenRequest();
         }
-        if(tokenRequest.getName()==null){
-            tokenRequest.setName("defaultName"+getRangeRandomNum(0,9999));
+        if(getTokenRequest.getName()==null){
+            getTokenRequest.setName("defaultName"+getRangeRandomNum(0,9999));
         }
-        if(tokenRequest.getIdentity()==null){
-            tokenRequest.setIdentity(getRandomString(10,false));
+        if(getTokenRequest.getIdentity()==null){
+            getTokenRequest.setIdentity(getRandomString(10,false));
         }
-        if(tokenRequest.getRoomName()==null){
-            tokenRequest.setRoomName("defaultRoom");
+        if(getTokenRequest.getRoomName()==null){
+            getTokenRequest.setRoomName("defaultRoom");
         }
-        if(tokenRequest.getMetadata()==null){
-            tokenRequest.setMetadata("default metadata");
+        if(getTokenRequest.getMetadata()==null){
+            getTokenRequest.setMetadata("default metadata");
         }
-        return getRoomToken(tokenRequest.getName(),tokenRequest.getIdentity(),
-                tokenRequest.getRoomName(),tokenRequest.getMetadata());
+        return getRoomToken(getTokenRequest.getName(), getTokenRequest.getIdentity(),
+                getTokenRequest.getRoomName(), getTokenRequest.getMetadata());
     }
     public AccessToken getRoomToken(String name, String identity, String roomName, String metadata){
 

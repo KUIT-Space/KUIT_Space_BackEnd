@@ -21,9 +21,15 @@ public class ParticipantDto {
     private LivekitModels.ParticipantInfo.State state; // int
     private String metadata;
     private long joinAt; //time stamp
+    private String profileImage;
+
+    public void setProfileImage(String imageUrl){
+        this.profileImage = imageUrl;
+    }
 
 
     public static ParticipantDto convertParticipant(LivekitModels.ParticipantInfo participantInfo){
+        if(participantInfo==null){return null;}
         return ParticipantDto.builder()
                 .id(participantInfo.getIdentity())
                 .name(participantInfo.getName())
@@ -36,17 +42,20 @@ public class ParticipantDto {
                 .build();
     }
     public static List<ParticipantDto> convertParticipantList(List<LivekitModels.ParticipantInfo> participantInfoList){
+        if(participantInfoList==null||participantInfoList.isEmpty()){return null;}
         return participantInfoList.stream()
                 .map(ParticipantDto::convertParticipant)
                 .collect(Collectors.toList());
     }
 
     private static boolean checkMicMute(List<LivekitModels.TrackInfo> trackList){
+        if(trackList==null||trackList.isEmpty()){return true;}
         return trackList.stream()
                 .filter(ParticipantDto::isAudio)
                 .anyMatch(LivekitModels.TrackInfo::getMuted);
     }
     private static boolean isAudio(LivekitModels.TrackInfo track){
+        if(track==null){return false;}
         return isAudioString(track.getName()) ||
                 isAudioString(track.getType().toString()) ||
                 isAudioString(track.getSource().toString());

@@ -1,0 +1,77 @@
+package space.space_spring.util;
+
+import io.livekit.server.AccessToken;
+import io.livekit.server.RoomJoin;
+import io.livekit.server.RoomName;
+import io.livekit.server.RoomServiceClient;
+import livekit.LivekitModels;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import retrofit2.Response;
+import space.space_spring.dto.VoiceRoom.ParticipantDto;
+import space.space_spring.dto.VoiceRoom.RoomDto;
+
+import java.util.List;
+@Component
+@RequiredArgsConstructor
+public class LiveKitUtils {
+    @Value("${livekit.projet.host")
+    private String hostUrl;
+    @Value("${livekit.project.id}")
+    private String projectId;
+    @Value("${livekit.api.key}")
+    private String apiKey;
+    @Value("${livekit.api.secretKey}")
+    private String apiSecretKey;
+
+    private final RestTemplate restTemplate;
+
+    public List<LivekitModels.Room> getRoomList() {
+        String liveKitHost = "https://space-biwhq7u2.livekit.cloud";
+        RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost, apiKey, apiSecretKey);
+
+        try {
+            Response<List<LivekitModels.Room>> response = roomServiceClient.listRooms().execute();
+            System.out.print(response.body());
+
+            //response.body().get(0).
+            //response.body().get(0).toString();
+            return response.body();
+        } catch (Exception e) {
+            System.out.println("There was a problem: " + e.getMessage());
+            return null;
+        }
+
+    }
+
+    public List<ParticipantDto> getParticipantInfo(String roomName) {
+        String liveKitHost = "https://space-biwhq7u2.livekit.cloud";
+        RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost, apiKey, apiSecretKey);
+        String identity = roomName;
+        try {
+            Response<List<LivekitModels.ParticipantInfo>> response = roomServiceClient.listParticipants(roomName).execute();
+            System.out.print(response.toString());
+            //response.body().get(0).getTracksList().get(0).getMuted();
+            //response.body().get(0).getTracksList().get(0).;
+            //response.body().get(0).toString();
+            return ParticipantDto.convertParticipantList(response.body());
+        } catch (Exception e) {
+            System.out.println("There was a problem: " + e.getMessage());
+            return null;
+        }
+    }
+    public AccessToken getRoomToken(String name, String identity, String roomName, String metadata){
+
+        AccessToken token = new AccessToken(apiKey, apiSecretKey);
+
+        // Fill in token information.
+        token.setName(name);
+        token.setIdentity(identity);
+        token.setMetadata(metadata);
+        token.addGrants(new RoomJoin(true), new RoomName(roomName));
+        return token;
+    }
+}
+

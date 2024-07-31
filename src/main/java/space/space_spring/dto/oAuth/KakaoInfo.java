@@ -1,4 +1,4 @@
-package space.space_spring.dto.oAuthInfo;
+package space.space_spring.dto.oAuth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -6,6 +6,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import space.space_spring.dto.user.GetSpaceInfoForUserResponse;
 import space.space_spring.dto.user.SpaceChoiceViewDto;
+import space.space_spring.dto.userSpace.UserProfileImgAndNameDto;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
@@ -36,7 +37,6 @@ public class UserSpaceDao {
 
         return query.getResultList().stream().findFirst();
     }
-
 
     public SpaceChoiceViewDto getSpaceChoiceView(User userByUserId, int size, Long lastUserSpaceId) {
 
@@ -74,4 +74,19 @@ public class UserSpaceDao {
         return new SpaceChoiceViewDto(responseList, newLastUserSpaceId);
     }
 
+    public List<UserProfileImgAndNameDto> findUserProfileImgAndName(Space space) {
+        String jpql = "SELECT us.userName, us.userProfileImg FROM UserSpace us WHERE us.space = :space";
+        TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
+        query.setParameter("space", space);
+
+        List<Object[]> results = query.getResultList();
+        List<UserProfileImgAndNameDto> responseList = new ArrayList<>();
+        for (Object[] result : results) {
+            String userName = (String) result[0];
+            String profileImg = (String) result[1];
+            responseList.add(new UserProfileImgAndNameDto(userName, profileImg));
+        }
+
+        return responseList;
+    }
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.validator.ValidFile;
+import space.space_spring.validator.ValidImageFile;
 
 @Getter
 @Setter
@@ -17,6 +17,6 @@ public class PostSpaceCreateRequest {
     @NotBlank(message = "스페이스 이름은 공백일 수 없습니다.")
     private String spaceName;
 
-    @ValidFile(message = "스페이스 프로필 이미지는 공백일 수 없습니다.")
+    @ValidImageFile(message = "스페이스 프로필 이미지는 공백일 수 없습니다.")
     private MultipartFile spaceProfileImg;         // 스페이스 프로필 이미지 (썸네일)
 }

@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface BoardDao extends JpaRepository<Board, Long> {
 
-    List<Board> findByUserAndSpace(User user, Space space);
+    List<Board> findBySpace(Space space);
 
 }

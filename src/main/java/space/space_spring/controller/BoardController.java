@@ -21,8 +21,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/board")
-    public BaseResponse<List<ReadBoardResponse>> getBoard(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
-        List<ReadBoardResponse> board = boardService.getAllPosts(userId, spaceId);
+    public BaseResponse<List<ReadBoardResponse>> getBoard(@PathVariable Long spaceId) {
+        List<ReadBoardResponse> board = boardService.getAllPosts(spaceId);
         return new BaseResponse<>(board);
     }
 

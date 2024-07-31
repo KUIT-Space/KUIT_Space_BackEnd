@@ -103,7 +103,7 @@ public class PayService {
     }
 
     @Transactional
-    public void createPay(Long userId, Long spaceId, PostPayCreateRequest postPayCreateRequest) {
+    public List<PayRequestTarget> createPay(Long userId, Long spaceId, PostPayCreateRequest postPayCreateRequest) {
         // TODO 1. userId로 User find (user : 정산 생성한 유저)
         User payCreateUser = userUtils.findUserByUserId(userId);
 
@@ -115,9 +115,13 @@ public class PayService {
         PayRequest payRequest = payDao.createPayRequest(payCreateUser, spaceBySpaceId, postPayCreateRequest.getTotalAmount(), postPayCreateRequest.getBankName(), postPayCreateRequest.getBankAccountNum(), isComplete);
 
         // TODO 4. PayRequestTarget 엔티티 생성
+        List<PayRequestTarget> resultList = new ArrayList<>();
         for (PostPayCreateRequest.TargetInfo targetInfo : postPayCreateRequest.getTargetInfoList()) {
-            payDao.createPayRequestTarget(payRequest, targetInfo.getTargetUserId(), targetInfo.getRequestAmount(), isComplete);
+            PayRequestTarget payRequestTarget = payDao.createPayRequestTarget(payRequest, targetInfo.getTargetUserId(), targetInfo.getRequestAmount(), isComplete);
+            resultList.add(payRequestTarget);
         }
+
+        return resultList;
     }
 
 

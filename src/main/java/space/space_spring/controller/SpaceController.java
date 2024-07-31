@@ -9,18 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.space.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.space.PostSpaceCreateRequest;
-import space.space_spring.dto.space.PostSpaceCreateResponse;
 
-import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.MultipartFileException;
 import space.space_spring.exception.SpaceException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.S3Uploader;
 import space.space_spring.service.SpaceService;
-import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_SPACE_CREATE;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.IS_NOT_IMAGE_FILE;
@@ -33,12 +29,11 @@ import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorM
 public class SpaceController {
 
     private final SpaceService spaceService;
-    private final UserSpaceUtils userSpaceUtils;
     private final S3Uploader s3Uploader;
     private final String spaceImgDirName = "spaceImg";
 
     @PostMapping("")
-    public BaseResponse<PostSpaceCreateResponse> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
+    public BaseResponse<String> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             throw new SpaceException(INVALID_SPACE_CREATE, getErrorMessage(bindingResult));
         }
@@ -47,7 +42,9 @@ public class SpaceController {
         String spaceImgUrl = processSpaceImage(postSpaceCreateRequest.getSpaceProfileImg());
 
         // TODO 2. s3에 저장하고 받은 이미지 url 정보와 spaceName 정보로 space create 작업 수행
-        return new BaseResponse<>(spaceService.createSpace(userId, postSpaceCreateRequest.getSpaceName(), spaceImgUrl));
+        spaceService.createSpace(userId, postSpaceCreateRequest.getSpaceName(), spaceImgUrl);
+
+        return new BaseResponse<>("스페이스 생성 성공");
     }
 
     private String processSpaceImage(MultipartFile spaceProfileImg) throws IOException {

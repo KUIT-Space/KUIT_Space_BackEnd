@@ -83,7 +83,7 @@ public class UserService {
         String userName = userByUserId.getUserName();
 
         // TODO 4. return
-        return new GetSpaceInfoForUserResponse(userName, spaceChoiceViewDto.getLastUserSpaceId(), spaceChoiceViewDto.getSpaceNameAndProfileImgList());
+        return new GetSpaceInfoForUserResponse(userName, spaceChoiceViewDto.getLastUserSpaceId(), spaceChoiceViewDto.getSpaceChoiceInfoList());
     }
 
 }

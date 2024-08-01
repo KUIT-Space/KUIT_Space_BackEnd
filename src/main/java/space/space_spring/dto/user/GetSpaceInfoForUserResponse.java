@@ -15,6 +15,6 @@ public class GetSpaceInfoForUserResponse {
 
     private Long lastUserSpaceId;
 
-    private List<Map<String, String>> spaceInfoList;
+    private List<SpaceChoiceInfo> spaceInfoList;
 
 }

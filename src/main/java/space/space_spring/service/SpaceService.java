@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.space.GetUserInfoBySpaceResponse;
+import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;

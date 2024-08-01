@@ -1,4 +1,4 @@
-package space.space_spring.dto.space;
+package space.space_spring.dto.space.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

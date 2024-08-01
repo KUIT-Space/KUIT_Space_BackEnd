@@ -1,10 +1,9 @@
-package space.space_spring.dto.user;
+package space.space_spring.dto.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @AllArgsConstructor

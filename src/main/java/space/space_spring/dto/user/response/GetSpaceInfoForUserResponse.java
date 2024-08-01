@@ -1,11 +1,10 @@
-package space.space_spring.dto.user;
+package space.space_spring.dto.user.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import space.space_spring.dto.user.dto.SpaceChoiceInfo;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @AllArgsConstructor

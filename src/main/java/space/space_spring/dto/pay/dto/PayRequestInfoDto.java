@@ -7,6 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PayRequestInfoDto {
 
+    private Long payRequestId;
+
     private int totalAmount;            // 정산 총 금액
 
     private int receiveAmount;          // 현재까지 받은 금액

@@ -44,6 +44,7 @@ public class PayService {
 
         for (PayRequest payRequest : payRequestListByUser) {
             // 하나의 정산 요청에 대하여 ,,,
+            Long payRequestId = payRequest.getPayRequestId();
             int totalAmount = payRequest.getTotalAmount();
             int receiveAmount = 0;
             int totalTargetNum = 0;
@@ -60,7 +61,7 @@ public class PayService {
                 totalTargetNum++;
             }
 
-            PayRequestInfoDto payRequestInfoDto = new PayRequestInfoDto(totalAmount, receiveAmount, totalTargetNum, receiveTargetNum);
+            PayRequestInfoDto payRequestInfoDto = new PayRequestInfoDto(payRequestId, totalAmount, receiveAmount, totalTargetNum, receiveTargetNum);
             payRequestInfoDtoList.add(payRequestInfoDto);
         }
 

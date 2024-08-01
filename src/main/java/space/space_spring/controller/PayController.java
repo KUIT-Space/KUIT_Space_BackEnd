@@ -4,14 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.dto.pay.*;
-import space.space_spring.entity.UserSpace;
+import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
+import space.space_spring.dto.pay.dto.PayRequestInfoDto;
+import space.space_spring.dto.pay.request.PostPayCreateRequest;
+import space.space_spring.dto.pay.response.GetPayViewResponse;
+import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
+import space.space_spring.dto.pay.response.GetRequestPayViewResponse;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PayService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

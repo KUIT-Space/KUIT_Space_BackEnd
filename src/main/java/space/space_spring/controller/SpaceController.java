@@ -7,8 +7,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.dto.space.GetUserInfoBySpaceResponse;
-import space.space_spring.dto.space.PostSpaceCreateRequest;
+import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
+import space.space_spring.dto.space.request.PostSpaceCreateRequest;
 
 import space.space_spring.exception.MultipartFileException;
 import space.space_spring.exception.SpaceException;

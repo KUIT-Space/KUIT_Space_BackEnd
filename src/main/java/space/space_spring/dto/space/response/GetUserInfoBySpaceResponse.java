@@ -2,7 +2,7 @@ package space.space_spring.dto.space.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import space.space_spring.dto.userSpace.UserProfileImgAndNameDto;
+import space.space_spring.dto.userSpace.UserInfoInSpace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetUserInfoBySpaceResponse {
 
-    private List<UserProfileImgAndNameDto> userProfileImgAndNameDtoList = new ArrayList<>();
+    private List<UserInfoInSpace> userProfileImgAndNameDtoList = new ArrayList<>();
 }

@@ -65,8 +65,6 @@ public class UserController {
                                                                        @RequestParam int size,
                                                                        @RequestParam Long lastUserSpaceId) {
 
-        log.info("userId = {}", userId);
-
         return new BaseResponse<>(userService.getSpaceListForUser(userId, size, lastUserSpaceId));
     }
 

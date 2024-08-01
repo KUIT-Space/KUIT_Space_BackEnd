@@ -50,7 +50,7 @@ public class PayController {
     }
 
     /**
-     * 내가 요청한 정산 view
+     * 내가 요청한 정산 조회
      */
     @GetMapping("/space/{spaceId}/pay/request")
     public BaseResponse<GetRequestPayViewResponse> showRequestPayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
@@ -95,7 +95,7 @@ public class PayController {
         }
 
         // TODO 3. PostPayCreateRequest의 bankName, bankAccountNum 검증
-        // 이거 해야할까?? 프론트단 분들과 논의 필요
+        // 만약 이걸 해야할 경우, @RequestBody 를 validate 하는 방식으로 검증 수행해야 할 듯
 
         // TODO 4. 정산 생성
         payService.createPay(userId, spaceId, postPayCreateRequest);

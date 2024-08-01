@@ -81,19 +81,31 @@ public class UserSpaceDao {
         return spaceChoiceInfoList;
     }
 
-    public List<UserInfoInSpace> findUserProfileImgAndName(Space space) {
-        String jpql = "SELECT us.userName, us.userProfileImg FROM UserSpace us WHERE us.space = :space";
+    public List<UserInfoInSpace> findUserInfoInSpace(Space space) {
+        String jpql = "SELECT us.user.userId, us.userName, us.userProfileImg, us.userSpaceAuth " +
+                "FROM UserSpace us WHERE us.space = :space";
         TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
         query.setParameter("space", space);
 
         List<Object[]> results = query.getResultList();
-        List<UserInfoInSpace> responseList = new ArrayList<>();
+
+        return mapToUserInfoInSpace(results);
+    }
+
+    private List<UserInfoInSpace> mapToUserInfoInSpace(List<Object[]> results) {
+        List<UserInfoInSpace> userInfoInSpaceList = new ArrayList<>();
+
         for (Object[] result : results) {
-            String userName = (String) result[0];
-            String profileImg = (String) result[1];
-            responseList.add(new UserInfoInSpace(userName, profileImg));
+            Long userId = (Long) result[0];
+            String userName = (String) result[1];
+            String profileImgUrl = (String) result[2];
+            String userAuth = (String) result[3];
+
+            UserInfoInSpace userInfoInSpace = new UserInfoInSpace(userId, userName, profileImgUrl, userAuth);
+            userInfoInSpaceList.add(userInfoInSpace);
         }
 
-        return responseList;
+        return userInfoInSpaceList;
     }
+
 }

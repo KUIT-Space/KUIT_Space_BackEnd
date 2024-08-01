@@ -41,6 +41,6 @@ public class SpaceService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2. 스페이스의 모든 유저 정보 return
-        return new GetUserInfoBySpaceResponse(userSpaceDao.findUserProfileImgAndName(spaceBySpaceId));
+        return new GetUserInfoBySpaceResponse(userSpaceDao.findUserInfoInSpace(spaceBySpaceId));
     }
 }

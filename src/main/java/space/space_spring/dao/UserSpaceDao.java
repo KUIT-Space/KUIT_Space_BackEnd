@@ -41,7 +41,7 @@ public class UserSpaceDao {
     public SpaceChoiceViewDto getSpaceChoiceView(User userByUserId, int size, Long lastUserSpaceId) {
 
         // 유저가 현재 속해있는 스페이스의 정보만을 return하기 위해 status가 active인 것만 select
-        String jpql = "SELECT us.userSpaceId, s.spaceName, s.spaceProfileImg " +
+        String jpql = "SELECT us.userSpaceId, s.spaceId, s.spaceName, s.spaceProfileImg " +
                 "FROM UserSpace us JOIN us.space s " +
                 "WHERE us.user = :user AND us.status = 'ACTIVE' " +
                 "AND us.userSpaceId > :lastUserSpaceId ORDER BY us.userSpaceId ASC";
@@ -52,26 +52,33 @@ public class UserSpaceDao {
         query.setMaxResults(size);
 
         List<Object[]> results = query.getResultList();
-        List<Map<String, String>> responseList = new ArrayList<>();
-        Long newLastUserSpaceId = null;
 
-        for (Object[] result : results) {
-            Long userSpaceId = (Long) result[0];
-            String spaceName = (String) result[1];
-            String spaceProfileImg = (String) result[2];
-            Map<String, String> spaceNameAndProfileImgMap = new HashMap<>();
-            spaceNameAndProfileImgMap.put("spaceName", spaceName);
-            spaceNameAndProfileImgMap.put("spaceProfileImg", spaceProfileImg);
-            responseList.add(spaceNameAndProfileImgMap);
-            newLastUserSpaceId = userSpaceId;
-        }
+        List<SpaceChoiceViewDto.SpaceChoiceInfo> spaceChoiceInfoList = mapToSpaceChoiceInfoList(results);
 
-        // 데이터가 마지막임을 알리기 위해 -1 설정
+        Long newLastUserSpaceId = determineLastUserSpaceId(results);
+
+        return new SpaceChoiceViewDto(spaceChoiceInfoList, newLastUserSpaceId);
+    }
+
+    private Long determineLastUserSpaceId(List<Object[]> results) {
         if (results.isEmpty()) {
-            newLastUserSpaceId = -1L;
+            return -1L;             // 더 이상 조회할 데이터가 없음을 표시
         }
+        // results가 비어있지 않다면 마지막 userSpaceId를 반환
+        return (Long) results.get(results.size() - 1)[0];
+    }
 
-        return new SpaceChoiceViewDto(responseList, newLastUserSpaceId);
+    private List<SpaceChoiceViewDto.SpaceChoiceInfo> mapToSpaceChoiceInfoList(List<Object[]> results) {
+        List<SpaceChoiceViewDto.SpaceChoiceInfo> spaceChoiceInfoList = new ArrayList<>();
+        for (Object[] result : results) {
+            Long spaceId = (Long) result[1];
+            String spaceName = (String) result[2];
+            String spaceProfileImg = (String) result[3];
+
+            SpaceChoiceViewDto.SpaceChoiceInfo spaceChoiceInfo = new SpaceChoiceViewDto.SpaceChoiceInfo(spaceId, spaceName, spaceProfileImg);
+            spaceChoiceInfoList.add(spaceChoiceInfo);
+        }
+        return spaceChoiceInfoList;
     }
 
     public List<UserProfileImgAndNameDto> findUserProfileImgAndName(Space space) {

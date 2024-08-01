@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetUserInfoBySpaceResponse {
 
-    private List<UserInfoInSpace> userProfileImgAndNameDtoList = new ArrayList<>();
+    private List<UserInfoInSpace> userInfoInSpaceList = new ArrayList<>();
 }

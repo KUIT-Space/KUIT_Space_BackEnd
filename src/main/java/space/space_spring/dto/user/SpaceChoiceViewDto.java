@@ -16,7 +16,7 @@ public class SpaceChoiceViewDto {
 
     @Getter
     @AllArgsConstructor
-    static class SpaceChoiceInfo {
+    public static class SpaceChoiceInfo {
         private Long spaceId;
 
         private String spaceName;

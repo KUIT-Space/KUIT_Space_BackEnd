@@ -14,13 +14,4 @@ public class SpaceChoiceViewDto {
 
     private Long lastUserSpaceId;
 
-    @Getter
-    @AllArgsConstructor
-    public static class SpaceChoiceInfo {
-        private Long spaceId;
-
-        private String spaceName;
-
-        private String profileImgUrl;
-    }
 }

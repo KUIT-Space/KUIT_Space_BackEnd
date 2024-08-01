@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import space.space_spring.dto.user.GetSpaceInfoForUserResponse;
+import space.space_spring.dto.user.SpaceChoiceInfo;
 import space.space_spring.dto.user.SpaceChoiceViewDto;
 import space.space_spring.dto.userSpace.UserProfileImgAndNameDto;
 import space.space_spring.entity.Space;
@@ -53,7 +54,7 @@ public class UserSpaceDao {
 
         List<Object[]> results = query.getResultList();
 
-        List<SpaceChoiceViewDto.SpaceChoiceInfo> spaceChoiceInfoList = mapToSpaceChoiceInfoList(results);
+        List<SpaceChoiceInfo> spaceChoiceInfoList = mapToSpaceChoiceInfoList(results);
 
         Long newLastUserSpaceId = determineLastUserSpaceId(results);
 
@@ -68,14 +69,14 @@ public class UserSpaceDao {
         return (Long) results.get(results.size() - 1)[0];
     }
 
-    private List<SpaceChoiceViewDto.SpaceChoiceInfo> mapToSpaceChoiceInfoList(List<Object[]> results) {
-        List<SpaceChoiceViewDto.SpaceChoiceInfo> spaceChoiceInfoList = new ArrayList<>();
+    private List<SpaceChoiceInfo> mapToSpaceChoiceInfoList(List<Object[]> results) {
+        List<SpaceChoiceInfo> spaceChoiceInfoList = new ArrayList<>();
         for (Object[] result : results) {
             Long spaceId = (Long) result[1];
             String spaceName = (String) result[2];
             String spaceProfileImg = (String) result[3];
 
-            SpaceChoiceViewDto.SpaceChoiceInfo spaceChoiceInfo = new SpaceChoiceViewDto.SpaceChoiceInfo(spaceId, spaceName, spaceProfileImg);
+            SpaceChoiceInfo spaceChoiceInfo = new SpaceChoiceInfo(spaceId, spaceName, spaceProfileImg);
             spaceChoiceInfoList.add(spaceChoiceInfo);
         }
         return spaceChoiceInfoList;

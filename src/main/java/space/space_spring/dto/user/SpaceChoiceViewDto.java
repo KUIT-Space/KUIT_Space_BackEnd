@@ -10,6 +10,17 @@ import java.util.Map;
 @AllArgsConstructor
 public class SpaceChoiceViewDto {
 
-    private List<Map<String, String>> spaceNameAndProfileImgList;
+    private List<SpaceChoiceInfo> spaceChoiceInfoList;
+
     private Long lastUserSpaceId;
+
+    @Getter
+    @AllArgsConstructor
+    static class SpaceChoiceInfo {
+        private Long spaceId;
+
+        private String spaceName;
+
+        private String profileImgUrl;
+    }
 }

@@ -27,26 +27,7 @@ public class PostService {
         // TODO 2: 해당 user의 해당 space 내의 게시판 게시글 리스트 return
         List<Post> posts = postDao.findBySpace(spaceBySpaceId);
         return posts.stream()
-                .map(this::convertToReadResponse)
+                .map(ReadPostsResponse::from)
                 .collect(Collectors.toList());
     }
-
-    public ReadPostsResponse convertToReadResponse(Post post) {
-        List<PostImage> postImages = post.getPostImages();
-        List<String> postImageUrls = postImages.stream()
-                .map(PostImage::getPostImgUrl)
-                .toList();
-
-        return ReadPostsResponse.builder()
-                .postId(post.getPostId())
-                .spaceId(post.getSpace().getSpaceId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .type(post.getType())
-                .like_count(post.getLike())
-                .postImage(postImageUrls)
-                .build();
-
-    }
-
 }

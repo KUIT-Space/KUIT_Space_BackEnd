@@ -1,6 +1,8 @@
 package space.space_spring.dto.post;
 
 import lombok.*;
+import space.space_spring.entity.Post;
+import space.space_spring.entity.PostImage;
 
 import java.util.List;
 
@@ -32,4 +34,19 @@ public class ReadPostsResponse {
     private int comment_count;
     private int like_count;
 
+    public static ReadPostsResponse from(Post post) {
+        List<String> postImageUrls = post.getPostImages().stream()
+                .map(PostImage::getPostImgUrl)
+                .toList();
+
+        return ReadPostsResponse.builder()
+                .postId(post.getPostId())
+                .spaceId(post.getSpace().getSpaceId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .type(post.getType())
+                .like_count(post.getLike())
+                .postImage(postImageUrls)
+                .build();
+    }
 }

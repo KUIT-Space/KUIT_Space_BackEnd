@@ -3,8 +3,10 @@ package space.space_spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PostDao;
+import space.space_spring.dao.PostImageDao;
 import space.space_spring.dto.post.ReadPostsResponse;
 import space.space_spring.entity.Post;
+import space.space_spring.entity.PostImage;
 import space.space_spring.entity.Space;
 import space.space_spring.util.space.SpaceUtils;
 
@@ -31,6 +33,11 @@ public class PostService {
     }
 
     public ReadPostsResponse convertToReadResponse(Post post) {
+        List<PostImage> postImages = post.getPostImages();
+        List<String> postImageUrls = postImages.stream()
+                .map(PostImage::getPostImgUrl)
+                .toList();
+
         return ReadPostsResponse.builder()
                 .postId(post.getPostId())
                 .spaceId(post.getSpace().getSpaceId())
@@ -38,9 +45,9 @@ public class PostService {
                 .content(post.getContent())
                 .type(post.getType())
                 .like_count(post.getLike())
+                .postImage(postImageUrls)
                 .build();
 
     }
-
 
 }

@@ -1,4 +1,4 @@
-package space.space_spring.dto.VoiceRoom;
+package space.space_spring.dto.VoiceRoom.LiveKitDto;
 
 import lombok.Getter;
 import lombok.Setter;

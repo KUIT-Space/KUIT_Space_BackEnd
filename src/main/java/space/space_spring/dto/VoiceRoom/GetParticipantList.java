@@ -1,5 +1,6 @@
 package space.space_spring.dto.VoiceRoom;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 public class GetParticipantList {
     @Getter
     public static class Request{
+        @NotNull
         private long roomId;
     }
     @AllArgsConstructor

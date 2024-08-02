@@ -10,12 +10,15 @@ import space.space_spring.dto.pay.dto.*;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
 import space.space_spring.entity.*;
+import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 @Service
 @RequiredArgsConstructor
@@ -156,28 +159,11 @@ public class PayService {
         // TODO 5. 정산 타겟 유저 정보 get
         List<PayTargetInfoDto> payTargetInfoDtoList = new ArrayList<>();
         for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
-            Long targetUserId = payRequestTarget.getTargetUserId();
-            User userByUserId = userDao.findUserByUserId(targetUserId);
-
-            Optional<UserSpace> userSpaceByUserAndSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
-
-            userSpaceByUserAndSpace.ifPresent(userSpace -> {
-                String userName = userSpace.getUserName();
-                String userProfileImg = userSpace.getUserProfileImg();
-
-                PayTargetInfoDto payTargetInfoDto = new PayTargetInfoDto(
-                        payRequestTarget.getTargetUserId(),
-                        userName,
-                        userProfileImg,
-                        payRequestTarget.getRequestAmount(),
-                        payRequestTarget.isComplete()
-                );
-
-                payTargetInfoDtoList.add(payTargetInfoDto);
-            });
+            PayTargetInfoDto payTargetInfoDto = getPayTargetInfoDto(payRequestTarget, spaceBySpaceId);
+            payTargetInfoDtoList.add(payTargetInfoDto);
         }
 
-        // TODO 5. return 타입 구성
+        // TODO 6. return 타입 구성
         return new TotalPayInfoDto(
                 payRequestId,
                 payRequestById.getBankName(),
@@ -188,6 +174,25 @@ public class PayService {
                 payRequestInfoDto.getReceiveTargetNum(),
                 payTargetInfoDtoList,
                 payRequestById.isComplete()
+        );
+    }
+
+    private PayTargetInfoDto getPayTargetInfoDto(PayRequestTarget payRequestTarget, Space space) {
+        Long targetUserId = payRequestTarget.getTargetUserId();
+        User userByUserId = userDao.findUserByUserId(targetUserId);
+
+        UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, space)
+                .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE));
+
+        String userName = userSpace.getUserName();
+        String userProfileImg = userSpace.getUserProfileImg();
+
+        return new PayTargetInfoDto(
+                payRequestTarget.getTargetUserId(),
+                userName,
+                userProfileImg,
+                payRequestTarget.getRequestAmount(),
+                payRequestTarget.isComplete()
         );
     }
 }

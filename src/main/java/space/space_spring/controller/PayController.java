@@ -102,4 +102,10 @@ public class PayController {
 
         return new BaseResponse<>("정산 생성 성공");
     }
+
+    /**
+     * 하나의 정산에 대한 상세정보 조회
+     */
+    @GetMapping("/space/{spaceId}/pay/{payRequestId}")
+    public BaseResponse<>
 }

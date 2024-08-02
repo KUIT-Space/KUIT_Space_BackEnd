@@ -2,15 +2,9 @@ package space.space_spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.dto.pay.GetPayViewResponse;
-import space.space_spring.dto.pay.GetRequestPayViewResponse;
-import space.space_spring.dto.pay.PayReceiveInfoDto;
-import space.space_spring.dto.pay.PayRequestInfoDto;
+import space.space_spring.dto.pay.*;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PayService;
@@ -67,5 +61,42 @@ public class PayController {
         List<PayRequestInfoDto> payRequestInfoDtoListComplete = payService.getPayRequestInfoForUser(userId, spaceId, true);
 
         return new BaseResponse<>(new GetRequestPayViewResponse(payRequestInfoDtoListInComplete, payRequestInfoDtoListComplete));
+    }
+
+    /**
+     * 유저가 최근 정산받은 은행 계좌 정보 조회
+     * 해당 api는 유저가 속한 스페이스의 정보가 필요없다고 판단해서 spaceId 를 request로 받지 않음
+     */
+    @GetMapping("/space/pay/recent-bank-info")
+    public BaseResponse<GetRecentPayRequestBankInfoResponse> showRecentBankInfo(@JwtLoginAuth Long userId) {
+
+        return new BaseResponse<>(payService.getRecentPayRequestBankInfoForUser(userId));
+    }
+
+    /**
+     * 정산 생성
+     * response 추가 협의 필요 -> 굳이 PayRequestId를 response 안해도 될꺼같음
+     */
+    @PostMapping("/space/{spaceId}/pay")
+    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestBody PostPayCreateRequest postPayCreateRequest) {
+
+        // TODO 1. 유저가 스페이스에 속하는 지 검증
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. PostPayCreateRequest의 targetInfoList 유저들이 모두 해당 스페이스에 속하는지 검증
+        // 현재 검증 시 에러가 발생하면 그냥 "스페이스에 속하는 유저가 아닙니다" 라는 에러메시지만 나오고,
+        // 어떤 유저가 스페이스에 속하지 않는지에 대한 정보가 없음
+        // => 추후 에러메시지의 수정이 필요할듯??
+        for (PostPayCreateRequest.TargetInfo targetInfo : postPayCreateRequest.getTargetInfoList()) {
+            validateIsUserInSpace(targetInfo.getTargetUserId(), spaceId);
+        }
+
+        // TODO 3. PostPayCreateRequest의 bankName, bankAccountNum 검증
+        // 이거 해야할까?? 프론트단 분들과 논의 필요
+
+        // TODO 4. 정산 생성
+        payService.createPay(userId, spaceId, postPayCreateRequest);
+
+        return new BaseResponse<>("정산 생성 성공");
     }
 }

@@ -2,9 +2,9 @@ package space.space_spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.PayDao;
-import space.space_spring.dto.pay.PayReceiveInfoDto;
-import space.space_spring.dto.pay.PayRequestInfoDto;
+import space.space_spring.dto.pay.*;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
@@ -14,6 +14,7 @@ import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class PayService {
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
 
+    @Transactional
     public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId, boolean isComplete) {
         // TODO 1. userId에 해당하는 user find
         User userByUserId = userUtils.findUserByUserId(userId);
@@ -62,6 +64,7 @@ public class PayService {
         return payRequestInfoDtoList;
     }
 
+    @Transactional
     public List<PayReceiveInfoDto> getPayReceiveInfoForUser(Long userId, Long spaceId, boolean isComplete) {
         // TODO 1. userId에 해당하는 유저 find
         User userByUserId = userUtils.findUserByUserId(userId);
@@ -87,4 +90,39 @@ public class PayService {
 
         return payReceiveInfoDtoList;
     }
+
+    @Transactional
+    public GetRecentPayRequestBankInfoResponse getRecentPayRequestBankInfoForUser(Long userId) {
+        // TODO 1. userId에 해당하는 유저 find
+        User userByUserId = userUtils.findUserByUserId(userId);
+
+        // TODO 2. 유저의 최근 정산받은 은행 계좌 목록 fine
+        List<RecentPayRequestBankInfoDto> recentPayRequestBankInfoByUser = payDao.findRecentPayRequestBankInfoByUser(userByUserId);
+
+        return new GetRecentPayRequestBankInfoResponse(recentPayRequestBankInfoByUser);
+    }
+
+    @Transactional
+    public List<PayRequestTarget> createPay(Long userId, Long spaceId, PostPayCreateRequest postPayCreateRequest) {
+        // TODO 1. userId로 User find (user : 정산 생성한 유저)
+        User payCreateUser = userUtils.findUserByUserId(userId);
+
+        // TODO 2. spaceId로 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 3. PayRequest 엔티티 생성
+        boolean isComplete = false;
+        PayRequest payRequest = payDao.createPayRequest(payCreateUser, spaceBySpaceId, postPayCreateRequest.getTotalAmount(), postPayCreateRequest.getBankName(), postPayCreateRequest.getBankAccountNum(), isComplete);
+
+        // TODO 4. PayRequestTarget 엔티티 생성
+        List<PayRequestTarget> resultList = new ArrayList<>();
+        for (PostPayCreateRequest.TargetInfo targetInfo : postPayCreateRequest.getTargetInfoList()) {
+            PayRequestTarget payRequestTarget = payDao.createPayRequestTarget(payRequest, targetInfo.getTargetUserId(), targetInfo.getRequestAmount(), isComplete);
+            resultList.add(payRequestTarget);
+        }
+
+        return resultList;
+    }
+
+
 }

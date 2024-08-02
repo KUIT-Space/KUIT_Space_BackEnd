@@ -10,6 +10,8 @@ import space.space_spring.entity.VoiceRoom;
 import java.util.List;
 @Repository
 public interface VoiceRoomRepository extends JpaRepository<VoiceRoom,Long> {
+
+    //Todo limit 개수 만큼 가져오도록 기능과 파라미터 수정
     List<VoiceRoom> findBySpace(Space space);
     @Query("SELECT MAX(r.order) FROM VoiceRoom r WHERE r.space = :space")
     Integer findMaxOrderBySpace(@Param("space") Space space);

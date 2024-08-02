@@ -90,7 +90,8 @@ public class PayDao {
         return payRequestTarget;
     }
 
-    public TotalPayInfoDto findTotalPayInfoByPayRequest(PayRequest payRequest) {
+    public PayRequest findPayRequestById(Long payRequestId) {
 
+        return em.find(PayRequest.class, payRequestId);
     }
 }

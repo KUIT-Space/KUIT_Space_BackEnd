@@ -3,6 +3,8 @@ package space.space_spring.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Posts")
 @Getter
@@ -31,6 +33,10 @@ public class Post extends BaseEntity {
     @Column(name = "post_like")
     private int like;
 
+    @OneToMany(mappedBy = "post")
+    private List<PostImage> postImages;
 
+    @OneToMany(mappedBy = "post")
+    private List<PostComment> postComments;
 
 }

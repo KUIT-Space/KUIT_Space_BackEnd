@@ -3,7 +3,6 @@ package space.space_spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PostDao;
-import space.space_spring.dao.PostImageDao;
 import space.space_spring.dto.post.ReadPostsResponse;
 import space.space_spring.entity.Post;
 import space.space_spring.entity.PostImage;

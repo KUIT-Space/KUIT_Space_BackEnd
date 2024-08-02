@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import space.space_spring.dto.VoiceRoom.LiveKitSession;
+import space.space_spring.dto.VoiceRoom.LiveKitDto.LiveKitSession;
 import space.space_spring.dto.VoiceRoom.ParticipantDto;
 import space.space_spring.dto.VoiceRoom.RoomDto;
-import space.space_spring.dto.VoiceRoom.GetTokenRequest;
+import space.space_spring.dto.VoiceRoom.LiveKitDto.GetTokenRequest;
 import space.space_spring.service.LiveKitService;
 
 import java.util.List;

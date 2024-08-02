@@ -6,8 +6,6 @@ import lombok.Getter;
 public class PostVoiceRoomDto {
     @Getter
     public static class Request{
-        //private long spaceId;
-
         @NotNull
         private String name;
     }

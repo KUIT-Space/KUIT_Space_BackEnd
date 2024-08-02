@@ -1,5 +1,7 @@
 package space.space_spring.dto.VoiceRoom;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +12,9 @@ import java.util.stream.Collectors;
 public class GetVoiceRoomList {
     @Getter
     public static class Request{
+        @Nullable
         private int limit;
+        @NotNull
         private boolean showParticipant;
     }
     @AllArgsConstructor

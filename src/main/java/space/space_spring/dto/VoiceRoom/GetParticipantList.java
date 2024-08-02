@@ -11,9 +11,7 @@ import java.util.stream.Collectors;
 public class GetParticipantList {
     @Getter
     public static class Request{
-        private long spaceId;
         private long roomId;
-
     }
     @AllArgsConstructor
     @Getter

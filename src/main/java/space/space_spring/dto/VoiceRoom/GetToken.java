@@ -5,7 +5,6 @@ import lombok.Getter;
 public class GetToken {
     @Getter
     public static class Request{
-        private long spaceId;
         private long roomId;
     }
     @Getter

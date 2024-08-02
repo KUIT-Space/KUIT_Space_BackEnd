@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 public class GetVoiceRoomList {
     @Getter
     public static class Request{
-        private long spaceId;
-        //private String userId;
         private int limit;
         private boolean showParticipant;
     }

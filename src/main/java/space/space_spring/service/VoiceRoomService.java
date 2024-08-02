@@ -28,8 +28,8 @@ public class VoiceRoomService {
     private final LiveKitUtils liveKitUtils;
     private final UserDao userDao;
 
-    public boolean createVoiceRoom(PostVoiceRoomDto.Request req){
-        Space targetSpace = spaceUtils.findSpaceBySpaceId(req.getSpaceId());
+    public boolean createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
+        Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
         Integer orderInt = voiceRoomRepository.findMaxOrderBySpace(targetSpace);
         int order;
         if(orderInt==null||orderInt==0){
@@ -42,14 +42,14 @@ public class VoiceRoomService {
         return voiceRoomDao.createVoiceRoom(name, order, targetSpace);
     }
 
-    public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoList(GetVoiceRoomList.Request req){
-        long spaceId = req.getSpaceId();
+    public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoList(long spaceId,GetVoiceRoomList.Request req){
         int limit = req.getLimit();
         boolean showParticipant =req.isShowParticipant();
 
 
         //ToDo 해당 space VoiceRoom 가져오기 (VoiceRoom List)
-        List<VoiceRoom> voiceRoomDataList = findBySpaceId(req.getSpaceId());
+            //Todo 가져오기에 limit 적용
+        List<VoiceRoom> voiceRoomDataList = findBySpaceId(spaceId);
         List<RoomDto> roomDtoList = RoomDto.convertRoomDtoListByVoiceRoom(voiceRoomDataList);
         //ToDo VoiceRoom과 Room mapping
             //#1 Response 받아오기
@@ -59,7 +59,6 @@ public class VoiceRoomService {
                 roomDto.setActiveRoom(roomResponses);
             }
         //ToDo participant mapping
-            //
         if (showParticipant) {
             for(RoomDto roomDto : roomDtoList) {
                 if(roomDto.getNumParticipants()==0){continue;}
@@ -74,6 +73,7 @@ public class VoiceRoomService {
         }
         //ToDo Response로 convert
             //#1 Active/inActive 분리
+
             //#2 convert
             return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList);
 
@@ -81,9 +81,9 @@ public class VoiceRoomService {
     }
 
     public List<VoiceRoom> findBySpaceId(long spaceId){
-        return findBySpaceId(spaceUtils.findSpaceBySpaceId(spaceId));
+        return findBySpace(spaceUtils.findSpaceBySpaceId(spaceId));
     }
-    private List<VoiceRoom> findBySpaceId(Space space){
+    private List<VoiceRoom> findBySpace(Space space){
         return voiceRoomRepository.findBySpace(space);
     }
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
@@ -101,7 +101,7 @@ public class VoiceRoomService {
         return name+" #"+String.valueOf(id);
     }
 
-    public String getToken(long userId,long voiceRoomId){
+    public String getToken(long spaceId,long userId,long voiceRoomId){
         String userName=userDao.findUserByUserId(userId).getUserName();
         String userIdentity=String.valueOf(userId);
         String metadata="";

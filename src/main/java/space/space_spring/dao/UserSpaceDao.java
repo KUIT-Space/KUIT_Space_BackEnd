@@ -31,7 +31,7 @@ public class UserSpaceDao {
 
     public Optional<UserSpace> findUserSpaceByUserAndSpace(User user, Space space) {
         TypedQuery<UserSpace> query = em.createQuery(
-                "SELECT us FROM UserSpace us WHERE us.user = :user AND us.space = :space", UserSpace.class);
+                "SELECT us FROM UserSpace us WHERE us.user = :user AND us.space = :space AND us.status = 'ACTIVE'", UserSpace.class);
         query.setParameter("user", user);
         query.setParameter("space", space);
 

@@ -136,4 +136,58 @@ public class PayService {
         return resultList;
     }
 
+    /**
+     * 하나의 정산에 대한 상세정보 조회
+     */
+    @Transactional
+    public TotalPayInfoDto getTotalPayInfo(Long spaceId, Long payRequestId) {
+        // TODO 1. spaceId로 Space 엔티티 find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 2. payRequestId 로 PayRequest 엔티티 find
+        PayRequest payRequestById = payDao.findPayRequestById(payRequestId);
+
+        // TODO 3. PayRequest로 해당 정산의 정보 get
+        PayRequestInfoDto payRequestInfoDto = createPayRequestInfoDto(payRequestById);
+
+        // TODO 4. PayRequest의 PayRequestTarget find
+        List<PayRequestTarget> payRequestTargetListByPayRequest = payDao.findPayRequestTargetListByPayRequest(payRequestById);
+
+        // TODO 5. 정산 타겟 유저 정보 get
+        List<PayTargetInfoDto> payTargetInfoDtoList = new ArrayList<>();
+        for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
+            Long targetUserId = payRequestTarget.getTargetUserId();
+            User userByUserId = userDao.findUserByUserId(targetUserId);
+
+            Optional<UserSpace> userSpaceByUserAndSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
+
+            userSpaceByUserAndSpace.ifPresent(userSpace -> {
+                String userName = userSpace.getUserName();
+                String userProfileImg = userSpace.getUserProfileImg();
+
+                PayTargetInfoDto payTargetInfoDto = new PayTargetInfoDto(
+                        payRequestTarget.getTargetUserId(),
+                        userName,
+                        userProfileImg,
+                        payRequestTarget.getRequestAmount(),
+                        payRequestTarget.isComplete()
+                );
+
+                payTargetInfoDtoList.add(payTargetInfoDto);
+            });
+        }
+
+        // TODO 5. return 타입 구성
+        return new TotalPayInfoDto(
+                payRequestId,
+                payRequestById.getBankName(),
+                payRequestById.getBankAccountNum(),
+                payRequestById.getTotalAmount(),
+                payRequestInfoDto.getReceiveAmount(),
+                payRequestInfoDto.getTotalTargetNum(),
+                payRequestInfoDto.getReceiveTargetNum(),
+                payTargetInfoDtoList,
+                payRequestById.isComplete()
+        );
+    }
 }

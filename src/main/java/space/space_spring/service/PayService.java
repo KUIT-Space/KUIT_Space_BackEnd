@@ -204,27 +204,22 @@ public class PayService {
      * 정산 타겟 유저의 정산 완료 처리
      */
     @Transactional
-    public PostPayCompleteResponse setPayRequestTargetToComplete(Long userId, Long spaceId, Long payRequestTargetId) {
-        // TODO 1. userId 로 User find
-        User userByUserId = userUtils.findUserByUserId(userId);
+    public PostPayCompleteResponse setPayRequestTargetToComplete(Long payRequestTargetId) {
 
-        // TODO 2. spaceId로 Space find
-        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
-
-        // TODO 3. payRequestTargetId로 PayRequestTarget find
+        // TODO 1. payRequestTargetId로 PayRequestTarget find
         PayRequestTarget payRequestTargetById = payDao.findPayRequestTargetById(payRequestTargetId);
 
-        // TODO 4. 해당 PayRequestTarget 정산 완료 처리
+        // TODO 2. 해당 PayRequestTarget 정산 완료 처리
         payRequestTargetById.changeCompleteStatus(true);
 
-        // TODO 5. PayRequest의 완료 여부 파악
+        // TODO 3. PayRequest의 완료 여부 파악
         PayRequest payRequest = payRequestTargetById.getPayRequest();
         boolean payRequestCompleteStatus = isPayRequestComplete(payRequest);
         if (payRequestCompleteStatus) {
             payRequest.changeCompleteStatus(true);
         }
 
-        // TODO 6. return 타입 구성
+        // TODO 4. return 타입 구성
         return new PostPayCompleteResponse(
                 payRequest.getPayRequestId(),
                 payRequestCompleteStatus

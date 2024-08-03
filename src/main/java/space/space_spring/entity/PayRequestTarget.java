@@ -31,4 +31,8 @@ public class PayRequestTarget extends BaseEntity {
         this.requestAmount = requestAmount;
         this.isComplete = isComplete;
     }
+
+    public void changeCompleteStatus(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
 }

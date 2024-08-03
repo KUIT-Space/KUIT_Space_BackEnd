@@ -94,4 +94,9 @@ public class PayDao {
 
         return em.find(PayRequest.class, payRequestId);
     }
+
+    public PayRequestTarget findPayRequestTargetById(Long payRequestTargetId) {
+        return em.find(PayRequestTarget.class, payRequestTargetId);
+    }
+
 }

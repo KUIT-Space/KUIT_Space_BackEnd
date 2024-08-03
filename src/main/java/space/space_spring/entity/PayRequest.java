@@ -41,4 +41,8 @@ public class PayRequest extends BaseEntity {
         this.bankAccountNum = bankAccountNum;
         this.isComplete = isComplete;
     }
+
+    public void changeCompleteStatus(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
 }

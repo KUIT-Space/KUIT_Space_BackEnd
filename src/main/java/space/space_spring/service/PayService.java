@@ -198,4 +198,38 @@ public class PayService {
                 payRequestTarget.isComplete()
         );
     }
+
+    /**
+     * 정산 타겟 유저의 정산 완료 처리
+     */
+    @Transactional
+    public void setPayRequestTargetToComplete(Long userId, Long spaceId, Long payRequestTargetId) {
+        // TODO 1. userId 로 User find
+        User userByUserId = userUtils.findUserByUserId(userId);
+
+        // TODO 2. spaceId로 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 3. payRequestTargetId로 PayRequestTarget find
+        PayRequestTarget payRequestTargetById = payDao.findPayRequestTargetById(payRequestTargetId);
+
+        // TODO 4. 해당 PayRequestTarget 정산 완료 처리
+        payRequestTargetById.changeCompleteStatus(true);
+
+        // TODO 5. PayRequest의 완료 여부 파악
+        PayRequest payRequest = payRequestTargetById.getPayRequest();
+        List<PayRequestTarget> payRequestTargetListByPayRequest = payDao.findPayRequestTargetListByPayRequest(payRequest);
+
+        boolean payRequestCompleteStatus = true;
+        for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
+            if (!payRequestTarget.isComplete()) {
+                payRequestCompleteStatus = false;
+                break;              // 더이상 확인할 필요가 없으므로 break
+            }
+        }
+
+        if (payRequestCompleteStatus) {
+            payRequest.changeCompleteStatus(true);
+        }
+    }
 }

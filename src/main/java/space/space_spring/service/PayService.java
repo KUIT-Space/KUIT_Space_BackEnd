@@ -95,15 +95,18 @@ public class PayService {
         List<PayReceiveInfoDto> payReceiveInfoDtoList = new ArrayList<>();
 
         for (PayRequestTarget payRequestTarget : payRequestTargetListByUser) {
-            String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
-            int requestAmount = payRequestTarget.getRequestAmount();
-
-            PayReceiveInfoDto payReceiveInfoDto = new PayReceiveInfoDto(payCreatorName, requestAmount);
-
+            PayReceiveInfoDto payReceiveInfoDto = createPayReceiveInfoDto(payRequestTarget);
             payReceiveInfoDtoList.add(payReceiveInfoDto);
         }
 
         return payReceiveInfoDtoList;
+    }
+
+    private PayReceiveInfoDto createPayReceiveInfoDto(PayRequestTarget payRequestTarget) {
+        String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
+        int requestAmount = payRequestTarget.getRequestAmount();
+
+        return new PayReceiveInfoDto(payCreatorName, requestAmount);
     }
 
     @Transactional
@@ -159,7 +162,7 @@ public class PayService {
         // TODO 5. 정산 타겟 유저 정보 get
         List<PayTargetInfoDto> payTargetInfoDtoList = new ArrayList<>();
         for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
-            PayTargetInfoDto payTargetInfoDto = getPayTargetInfoDto(payRequestTarget, spaceBySpaceId);
+            PayTargetInfoDto payTargetInfoDto = createPayTargetInfoDto(payRequestTarget, spaceBySpaceId);
             payTargetInfoDtoList.add(payTargetInfoDto);
         }
 
@@ -177,7 +180,7 @@ public class PayService {
         );
     }
 
-    private PayTargetInfoDto getPayTargetInfoDto(PayRequestTarget payRequestTarget, Space space) {
+    private PayTargetInfoDto createPayTargetInfoDto(PayRequestTarget payRequestTarget, Space space) {
         Long targetUserId = payRequestTarget.getTargetUserId();
         User userByUserId = userDao.findUserByUserId(targetUserId);
 

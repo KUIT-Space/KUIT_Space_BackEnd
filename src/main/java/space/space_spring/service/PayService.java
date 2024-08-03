@@ -106,7 +106,7 @@ public class PayService {
         String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
         int requestAmount = payRequestTarget.getRequestAmount();
 
-        return new PayReceiveInfoDto(payCreatorName, requestAmount);
+        return new PayReceiveInfoDto(payRequestTarget.getPayRequestTargetId(), payCreatorName, requestAmount);
     }
 
     @Transactional

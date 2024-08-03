@@ -11,5 +11,4 @@ public class PostPayCompleteResponse {
 
     private boolean isComplete;             // 유저가 돈 낸 정산의 완료 여부
 
-    private final static String message = "정산 완료 처리 성공";            // success msg
 }

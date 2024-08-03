@@ -1,4 +1,4 @@
-package space.space_spring.dto.chat;
+package space.space_spring.dto.chat.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

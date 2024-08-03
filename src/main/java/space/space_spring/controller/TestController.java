@@ -1,6 +1,5 @@
 package space.space_spring.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -8,14 +7,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 
 import space.space_spring.dao.PayDao;
-import space.space_spring.dto.chat.ChatTestRequest;
-import space.space_spring.dto.chat.ChatTestResponse;
-import space.space_spring.dto.jwt.JwtPayloadDto;
+import space.space_spring.dto.chat.request.ChatTestRequest;
+import space.space_spring.dto.chat.response.ChatTestResponse;
 import space.space_spring.response.BaseResponse;
 
 @RestController

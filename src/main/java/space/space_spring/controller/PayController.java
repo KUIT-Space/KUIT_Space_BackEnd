@@ -145,7 +145,7 @@ public class PayController {
         validateIsUserInSpace(userId, spaceId);
 
         // TODO 2. 정산 타겟 유저의 정산 완료 처리
-        return new BaseResponse<>(payService.setPayRequestTargetToComplete(userId, spaceId, postPayCompleteRequest.getPayRequestTargetId()));
+        return new BaseResponse<>(payService.setPayRequestTargetToComplete(postPayCompleteRequest.getPayRequestTargetId()));
     }
 
 }

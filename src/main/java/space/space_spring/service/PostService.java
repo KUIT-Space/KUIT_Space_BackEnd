@@ -9,8 +9,10 @@ import space.space_spring.entity.Post;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.util.space.SpaceUtils;
+import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final SpaceUtils spaceUtils;
+    private final UserSpaceUtils userSpaceUtils;
     private final PostDao postDao;
     private final UserSpaceDao userSpaceDao;
 
@@ -32,9 +35,8 @@ public class PostService {
 
         return posts.stream()
                 .map(post ->{
-                    UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(post.getUser(), post.getSpace())
-                            .orElseThrow(() -> new IllegalStateException("스페이스 안에 사용자가 없음"));
-                    return ReadPostsResponse.of(post, postCount, userSpace);
+                    Optional<UserSpace> userSpace = userSpaceUtils.isUserInSpace(post.getUser().getUserId(), spaceId);
+                    return ReadPostsResponse.of(post, postCount, userSpace.orElse(null));
                 })
                 .collect(Collectors.toList());
     }

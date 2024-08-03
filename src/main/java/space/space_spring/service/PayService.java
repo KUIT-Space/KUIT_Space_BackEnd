@@ -9,6 +9,7 @@ import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.pay.dto.*;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
+import space.space_spring.dto.pay.response.PostPayCompleteResponse;
 import space.space_spring.entity.*;
 import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
@@ -203,7 +204,7 @@ public class PayService {
      * 정산 타겟 유저의 정산 완료 처리
      */
     @Transactional
-    public void setPayRequestTargetToComplete(Long userId, Long spaceId, Long payRequestTargetId) {
+    public PostPayCompleteResponse setPayRequestTargetToComplete(Long userId, Long spaceId, Long payRequestTargetId) {
         // TODO 1. userId 로 User find
         User userByUserId = userUtils.findUserByUserId(userId);
 
@@ -231,5 +232,11 @@ public class PayService {
         if (payRequestCompleteStatus) {
             payRequest.changeCompleteStatus(true);
         }
+
+        // TODO 6. return 타입 구성
+        return new PostPayCompleteResponse(
+                payRequest.getPayRequestId(),
+                payRequestCompleteStatus
+        );
     }
 }

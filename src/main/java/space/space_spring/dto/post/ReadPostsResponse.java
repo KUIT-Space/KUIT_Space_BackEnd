@@ -3,6 +3,8 @@ package space.space_spring.dto.post;
 import lombok.*;
 import space.space_spring.entity.Post;
 import space.space_spring.entity.PostImage;
+import space.space_spring.entity.UserSpace;
+import space.space_spring.util.post.ConvertCreatedDate;
 
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class ReadPostsResponse {
     private int comment_count;
     private int like_count;
 
-    public static ReadPostsResponse from(Post post) {
+    public static ReadPostsResponse of(Post post, int postCount, UserSpace userSpace) {
         List<String> postImageUrls = post.getPostImages().stream()
                 .map(PostImage::getPostImgUrl)
                 .toList();
@@ -42,9 +44,15 @@ public class ReadPostsResponse {
         return ReadPostsResponse.builder()
                 .postId(post.getPostId())
                 .spaceId(post.getSpace().getSpaceId())
+                .userId(post.getUser().getUserId())
+                .userProfileImg(userSpace.getUserProfileImg())
+                .userName(userSpace.getUserName())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .time(ConvertCreatedDate.setCreatedDate(post.getCreatedAt()))
                 .type(post.getType())
+                .post_count(postCount)
+                .comment_count(post.getPostComments().size())
                 .like_count(post.getLike())
                 .postImage(postImageUrls)
                 .build();

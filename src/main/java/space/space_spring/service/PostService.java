@@ -24,13 +24,19 @@ public class PostService {
     private final PostDao postDao;
     private final UserSpaceDao userSpaceDao;
 
-    public List<ReadPostsResponse> getAllPosts(Long spaceId) {
+    public List<ReadPostsResponse> getAllPosts(Long spaceId, String filter) {
 
         // TODO 1: spaceId에 해당하는 space find
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 2: 해당 user의 해당 space 내의 게시판 게시글 리스트 return
-        List<Post> posts = postDao.findBySpace(spaceBySpaceId);
+        // TODO 2: 필터에 따라 해당 user의 해당 space 내의 게시판 게시글 리스트 return
+        List<Post> posts;
+        if(filter != null && !filter.isEmpty()) {
+            posts = postDao.findBySpaceAndType(spaceBySpaceId, filter);
+        } else {
+            posts = postDao.findBySpace(spaceBySpaceId);
+        }
+
         int postCount = posts.size();
 
         return posts.stream()

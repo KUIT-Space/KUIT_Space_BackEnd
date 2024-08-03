@@ -12,4 +12,6 @@ public interface PostDao extends JpaRepository<Post, Long> {
 
     List<Post> findBySpace(Space space);
 
+    List<Post> findBySpaceAndType(Space space, String type);
+
 }

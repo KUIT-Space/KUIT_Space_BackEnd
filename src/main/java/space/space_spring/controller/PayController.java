@@ -8,11 +8,9 @@ import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
 import space.space_spring.dto.pay.dto.PayRequestInfoDto;
 import space.space_spring.dto.pay.dto.PayTargetInfoDto;
 import space.space_spring.dto.pay.dto.TotalPayInfoDto;
+import space.space_spring.dto.pay.request.PostPayCompleteRequest;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
-import space.space_spring.dto.pay.response.GetPayViewResponse;
-import space.space_spring.dto.pay.response.GetReceivePayViewResponse;
-import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
-import space.space_spring.dto.pay.response.GetRequestPayViewResponse;
+import space.space_spring.dto.pay.response.*;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PayService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -135,6 +133,19 @@ public class PayController {
 
         // TODO 2. 정산 상세 정보 조회
         return new BaseResponse<>(payService.getTotalPayInfo(spaceId, payRequestId));
+    }
+
+    /**
+     * 정산 타겟 유저의 정산 완료 처리
+     */
+    @PostMapping("/space/{spaceId}/pay/complete")
+    public BaseResponse<PostPayCompleteResponse> setPayComplete(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestBody PostPayCompleteRequest postPayCompleteRequest) {
+
+        // TODO 1. 유저가 스페이스에 속하는 지 검증
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 정산 타겟 유저의 정산 완료 처리
+        return new BaseResponse<>(payService.setPayRequestTargetToComplete(userId, spaceId, postPayCompleteRequest.getPayRequestTargetId()));
     }
 
 }

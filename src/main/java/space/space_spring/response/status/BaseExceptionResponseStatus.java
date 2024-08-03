@@ -70,7 +70,15 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     D(7003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     E(7004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     F(7005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
-    G(7006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+    G(7006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
+
+
+
+    /*
+    * 9000: voice room 오류
+     */
+    VOICEROOM_NOT_EXIST(9001, HttpStatus.BAD_REQUEST.value(),"존재하지 않는 보이스룸 id입니다."),
+    VOICEROOM_DO_NOT_HAVE_PERMISSION(9002,HttpStatus.FORBIDDEN.value(),"해당 작업은 관리자 권한이 필요합니다." );
 
     private final int code;
     private final int status;

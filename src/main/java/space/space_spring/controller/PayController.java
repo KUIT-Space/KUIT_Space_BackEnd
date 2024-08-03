@@ -10,6 +10,7 @@ import space.space_spring.dto.pay.dto.PayTargetInfoDto;
 import space.space_spring.dto.pay.dto.TotalPayInfoDto;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.GetPayViewResponse;
+import space.space_spring.dto.pay.response.GetReceivePayViewResponse;
 import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
 import space.space_spring.dto.pay.response.GetRequestPayViewResponse;
 import space.space_spring.response.BaseResponse;
@@ -67,6 +68,24 @@ public class PayController {
 
         return new BaseResponse<>(new GetRequestPayViewResponse(payRequestInfoDtoListInComplete, payRequestInfoDtoListComplete));
     }
+
+    /**
+     * 내가 요청받은 정산 조회
+     */
+    @GetMapping("/space/{spaceId}/pay/receive")
+    public BaseResponse<GetReceivePayViewResponse> showReceivePayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
+        // TODO 1. 유저가 스페이스에 속하는 지 검증 -> 추후에 인터셉터에서 처리하게끔 리펙토링 필요
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 유저가 요청받은 정산 중 현재 진행중인 정산 리스트 get -> 정산 타겟 유저가 정산 안했을 경우 : isComplete = false
+        List<PayReceiveInfoDto> payReceiveInfoDtoListInComplete = payService.getPayReceiveInfoForUser(userId, spaceId, false);
+
+        // TODO 3. 유저가 요청받은 정산 중 완료한 정산 리스트 get -> 정산 타겟 유저가 정산 했을 경우 : isComplete = true
+        List<PayReceiveInfoDto> payReceiveInfoDtoListComplete = payService.getPayReceiveInfoForUser(userId, spaceId, true);
+
+        return new BaseResponse<>(new GetReceivePayViewResponse(payReceiveInfoDtoListInComplete, payReceiveInfoDtoListComplete));
+    }
+
 
     /**
      * 유저가 최근 정산받은 은행 계좌 정보 조회

@@ -219,16 +219,7 @@ public class PayService {
 
         // TODO 5. PayRequest의 완료 여부 파악
         PayRequest payRequest = payRequestTargetById.getPayRequest();
-        List<PayRequestTarget> payRequestTargetListByPayRequest = payDao.findPayRequestTargetListByPayRequest(payRequest);
-
-        boolean payRequestCompleteStatus = true;
-        for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
-            if (!payRequestTarget.isComplete()) {
-                payRequestCompleteStatus = false;
-                break;              // 더이상 확인할 필요가 없으므로 break
-            }
-        }
-
+        boolean payRequestCompleteStatus = isPayRequestComplete(payRequest);
         if (payRequestCompleteStatus) {
             payRequest.changeCompleteStatus(true);
         }
@@ -238,5 +229,16 @@ public class PayService {
                 payRequest.getPayRequestId(),
                 payRequestCompleteStatus
         );
+    }
+
+    private boolean isPayRequestComplete(PayRequest payRequest) {
+        List<PayRequestTarget> payRequestTargetListByPayRequest = payDao.findPayRequestTargetListByPayRequest(payRequest);
+        for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
+            if (!payRequestTarget.isComplete()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -16,5 +16,6 @@ public interface VoiceRoomRepository extends JpaRepository<VoiceRoom,Long> {
     @Query("SELECT MAX(r.order) FROM VoiceRoom r WHERE r.space = :space")
     Integer findMaxOrderBySpace(@Param("space") Space space);
 
+    boolean existsByVoiceRoomId(long voiceRoomId);
     VoiceRoom findById(long Id);
 }

@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.PayDao;
-import space.space_spring.dto.pay.*;
+import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
+import space.space_spring.dto.pay.dto.PayRequestInfoDto;
+import space.space_spring.dto.pay.dto.RecentPayRequestBankInfoDto;
+import space.space_spring.dto.pay.request.PostPayCreateRequest;
+import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
@@ -14,7 +18,6 @@ import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +44,7 @@ public class PayService {
 
         for (PayRequest payRequest : payRequestListByUser) {
             // 하나의 정산 요청에 대하여 ,,,
+            Long payRequestId = payRequest.getPayRequestId();
             int totalAmount = payRequest.getTotalAmount();
             int receiveAmount = 0;
             int totalTargetNum = 0;
@@ -57,7 +61,7 @@ public class PayService {
                 totalTargetNum++;
             }
 
-            PayRequestInfoDto payRequestInfoDto = new PayRequestInfoDto(totalAmount, receiveAmount, totalTargetNum, receiveTargetNum);
+            PayRequestInfoDto payRequestInfoDto = new PayRequestInfoDto(payRequestId, totalAmount, receiveAmount, totalTargetNum, receiveTargetNum);
             payRequestInfoDtoList.add(payRequestInfoDto);
         }
 

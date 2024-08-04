@@ -27,7 +27,7 @@ public class UserService {
     private final UserUtils userUtils;
 
     @Transactional
-    public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
+    public Long signup(PostUserSignupRequest postUserSignupRequest) {
         // TODO 1. 이메일 중복 검사(아이디 중복 검사)
         validateEmailForLocalSignup(postUserSignupRequest.getEmail());
 
@@ -40,7 +40,7 @@ public class UserService {
 
         User saveUser = userDao.saveUser(email, password, userName, LOCAL);
 
-        return new PostUserSignupResponse(saveUser.getUserId());
+        return saveUser.getUserId();
     }
 
     private void validateEmailForLocalSignup(String email) {

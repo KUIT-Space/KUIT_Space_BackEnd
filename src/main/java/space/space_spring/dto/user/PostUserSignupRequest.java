@@ -14,7 +14,8 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class PostUserSignupRequest {
 
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")     // 이메일 정규표현식 확인 필요함
+    // '@', '.' 이 있어야 함
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
     @NotBlank
     private String email;
 

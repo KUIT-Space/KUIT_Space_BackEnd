@@ -31,25 +31,29 @@ public class UserController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public BaseResponse<PostUserSignupResponse> signup(@Validated @RequestBody PostUserSignupRequest postUserSignupRequest, BindingResult bindingResult) {
+    public BaseResponse<String> signup(@Validated @RequestBody PostUserSignupRequest postUserSignupRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_SIGNUP, getErrorMessage(bindingResult));
         }
-        return new BaseResponse<>(userService.signup(postUserSignupRequest));
+
+        userService.signup(postUserSignupRequest);
+
+        return new BaseResponse<>("로컬 회원가입 성공");
     }
 
     /**
      * 로그인
      */
     @PostMapping("/login")
-    public BaseResponse<PostUserLoginResponse> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult, HttpServletResponse response) {
+    public BaseResponse<String> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
         }
 
         String jwtLogin = userService.login(postUserLoginRequest);
         response.setHeader("Authorization", "Bearer " + jwtLogin);
-        return new BaseResponse<>(new PostUserLoginResponse("로그인 성공"));
+
+        return new BaseResponse<>("로컬 로그인 성공");
     }
 
     /**

@@ -7,13 +7,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.dto.user.*;
+import space.space_spring.dto.user.request.PostUserLoginRequest;
+import space.space_spring.dto.user.request.PostUserSignupRequest;
+import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
 import space.space_spring.exception.UserException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.UserService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
-
-import java.util.List;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
@@ -64,8 +64,6 @@ public class UserController {
     public BaseResponse<GetSpaceInfoForUserResponse> showUserSpaceList(@JwtLoginAuth Long userId,
                                                                        @RequestParam int size,
                                                                        @RequestParam Long lastUserSpaceId) {
-
-        log.info("userId = {}", userId);
 
         return new BaseResponse<>(userService.getSpaceListForUser(userId, size, lastUserSpaceId));
     }

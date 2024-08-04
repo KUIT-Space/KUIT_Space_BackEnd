@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.space.GetUserInfoBySpaceResponse;
+import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
@@ -41,6 +41,6 @@ public class SpaceService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2. 스페이스의 모든 유저 정보 return
-        return new GetUserInfoBySpaceResponse(userSpaceDao.findUserProfileImgAndName(spaceBySpaceId));
+        return new GetUserInfoBySpaceResponse(userSpaceDao.findUserInfoInSpace(spaceBySpaceId));
     }
 }

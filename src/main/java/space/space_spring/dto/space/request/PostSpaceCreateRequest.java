@@ -1,4 +1,4 @@
-package space.space_spring.dto.space;
+package space.space_spring.dto.space.request;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;

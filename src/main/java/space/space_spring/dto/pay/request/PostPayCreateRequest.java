@@ -1,4 +1,4 @@
-package space.space_spring.dto.pay;
+package space.space_spring.dto.pay.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor

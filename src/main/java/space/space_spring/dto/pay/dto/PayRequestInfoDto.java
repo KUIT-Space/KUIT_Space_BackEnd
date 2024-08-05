@@ -1,4 +1,4 @@
-package space.space_spring.dto.pay;
+package space.space_spring.dto.pay.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PayRequestInfoDto {
+
+    private Long payRequestId;
 
     private int totalAmount;            // 정산 총 금액
 

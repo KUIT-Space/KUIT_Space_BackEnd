@@ -31,9 +31,12 @@ public class PostService {
 
         // TODO 2: 필터에 따라 해당 user의 해당 space 내의 게시판 게시글 리스트 return
         List<Post> posts;
-        if(filter != null && !filter.isEmpty()) {
-            posts = postDao.findBySpaceAndType(spaceBySpaceId, filter);
+        if("notice".equalsIgnoreCase(filter)) {
+            posts = postDao.findBySpaceAndType(spaceBySpaceId, "notice");
+        } else if ("general".equalsIgnoreCase(filter)){
+            posts = postDao.findBySpaceAndType(spaceBySpaceId, "general");
         } else {
+            // filter = "all" 일 경우 전체 게시글 조회
             posts = postDao.findBySpace(spaceBySpaceId);
         }
 

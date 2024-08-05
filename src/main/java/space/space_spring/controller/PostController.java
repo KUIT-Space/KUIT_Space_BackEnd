@@ -19,7 +19,7 @@ public class PostController {
     @GetMapping("/board")
     public BaseResponse<List<ReadPostsResponse>> getBoard(
             @PathVariable Long spaceId,
-            @RequestParam(required = false) String filter) {
+            @RequestParam(defaultValue = "all") String filter) {
         List<ReadPostsResponse> board = postService.getAllPosts(spaceId, filter);
         return new BaseResponse<>(board);
     }

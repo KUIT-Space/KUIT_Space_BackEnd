@@ -4,13 +4,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import space.space_spring.dto.pay.RecentPayRequestBankInfoDto;
+import space.space_spring.dto.pay.dto.RecentPayRequestBankInfoDto;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

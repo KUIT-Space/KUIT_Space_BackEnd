@@ -4,9 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import space.space_spring.dto.user.GetSpaceInfoForUserResponse;
-import space.space_spring.dto.user.SpaceChoiceViewDto;
-import space.space_spring.dto.userSpace.UserProfileImgAndNameDto;
+import space.space_spring.dto.user.dto.SpaceChoiceInfo;
+import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
+import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
@@ -41,7 +41,7 @@ public class UserSpaceDao {
     public SpaceChoiceViewDto getSpaceChoiceView(User userByUserId, int size, Long lastUserSpaceId) {
 
         // 유저가 현재 속해있는 스페이스의 정보만을 return하기 위해 status가 active인 것만 select
-        String jpql = "SELECT us.userSpaceId, s.spaceName, s.spaceProfileImg " +
+        String jpql = "SELECT us.userSpaceId, s.spaceId, s.spaceName, s.spaceProfileImg " +
                 "FROM UserSpace us JOIN us.space s " +
                 "WHERE us.user = :user AND us.status = 'ACTIVE' " +
                 "AND us.userSpaceId > :lastUserSpaceId ORDER BY us.userSpaceId ASC";
@@ -52,41 +52,60 @@ public class UserSpaceDao {
         query.setMaxResults(size);
 
         List<Object[]> results = query.getResultList();
-        List<Map<String, String>> responseList = new ArrayList<>();
-        Long newLastUserSpaceId = null;
 
-        for (Object[] result : results) {
-            Long userSpaceId = (Long) result[0];
-            String spaceName = (String) result[1];
-            String spaceProfileImg = (String) result[2];
-            Map<String, String> spaceNameAndProfileImgMap = new HashMap<>();
-            spaceNameAndProfileImgMap.put("spaceName", spaceName);
-            spaceNameAndProfileImgMap.put("spaceProfileImg", spaceProfileImg);
-            responseList.add(spaceNameAndProfileImgMap);
-            newLastUserSpaceId = userSpaceId;
-        }
+        List<SpaceChoiceInfo> spaceChoiceInfoList = mapToSpaceChoiceInfoList(results);
 
-        // 데이터가 마지막임을 알리기 위해 -1 설정
-        if (results.isEmpty()) {
-            newLastUserSpaceId = -1L;
-        }
+        Long newLastUserSpaceId = determineLastUserSpaceId(results);
 
-        return new SpaceChoiceViewDto(responseList, newLastUserSpaceId);
+        return new SpaceChoiceViewDto(spaceChoiceInfoList, newLastUserSpaceId);
     }
 
-    public List<UserProfileImgAndNameDto> findUserProfileImgAndName(Space space) {
-        String jpql = "SELECT us.userName, us.userProfileImg FROM UserSpace us WHERE us.space = :space";
+    private Long determineLastUserSpaceId(List<Object[]> results) {
+        if (results.isEmpty()) {
+            return -1L;             // 더 이상 조회할 데이터가 없음을 표시
+        }
+        // results가 비어있지 않다면 마지막 userSpaceId를 반환
+        return (Long) results.get(results.size() - 1)[0];
+    }
+
+    private List<SpaceChoiceInfo> mapToSpaceChoiceInfoList(List<Object[]> results) {
+        List<SpaceChoiceInfo> spaceChoiceInfoList = new ArrayList<>();
+        for (Object[] result : results) {
+            Long spaceId = (Long) result[1];
+            String spaceName = (String) result[2];
+            String spaceProfileImg = (String) result[3];
+
+            SpaceChoiceInfo spaceChoiceInfo = new SpaceChoiceInfo(spaceId, spaceName, spaceProfileImg);
+            spaceChoiceInfoList.add(spaceChoiceInfo);
+        }
+        return spaceChoiceInfoList;
+    }
+
+    public List<UserInfoInSpace> findUserInfoInSpace(Space space) {
+        String jpql = "SELECT us.user.userId, us.userName, us.userProfileImg, us.userSpaceAuth " +
+                "FROM UserSpace us WHERE us.space = :space";
         TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
         query.setParameter("space", space);
 
         List<Object[]> results = query.getResultList();
-        List<UserProfileImgAndNameDto> responseList = new ArrayList<>();
+
+        return mapToUserInfoInSpace(results);
+    }
+
+    private List<UserInfoInSpace> mapToUserInfoInSpace(List<Object[]> results) {
+        List<UserInfoInSpace> userInfoInSpaceList = new ArrayList<>();
+
         for (Object[] result : results) {
-            String userName = (String) result[0];
-            String profileImg = (String) result[1];
-            responseList.add(new UserProfileImgAndNameDto(userName, profileImg));
+            Long userId = (Long) result[0];
+            String userName = (String) result[1];
+            String profileImgUrl = (String) result[2];
+            String userAuth = (String) result[3];
+
+            UserInfoInSpace userInfoInSpace = new UserInfoInSpace(userId, userName, profileImgUrl, userAuth);
+            userInfoInSpaceList.add(userInfoInSpace);
         }
 
-        return responseList;
+        return userInfoInSpaceList;
     }
+
 }

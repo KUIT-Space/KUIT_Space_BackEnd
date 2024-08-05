@@ -58,11 +58,17 @@ public class VoiceRoomController {
     public BaseResponse<GetVoiceRoomList.Response> getRoomList(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
-            @RequestBody GetVoiceRoomList.Request voiceRoomListList){
+            //@RequestBody GetVoiceRoomList.Request voiceRoomList,
+            @RequestParam(required = false,defaultValue = "0") Integer limit,
+            @RequestParam(required = false,defaultValue = "false") Boolean showParticipant){
+
+        boolean showParticipantValue = (showParticipant != null) ? showParticipant : false;
+
         //해당 유저가, voiceRoom이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);
+        GetVoiceRoomList.Request voiceRoomList=new GetVoiceRoomList.Request(limit, showParticipant);
 
-        List<GetVoiceRoomList.VoiceRoomInfo> roomInfoList = voiceRoomService.getVoiceRoomInfoList(spaceId,voiceRoomListList);
+        List<GetVoiceRoomList.VoiceRoomInfo> roomInfoList = voiceRoomService.getVoiceRoomInfoList(spaceId,voiceRoomList);
         return new BaseResponse<GetVoiceRoomList.Response>(new GetVoiceRoomList.Response(roomInfoList));
     }
 
@@ -71,12 +77,13 @@ public class VoiceRoomController {
     public BaseResponse<String> getToken(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
-            @RequestBody GetToken.Request req,
+            @RequestParam(required = true) Long roomId,
             HttpServletResponse response
     ){
         //해당 유저가, voiceRoom이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);
-        response.setHeader("Authorization", "Bearer " + voiceRoomService.getToken(spaceId, userId,req.getRoomId()));
+
+        response.setHeader("Authorization", "Bearer " + voiceRoomService.getToken(spaceId, userId,roomId));
         return new BaseResponse<String>(
             "보이스룸 토큰 생성에 성공했습니다."
         );
@@ -87,12 +94,12 @@ public class VoiceRoomController {
     public BaseResponse<GetParticipantList.Response> getParticipants(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
-            @RequestBody GetParticipantList.Request req
+            @RequestParam(required = true) Long roomId
     ){
         //해당 유저가 voice이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);
 
-        List<GetParticipantList.ParticipantInfo> participantInfoList = voiceRoomService.getParticipantInfoListById(req.getRoomId());
+        List<GetParticipantList.ParticipantInfo> participantInfoList = voiceRoomService.getParticipantInfoListById(roomId);
         return new BaseResponse<GetParticipantList.Response>(new GetParticipantList.Response(participantInfoList));
     }
 

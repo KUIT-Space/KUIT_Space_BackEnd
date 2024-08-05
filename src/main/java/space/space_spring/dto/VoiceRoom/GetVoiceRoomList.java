@@ -5,12 +5,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GetVoiceRoomList {
     @Getter
+    @AllArgsConstructor
     public static class Request{
         @Nullable
         private int limit;

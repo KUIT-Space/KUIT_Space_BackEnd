@@ -16,6 +16,8 @@ public class ConvertCreatedDate {
             return ChronoUnit.DAYS.between(createdAt, now) + "일 전";
         else if(ChronoUnit.HOURS.between(createdAt, now) != 0)
             return ChronoUnit.HOURS.between(createdAt, now) + "시간 전";
+        else if (ChronoUnit.MINUTES.between(createdAt, now) != 0)
+            return ChronoUnit.MINUTES.between(createdAt, now) + "분 전";
         else
             return "방금";
     }

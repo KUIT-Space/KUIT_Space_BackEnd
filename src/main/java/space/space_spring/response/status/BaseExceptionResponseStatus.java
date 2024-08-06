@@ -76,8 +76,12 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /**
      * 8000: Chat 오류
      */
-    INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST.value(), "채팅방 생성 요청에서 잘못된 값이 존재합니다.");
+    INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST.value(), "채팅방 생성 요청에서 잘못된 값이 존재합니다."),
 
+    /**
+     * 9000 : MultipartFile 오류
+     */
+    IS_NOT_IMAGE_FILE(9000, HttpStatus.BAD_REQUEST.value(), "지원되는 이미지 파일의 형식이 아닙니다.");
 
     private final int code;
     private final int status;

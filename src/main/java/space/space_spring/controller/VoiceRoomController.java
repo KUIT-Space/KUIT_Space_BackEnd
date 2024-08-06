@@ -125,6 +125,12 @@ public class VoiceRoomController {
         }
         return true;
     }
+    private boolean validateVoiceRoomNameExist(String voiceRoomName){
+        if(!voiceRoomRepository.existsByName(voiceRoomName)){
+            throw new VoiceRoomException(VOICEROOM_NOT_EXIST);
+        }
+        return true;
+    }
     private boolean validateManagerPermission(long spaceId,long userId){
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
             //TODO 권한 확인 과정을 일괄적으로 처리 할 수 있는 코드가 필요해 보임

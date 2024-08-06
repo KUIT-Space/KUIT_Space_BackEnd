@@ -17,5 +17,6 @@ public interface VoiceRoomRepository extends JpaRepository<VoiceRoom,Long> {
     Integer findMaxOrderBySpace(@Param("space") Space space);
 
     boolean existsByVoiceRoomId(long voiceRoomId);
+    boolean existsByName(String voiceRoomName);
     VoiceRoom findById(long Id);
 }

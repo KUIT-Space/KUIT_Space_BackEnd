@@ -9,6 +9,7 @@ import space.space_spring.dao.VoiceRoomDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;
 import space.space_spring.entity.Space;
+import space.space_spring.entity.User;
 import space.space_spring.entity.VoiceRoom;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
@@ -72,6 +73,7 @@ public class VoiceRoomService {
                 List<ParticipantDto> participantDtoList = getParticipantDtoListById(roomDto.getId());
                 for(ParticipantDto participantDto: participantDtoList){
                     //Todo profileIamge 집어넣기
+                    participantDto.setProfileImage(findProfileImageByUserId(Long.parseLong(participantDto.getId())));
                 }
                 //RoomDto에 값 집어넣기
                     //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
@@ -96,6 +98,9 @@ public class VoiceRoomService {
         //return null;
     }
 
+    private String findProfileImageByUserId(Long userId){
+        return userDao.findProfileImageByUserId(userId);
+    }
     public List<VoiceRoom> findBySpaceId(long spaceId){
         return findBySpace(spaceUtils.findSpaceBySpaceId(spaceId));
     }

@@ -36,6 +36,7 @@ public class GetParticipantList {
             return ParticipantInfo.builder()
                     .name(participantDto.getName())
                     .isMute(participantDto.isMicMute())
+                    .profileImage(participantDto.getProfileImage())
                     .build();
         }
         public static List<ParticipantInfo> convertParticipantDtoList(List<ParticipantDto> participantDtoList){

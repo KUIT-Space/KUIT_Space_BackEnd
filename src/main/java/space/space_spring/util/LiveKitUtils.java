@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class LiveKitUtils {
-    @Value("${livekit.projet.host")
+    @Value("${livekit.project.host")
     private String hostUrl;
     @Value("${livekit.project.id}")
     private String projectId;
@@ -38,6 +38,7 @@ public class LiveKitUtils {
 
             //response.body().get(0).
             //response.body().get(0).toString();
+            System.out.print("[DEBUG]LiveKit RoomList API:"+response.body());
             return response.body();
         } catch (Exception e) {
             System.out.println("There was a problem: " + e.getMessage());
@@ -47,12 +48,12 @@ public class LiveKitUtils {
     }
 
     public List<ParticipantDto> getParticipantInfo(String roomName) {
-        String liveKitHost = "https://space-biwhq7u2.livekit.cloud";
+        String liveKitHost = hostUrl;
         RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost, apiKey, apiSecretKey);
         String identity = roomName;
         try {
             Response<List<LivekitModels.ParticipantInfo>> response = roomServiceClient.listParticipants(roomName).execute();
-            System.out.print(response.toString());
+            System.out.print("[DEBUG]LiveKit participant List response:"+response.body().toString());
             //response.body().get(0).getTracksList().get(0).getMuted();
             //response.body().get(0).getTracksList().get(0).;
             //response.body().get(0).toString();

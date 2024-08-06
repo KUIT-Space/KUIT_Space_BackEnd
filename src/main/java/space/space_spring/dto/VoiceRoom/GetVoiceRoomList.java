@@ -7,8 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GetVoiceRoomList {
     @Getter
@@ -48,11 +50,21 @@ public class GetVoiceRoomList {
                     )
                     .build();
         }
-        public static List<VoiceRoomInfo> convertRoomDtoList(List<RoomDto> roomDtoList){
+        public static List<VoiceRoomInfo> convertRoomDtoList(List<RoomDto> roomDtoList,Integer limit){
             if(roomDtoList==null||roomDtoList.isEmpty()){return null;}
-            return roomDtoList.stream()
-                    .map(VoiceRoomInfo::convertRoomDto)
+            Stream<RoomDto> sortedStream = roomDtoList.stream()
+                    .sorted(Comparator
+                            .comparing((RoomDto r) -> r.getNumParticipants() == 0) // Active rooms first
+                            .thenComparing(RoomDto::getOrder)) ;// Then by order
+            System.out.print("limit input:"+limit);
+            Stream<RoomDto> processedStream = (limit != null) ? sortedStream.limit(limit) : sortedStream;
+
+            return processedStream.map(VoiceRoomInfo::convertRoomDto)
                     .collect(Collectors.toList());
+
+        }
+        public static List<VoiceRoomInfo> convertRoomDtoList(List<RoomDto> roomDtoList) {
+            return convertRoomDtoList(roomDtoList, null);
         }
     }
 }

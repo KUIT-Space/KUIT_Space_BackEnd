@@ -14,6 +14,7 @@ import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,40 +44,55 @@ public class VoiceRoomService {
     }
 
     public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoList(long spaceId,GetVoiceRoomList.Request req){
-        int limit = req.getLimit();
+        Integer limit = req.getLimit();
         boolean showParticipant =req.isShowParticipant();
 
 
-        //ToDo 해당 space VoiceRoom 가져오기 (VoiceRoom List)
+        //해당 space VoiceRoom 가져오기 (VoiceRoom List)
             //Todo 가져오기에 limit 적용
         List<VoiceRoom> voiceRoomDataList = findBySpaceId(spaceId);
         List<RoomDto> roomDtoList = RoomDto.convertRoomDtoListByVoiceRoom(voiceRoomDataList);
-        //ToDo VoiceRoom과 Room mapping
+        //VoiceRoom과 Room mapping
             //#1 Response 받아오기
             List<LivekitModels.Room> roomResponses = liveKitUtils.getRoomList();
             //#2 Room과 mapping 시키기
             for(RoomDto roomDto : roomDtoList){
                 roomDto.setActiveRoom(roomResponses);
             }
-        //ToDo participant mapping
+        //participant mapping
         if (showParticipant) {
             for(RoomDto roomDto : roomDtoList) {
-                if(roomDto.getNumParticipants()==0){continue;}
+                if(roomDto.getNumParticipants()==0){
+                    //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+                    System.out.print("\n[DEBUG]Participant Number : 0\n");
+                    roomDto.setParticipantDTOList(Collections.emptyList());
+                    continue;
+                }
                 //participantDto List 가져오기
                 List<ParticipantDto> participantDtoList = getParticipantDtoListById(roomDto.getId());
                 for(ParticipantDto participantDto: participantDtoList){
                     //Todo profileIamge 집어넣기
                 }
                 //RoomDto에 값 집어넣기
-                roomDto.setParticipantDTOList(participantDtoList);
+                    //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+                if(participantDtoList.isEmpty()||participantDtoList==null){
+                    System.out.print("\n\n[DEBUG]participant response is empty or null"+participantDtoList.toString()+
+                            "participant number is \n\n");
+                    roomDto.setParticipantDTOList(Collections.emptyList());
+                }else {
+                    roomDto.setParticipantDTOList(participantDtoList);
+                }
             }
         }
         //ToDo Response로 convert
             //#1 Active/inActive 분리
 
             //#2 convert
-            return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList);
-
+            if(limit==null||limit<=0) {
+                return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList);
+            }else{
+                return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList,limit);
+            }
         //return null;
     }
 

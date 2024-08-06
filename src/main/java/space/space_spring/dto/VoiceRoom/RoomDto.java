@@ -107,7 +107,7 @@ public class RoomDto {
         }
     }
     private static boolean EqualRoomIdByNameTag(String roomName,long Id){
-        return roomName.endsWith(String.valueOf(Id));
+        return roomName.endsWith("#"+String.valueOf(Id));
     }
     private static final ObjectMapper objectMapper=new ObjectMapper();
 

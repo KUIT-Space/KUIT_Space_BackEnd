@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,8 @@ public class GetParticipantList {
                     .build();
         }
         public static List<ParticipantInfo> convertParticipantDtoList(List<ParticipantDto> participantDtoList){
-            if(participantDtoList==null||participantDtoList.isEmpty()){return null;}
+            if(participantDtoList==null){System.out.print("\n[DEBUG] participant List is NULL\n"); return null;}
+            if(participantDtoList.isEmpty()){System.out.print("\n[DEBUG] participant List is Empty\n"); return Collections.emptyList();}
             return participantDtoList.stream()
                     .map(ParticipantInfo::convertParticipantDto)
                     .collect(Collectors.toList());

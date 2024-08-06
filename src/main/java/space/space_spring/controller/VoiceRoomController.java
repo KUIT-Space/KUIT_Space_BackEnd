@@ -82,6 +82,8 @@ public class VoiceRoomController {
     ){
         //해당 유저가, voiceRoom이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);
+        //해당 voiceRoomId가 존재하는지 확인
+        validateVoiceRoom(roomId);
 
         response.setHeader("Authorization", "Bearer " + voiceRoomService.getToken(spaceId, userId,roomId));
         return new BaseResponse<String>(
@@ -98,6 +100,8 @@ public class VoiceRoomController {
     ){
         //해당 유저가 voice이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);
+        //해당 voiceRoomId가 존재하는지 확인
+        validateVoiceRoom(roomId);
 
         List<GetParticipantList.ParticipantInfo> participantInfoList = voiceRoomService.getParticipantInfoListById(roomId);
         return new BaseResponse<GetParticipantList.Response>(new GetParticipantList.Response(participantInfoList));

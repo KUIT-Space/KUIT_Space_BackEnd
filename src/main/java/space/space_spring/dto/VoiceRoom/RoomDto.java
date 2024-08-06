@@ -95,16 +95,19 @@ public class RoomDto {
     }
     public void setActiveRoom(List<LivekitModels.Room> liveKitRoomList){
         if(liveKitRoomList==null||liveKitRoomList.isEmpty()){return;}
+        boolean find = false;
         for(LivekitModels.Room resRoom : liveKitRoomList){
             if(EqualRoomIdByNameTag(resRoom.getName(),this.id)){
                 this.numParticipants = resRoom.getNumParticipants();
                 this.sid = resRoom.getSid();
                 this.metadata = resRoom.getMetadata();
                 this.startTime= resRoom.getCreationTime();
-            }else{
-                this.numParticipants =0;
+                find = true;
+                break;
             }
+
         }
+        if(!find){this.numParticipants=0;}
     }
     private static boolean EqualRoomIdByNameTag(String roomName,long Id){
         return roomName.endsWith("#"+String.valueOf(Id));

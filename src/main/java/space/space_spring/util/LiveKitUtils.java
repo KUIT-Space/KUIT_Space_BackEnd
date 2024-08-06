@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class LiveKitUtils {
-    @Value("${livekit.project.host")
+    @Value("${livekit.project.host}")
     private String hostUrl;
     @Value("${livekit.project.id}")
     private String projectId;
@@ -29,7 +29,8 @@ public class LiveKitUtils {
     private final RestTemplate restTemplate;
 
     public List<LivekitModels.Room> getRoomList() {
-        String liveKitHost = "https://space-biwhq7u2.livekit.cloud";
+        String liveKitHost = hostUrl;
+        System.out.print("[liveKit Url]:"+hostUrl);
         RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost, apiKey, apiSecretKey);
 
         try {

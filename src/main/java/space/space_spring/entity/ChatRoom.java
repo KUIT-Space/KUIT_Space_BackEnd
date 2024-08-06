@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-import space.space_spring.dto.chat.CreateChatRoomRequest;
-
-import java.util.List;
+import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 
 @Entity
 @Getter

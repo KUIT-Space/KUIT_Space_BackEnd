@@ -8,9 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import space.space_spring.dao.PayDao;
-import space.space_spring.dto.pay.PayReceiveInfoDto;
-import space.space_spring.dto.pay.PayRequestInfoDto;
-import space.space_spring.dto.pay.PostPayCreateRequest;
+import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
+import space.space_spring.dto.pay.dto.PayRequestInfoDto;
+import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
@@ -20,13 +20,10 @@ import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PayServiceTest {

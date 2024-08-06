@@ -52,4 +52,7 @@ public class UserDao {
     public User findUserByUserId(Long userId) {
         return em.find(User.class, userId);
     }
+    public String findProfileImageByUserId(Long userId){
+        return "Test ProfileImage URL";//findUserByUserId(userId).getProfileImage();
+    }
 }

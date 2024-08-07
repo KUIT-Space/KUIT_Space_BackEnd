@@ -43,4 +43,13 @@ public class VoiceRoom extends BaseEntity{
         voiceRoom.initializeBaseEntityFields();
         return voiceRoom;
     }
+    public void update(String name,Integer order){
+        if(name!=null){
+            this.name = name;
+        }
+        if(order!=null){
+            this.order=order;
+        }
+        this.onUpdate();
+    }
 }

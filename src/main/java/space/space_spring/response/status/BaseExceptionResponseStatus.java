@@ -49,6 +49,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
     INVALID_USER_LOGIN(4007, HttpStatus.BAD_REQUEST.value(), "로그인 요청에서 잘못된 값이 존재합니다."),
 
+
     /**
      * 6000: Space 오류
      */
@@ -65,7 +66,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 7000: UserSpace 오류
      */
     USER_IS_NOT_IN_SPACE(7000, HttpStatus.BAD_REQUEST.value(), "해당 스페이스에 속하지 않는 유저입니다."),
-    B(7001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
+    UNAUTHORIZED_USER(7001, HttpStatus.UNAUTHORIZED.value(), "해당 스페이스에 관리자 권한이 없는 유저입니다."),
     C(7002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
     D(7003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     E(7004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
@@ -74,15 +75,27 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
 
 
-    /*
-    * 9000: voice room 오류
-     */
-    VOICEROOM_NOT_EXIST(9001, HttpStatus.BAD_REQUEST.value(),"존재하지 않는 보이스룸 id입니다."),
-    INVALID_VOICEROOM_REQUEST(9002, HttpStatus.BAD_REQUEST.value(),"잘못된 요청 인자 입니다."),
 
-    VOICEROOM_NAME_ALREADY_EXIST(9003, HttpStatus.BAD_REQUEST.value(),"이미 존재하는 VoiceRoom 이름 입니다."),
-    VOICEROOM_NOT_IN_SPACE(9004, HttpStatus.BAD_REQUEST.value(),"이미 존재하는 VoiceRoom 이름 입니다."),
-    VOICEROOM_DO_NOT_HAVE_PERMISSION(9005,HttpStatus.FORBIDDEN.value(),"해당 작업은 관리자 권한이 필요합니다." );
+    /**
+     * 8000: Chat 오류
+     */
+    INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST.value(), "채팅방 생성 요청에서 잘못된 값이 존재합니다."),
+
+    /**
+     * 9000 : MultipartFile 오류
+     */
+    IS_NOT_IMAGE_FILE(9000, HttpStatus.BAD_REQUEST.value(), "지원되는 이미지 파일의 형식이 아닙니다."),
+
+    /*
+     * 10000: voice room 오류
+     */
+    VOICEROOM_NOT_EXIST(10001, HttpStatus.BAD_REQUEST.value(),"존재하지 않는 보이스룸 id입니다."),
+    INVALID_VOICEROOM_REQUEST(10002, HttpStatus.BAD_REQUEST.value(),"잘못된 요청 인자 입니다."),
+
+    VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST.value(),"이미 존재하는 VoiceRoom 이름 입니다."),
+    VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST.value(),"이미 존재하는 VoiceRoom 이름 입니다."),
+    VOICEROOM_DO_NOT_HAVE_PERMISSION(10005,HttpStatus.FORBIDDEN.value(),"해당 작업은 관리자 권한이 필요합니다." );
+
 
     private final int code;
     private final int status;

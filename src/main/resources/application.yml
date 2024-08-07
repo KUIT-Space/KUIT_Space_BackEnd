@@ -120,4 +120,10 @@ livekit:
     key: ${LIVEKIT_KEY}
     secretKey: ${LIVEKIT_SECRET_KEY}
 
+---
 
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB

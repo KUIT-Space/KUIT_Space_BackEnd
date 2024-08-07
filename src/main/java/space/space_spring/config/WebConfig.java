@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final JwtLoginAuthHandlerArgumentResolver jwtLoginAuthHandlerArgumentResolver;
 
-    private static final String DEVELOP_FRONT_ADDRESS = "http://localhost:3000";
+    private static final String DEVELOP_FRONT_ADDRESS = "http://localhost:5173";
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -41,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(DEVELOP_FRONT_ADDRESS)
+                .allowedOriginPatterns(String.valueOf(List.of(DEVELOP_FRONT_ADDRESS, "http://localhost:3000")))
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .exposedHeaders("location")
                 .allowedHeaders("*")

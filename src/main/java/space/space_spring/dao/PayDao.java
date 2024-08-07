@@ -2,15 +2,16 @@ package space.space_spring.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.hibernate.validator.internal.constraintvalidators.bv.AssertFalseValidator;
+import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.dto.pay.dto.RecentPayRequestBankInfoDto;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class PayDao {
@@ -18,14 +19,14 @@ public class PayDao {
     @PersistenceContext
     private EntityManager em;
 
-    public List<PayRequest> findPayRequestListByUser(User user, Space space) {
+    public List<PayRequest> findPayRequestListByUser(User user, Space space, boolean isComplete) {
         // 유저가 해당 스페이스에서 요청한 정산 목록만을 select
-        // 아직 정산이 완료되지 않은 payRequest 엔티티만 select
-        String jpql = "SELECT pr FROM PayRequest pr WHERE pr.payCreateUser = :user AND pr.space = :space AND pr.isComplete = false";
+        String jpql = "SELECT pr FROM PayRequest pr WHERE pr.payCreateUser = :user AND pr.space = :space AND pr.isComplete = :isComplete";
 
         return em.createQuery(jpql, PayRequest.class)
                 .setParameter("user", user)
                 .setParameter("space", space)
+                .setParameter("isComplete", isComplete)
                 .getResultList();
     }
 
@@ -39,17 +40,51 @@ public class PayDao {
                 .getResultList();
     }
 
-    public List<PayRequestTarget> findPayRequestTargetListByUser(User user, Space space) {
+    public List<PayRequestTarget> findPayRequestTargetListByUser(User user, Space space, boolean isComplete) {
         // 유저가 해당 스페이스에서 요청받은 정산 목록만을 select
-        // 유저가 요청받은 정산 중 아직 완료되지 않은 payRequestTarget 엔티티만 select
         String jpql = "SELECT prt FROM PayRequestTarget prt " +
                 "JOIN prt.payRequest pr " +
-                "WHERE prt.targetUserId = :userId AND pr.space = :space AND pr.isComplete = false";
+                "WHERE prt.targetUserId = :userId AND pr.space = :space AND pr.isComplete = :isComplete";
 
         return em.createQuery(jpql, PayRequestTarget.class)
                 .setParameter("userId", user.getUserId())
                 .setParameter("space", space)
+                .setParameter("isComplete", isComplete)
                 .getResultList();
     }
 
+    public List<RecentPayRequestBankInfoDto> findRecentPayRequestBankInfoByUser(User user) {
+        // 유저가 최근에 정산받은 계좌 정보를 select
+        // 어느 스페이스에서 정산받았는지는 중요하지 X & 최대 5개만 select
+        String jpql = "SELECT pr.bankName, pr.bankAccountNum " +
+                "FROM PayRequest pr " +
+                "WHERE pr.payCreateUser = :user ORDER BY pr.lastModifiedAt DESC";
+        TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class)
+                .setParameter("user", user)
+                .setMaxResults(5);          // 최대 5개만 return
+
+        List<Object[]> resultList = query.getResultList();
+
+        return resultList.stream()
+                .map(result -> new RecentPayRequestBankInfoDto(
+                        (String) result[0],
+                        (String) result[1]))
+                .collect(Collectors.toList());
+    }
+
+    public PayRequest createPayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, boolean isComplete) {
+        PayRequest payRequest = new PayRequest();
+        payRequest.savePayRequest(payCreateUser, space, totalAmount, bankName, bankAccountNum, isComplete);
+
+        em.persist(payRequest);
+        return payRequest;
+    }
+
+    public PayRequestTarget createPayRequestTarget(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {
+        PayRequestTarget payRequestTarget = new PayRequestTarget();
+        payRequestTarget.savePayRequestTarget(payRequest, targetUserId, requestAmount, isComplete);
+
+        em.persist(payRequestTarget);
+        return payRequestTarget;
+    }
 }

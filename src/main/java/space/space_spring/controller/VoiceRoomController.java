@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_DO_NOT_HAVE_PERMISSION;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,6 +65,7 @@ public class VoiceRoomController {
 
         //해당 유저가, voiceRoom이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);
+
         GetVoiceRoomList.Request voiceRoomList=new GetVoiceRoomList.Request(limit, showParticipant);
 
         List<GetVoiceRoomList.VoiceRoomInfo> roomInfoList = voiceRoomService.getVoiceRoomInfoList(spaceId,voiceRoomList);
@@ -84,6 +84,8 @@ public class VoiceRoomController {
         validateIsUserInSpace(spaceId,userId);
         //해당 voiceRoomId가 존재하는지 확인
         validateVoiceRoom(roomId);
+        //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
+        validateVoiceRoomInSpace(spaceId,roomId);
 
         response.setHeader("Authorization", "Bearer " + voiceRoomService.getToken(spaceId, userId,roomId));
         return new BaseResponse<String>(
@@ -102,6 +104,8 @@ public class VoiceRoomController {
         validateIsUserInSpace(spaceId,userId);
         //해당 voiceRoomId가 존재하는지 확인
         validateVoiceRoom(roomId);
+        //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
+        validateVoiceRoomInSpace(spaceId,roomId);
 
         List<GetParticipantList.ParticipantInfo> participantInfoList = voiceRoomService.getParticipantInfoListById(roomId);
         return new BaseResponse<GetParticipantList.Response>(new GetParticipantList.Response(participantInfoList));
@@ -131,7 +135,13 @@ public class VoiceRoomController {
     }
     private boolean validateVoiceRoomNameExist(String voiceRoomName){
         if(!voiceRoomRepository.existsByName(voiceRoomName)){
-            throw new VoiceRoomException(VOICEROOM_NOT_EXIST);
+            throw new VoiceRoomException(VOICEROOM_NAME_ALREADY_EXIST);
+        }
+        return true;
+    }
+    private boolean validateVoiceRoomInSpace(long spaceId,long voiceRoomId){
+        if(! (voiceRoomRepository.findById(voiceRoomId).getSpace().getSpaceId().equals(spaceId))){
+            throw new VoiceRoomException(VOICEROOM_NOT_IN_SPACE);
         }
         return true;
     }

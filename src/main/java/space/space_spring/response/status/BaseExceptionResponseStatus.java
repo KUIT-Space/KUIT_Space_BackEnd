@@ -79,6 +79,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      */
     VOICEROOM_NOT_EXIST(9001, HttpStatus.BAD_REQUEST.value(),"존재하지 않는 보이스룸 id입니다."),
     VOICEROOM_NAME_ALREADY_EXIST(9002, HttpStatus.BAD_REQUEST.value(),"이미 존재하는 VoiceRoom 이름 입니다."),
+    VOICEROOM_NOT_IN_SPACE(9002, HttpStatus.BAD_REQUEST.value(),"이미 존재하는 VoiceRoom 이름 입니다."),
     VOICEROOM_DO_NOT_HAVE_PERMISSION(9003,HttpStatus.FORBIDDEN.value(),"해당 작업은 관리자 권한이 필요합니다." );
 
     private final int code;

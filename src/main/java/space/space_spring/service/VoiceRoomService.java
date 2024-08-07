@@ -100,6 +100,27 @@ public class VoiceRoomService {
         //return null;
     }
 
+    public boolean updateVoiceRoom(List<PatchVoiceRoom.UpdateRoom> updateRoomList){
+
+        //Todo 입력된 order가 유효한지 확인 필요
+
+
+        for(PatchVoiceRoom.UpdateRoom updateRoom : updateRoomList){
+            VoiceRoom voiceRoom = voiceRoomRepository.findById(updateRoom.getRoomId()).get();
+            String newName =updateRoom.getName();
+            Integer newOrder= updateRoom.getOrder();
+            voiceRoom.update(newName,newOrder);
+            voiceRoomRepository.save(voiceRoom);
+
+        }
+        
+        return true;
+    }
+
+    public void deleteVoiceRoom(long voiceRoomId){
+        //Todo Base Entity에 일괄적으로 soft Delete를 적용하는 방법을 다같이 정하는 것이 좋아보임
+    }
+
     private String findProfileImageByUserId(Long userId){
         return userDao.findProfileImageByUserId(userId);
     }
@@ -121,6 +142,7 @@ public class VoiceRoomService {
         }
         return participantDtoList;
     }
+
     public List<GetParticipantList.ParticipantInfo> getParticipantInfoListById(long voiceRoomId){
         return GetParticipantList.ParticipantInfo.convertParticipantDtoList(
                 getParticipantDtoListById(voiceRoomId)

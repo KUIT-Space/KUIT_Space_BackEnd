@@ -119,6 +119,48 @@ public class VoiceRoomController {
         return new BaseResponse<GetParticipantList.Response>(new GetParticipantList.Response(participantInfoList));
     }
 
+    @PatchMapping("")
+    public BaseResponse<String> updateVoiceRoom(
+            @PathVariable("spaceId") @NotNull long spaceId,
+            @JwtLoginAuth Long userId,
+            @Validated @RequestBody PatchVoiceRoom patchVoiceRoom,
+            BindingResult bindingResult
+    ){
+
+        if(bindingResult.hasErrors()){
+            throw new VoiceRoomException(INVALID_VOICEROOM_REQUEST,getErrorMessage(bindingResult));
+        }
+        //해당 유저가 voice이 있는 space에 포함되어 있는지(권한이 있는지) 확인
+        validateIsUserInSpace(spaceId,userId);
+        //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
+        validateManagerPermission(spaceId,userId);
+        //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
+        for(PatchVoiceRoom.UpdateRoom updateRoom : patchVoiceRoom.getUpdateRoomList()) {
+            validateVoiceRoomInSpace(spaceId, updateRoom.getRoomId());
+        }
+
+        voiceRoomService.updateVoiceRoom(patchVoiceRoom.getUpdateRoomList());
+
+        return new BaseResponse<>("success");
+    }
+
+    @DeleteMapping
+    public BaseResponse<String> deleteVoiceRoom(
+            @PathVariable("spaceId") @NotNull long spaceId,
+            @JwtLoginAuth Long userId,
+            @RequestParam Long voiceRoomId
+    ){
+        //해당 유저가 voice이 있는 space에 포함되어 있는지(권한이 있는지) 확인
+        validateIsUserInSpace(spaceId,userId);
+        //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
+        validateManagerPermission(spaceId,userId);
+        //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
+        validateVoiceRoomInSpace(spaceId, voiceRoomId);
+
+        voiceRoomService.deleteVoiceRoom(voiceRoomId);
+        return new BaseResponse<>("success");
+    }
+
     //VoiceRoom 변동사항 전달
     @PostMapping("/status")
     public BaseResponse<String> postRoomStatus(){

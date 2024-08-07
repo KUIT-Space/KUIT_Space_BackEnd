@@ -18,7 +18,7 @@ public class GetVoiceRoomList {
     public static class Request{
         @Nullable
         private int limit;
-        @NotNull
+        @Nullable
         private boolean showParticipant;
     }
     @AllArgsConstructor

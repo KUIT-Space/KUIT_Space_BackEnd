@@ -6,7 +6,7 @@ import lombok.Getter;
 public class PostVoiceRoomDto {
     @Getter
     public static class Request{
-        @NotNull
+        @NotNull(message = "name is  mandatory")
         private String name;
     }
     @Getter

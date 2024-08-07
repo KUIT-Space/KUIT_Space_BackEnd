@@ -3,6 +3,8 @@ package space.space_spring.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dao.UserSpaceDao;
@@ -19,11 +21,13 @@ import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
+import javax.print.DocFlavor;
 import java.util.List;
 import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
+import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +46,11 @@ public class VoiceRoomController {
     public BaseResponse<Boolean> createRoom(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
-            @RequestBody PostVoiceRoomDto.Request voiceRoomRequest){
+            @Validated @RequestBody PostVoiceRoomDto.Request voiceRoomRequest,
+            BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new VoiceRoomException(INVALID_VOICEROOM_REQUEST,getErrorMessage(bindingResult));
+        }
 
         //해당 유저가 voice이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);

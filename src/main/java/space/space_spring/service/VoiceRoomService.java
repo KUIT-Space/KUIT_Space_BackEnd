@@ -108,11 +108,17 @@ public class VoiceRoomService {
         return voiceRoomRepository.findBySpace(space);
     }
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
-        return liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId));
+        List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId));
+        for(ParticipantDto participantDto: participantDtoList){
+            //profileIamge 집어넣기
+            participantDto.setProfileImage(findProfileImageByUserId(Long.parseLong(participantDto.getId())));
+        }
+        return participantDtoList;
     }
     public List<GetParticipantList.ParticipantInfo> getParticipantInfoListById(long voiceRoomId){
         return GetParticipantList.ParticipantInfo.convertParticipantDtoList(
-                liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId))
+                getParticipantDtoListById(voiceRoomId)
+                //liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId))
         );
     }
     private String findNameTagById(long id){

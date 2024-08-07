@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.UserDao;
+import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;
@@ -29,6 +30,7 @@ public class VoiceRoomService {
     private final LiveKitService liveKitService;
     private final LiveKitUtils liveKitUtils;
     private final UserDao userDao;
+    private final UserSpaceDao userSpaceDao;
 
     public boolean createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
         Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
@@ -73,7 +75,7 @@ public class VoiceRoomService {
                 List<ParticipantDto> participantDtoList = getParticipantDtoListById(roomDto.getId());
                 for(ParticipantDto participantDto: participantDtoList){
                     //Todo profileIamge 집어넣기
-                    participantDto.setProfileImage(findProfileImageByUserId(Long.parseLong(participantDto.getId())));
+                    participantDto.setProfileImage(findProfileImageByUserId(participantDto.getId()));
                 }
                 //RoomDto에 값 집어넣기
                     //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
@@ -108,10 +110,14 @@ public class VoiceRoomService {
         return voiceRoomRepository.findBySpace(space);
     }
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
+        Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
         List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId));
         for(ParticipantDto participantDto: participantDtoList){
             //profileIamge 집어넣기
-            participantDto.setProfileImage(findProfileImageByUserId(Long.parseLong(participantDto.getId())));
+            participantDto.setProfileImage(findProfileImageByUserId(participantDto.getId()));
+            //userSpaceId 집어 넣기
+            User user = userDao.findUserByUserId(participantDto.getId());
+            participantDto.setUserSpaceId(userSpaceDao.findUserSpaceByUserAndSpace(user,space).get().getUserSpaceId());
         }
         return participantDtoList;
     }

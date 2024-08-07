@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 public class ParticipantDto {
-    private String id;
+    private Long id;
+    private Long userSpaceId;
     private String name;
     private boolean isMicMute;
 
@@ -26,12 +27,12 @@ public class ParticipantDto {
     public void setProfileImage(String imageUrl){
         this.profileImage = imageUrl;
     }
-
+    public void setUserSpaceId(long userSpaceId){this.userSpaceId=userSpaceId;}
 
     public static ParticipantDto convertParticipant(LivekitModels.ParticipantInfo participantInfo){
         if(participantInfo==null){return null;}
         return ParticipantDto.builder()
-                .id(participantInfo.getIdentity())
+                .id(Long.valueOf(participantInfo.getIdentity()))
                 .name(participantInfo.getName())
                 .isMicMute(checkMicMute(participantInfo.getTracksList()))
 

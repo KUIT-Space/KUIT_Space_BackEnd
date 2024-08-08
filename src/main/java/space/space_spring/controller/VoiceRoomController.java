@@ -81,11 +81,11 @@ public class VoiceRoomController {
     }
 
     //VoiceRoom입장 token 발행
-    @GetMapping("/token")
+    @GetMapping("/{voiceRoomId}/token")
     public BaseResponse<String> getToken(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
-            @RequestParam(required = true) Long roomId,
+            @PathVariable("voiceRoomId") @NotNull Long roomId,
             HttpServletResponse response
     ){
         //해당 유저가, voiceRoom이 있는 space에 포함되어 있는지(권한이 있는지) 확인
@@ -102,11 +102,11 @@ public class VoiceRoomController {
     }
 
     //VoiceRoom에 참가자 정보
-    @GetMapping("/participant")
+    @GetMapping("/{voiceRoomId}/participant")
     public BaseResponse<GetParticipantList.Response> getParticipants(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
-            @RequestParam(required = true) Long roomId
+            @PathVariable("voiceRoomId") @NotNull Long roomId
     ){
         //해당 유저가 voice이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);

@@ -16,13 +16,17 @@ public class VoiceRoomDao  {
     @PersistenceContext
     private EntityManager entityManager;
     @Transactional
-    public boolean createVoiceRoom(String name,int order,Space space){
+    public Long createVoiceRoom(String name,int order,Space space){
         try {
-            entityManager.persist(VoiceRoom.createVoiceRoom(name, order, space));
-            return true;
+            VoiceRoom voiceRoom = VoiceRoom.createVoiceRoom(name, order, space);
+            entityManager.persist(voiceRoom);
+            entityManager.flush();
+
+            return voiceRoom.getVoiceRoomId();
         }catch (Exception e){
             System.out.print("create voiceRoom exception:"+e);
-            return false;
+            //Todo 예외 처리 필요
+            return null;
         }
     }
     @Transactional

@@ -43,7 +43,7 @@ public class VoiceRoomController {
 
     //VoiceRoom 생성/수정
     @PostMapping("")
-    public BaseResponse<Boolean> createRoom(
+    public BaseResponse<PostVoiceRoomDto.Response> createRoom(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
             @Validated @RequestBody PostVoiceRoomDto.Request voiceRoomRequest,
@@ -57,7 +57,8 @@ public class VoiceRoomController {
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
         validateManagerPermission(spaceId,userId);
         //Todo response 내용을 무엇을 주면 좋을지 ( POST response 전체 기능 통일 하는 것일 좋아보임 )
-        return new BaseResponse<Boolean>(voiceRoomService.createVoiceRoom(spaceId,voiceRoomRequest));
+        PostVoiceRoomDto.Response res = new PostVoiceRoomDto.Response(voiceRoomService.createVoiceRoom(spaceId,voiceRoomRequest));
+        return new BaseResponse<>(res);
     }
 
     //현재 space에 VoiceRoom 목록
@@ -144,11 +145,11 @@ public class VoiceRoomController {
         return new BaseResponse<>("success");
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{voiceRoomId}")
     public BaseResponse<String> deleteVoiceRoom(
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
-            @RequestParam Long voiceRoomId
+            @PathVariable("voiceRoomId") @NotNull Long voiceRoomId
     ){
         //해당 유저가 voice이 있는 space에 포함되어 있는지(권한이 있는지) 확인
         validateIsUserInSpace(spaceId,userId);

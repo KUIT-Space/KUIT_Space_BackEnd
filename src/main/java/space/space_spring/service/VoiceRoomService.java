@@ -32,7 +32,7 @@ public class VoiceRoomService {
     private final UserDao userDao;
     private final UserSpaceDao userSpaceDao;
 
-    public boolean createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
+    public Long createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
         Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
         Integer orderInt = voiceRoomRepository.findMaxOrderBySpace(targetSpace);
         int order;

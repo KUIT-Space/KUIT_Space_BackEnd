@@ -79,7 +79,7 @@ public class VoiceRoomService {
                 }
                 //RoomDto에 값 집어넣기
                     //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
-                if(participantDtoList.isEmpty()||participantDtoList==null){
+                if(participantDtoList==null||participantDtoList.isEmpty()){
                     System.out.print("\n\n[DEBUG]participant response is empty or null"+participantDtoList.toString()+
                             "participant number is \n\n");
                     roomDto.setParticipantDTOList(Collections.emptyList());
@@ -133,6 +133,9 @@ public class VoiceRoomService {
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
         Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
         List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId));
+        if(participantDtoList==null||participantDtoList.isEmpty()){
+            return Collections.emptyList();
+        }
         for(ParticipantDto participantDto: participantDtoList){
             //profileIamge 집어넣기
             participantDto.setProfileImage(findProfileImageByUserId(participantDto.getId()));

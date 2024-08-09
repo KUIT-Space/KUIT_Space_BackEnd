@@ -34,10 +34,10 @@ public class ChattingService {
     private final ChattingDao chattingDao;
 
     @Transactional
-    public ChatMessageResponse sendChatMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId) {
+    public ChatMessageResponse sendChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId) {
 
         // TODO 1: 메시지 메타데이터 저장 위해 전송자 찾기
-        User sender = userUtils.findUserByUserId(chatMessageRequest.getSenderId());
+        User sender = userUtils.findUserByUserId(senderId);
         Space space = spaceDao.findSpaceBySpaceId(chatMessageRequest.getSpaceId());
         Optional<UserSpace> senderInSpace = Optional.ofNullable(userSpaceDao.findUserSpaceByUserAndSpace(sender, space)
                 .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE)));
@@ -53,7 +53,7 @@ public class ChattingService {
                 chatMessageRequest.getContent(),
                 chatRoomId,
                 chatMessageRequest.getSpaceId(),
-                sender.getUserId(),
+                senderId,
                 sender.getUserName(),
                 senderProfileImg,
                 chatMessageRequest.getMessageType(),

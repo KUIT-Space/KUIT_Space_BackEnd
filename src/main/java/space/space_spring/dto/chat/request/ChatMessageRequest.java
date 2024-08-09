@@ -10,8 +10,6 @@ import java.util.HashMap;
 @Getter
 @NoArgsConstructor
 public class ChatMessageRequest {
-    @NotBlank(message = "전송자 아이디는 공백일 수 없습니다.")
-    private Long senderId;
 
     @NotBlank(message = "메시지 내용은 공백일 수 없습니다.")
     private HashMap<String, String> content;

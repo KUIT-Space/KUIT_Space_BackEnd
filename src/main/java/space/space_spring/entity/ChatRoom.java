@@ -40,25 +40,15 @@ public class ChatRoom extends BaseEntity{
     @Column(name = "chat_room_img")
     private String img;
 
-    @Comment("마지막으로 전송된 시간")
-    @Nullable
-    @Column(name = "last_send_time")
-    private LocalDateTime lastSendTime;
-
     public static ChatRoom of(Space space, CreateChatRoomRequest createChatRoomRequest, String chatRoomImgUrl) {
         return ChatRoom.builder()
                 .space(space)
                 .name(createChatRoomRequest.getName())
                 .img(chatRoomImgUrl)
-                .lastSendTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .build();
     }
 
-    public void setLastSendTime(LocalDateTime lastSendTime) {
-        this.lastSendTime = lastSendTime;
-    }
-
-//    // 양방향 매핑
+    //    // 양방향 매핑
 //    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
 //    private List<UserChatRoom> userChatRooms;
 }

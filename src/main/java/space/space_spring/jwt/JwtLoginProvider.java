@@ -50,7 +50,7 @@ public class JwtLoginProvider {
         } catch (ExpiredJwtException e) {
             return true;
 
-        } catch (UnsupportedJwtException e) {
+        }catch (UnsupportedJwtException e) {
             throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
         } catch (MalformedJwtException e) {
             throw new JwtMalformedTokenException(MALFORMED_TOKEN);

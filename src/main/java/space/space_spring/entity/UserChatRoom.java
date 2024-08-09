@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -32,16 +34,20 @@ public class UserChatRoom extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Comment("마지막으로 읽은 메시지 ID")
+    @Comment("마지막으로 읽은 시간")
     @Nullable
-    @Column(name = "last_read_msg_id")
-    private Long lastReadMsgId;
+    @Column(name = "last_read_time")
+    private LocalDateTime lastReadTime;
 
-    public static UserChatRoom of(ChatRoom chatRoom, User user, Long lastReadMsgId) {
+    public static UserChatRoom of(ChatRoom chatRoom, User user, LocalDateTime lastReadTime) {
         return UserChatRoom.builder()
                 .chatRoom(chatRoom)
                 .user(user)
-                .lastReadMsgId(lastReadMsgId)
+                .lastReadTime(lastReadTime)
                 .build();
+    }
+
+    public void setLastReadTime(LocalDateTime lastTime) {
+        this.lastReadTime = lastTime;
     }
 }

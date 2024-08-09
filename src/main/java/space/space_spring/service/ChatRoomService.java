@@ -18,6 +18,7 @@ import space.space_spring.entity.UserChatRoom;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -64,8 +65,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest, chatRoomImgUrl));
 
         // TODO 4: user_chatRoom 매핑 정보 저장
-        // TODO: 메시지 관련 처리 예정
-        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, null));
+        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
 
         // TODO 5: chatroom id 반환
         return CreateChatRoomResponse.of(chatRoom.getId());

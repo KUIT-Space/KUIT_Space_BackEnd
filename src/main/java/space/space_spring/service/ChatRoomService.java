@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.chat.ChatRoomDao;
+import space.space_spring.dao.chat.ChattingDao;
 import space.space_spring.dao.chat.UserChatRoomDao;
 import space.space_spring.dto.chat.response.ChatRoomResponse;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
@@ -15,6 +16,8 @@ import space.space_spring.entity.ChatRoom;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserChatRoom;
+import space.space_spring.entity.document.ChatMessage;
+import space.space_spring.entity.enumStatus.ChatMessageType;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -29,9 +32,11 @@ public class ChatRoomService {
     private final UserDao userDao;
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
+    private final ChattingDao chattingDao;
     private final ChatRoomDao chatRoomDao;
     private final UserChatRoomDao userChatRoomDao;
 
+    @Transactional
     public ReadChatRoomResponse readChatRooms(Long userId, Long spaceId) {
         // TODO 1: userId에 해당하는 user find
         User userByUserId = userUtils.findUserByUserId(userId);
@@ -41,13 +46,34 @@ public class ChatRoomService {
 
         // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 return
         List<ChatRoom> result = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
+
         return ReadChatRoomResponse.of(result.stream()
                 .map(cr -> {
-                    // TODO: chatting message 처리
-                    String lastMsg = "메시지 관련 처리 예정";
-                    String lastTime = "메시지 관련 처리 예정";
-                    int unreadMsgCount = 1;
-                    return ChatRoomResponse.of(cr, lastMsg, lastTime, unreadMsgCount);
+                    // TODO 4: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
+                    ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
+                    LocalDateTime lastUpdateTime = lastMsg.getCreatedAt();
+                    String lastContent = switch (lastMsg.getMessageType()) {
+                        case TEXT -> lastMsg.getContent().get("text");
+                        /**
+                         * TODO: 메시지 타입 관련하여 미리보기 뷰에 따라 변경 가능
+                         */
+//                        case IMG -> "img";
+//                        case FILE -> "file";
+//                        case POST -> "post";
+//                        case PAY -> "pay";
+                        default -> lastMsg.getMessageType().toString();
+                    };
+
+                    // TODO 5: 각 채팅방의 안읽은 메시지 개수 계산
+                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
+                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime();
+                    int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
+                            cr.getId(),
+                            lastReadTime,
+                            lastUpdateTime
+                    );
+
+                    return ChatRoomResponse.of(cr, lastContent, String.valueOf(lastUpdateTime), unreadMsgCount);
                 })
                 .toList()
         );

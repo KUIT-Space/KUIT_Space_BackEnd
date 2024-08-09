@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
 import space.space_spring.dto.pay.dto.PayRequestInfoDto;
+import space.space_spring.dto.pay.dto.PayTargetInfoDto;
+import space.space_spring.dto.pay.dto.TotalPayInfoDto;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.GetPayViewResponse;
 import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
@@ -102,4 +104,18 @@ public class PayController {
 
         return new BaseResponse<>("정산 생성 성공");
     }
+
+    /**
+     * 하나의 정산에 대한 상세정보 조회
+     */
+    @GetMapping("/space/{spaceId}/pay/{payRequestId}")
+    public BaseResponse<TotalPayInfoDto> showTotalPayInfo(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @PathVariable Long payRequestId) {
+
+        // TODO 1. 유저가 스페이스에 속하는 지 검증
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 정산 상세 정보 조회
+        return new BaseResponse<>(payService.getTotalPayInfo(spaceId, payRequestId));
+    }
+
 }

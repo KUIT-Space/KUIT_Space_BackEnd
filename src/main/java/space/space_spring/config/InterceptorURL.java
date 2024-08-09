@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum InterceptorURL {
     SPACE("/space/**"),
     TEST("/test/**"),
-    SPACE_LIST_FOR_USER("/user/space-choice");
+    SPACE_LIST_FOR_USER("/user/space-choice"),
+    VOICE_ROOM("/voiceRoom/**");
 
     private final String urlPattern;
 

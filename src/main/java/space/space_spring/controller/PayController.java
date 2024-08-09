@@ -8,10 +8,9 @@ import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
 import space.space_spring.dto.pay.dto.PayRequestInfoDto;
 import space.space_spring.dto.pay.dto.PayTargetInfoDto;
 import space.space_spring.dto.pay.dto.TotalPayInfoDto;
+import space.space_spring.dto.pay.request.PostPayCompleteRequest;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
-import space.space_spring.dto.pay.response.GetPayViewResponse;
-import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
-import space.space_spring.dto.pay.response.GetRequestPayViewResponse;
+import space.space_spring.dto.pay.response.*;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PayService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -69,6 +68,24 @@ public class PayController {
     }
 
     /**
+     * 내가 요청받은 정산 조회
+     */
+    @GetMapping("/space/{spaceId}/pay/receive")
+    public BaseResponse<GetReceivePayViewResponse> showReceivePayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
+        // TODO 1. 유저가 스페이스에 속하는 지 검증 -> 추후에 인터셉터에서 처리하게끔 리펙토링 필요
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 유저가 요청받은 정산 중 현재 진행중인 정산 리스트 get -> 정산 타겟 유저가 정산 안했을 경우 : isComplete = false
+        List<PayReceiveInfoDto> payReceiveInfoDtoListInComplete = payService.getPayReceiveInfoForUser(userId, spaceId, false);
+
+        // TODO 3. 유저가 요청받은 정산 중 완료한 정산 리스트 get -> 정산 타겟 유저가 정산 했을 경우 : isComplete = true
+        List<PayReceiveInfoDto> payReceiveInfoDtoListComplete = payService.getPayReceiveInfoForUser(userId, spaceId, true);
+
+        return new BaseResponse<>(new GetReceivePayViewResponse(payReceiveInfoDtoListInComplete, payReceiveInfoDtoListComplete));
+    }
+
+
+    /**
      * 유저가 최근 정산받은 은행 계좌 정보 조회
      * 해당 api는 유저가 속한 스페이스의 정보가 필요없다고 판단해서 spaceId 를 request로 받지 않음
      */
@@ -116,6 +133,19 @@ public class PayController {
 
         // TODO 2. 정산 상세 정보 조회
         return new BaseResponse<>(payService.getTotalPayInfo(spaceId, payRequestId));
+    }
+
+    /**
+     * 정산 타겟 유저의 정산 완료 처리
+     */
+    @PostMapping("/space/{spaceId}/pay/complete")
+    public BaseResponse<PostPayCompleteResponse> setPayComplete(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestBody PostPayCompleteRequest postPayCompleteRequest) {
+
+        // TODO 1. 유저가 스페이스에 속하는 지 검증
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 정산 타겟 유저의 정산 완료 처리
+        return new BaseResponse<>(payService.setPayRequestTargetToComplete(postPayCompleteRequest.getPayRequestTargetId()));
     }
 
 }

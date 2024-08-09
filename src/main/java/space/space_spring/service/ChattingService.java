@@ -51,13 +51,8 @@ public class ChattingService {
             senderProfileImg = senderInSpace.get().getUserProfileImg();
         }
 
-        // TODO 3: ChatRoom의 LastSendTime update
-        Optional<ChatRoom> chatRoom = chatRoomDao.findById(chatRoomId);
-        chatRoom.ifPresent(cr -> {
-            cr.setLastSendTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
-        });
 
-        // TODO 4: DB에 메시지 저장
+        // TODO 3: DB에 메시지 저장
         ChatMessage message = chattingDao.insert(ChatMessage.of(
                 chatMessageRequest.getContent(),
                 chatRoomId,

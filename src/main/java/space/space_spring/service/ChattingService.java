@@ -16,8 +16,8 @@ import space.space_spring.entity.document.ChatMessage;
 import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.user.UserUtils;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,7 +57,7 @@ public class ChattingService {
                 sender.getUserName(),
                 senderProfileImg,
                 chatMessageRequest.getMessageType(),
-                ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime()
+                LocalDateTime.now(ZoneId.of("Asia/Seoul"))
         ));
 
         return ChatMessageResponse.of(message);

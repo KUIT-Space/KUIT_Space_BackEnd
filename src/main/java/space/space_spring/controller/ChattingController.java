@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.dto.chat.request.ChatMessageRequest;
+import space.space_spring.dto.chat.response.ChatMessageLogResponse;
 import space.space_spring.dto.chat.response.ChatMessageResponse;
 import space.space_spring.service.ChattingService;
 
@@ -25,8 +26,9 @@ public class ChattingController {
         return chattingService.sendChatMessage(chatMessageRequest, chatRoomId);
     }
 
-    @SubscribeMapping("/topic/chat/{chatRoomId}") // {chatRoomId} 채팅방을 구독
-    public void subscribeChatRoom (@DestinationVariable String chatRoomId) {
+    @SubscribeMapping("/chat/{chatRoomId}") // {chatRoomId} 채팅방을 구독
+    public ChatMessageLogResponse subscribeChatRoom (@DestinationVariable Long chatRoomId) {
         log.info(chatRoomId + " 채팅방 구독");
+        return chattingService.readChatMessageLog(chatRoomId);
     }
 }

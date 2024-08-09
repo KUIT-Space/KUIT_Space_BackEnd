@@ -7,6 +7,7 @@ import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.chat.ChattingDao;
 import space.space_spring.dto.chat.request.ChatMessageRequest;
+import space.space_spring.dto.chat.response.ChatMessageLogResponse;
 import space.space_spring.dto.chat.response.ChatMessageResponse;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
@@ -17,7 +18,9 @@ import space.space_spring.util.user.UserUtils;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
@@ -58,5 +61,12 @@ public class ChattingService {
         ));
 
         return ChatMessageResponse.of(message);
+    }
+
+    public ChatMessageLogResponse readChatMessageLog(Long chatRoomId) {
+        List<ChatMessage> chatMessageList = chattingDao.findByChatRoomId(chatRoomId);
+        return ChatMessageLogResponse.of(chatMessageList.stream()
+                .map(ChatMessageResponse::of)
+                .collect(Collectors.toList()));
     }
 }

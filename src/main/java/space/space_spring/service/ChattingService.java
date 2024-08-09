@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dao.chat.ChatRoomDao;
 import space.space_spring.dao.chat.ChattingDao;
 import space.space_spring.dto.chat.request.ChatMessageRequest;
 import space.space_spring.dto.chat.response.ChatMessageLogResponse;
 import space.space_spring.dto.chat.response.ChatMessageResponse;
+import space.space_spring.entity.ChatRoom;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
@@ -32,6 +34,7 @@ public class ChattingService {
     private final SpaceDao spaceDao;
     private final UserSpaceDao userSpaceDao;
     private final ChattingDao chattingDao;
+    private final ChatRoomDao chatRoomDao;
 
     @Transactional
     public ChatMessageResponse sendChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId) {
@@ -48,7 +51,13 @@ public class ChattingService {
             senderProfileImg = senderInSpace.get().getUserProfileImg();
         }
 
-        // TODO 3: DB에 메시지 저장
+        // TODO 3: ChatRoom의 LastSendTime update
+        Optional<ChatRoom> chatRoom = chatRoomDao.findById(chatRoomId);
+        chatRoom.ifPresent(cr -> {
+            cr.setLastSendTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+        });
+
+        // TODO 4: DB에 메시지 저장
         ChatMessage message = chattingDao.insert(ChatMessage.of(
                 chatMessageRequest.getContent(),
                 chatRoomId,

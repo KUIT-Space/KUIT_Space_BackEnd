@@ -47,7 +47,7 @@ public class UserChatRoom extends BaseEntity{
                 .build();
     }
 
-    public void setLastReadTime(LocalDateTime lastTime) {
-        this.lastReadTime = lastTime;
+    public void setLastReadTime(LocalDateTime lastReadTime) {
+        this.lastReadTime = lastReadTime;
     }
 }

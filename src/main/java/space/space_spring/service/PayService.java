@@ -9,6 +9,7 @@ import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.pay.dto.*;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
+import space.space_spring.dto.pay.response.PostPayCompleteResponse;
 import space.space_spring.entity.*;
 import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
@@ -95,15 +96,18 @@ public class PayService {
         List<PayReceiveInfoDto> payReceiveInfoDtoList = new ArrayList<>();
 
         for (PayRequestTarget payRequestTarget : payRequestTargetListByUser) {
-            String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
-            int requestAmount = payRequestTarget.getRequestAmount();
-
-            PayReceiveInfoDto payReceiveInfoDto = new PayReceiveInfoDto(payCreatorName, requestAmount);
-
+            PayReceiveInfoDto payReceiveInfoDto = createPayReceiveInfoDto(payRequestTarget);
             payReceiveInfoDtoList.add(payReceiveInfoDto);
         }
 
         return payReceiveInfoDtoList;
+    }
+
+    private PayReceiveInfoDto createPayReceiveInfoDto(PayRequestTarget payRequestTarget) {
+        String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
+        int requestAmount = payRequestTarget.getRequestAmount();
+
+        return new PayReceiveInfoDto(payRequestTarget.getPayRequestTargetId(), payCreatorName, requestAmount);
     }
 
     @Transactional
@@ -159,7 +163,7 @@ public class PayService {
         // TODO 5. 정산 타겟 유저 정보 get
         List<PayTargetInfoDto> payTargetInfoDtoList = new ArrayList<>();
         for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
-            PayTargetInfoDto payTargetInfoDto = getPayTargetInfoDto(payRequestTarget, spaceBySpaceId);
+            PayTargetInfoDto payTargetInfoDto = createPayTargetInfoDto(payRequestTarget, spaceBySpaceId);
             payTargetInfoDtoList.add(payTargetInfoDto);
         }
 
@@ -177,7 +181,7 @@ public class PayService {
         );
     }
 
-    private PayTargetInfoDto getPayTargetInfoDto(PayRequestTarget payRequestTarget, Space space) {
+    private PayTargetInfoDto createPayTargetInfoDto(PayRequestTarget payRequestTarget, Space space) {
         Long targetUserId = payRequestTarget.getTargetUserId();
         User userByUserId = userDao.findUserByUserId(targetUserId);
 
@@ -194,5 +198,42 @@ public class PayService {
                 payRequestTarget.getRequestAmount(),
                 payRequestTarget.isComplete()
         );
+    }
+
+    /**
+     * 정산 타겟 유저의 정산 완료 처리
+     */
+    @Transactional
+    public PostPayCompleteResponse setPayRequestTargetToComplete(Long payRequestTargetId) {
+
+        // TODO 1. payRequestTargetId로 PayRequestTarget find
+        PayRequestTarget payRequestTargetById = payDao.findPayRequestTargetById(payRequestTargetId);
+
+        // TODO 2. 해당 PayRequestTarget 정산 완료 처리
+        payRequestTargetById.changeCompleteStatus(true);
+
+        // TODO 3. PayRequest의 완료 여부 파악
+        PayRequest payRequest = payRequestTargetById.getPayRequest();
+        boolean payRequestCompleteStatus = isPayRequestComplete(payRequest);
+        if (payRequestCompleteStatus) {
+            payRequest.changeCompleteStatus(true);
+        }
+
+        // TODO 4. return 타입 구성
+        return new PostPayCompleteResponse(
+                payRequest.getPayRequestId(),
+                payRequestCompleteStatus
+        );
+    }
+
+    private boolean isPayRequestComplete(PayRequest payRequest) {
+        List<PayRequestTarget> payRequestTargetListByPayRequest = payDao.findPayRequestTargetListByPayRequest(payRequest);
+        for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
+            if (!payRequestTarget.isComplete()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

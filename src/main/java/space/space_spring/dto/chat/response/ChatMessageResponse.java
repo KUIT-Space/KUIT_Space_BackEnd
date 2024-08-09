@@ -31,8 +31,7 @@ public class ChatMessageResponse {
     public static ChatMessageResponse of(ChatMessage chatMessage) {
         return ChatMessageResponse.builder()
                 .content(chatMessage.getContent())
-                .createdAt(chatMessage.getCreatedAt()
-                        .format(ofPattern("yyyy년 MM월 dd일 a h시 m분", new Locale("ko", "KR"))))
+                .createdAt(String.valueOf(chatMessage.getCreatedAt()))
                 .messageType(chatMessage.getMessageType())
                 .senderId(chatMessage.getSenderId())
                 .senderName(chatMessage.getSenderName())

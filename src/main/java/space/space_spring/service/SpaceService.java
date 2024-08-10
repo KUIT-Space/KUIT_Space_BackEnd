@@ -6,11 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.util.space.SpaceUtils;
+
+import java.time.format.DateTimeFormatter;
 
 
 @Service
@@ -42,5 +45,33 @@ public class SpaceService {
 
         // TODO 2. 스페이스의 모든 유저 정보 return
         return new GetUserInfoBySpaceResponse(userSpaceDao.findUserInfoInSpace(spaceBySpaceId));
+    }
+
+    @Transactional
+    public GetSpaceJoinDto.Response findSpaceJoin(Long spaceId) {
+        // TODO 1. spaceId로 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 2. Space 엔티티에서 썸네일 이미지, 이름, 생성일 데이터 get
+        GetSpaceJoinDto getSpaceJoinDto = new GetSpaceJoinDto(
+                spaceBySpaceId.getSpaceProfileImg(),
+                spaceBySpaceId.getSpaceName(),
+                spaceBySpaceId.getCreatedAt()
+        );
+
+        // TODO 3. 해당 스페이스의 멤버 수 get
+        int memberNum = userSpaceDao.calculateSpaceMemberNum(spaceBySpaceId);
+
+        // TODO 4. 스페이스 생성일 형식 'yyyy년 mm월 dd일' 로 변경
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        String spaceCreatedDate = getSpaceJoinDto.getCreatedAt().format(formatter);
+
+        // TODO 5. return
+        return new GetSpaceJoinDto.Response(
+                getSpaceJoinDto.getSpaceProfileImg(),
+                getSpaceJoinDto.getSpaceName(),
+                spaceCreatedDate,
+                memberNum
+        );
     }
 }

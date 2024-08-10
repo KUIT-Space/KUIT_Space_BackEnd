@@ -67,7 +67,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      */
     USER_IS_NOT_IN_SPACE(7000, HttpStatus.BAD_REQUEST.value(), "해당 스페이스에 속하지 않는 유저입니다."),
     UNAUTHORIZED_USER(7001, HttpStatus.UNAUTHORIZED.value(), "해당 스페이스에 관리자 권한이 없는 유저입니다."),
-    C(7002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
+    USER_IS_ALREADY_IN_SPACE(7002, HttpStatus.BAD_REQUEST.value(), "해당 스페이스에 이미 가입되어 있는 유저입니다"),
     D(7003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     E(7004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     F(7005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),

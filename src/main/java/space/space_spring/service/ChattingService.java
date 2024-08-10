@@ -41,14 +41,11 @@ public class ChattingService {
 
         // TODO 3: DB에 메시지 저장
         ChatMessage message = chattingDao.insert(ChatMessage.of(
-                chatMessageRequest.getContent(),
+                chatMessageRequest,
                 chatRoomId,
-                chatMessageRequest.getSpaceId(),
                 senderId,
                 senderName,
-                senderProfileImg,
-                chatMessageRequest.getMessageType(),
-                LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+                senderProfileImg
         ));
 
         return ChatMessageResponse.of(message);

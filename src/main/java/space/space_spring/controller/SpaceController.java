@@ -11,6 +11,8 @@ import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.space.request.PostSpaceCreateRequest;
 
+import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
+import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.MultipartFileException;
 import space.space_spring.exception.SpaceException;
 import space.space_spring.response.BaseResponse;
@@ -19,6 +21,7 @@ import space.space_spring.service.SpaceService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_SPACE_CREATE;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.IS_NOT_IMAGE_FILE;
@@ -93,4 +96,27 @@ public class SpaceController {
         userSpaceUtils.isUserAlreadySpaceMember(userId, spaceId);
     }
 
+    /**
+     * 스페이스 별 유저 프로필 정보 조회
+     * 본인의 프로필 조회하는 경우 -> requestParam으로 userId 받지 X
+     * 다른 멤버의 프로필 조회하는 경우 -> requestParam으로 userId 받음
+     */
+    @GetMapping("/{spaceId}/member-profile")
+    public BaseResponse<GetUserProfileInSpaceDto.Response> getUserProfileInSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestParam(name = "userId", required = false) Long targetUserId) {
+
+        // TODO 1. 요청보내는 유저가 스페이스에 가입되어 있는지 검증
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 본인의 프로필을 조회하는지 다른 멤버의 프로필을 조회하는지 체크
+        if (targetUserId == null) {
+            targetUserId = userId;
+        }
+
+        // TODO 3. 유저 프로필 정보 return
+        return new BaseResponse<>(spaceService.getUserProfileInSpace(targetUserId, spaceId));
+    }
+
+    private void validateIsUserInSpace(Long userId, Long spaceId) {
+        userSpaceUtils.isUserInSpace(userId, spaceId);
+    }
 }

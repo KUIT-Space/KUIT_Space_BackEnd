@@ -3,7 +3,7 @@ package space.space_spring.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.post.ReadPostsResponse;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.response.BaseResponse;

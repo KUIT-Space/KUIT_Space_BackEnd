@@ -11,6 +11,7 @@ import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
+import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.UserSpaceException;
 
 import java.util.Map;
@@ -34,18 +35,20 @@ public class UserSpaceValidationInterceptor implements HandlerInterceptor {
         Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         Long spaceId = Long.parseLong((String) pathVariables.get("spaceId"));
 
-        validateUserInSpace(spaceId,userId);
+        request.setAttribute("userSpaceId",getUserSpace(spaceId,userId));
+        System.out.print("userSpaceID:"+getUserSpace(spaceId,userId));
         return true;
 
     }
 
-    private void validateUserInSpace(long spaceId,long userId){
+    private Long getUserSpace(long spaceId,long userId){
         // userSpaceDao에서 검증
         User userByUserId = userDao.findUserByUserId(userId);
         Space spaceBySpaceId = spaceDao.findSpaceBySpaceId(spaceId);
-        Optional.ofNullable(userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId)
+        Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
+        Optional.ofNullable(userSpace
                 .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE)));
-
+        return userSpace.get().getUserSpaceId();
     }
 
 

@@ -3,8 +3,10 @@ package space.space_spring.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 
+import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
+import space.space_spring.argumentResolver.userSpace.UserSpaceId;
 import space.space_spring.response.BaseResponse;
 
 @RestController
@@ -23,10 +25,18 @@ public class TestController {
     }
 
     @GetMapping("/space/{spaceId}/test")
-    public BaseResponse<String> LoginTest(@JwtLoginAuth Long userId) {
+    public BaseResponse<String> LoginTest(
+            @JwtLoginAuth Long userId,
+            @UserSpaceId Long userSpaceId,
+            @UserSpaceAuth String userSpaceAuth) {
         log.info("userId = {}", userId);
-        return new BaseResponse<>("{\n userId : "+ userId.toString()+
-                "\n}"
+        return new BaseResponse<>("{ userId : "+ userId.toString()
+                +""
+                +"userSpaceId : "+userSpaceId
+                +""
+                +"userSpaceAuth : "+userSpaceAuth
+
+                + "}"
         );
     }
 

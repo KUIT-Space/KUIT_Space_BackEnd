@@ -22,4 +22,12 @@ public class TestController {
         return new BaseResponse<>("jwt login test 성공");
     }
 
+    @GetMapping("/space/{spaceId}/test")
+    public BaseResponse<String> LoginTest(@JwtLoginAuth Long userId) {
+        log.info("userId = {}", userId);
+        return new BaseResponse<>("{\n userId : "+ userId.toString()+
+                "\n}"
+        );
+    }
+
 }

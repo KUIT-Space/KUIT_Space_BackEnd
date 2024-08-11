@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Entity
 @Getter
 @Builder
@@ -37,22 +40,15 @@ public class ChatRoom extends BaseEntity{
     @Column(name = "chat_room_img")
     private String img;
 
-    @Comment("마지막으로 전송된 메시지 ID")
-    @Nullable
-    @Column(name = "last_msg_id")
-    private int lastMsgId;
-
     public static ChatRoom of(Space space, CreateChatRoomRequest createChatRoomRequest, String chatRoomImgUrl) {
         return ChatRoom.builder()
                 .space(space)
                 .name(createChatRoomRequest.getName())
                 .img(chatRoomImgUrl)
-                // TODO: 메시지 관련 처리 예정
-                .lastMsgId(0)
                 .build();
     }
 
-//    // 양방향 매핑
+    //    // 양방향 매핑
 //    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
 //    private List<UserChatRoom> userChatRooms;
 }

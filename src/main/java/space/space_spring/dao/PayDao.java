@@ -4,7 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import space.space_spring.dto.pay.dto.PayRequestInfoDto;
 import space.space_spring.dto.pay.dto.RecentPayRequestBankInfoDto;
+import space.space_spring.dto.pay.dto.TotalPayInfoDto;
 import space.space_spring.entity.PayRequest;
 import space.space_spring.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
@@ -87,4 +89,14 @@ public class PayDao {
         em.persist(payRequestTarget);
         return payRequestTarget;
     }
+
+    public PayRequest findPayRequestById(Long payRequestId) {
+
+        return em.find(PayRequest.class, payRequestId);
+    }
+
+    public PayRequestTarget findPayRequestTargetById(Long payRequestTargetId) {
+        return em.find(PayRequestTarget.class, payRequestTargetId);
+    }
+
 }

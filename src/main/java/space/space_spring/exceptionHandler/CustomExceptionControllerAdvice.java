@@ -1,4 +1,4 @@
-package space.space_spring.exception_handler;
+package space.space_spring.exceptionHandler;
 
 import jakarta.annotation.Priority;
 import lombok.extern.slf4j.Slf4j;

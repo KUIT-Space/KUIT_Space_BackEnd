@@ -16,4 +16,5 @@ public interface UserSpaceUtils {
 
     boolean isUserManager(Long userId, Long spaceId);
 
+    void isUserAlreadySpaceMember(Long userId, Long spaceId);
 }

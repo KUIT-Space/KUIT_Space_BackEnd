@@ -27,6 +27,7 @@ public class PostService {
     private final PostDao postDao;
     private final S3Uploader s3Uploader;
 
+    @Transactional
     public List<ReadPostsResponse> getAllPosts(Long spaceId, String filter) {
 
         // TODO 1: spaceId에 해당하는 space find

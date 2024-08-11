@@ -1,11 +1,14 @@
 package space.space_spring.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Post_Image")
 @Getter
+@NoArgsConstructor
 public class PostImage extends BaseEntity{
     @Id
     @GeneratedValue
@@ -18,5 +21,10 @@ public class PostImage extends BaseEntity{
 
     @Column(name = "post_image_url")
     private String postImgUrl;
+
+    @Builder
+    public PostImage(String postImgUrl) {
+        this.postImgUrl = postImgUrl;
+    }
 
 }

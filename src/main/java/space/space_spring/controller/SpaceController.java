@@ -131,7 +131,7 @@ public class SpaceController {
      * 유저의 스페이스 가입 처리
      */
     @PutMapping("/{spaceId}/member-profile")
-    public BaseResponse<PutUserProfileInSpaceDto.Response> updateUserProfileInSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PutUserProfileInSpaceDto.Request request, BindingResult bindingResult) throws IOException {
+    public BaseResponse<PutUserProfileInSpaceDto.Response> updateUserProfileInSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @ModelAttribute PutUserProfileInSpaceDto.Request request, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             throw new SpaceException(INVALID_USER_SPACE_PROFILE, getErrorMessage(bindingResult));
         }

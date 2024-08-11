@@ -8,11 +8,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class CreateChatRoomResponse {
-    private Long id;
+    private Long chatRoomId;
 
     public static CreateChatRoomResponse of(Long id) {
         return CreateChatRoomResponse.builder()
-                .id(id)
+                .chatRoomId(id)
                 .build();
     }
 }

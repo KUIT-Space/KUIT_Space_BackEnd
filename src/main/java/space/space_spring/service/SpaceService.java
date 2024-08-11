@@ -104,4 +104,11 @@ public class SpaceService {
         // 컴파일 에러의 방지를 위해 일단 이중으로 예외를 던지도록 구현했습니다
         throw new UserSpaceException(USER_IS_NOT_IN_SPACE);
     }
+
+    @Transactional
+    public void changeUserProfileInSpace(UserSpace userSpace, PutUserProfileInSpaceDto.Request request) {
+
+        // TODO 1. UserSpace의 필드값 수정
+        userSpace.
+    }
 }

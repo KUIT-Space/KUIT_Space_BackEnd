@@ -104,6 +104,8 @@ public class SpaceController {
     @GetMapping("/{spaceId}/member-profile")
     public BaseResponse<GetUserProfileInSpaceDto.Response> getUserProfileInSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestParam(name = "userId", required = false) Long targetUserId) {
 
+        log.info("targetUserId={}", targetUserId);
+
         // TODO 1. 요청보내는 유저가 스페이스에 가입되어 있는지 검증
         validateIsUserInSpace(userId, spaceId);
 
@@ -111,6 +113,8 @@ public class SpaceController {
         if (targetUserId == null) {
             targetUserId = userId;
         }
+
+        log.info("targetUserId={}", targetUserId);
 
         // TODO 3. 유저 프로필 정보 return
         return new BaseResponse<>(spaceService.getUserProfileInSpace(targetUserId, spaceId));

@@ -9,12 +9,18 @@ import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
 import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
+import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
+import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
+import space.space_spring.exception.UserSpaceException;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.exception.UserException;
 import space.space_spring.util.user.UserUtils;
+import space.space_spring.util.userSpace.UserSpaceUtils;
+
+import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;

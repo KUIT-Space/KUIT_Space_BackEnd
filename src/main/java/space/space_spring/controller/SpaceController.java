@@ -12,6 +12,7 @@ import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.space.request.PostSpaceCreateRequest;
 
 import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
+import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.MultipartFileException;
 import space.space_spring.exception.SpaceException;
@@ -23,8 +24,7 @@ import space.space_spring.util.userSpace.UserSpaceUtils;
 import java.io.IOException;
 import java.util.Optional;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_SPACE_CREATE;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.IS_NOT_IMAGE_FILE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
@@ -36,6 +36,7 @@ public class SpaceController {
     private final SpaceService spaceService;
     private final S3Uploader s3Uploader;
     private final String spaceImgDirName = "spaceImg";
+    private final String userProfileImgDirName = "userProfileImg";
     private final UserSpaceUtils userSpaceUtils;
 
     @PostMapping("")
@@ -123,4 +124,40 @@ public class SpaceController {
     private void validateIsUserInSpace(Long userId, Long spaceId) {
         userSpaceUtils.isUserInSpace(userId, spaceId);
     }
+
+    /**
+     * 스페이스 별 유저 프로필 정보 수정
+     * or
+     * 유저의 스페이스 가입 처리
+     */
+    @PutMapping("/{spaceId}/member-profile")
+    public BaseResponse<PutUserProfileInSpaceDto.Response> updateUserProfileInSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PutUserProfileInSpaceDto.Request request, BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasErrors()) {
+            throw new SpaceException(INVALID_USER_SPACE_PROFILE, getErrorMessage(bindingResult));
+        }
+
+        // TODO 1. 유저가 스페이스에 가입되어 있는지 검증
+        validateIsUserInSpace(userId, spaceId);
+
+        // TODO 2. 유저 프로필 썸네일을 s3에 upload
+        String userProfileImgUrl = processUserProfileImage(request.getUserProfileImg());
+
+        // TODO 3. 유저 프로필 정보 update
+        PutUserProfileInSpaceDto putUserProfileInSpaceDto = new PutUserProfileInSpaceDto(
+                request.getUserName(),
+                userProfileImgUrl,
+                request.getUserProfileMsg()
+        );
+
+        return new BaseResponse<>(spaceService.changeUserProfileInSpace(userId, spaceId, putUserProfileInSpaceDto));
+    }
+
+    private String processUserProfileImage(MultipartFile userProfileImg) throws IOException {
+        if (userProfileImg == null) {
+            return null;
+        }
+        validateImageFile(userProfileImg);
+        return s3Uploader.upload(userProfileImg, userProfileImgDirName);
+    }
+
 }

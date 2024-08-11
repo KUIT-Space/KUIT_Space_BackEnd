@@ -106,9 +106,31 @@ public class SpaceService {
     }
 
     @Transactional
-    public void changeUserProfileInSpace(UserSpace userSpace, PutUserProfileInSpaceDto.Request request) {
+    public PutUserProfileInSpaceDto.Response changeUserProfileInSpace(Long userId, Long spaceId, PutUserProfileInSpaceDto putUserProfileInSpaceDto) {
 
-        // TODO 1. UserSpace의 필드값 수정
-        userSpace.
+        // TODO 1. userId, spaceId로 UserSpace find
+        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
+
+        if (userInSpace.isPresent()) {
+            UserSpace userSpace = userInSpace.get();
+
+            // TODO 2. UserSpace의 필드값 수정
+            userSpace.changeUserName(putUserProfileInSpaceDto.getUserName());
+            userSpace.changeUserProfileImg(putUserProfileInSpaceDto.getUserProfileImg());
+            userSpace.changeUserProfileMsg(putUserProfileInSpaceDto.getUserProfileMsg());
+
+            // TODO 3. return
+            return new PutUserProfileInSpaceDto.Response(
+                    userSpace.getUserProfileImg(),
+                    userSpace.getUserSpaceAuth(),
+                    userSpace.getUserName(),
+                    userSpace.getUserProfileMsg()
+            );
+        }
+
+        // userSpaceUtils.isUserInSpace 메서드에서도 해당 에러를 던지기는 하지만
+        // 컴파일 에러의 방지를 위해 일단 이중으로 예외를 던지도록 구현했습니다
+        throw new UserSpaceException(USER_IS_NOT_IN_SPACE);
+
     }
 }

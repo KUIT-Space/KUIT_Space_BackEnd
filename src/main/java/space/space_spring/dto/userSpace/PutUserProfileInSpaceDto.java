@@ -12,6 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PutUserProfileInSpaceDto {
 
+    private String userName;
+
+    private String userProfileImg;
+
+    private String userProfileMsg;
+
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor

@@ -20,6 +20,5 @@ public class CreateChatRoomRequest {
 
     private MultipartFile img;
 
-    // TODO: member 조회 API 개발 시 수정 예정
-    private List<String> memberList;
+    private List<Long> memberList;
 }

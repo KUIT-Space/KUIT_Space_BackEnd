@@ -7,6 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PayReceiveInfoDto {
 
+    private Long payRequestTargetId;
+
     private String payCreatorName;
 
     private int requestAmount;

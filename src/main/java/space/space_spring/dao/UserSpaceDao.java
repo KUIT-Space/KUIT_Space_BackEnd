@@ -108,4 +108,11 @@ public class UserSpaceDao {
         return userInfoInSpaceList;
     }
 
+    public int calculateSpaceMemberNum(Space space) {
+        String jpql = "SELECT COUNT(us) FROM UserSpace us WHERE us.space = :space AND us.status = 'ACTIVE'";
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        query.setParameter("space", space);
+
+        return query.getSingleResult().intValue();
+    }
 }

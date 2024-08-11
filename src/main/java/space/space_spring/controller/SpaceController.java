@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.space.request.PostSpaceCreateRequest;
 
@@ -15,6 +16,7 @@ import space.space_spring.exception.SpaceException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.S3Uploader;
 import space.space_spring.service.SpaceService;
+import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 
@@ -31,6 +33,7 @@ public class SpaceController {
     private final SpaceService spaceService;
     private final S3Uploader s3Uploader;
     private final String spaceImgDirName = "spaceImg";
+    private final UserSpaceUtils userSpaceUtils;
 
     @PostMapping("")
     public BaseResponse<String> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
@@ -69,6 +72,25 @@ public class SpaceController {
     public BaseResponse<GetUserInfoBySpaceResponse> getAllUserInfoBySpace(@PathVariable Long spaceId) {
 
         return new BaseResponse<>(spaceService.findUserInfoBySpace(spaceId));
+    }
+
+    /**
+     * 스페이스 가입 view를 위한 데이터 조회
+     */
+    @GetMapping("/{spaceId}/join")
+    public BaseResponse<GetSpaceJoinDto.Response> getSpaceJoin(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
+
+        // TODO 1. 유저가 이미 스페이스에 가입되어 있는 유저인지를 검증
+        validateIsUserAlreadySpaceMember(userId, spaceId);
+
+        // TODO 2. 초대할 스페이스의 정보를 return
+        return new BaseResponse<>(spaceService.findSpaceJoin(spaceId));
+    }
+
+    private void validateIsUserAlreadySpaceMember(Long userId, Long spaceId) {
+        // 유저가 이미 스페이스의 멤버일 경우 exception 발생
+        // exception 을 발생시키는 것이 아니라 response에 유저가 스페이스에 가입된 유저인지에 대한 정보를 포함하는게 더 좋을까??
+        userSpaceUtils.isUserAlreadySpaceMember(userId, spaceId);
     }
 
 }

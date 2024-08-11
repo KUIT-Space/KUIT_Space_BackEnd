@@ -48,5 +48,4 @@ public class UserSpace extends BaseEntity {
         this.userSpaceAuth = userSpaceAuth.getAuth();
     }
 
-
 }

@@ -116,4 +116,12 @@ public class UserSpaceDao {
 
         return query.getSingleResult().intValue();
     }
+
+    public List<UserSpace> findUserSpaceListByUser(User user) {
+        String jpql = "SELECT us FROM UserSpace us WHERE us.user = :user AND us.status = 'ACTIVE'";
+        TypedQuery<UserSpace> query = em.createQuery(jpql, UserSpace.class);
+        query.setParameter("user", user);
+
+        return query.getResultList();
+    }
 }

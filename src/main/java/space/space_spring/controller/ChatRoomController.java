@@ -68,6 +68,11 @@ public class ChatRoomController {
      */
     @GetMapping("/{chatRoomId}/member")
     public BaseResponse<ReadChatRoomMemberResponse> readChatRoomMembers(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @PathVariable Long chatRoomId) {
+
+        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
+            throw new ChatException(UNAUTHORIZED_USER);
+        }
+
         return new BaseResponse<>(chatRoomService.readChatRoomMembers(spaceId, chatRoomId));
     }
 
@@ -80,6 +85,11 @@ public class ChatRoomController {
             @PathVariable Long spaceId,
             @PathVariable Long chatRoomId,
             @RequestBody JoinChatRoomRequest joinChatRoomRequest) {
+
+        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
+            throw new ChatException(UNAUTHORIZED_USER);
+        }
+
         return new BaseResponse<>(chatRoomService.joinChatRoom(userId, chatRoomId, joinChatRoomRequest));
     }
 
@@ -92,6 +102,11 @@ public class ChatRoomController {
             @PathVariable Long spaceId,
             @PathVariable Long chatRoomId,
             @RequestParam String name) {
+
+        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
+            throw new ChatException(UNAUTHORIZED_USER);
+        }
+
         return new BaseResponse<>(chatRoomService.modifyChatRoomName(userId, chatRoomId, name));
     }
 }

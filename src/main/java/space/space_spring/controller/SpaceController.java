@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.space.GetSpaceJoinDto;
+import space.space_spring.dto.space.PostSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.space.request.PostSpaceCreateRequest;
 
 import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
 import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.exception.CustomException;
 import space.space_spring.exception.MultipartFileException;
 import space.space_spring.exception.SpaceException;
 import space.space_spring.response.BaseResponse;
@@ -127,8 +129,6 @@ public class SpaceController {
 
     /**
      * 스페이스 별 유저 프로필 정보 수정
-     * or
-     * 유저의 스페이스 가입 처리
      */
     @PutMapping("/{spaceId}/member-profile")
     public BaseResponse<PutUserProfileInSpaceDto.Response> updateUserProfileInSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @ModelAttribute PutUserProfileInSpaceDto.Request request, BindingResult bindingResult) throws IOException {
@@ -160,4 +160,30 @@ public class SpaceController {
         return s3Uploader.upload(userProfileImg, userProfileImgDirName);
     }
 
+    /**
+     * 유저의 스페이스 가입 처리
+     */
+    @PostMapping("/{spaceId}/join")
+    BaseResponse<String> joinUserToSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @ModelAttribute PostSpaceJoinDto.Request request, BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(INVALID_SPACE_JOIN_REQUEST, getErrorMessage(bindingResult));
+        }
+
+        // TODO 1. 유저가 스페이스에 가입되어 있는지 검증
+        validateIsUserAlreadySpaceMember(userId, spaceId);
+
+        // TODO 2. 유저 프로필 썸네일을 s3에 upload
+        String userProfileImgUrl = processUserProfileImage(request.getUserProfileImg());
+
+        // TODO 3. 유저의 스페이스 가입 처리
+        PostSpaceJoinDto postSpaceJoinDto = new PostSpaceJoinDto(
+                userProfileImgUrl,
+                request.getUserName(),
+                request.getUserProfileMsg()
+        );
+
+        spaceService.createUserSpace(userId, spaceId, postSpaceJoinDto);
+
+        return new BaseResponse<>("유저의 스페이스 가입 처리 성공");
+    }
 }

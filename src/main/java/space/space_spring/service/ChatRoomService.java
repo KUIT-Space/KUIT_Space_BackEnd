@@ -9,11 +9,9 @@ import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.chat.ChatRoomDao;
 import space.space_spring.dao.chat.ChattingDao;
 import space.space_spring.dao.chat.UserChatRoomDao;
-import space.space_spring.dto.chat.response.ChatRoomResponse;
+import space.space_spring.dto.chat.request.JoinChatRoomRequest;
+import space.space_spring.dto.chat.response.*;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
-import space.space_spring.dto.chat.response.CreateChatRoomResponse;
-import space.space_spring.dto.chat.response.ReadChatRoomMemberResponse;
-import space.space_spring.dto.chat.response.ReadChatRoomResponse;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
 import space.space_spring.entity.document.ChatMessage;
@@ -23,6 +21,7 @@ import space.space_spring.util.user.UserUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -125,5 +124,22 @@ public class ChatRoomService {
         });
 
         return ReadChatRoomMemberResponse.of(userList);
+    }
+
+    @Transactional
+    public ChatSuccessResponse joinChatRoom(Long userId, Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
+        List<Long> memberIdList = joinChatRoomRequest.getMemberList();
+        Optional<ChatRoom> chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId);
+
+        chatRoomByChatRoomId.ifPresent(chatRoom -> {
+            Objects.requireNonNull(memberIdList).forEach(memberId -> {
+                // TODO 1: 초대한 유저 조회
+                User userByUserId = userUtils.findUserByUserId(userId);
+
+                // TODO 2: 초대한 유저에 대한 userChatRoom 테이블 생성
+                userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
+            });
+        });
+        return ChatSuccessResponse.of(true);
     }
 }

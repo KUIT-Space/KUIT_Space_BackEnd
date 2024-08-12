@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.dto.post.ReadPostsResponse;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostsResponse;

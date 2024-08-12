@@ -16,6 +16,7 @@ import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
+import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,7 @@ public class SpaceService {
     private final UserSpaceDao userSpaceDao;
     private final SpaceUtils spaceUtils;
     private final UserSpaceUtils userSpaceUtils;
+    private final UserUtils userUtils;
 
     @Transactional
     public Long createSpace(Long userId, String spaceName, String spaceImgUrl) {
@@ -136,8 +138,19 @@ public class SpaceService {
     }
 
     @Transactional
-    public void createUserSpace(Long userId, Long spaceId, PostSpaceJoinDto.Request request) {
+    public void createUserSpace(Long userId, Long spaceId, PostSpaceJoinDto postSpaceJoinDto) {
 
-        // TODO 1.
+        // TODO 1. userId에 해당하는 User find
+        User userByUserId = userUtils.findUserByUserId(userId);
+
+        // TODO 2. spaceId에 해당하는 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 3. 유저_스페이스 매핑 정보 db insert
+        UserSpace userSpace = userSpaceDao.createUserSpace(userByUserId, spaceBySpaceId);
+
+        userSpace.changeUserProfileImg(postSpaceJoinDto.getUserProfileImg());
+        userSpace.changeUserName(postSpaceJoinDto.getUserName());
+        userSpace.changeUserProfileMsg(postSpaceJoinDto.getUserProfileMsg());
     }
 }

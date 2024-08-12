@@ -15,6 +15,12 @@ import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
 import space.space_spring.entity.document.ChatMessage;
+import space.space_spring.exception.ChatException;
+import space.space_spring.exception.CustomException;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_EXIST;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
+
+import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -106,21 +112,20 @@ public class ChatRoomService {
         Space spaceById = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        Optional<ChatRoom> chatRoomById = chatRoomDao.findById(chatRoomId);
+        ChatRoom chatRoomById = chatRoomDao.findById(chatRoomId)
+                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
 
-        chatRoomById.ifPresent(chatRoom -> {
-            // TODO 3: 해당 chatRoom의 userChatRoom 리스트 find
-            List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoom(chatRoom);
+        // TODO 3: 해당 chatRoom의 userChatRoom 리스트 find
+        List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoom(chatRoomById);
 
-            userChatRoomList.forEach(userChatRoom -> {
-                User user = userChatRoom.getUser();
-                // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
-                Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById);
+        userChatRoomList.forEach(userChatRoom -> {
+            User user = userChatRoom.getUser();
 
-                userSpace.ifPresent(us -> {
-                    userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), us.getUserProfileImg(), user.getSignupType()));
-                });
-            });
+            // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
+            UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById)
+                    .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE));
+
+            userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), userSpace.getUserProfileImg(), user.getSignupType()));
         });
 
         return ReadChatRoomMemberResponse.of(userList);
@@ -129,29 +134,28 @@ public class ChatRoomService {
     @Transactional
     public ChatSuccessResponse joinChatRoom(Long userId, Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
         List<Long> memberIdList = joinChatRoomRequest.getMemberList();
-        Optional<ChatRoom> chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId);
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
+                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
 
-        chatRoomByChatRoomId.ifPresent(chatRoom -> {
-            Objects.requireNonNull(memberIdList).forEach(memberId -> {
-                // TODO 1: 초대한 유저 조회
-                User userByUserId = userUtils.findUserByUserId(userId);
+        Objects.requireNonNull(memberIdList).forEach(memberId -> {
+            // TODO 1: 초대한 유저 조회
+            User userByUserId = userUtils.findUserByUserId(userId);
 
-                // TODO 2: 초대한 유저에 대한 userChatRoom 테이블 생성
-                userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
-            });
+            // TODO 2: 초대한 유저에 대한 userChatRoom 테이블 생성
+            userChatRoomDao.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now()));
         });
+
         return ChatSuccessResponse.of(true);
     }
 
     public ChatSuccessResponse modifyChatRoomName(Long userId, Long chatRoomId, String name) {
         // TODO 1: 해당 채팅방 find
-        Optional<ChatRoom> chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId);
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
+                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
 
-        chatRoomByChatRoomId.ifPresent(chatRoom -> {
-            // TODO 2: 채팅방 이름 변경
-            chatRoom.updateName(name);
-            chatRoomDao.save(chatRoom);
-        });
+        // TODO 2: 채팅방 이름 변경
+        chatRoomByChatRoomId.updateName(name);
+        chatRoomDao.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
     }

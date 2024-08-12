@@ -132,23 +132,28 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ChatSuccessResponse joinChatRoom(Long userId, Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
+    public ChatSuccessResponse joinChatRoom(Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
         List<Long> memberIdList = joinChatRoomRequest.getMemberList();
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
                 .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
 
-        Objects.requireNonNull(memberIdList).forEach(memberId -> {
+        for (Long memberId : Objects.requireNonNull(memberIdList)) {
             // TODO 1: 초대한 유저 조회
-            User userByUserId = userUtils.findUserByUserId(userId);
+            User userByUserId = userUtils.findUserByUserId(memberId);
 
-            // TODO 2: 초대한 유저에 대한 userChatRoom 테이블 생성
+            // TODO 2: 유저가 이미 채팅방에 초대되어있는지 검증
+            if (isUserInChatRoom(userByUserId, chatRoomByChatRoomId)) {
+                return ChatSuccessResponse.of(false);
+            }
+
+            // TODO 3: 초대한 유저에 대한 userChatRoom 테이블 생성
             userChatRoomDao.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now()));
-        });
+        }
 
         return ChatSuccessResponse.of(true);
     }
 
-    public ChatSuccessResponse modifyChatRoomName(Long userId, Long chatRoomId, String name) {
+    public ChatSuccessResponse modifyChatRoomName(Long chatRoomId, String name) {
         // TODO 1: 해당 채팅방 find
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
                 .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
@@ -158,5 +163,10 @@ public class ChatRoomService {
         chatRoomDao.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
+    }
+
+    private boolean isUserInChatRoom(User userByUserId, ChatRoom chatRoomByChatRoomId) {
+        List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoom(chatRoomByChatRoomId);
+        return chatRoomList.stream().anyMatch(userChatRoom -> userChatRoom.getUser().equals(userByUserId));
     }
 }

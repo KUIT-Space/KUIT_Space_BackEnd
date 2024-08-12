@@ -19,8 +19,7 @@ import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_CHATROOM_CREATE;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.UNAUTHORIZED_USER;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
@@ -84,13 +83,18 @@ public class ChatRoomController {
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
             @PathVariable Long chatRoomId,
-            @RequestBody JoinChatRoomRequest joinChatRoomRequest) {
+            @RequestBody JoinChatRoomRequest joinChatRoomRequest,
+            BindingResult bindingResult) {
 
         if (!userSpaceUtils.isUserManager(userId, spaceId)) {
             throw new ChatException(UNAUTHORIZED_USER);
         }
 
-        return new BaseResponse<>(chatRoomService.joinChatRoom(userId, chatRoomId, joinChatRoomRequest));
+        if(bindingResult.hasErrors()){
+            throw new ChatException(INVALID_CHATROOM_JOIN,getErrorMessage(bindingResult));
+        }
+
+        return new BaseResponse<>(chatRoomService.joinChatRoom(chatRoomId, joinChatRoomRequest));
     }
 
     /**
@@ -107,6 +111,6 @@ public class ChatRoomController {
             throw new ChatException(UNAUTHORIZED_USER);
         }
 
-        return new BaseResponse<>(chatRoomService.modifyChatRoomName(userId, chatRoomId, name));
+        return new BaseResponse<>(chatRoomService.modifyChatRoomName(chatRoomId, name));
     }
 }

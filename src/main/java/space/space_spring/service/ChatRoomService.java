@@ -5,23 +5,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.UserDao;
+import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.chat.ChatRoomDao;
 import space.space_spring.dao.chat.ChattingDao;
 import space.space_spring.dao.chat.UserChatRoomDao;
 import space.space_spring.dto.chat.response.ChatRoomResponse;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.chat.response.CreateChatRoomResponse;
+import space.space_spring.dto.chat.response.ReadChatRoomMemberResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomResponse;
+import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.ChatRoom;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserChatRoom;
 import space.space_spring.entity.document.ChatMessage;
-import space.space_spring.entity.enumStatus.ChatMessageType;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +35,7 @@ public class ChatRoomService {
     private final UserDao userDao;
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
+    private final UserSpaceDao userSpaceDao;
     private final ChattingDao chattingDao;
     private final ChatRoomDao chatRoomDao;
     private final UserChatRoomDao userChatRoomDao;
@@ -95,5 +99,39 @@ public class ChatRoomService {
 
         // TODO 5: chatroom id 반환
         return CreateChatRoomResponse.of(chatRoom.getId());
+    }
+
+    @Transactional
+    public ReadChatRoomMemberResponse readChatRoomMembers(Long spaceId, Long chatRoomId) {
+        // TODO 1: spaceId에 해당하는 space find
+        Space spaceById = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 2: 해당 space의 모든 유저 정보 find
+        List<UserInfoInSpace> userListInSpace = userSpaceDao.findUserInfoInSpace(spaceById);
+        List<UserInfoInSpace> userList = new ArrayList<>();
+
+        // TODO 3: 해당 space에서 생성된 chatroom들 find
+        List<ChatRoom> chatRoomBySpace = chatRoomDao.findBySpace(spaceById);
+
+        chatRoomBySpace.forEach(chatRoom -> {
+            // TODO 4: userChatRoom에서 해당하는 chatroom들 find
+            List<UserChatRoom> userChatRooms = userChatRoomDao.findByChatRoom(chatRoom);
+
+            userChatRooms.forEach(userChatRoom -> {
+                User user = userChatRoom.getUser();
+                Long userId = user.getUserId();
+
+                // TODO 5: userListInSpace에서 userId가 동일한 UserInfoInSpace를 찾아서 필터링
+                userListInSpace.stream()
+                        .filter(userInfo -> userInfo.getUserId().equals(userId))
+                        .findFirst()
+                        .ifPresent(matchingUserInfo -> {
+                            // TODO 6: userList에 일치하는 유저 정보 추가
+                            userList.add(new UserInfoInSpace(userId, matchingUserInfo.getUserName(), matchingUserInfo.getProfileImgUrl(), user.getSignupType()));
+                        });
+            });
+        });
+
+        return ReadChatRoomMemberResponse.of(userList);
     }
 }

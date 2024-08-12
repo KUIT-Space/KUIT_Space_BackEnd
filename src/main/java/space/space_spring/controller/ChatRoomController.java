@@ -124,4 +124,20 @@ public class ChatRoomController {
             @PathVariable Long chatRoomId) {
         return new BaseResponse<>(chatRoomService.exitChatRoom(userId, chatRoomId));
     }
+
+    /**
+     * 특정 채팅방 삭제
+     */
+    @PostMapping("/{chatRoomId}/delete")
+    public BaseResponse<ChatSuccessResponse> deleteChatRoom(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long chatRoomId) {
+
+        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
+            throw new ChatException(UNAUTHORIZED_USER);
+        }
+
+        return new BaseResponse<>(chatRoomService.deleteChatRoom(chatRoomId));
+    }
 }

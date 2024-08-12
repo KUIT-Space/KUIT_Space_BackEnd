@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PostDao;
 import space.space_spring.dto.post.request.CreatePostRequest;
+import space.space_spring.dto.post.response.ReadPostDetailResponse;
 import space.space_spring.dto.post.response.ReadPostsResponse;
 import space.space_spring.entity.*;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -17,6 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.POST_IS_NOT_IN_SPACE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.POST_NOT_EXIST;
 
 @Service
 @Slf4j
@@ -30,7 +35,7 @@ public class PostService {
     private final S3Uploader s3Uploader;
 
     @Transactional
-    public List<ReadPostsResponse> getAllPosts(Long spaceId, String filter) {
+    public List<ReadPostsResponse> getAllPosts(Long spaceId, String filter, Long userId) {
 
         // TODO 1: spaceId에 해당하는 space find
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
@@ -51,7 +56,8 @@ public class PostService {
         return posts.stream()
                 .map(post ->{
                     Optional<UserSpace> userSpace = userSpaceUtils.isUserInSpace(post.getUser().getUserId(), spaceId);
-                    return ReadPostsResponse.of(post, postCount, userSpace.orElse(null));
+                    boolean isLike = postDao.isUserLikedPost(post.getPostId(), userId);
+                    return ReadPostsResponse.of(post, postCount, userSpace.orElse(null), isLike);
                 })
                 .collect(Collectors.toList());
     }
@@ -87,5 +93,28 @@ public class PostService {
         postImages.forEach(postImage -> postImage.setPost(post));
 
         return postDao.save(post).getPostId();
+    }
+
+    @Transactional
+    public ReadPostDetailResponse getPostDetail(Long userId, Long spaceId, Long postId) {
+        // TODO 1: spaceId에 해당하는 space find
+        Space space = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 2: postId에 해당하는 post find
+        Post post = postDao.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+
+        // TODO 3: 게시글이 해당 스페이스에 속하는지 검증
+        if (!post.getSpace().getSpaceId().equals(spaceId)) {
+            throw new CustomException(POST_IS_NOT_IN_SPACE);
+        }
+
+        // TODO 4: userId와 spaceId에 해당하는 UserSpace find
+        Optional<UserSpace> userSpace = userSpaceUtils.isUserInSpace(post.getUser().getUserId(), spaceId);
+
+        // TODO 5: 유저가 해당 게시글에 좋아요를 눌렀는지 여부 확인
+        boolean isLike = postDao.isUserLikedPost(post.getPostId(), userId);
+
+        // TODO 6: ReadPostDetailResponse 객체로 변환
+        return ReadPostDetailResponse.of(post, userSpace.orElse(null), isLike);
     }
 }

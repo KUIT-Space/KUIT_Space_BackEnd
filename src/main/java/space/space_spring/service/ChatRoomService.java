@@ -142,4 +142,17 @@ public class ChatRoomService {
         });
         return ChatSuccessResponse.of(true);
     }
+
+    public ChatSuccessResponse modifyChatRoomName(Long userId, Long chatRoomId, String name) {
+        // TODO 1: 해당 채팅방 find
+        Optional<ChatRoom> chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId);
+
+        chatRoomByChatRoomId.ifPresent(chatRoom -> {
+            // TODO 2: 채팅방 이름 변경
+            chatRoom.updateName(name);
+            chatRoomDao.save(chatRoom);
+        });
+
+        return ChatSuccessResponse.of(true);
+    }
 }

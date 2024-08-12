@@ -35,8 +35,9 @@ public class ReadPostsResponse {
     // 댓글 및 좋아요
     private int commentCount;
     private int likeCount;
+    private boolean isLike;
 
-    public static ReadPostsResponse of(Post post, int postCount, UserSpace userSpace) {
+    public static ReadPostsResponse of(Post post, int postCount, UserSpace userSpace, boolean isLike) {
         List<String> postImageUrls = post.getPostImages().stream()
                 .map(PostImage::getPostImgUrl)
                 .toList();
@@ -54,6 +55,7 @@ public class ReadPostsResponse {
                 .postCount(postCount)
                 .commentCount(post.getPostComments().size())
                 .likeCount(post.getLike())
+                .isLike(isLike)
                 .postImage(postImageUrls)
                 .build();
     }

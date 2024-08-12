@@ -2,6 +2,7 @@ package space.space_spring.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PostDao;
 import space.space_spring.dto.post.request.CreatePostRequest;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostService {
 
@@ -68,13 +70,22 @@ public class PostService {
                 .stream()
                 .map(file -> {
                     try {
+                        log.info("Received files: {}", createPostRequest.getPostImages());
                         String postImgUrl = s3Uploader.upload(file, "postImg");
-                        return new PostImage(postImgUrl);
+                        log.info("Post Image URL: {}", postImgUrl);
+                        return PostImage.builder().postImgUrl(postImgUrl).build();
                     } catch (IOException e) {
                         throw new RuntimeException("Failed to upload file", e);
                     }
                 }).collect(Collectors.toList());
+        log.info("Uploading files: {}", postImages);
+
+        // TODO 4: Post 객체를 생성하고, 생성된 Post 객체를 각 PostImage에 할당
         Post post = createPostRequest.toEntity(user, space, postImages);
+
+        // TODO 5: 각 PostImage에 해당 Post를 설정
+        postImages.forEach(postImage -> postImage.setPost(post));
+
         return postDao.save(post).getPostId();
     }
 }

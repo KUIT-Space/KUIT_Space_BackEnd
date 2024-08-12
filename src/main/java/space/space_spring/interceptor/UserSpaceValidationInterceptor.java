@@ -14,12 +14,13 @@ import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.exception.CustomException;
 import space.space_spring.exception.UserSpaceException;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Component
 @RequiredArgsConstructor
@@ -53,7 +54,13 @@ public class UserSpaceValidationInterceptor implements HandlerInterceptor {
     private Long getUserSpace(long spaceId,long userId){
         // userSpaceDao에서 검증
         User userByUserId = userDao.findUserByUserId(userId);
+        if(userByUserId==null){
+            throw new CustomException(CANNOT_FIND_USER_ID);
+        }
         Space spaceBySpaceId = spaceDao.findSpaceBySpaceId(spaceId);
+        if(spaceBySpaceId==null){
+            throw new CustomException(SPACE_NOT_FOUND);
+        }
         Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
         Optional.ofNullable(userSpace
                 .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE)));

@@ -14,6 +14,7 @@ import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.entity.enumStatus.UserSpaceAuth;
 import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
@@ -44,7 +45,7 @@ public class SpaceService {
 
         // TODO 2. 유저_스페이스 매핑 정보 db insert
         User manager = userDao.findUserByUserId(userId);
-        UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace);
+        UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace, UserSpaceAuth.MANAGER);
 
         return saveSpace.getSpaceId();
     }
@@ -147,7 +148,7 @@ public class SpaceService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3. 유저_스페이스 매핑 정보 db insert
-        UserSpace userSpace = userSpaceDao.createUserSpace(userByUserId, spaceBySpaceId);
+        UserSpace userSpace = userSpaceDao.createUserSpace(userByUserId, spaceBySpaceId, UserSpaceAuth.NORMAL);
 
         userSpace.changeUserProfileImg(postSpaceJoinDto.getUserProfileImg());
         userSpace.changeUserName(postSpaceJoinDto.getUserName());

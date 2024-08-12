@@ -9,10 +9,12 @@ import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.entity.enumStatus.UserSpaceAuth;
 import space.space_spring.exception.UserSpaceException;
 
 import java.util.Optional;
 
+import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_ALREADY_IN_SPACE;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 @Component
@@ -31,5 +33,33 @@ public class MemoryUserSpaceUtils implements UserSpaceUtils {
 
         return Optional.ofNullable(userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId)
                 .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE)));
+    }
+
+    @Override
+    public boolean isUserManager(Long userId, Long spaceId) {
+        User userByUserId = userDao.findUserByUserId(userId);
+        Space spaceBySpaceId = spaceDao.findSpaceBySpaceId(spaceId);
+
+        // userId와 spaceId를 통해 UserSpace에서 권한 확인
+        Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
+
+        if (userSpace.isPresent()) {
+            String userSpaceAuth = userSpace.get().getUserSpaceAuth();
+            return userSpaceAuth.equals(UserSpaceAuth.MANAGER.getAuth());
+        }
+        return false;
+    }
+
+    @Override
+    public void isUserAlreadySpaceMember(Long userId, Long spaceId) {
+        User userByUserId = userDao.findUserByUserId(userId);
+        Space spaceBySpaceId = spaceDao.findSpaceBySpaceId(spaceId);
+
+        // 해당 유저가 스페이스에 가입되어 있는지를 확인
+        Optional<UserSpace> userSpaceByUserAndSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
+
+        if (userSpaceByUserAndSpace.isPresent()) {
+            throw new UserSpaceException(USER_IS_ALREADY_IN_SPACE);
+        }
     }
 }

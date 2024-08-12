@@ -1,5 +1,6 @@
 package space.space_spring.util.userSpace;
 
+import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 
 import java.util.Optional;
@@ -13,5 +14,7 @@ public interface UserSpaceUtils {
 
     Optional<UserSpace> isUserInSpace(Long userId, Long spaceId);
 
+    boolean isUserManager(Long userId, Long spaceId);
 
+    void isUserAlreadySpaceMember(Long userId, Long spaceId);
 }

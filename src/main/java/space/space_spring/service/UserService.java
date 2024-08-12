@@ -5,17 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.user.*;
+import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
+import space.space_spring.dto.user.request.PostUserLoginRequest;
+import space.space_spring.dto.user.request.PostUserSignupRequest;
+import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
+import space.space_spring.entity.enumStatus.UserSignupType;
+import space.space_spring.exception.CustomException;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.exception.UserException;
-import space.space_spring.response.BaseResponse;
 import space.space_spring.util.user.UserUtils;
 
-import java.util.List;
-import java.util.Map;
-
+import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
@@ -29,25 +31,26 @@ public class UserService {
     private final UserUtils userUtils;
 
     @Transactional
-    public PostUserSignupResponse signup(PostUserSignupRequest postUserSignupRequest) {
+    public Long signup(PostUserSignupRequest postUserSignupRequest) {
         // TODO 1. 이메일 중복 검사(아이디 중복 검사)
-        validateEmail(postUserSignupRequest.getEmail());
+        validateEmailForLocalSignup(postUserSignupRequest.getEmail());
 
         // password 암호화도??
 
-
         // TODO 2. 회원정보 db insert
-        User saveUser = userDao.saveUser(postUserSignupRequest);
+        String email = postUserSignupRequest.getEmail();
+        String password = postUserSignupRequest.getPassword();
+        String userName = postUserSignupRequest.getUserName();
 
-        // TODO 3. JWT 토큰 초기화 (회원가입시에는 토큰 발급 X)
-        String jwt = null;
+        User saveUser = userDao.saveUser(email, password, userName, LOCAL);
 
-        return new PostUserSignupResponse(saveUser.getUserId(), jwt);
+        return saveUser.getUserId();
     }
 
-    private void validateEmail(String email) {
-        if (userDao.hasDuplicateEmail(email)) {
-            throw new UserException(DUPLICATE_EMAIL);
+    private void validateEmailForLocalSignup(String email) {
+        if (userDao.hasDuplicateEmail(email, UserSignupType.LOCAL)) {
+            //throw new UserException(DUPLICATE_EMAIL);
+            throw new CustomException(DUPLICATE_EMAIL);
         }
     }
 
@@ -62,9 +65,7 @@ public class UserService {
 
         // TODO 3. JWT 발급
         String jwtLogin = jwtLoginProvider.generateToken(userByEmail);
-
-        // TODO 4. JWT db에 insert -> db에 저장해야할까??
-        userByEmail.saveJWTtoLoginUser(jwtLogin);
+        log.info("jwtLogin: {}", jwtLogin);
 
         return jwtLogin;
     }
@@ -80,23 +81,14 @@ public class UserService {
         // TODO 1. userId로 User find
         User userByUserId = userUtils.findUserByUserId(userId);
 
-        // TODO 2. user가 속한 스페이스가 없는 경우 -> 예외처리 ??
-        // (현재 lastUserSpaceId가 -1 & 스페이스 info list는 빈 껍데기로 response가 전달됨)
-        validateSpaceListForUser(userByUserId);
-
-        // TODO 3. 특정 유저가 속해있는 스페이스 정보들을 get -> 무한 스크롤 구현
+        // TODO 2. 특정 유저가 속해있는 스페이스 정보들을 get -> 무한 스크롤 구현
         SpaceChoiceViewDto spaceChoiceViewDto = userSpaceDao.getSpaceChoiceView(userByUserId, size, lastUserSpaceId);
 
-        // TODO 4. find userName
+        // TODO 3. find userName
         String userName = userByUserId.getUserName();
 
-        // TODO 5. return
-        return new GetSpaceInfoForUserResponse(userName, spaceChoiceViewDto.getLastUserSpaceId(), spaceChoiceViewDto.getSpaceNameAndProfileImgList());
-    }
-
-    private void validateSpaceListForUser(User userByUserId) {
-        // 프론트 개발자 분들과 상의해서 결정해야할 거 같음
-
+        // TODO 4. return
+        return new GetSpaceInfoForUserResponse(userName, spaceChoiceViewDto.getLastUserSpaceId(), spaceChoiceViewDto.getSpaceChoiceInfoList());
     }
 
 }

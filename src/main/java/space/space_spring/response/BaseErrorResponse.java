@@ -2,6 +2,7 @@ package space.space_spring.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 import space.space_spring.response.status.ResponseStatus;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 public class BaseErrorResponse implements ResponseStatus {
 
     private final int code;
-    private final int status;
+    private final HttpStatus status;
     private final String message;
     private final LocalDateTime timestamp;
 
@@ -35,7 +36,7 @@ public class BaseErrorResponse implements ResponseStatus {
     }
 
     @Override
-    public int getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
 

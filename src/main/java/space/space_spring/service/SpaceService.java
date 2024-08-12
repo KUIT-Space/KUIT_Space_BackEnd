@@ -134,4 +134,10 @@ public class SpaceService {
         throw new UserSpaceException(USER_IS_NOT_IN_SPACE);
 
     }
+
+    @Transactional
+    public void createUserSpace(Long userId, Long spaceId, PostSpaceJoinDto.Request request) {
+
+        // TODO 1.
+    }
 }

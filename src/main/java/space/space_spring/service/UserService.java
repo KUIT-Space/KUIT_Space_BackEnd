@@ -21,6 +21,8 @@ import space.space_spring.exception.UserException;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
@@ -103,6 +105,30 @@ public class UserService {
         User userByUserId = userUtils.findUserByUserId(userId);
 
         // TODO 2. 유저가 속해있는 UserSpace list get
-        userSpaceDao.findUserSpaceListByUser(userByUserId);
+        List<UserSpace> userSpaceListByUser = userSpaceDao.findUserSpaceListByUser(userByUserId);
+
+        // TODO 3. return
+        List<GetUserProfileListDto.UserProfile> userProfileList = createUserProfileList(userSpaceListByUser);
+
+        return new GetUserProfileListDto.Response(userProfileList);
     }
+
+    private List<GetUserProfileListDto.UserProfile> createUserProfileList(List<UserSpace> userSpaceList) {
+        List<GetUserProfileListDto.UserProfile> userProfileList = new ArrayList<>();
+
+        for (UserSpace userSpace : userSpaceList) {
+            GetUserProfileListDto.UserProfile userProfile = new GetUserProfileListDto.UserProfile(
+                    userSpace.getSpace().getSpaceId(),
+                    userSpace.getSpace().getSpaceName(),
+                    userSpace.getUserName(),
+                    userSpace.getUserProfileImg(),
+                    userSpace.getUserSpaceAuth()
+            );
+
+            userProfileList.add(userProfile);
+        }
+
+        return userProfileList;
+    }
+
 }

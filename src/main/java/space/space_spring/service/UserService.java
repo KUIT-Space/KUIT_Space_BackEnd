@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.user.GetUserProfileListDto;
 import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
@@ -20,6 +21,8 @@ import space.space_spring.exception.UserException;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
@@ -94,6 +97,38 @@ public class UserService {
 
         // TODO 4. return
         return new GetSpaceInfoForUserResponse(userName, spaceChoiceViewDto.getLastUserSpaceId(), spaceChoiceViewDto.getSpaceChoiceInfoList());
+    }
+
+    @Transactional
+    public GetUserProfileListDto.Response getUserProfileList(Long userId) {
+        // TODO 1. userId로 User find
+        User userByUserId = userUtils.findUserByUserId(userId);
+
+        // TODO 2. 유저가 속해있는 UserSpace list get
+        List<UserSpace> userSpaceListByUser = userSpaceDao.findUserSpaceListByUser(userByUserId);
+
+        // TODO 3. return
+        List<GetUserProfileListDto.UserProfile> userProfileList = createUserProfileList(userSpaceListByUser);
+
+        return new GetUserProfileListDto.Response(userProfileList);
+    }
+
+    private List<GetUserProfileListDto.UserProfile> createUserProfileList(List<UserSpace> userSpaceList) {
+        List<GetUserProfileListDto.UserProfile> userProfileList = new ArrayList<>();
+
+        for (UserSpace userSpace : userSpaceList) {
+            GetUserProfileListDto.UserProfile userProfile = new GetUserProfileListDto.UserProfile(
+                    userSpace.getSpace().getSpaceId(),
+                    userSpace.getSpace().getSpaceName(),
+                    userSpace.getUserName(),
+                    userSpace.getUserProfileImg(),
+                    userSpace.getUserSpaceAuth()
+            );
+
+            userProfileList.add(userProfile);
+        }
+
+        return userProfileList;
     }
 
 }

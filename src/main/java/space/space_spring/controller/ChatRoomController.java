@@ -82,4 +82,16 @@ public class ChatRoomController {
             @RequestBody JoinChatRoomRequest joinChatRoomRequest) {
         return new BaseResponse<>(chatRoomService.joinChatRoom(userId, chatRoomId, joinChatRoomRequest));
     }
+
+    /**
+     * 특정 채팅방의 이름 수정
+     */
+    @PostMapping("/{chatRoomId}/setting")
+    public BaseResponse<ChatSuccessResponse> modifyChatRoomName(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long chatRoomId,
+            @RequestParam String name) {
+        return new BaseResponse<>(chatRoomService.modifyChatRoomName(userId, chatRoomId, name));
+    }
 }

@@ -75,6 +75,8 @@ public class UserController {
     @GetMapping("/profile")
     public BaseResponse<GetUserProfileListDto.Response> showUserProfileList(@JwtLoginAuth Long userId) {
 
+        log.info("userId = {}", userId);
+
         return new BaseResponse<>(userService.getUserProfileList(userId));
     }
 }

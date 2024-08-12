@@ -48,5 +48,20 @@ public class UserSpace extends BaseEntity {
         this.userSpaceAuth = userSpaceAuth.getAuth();
     }
 
+    public void changeUserName(String userName) {
+        this.userName = userName;
+    }
 
+    public void changeUserProfileImg(String profileImg) {
+        this.userProfileImg = profileImg;
+    }
+
+    public void changeUserProfileMsg(String profileMsg) {
+        this.userProfileMsg = profileMsg;
+    }
+
+    // 유저 권한 변경 기능 아직 개발 X
+    public void changeUserSpaceAuth(String auth) {
+        this.userSpaceAuth = auth;
+    }
 }

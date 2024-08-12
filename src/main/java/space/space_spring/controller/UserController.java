@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.dto.user.GetUserProfileListDto;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
 import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
@@ -68,4 +69,12 @@ public class UserController {
         return new BaseResponse<>(userService.getSpaceListForUser(userId, size, lastUserSpaceId));
     }
 
+    /**
+     * 스페이스 전체 설정 -> 스페이스 프로필 관리 view
+     */
+    @GetMapping("/profile")
+    public BaseResponse<GetUserProfileListDto.Response> showUserProfileList(@JwtLoginAuth Long userId) {
+
+        return new BaseResponse<>(userService.getUserProfileList(userId));
+    }
 }

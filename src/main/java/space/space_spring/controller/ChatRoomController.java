@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.chat.request.JoinChatRoomRequest;
 import space.space_spring.dto.chat.response.ChatSuccessResponse;

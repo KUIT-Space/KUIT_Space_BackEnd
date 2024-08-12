@@ -89,7 +89,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     IS_NOT_IMAGE_FILE(9000, HttpStatus.BAD_REQUEST, "지원되는 이미지 파일의 형식이 아닙니다."),
 
-    /*
+    /**
      * 10000: voice room 오류
      */
     VOICEROOM_NOT_EXIST(10001, HttpStatus.BAD_REQUEST,"존재하지 않는 보이스룸 id입니다."),
@@ -97,9 +97,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
     VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
-    VOICEROOM_DO_NOT_HAVE_PERMISSION(10005,HttpStatus.FORBIDDEN,"해당 작업은 관리자 권한이 필요합니다." );
+    VOICEROOM_DO_NOT_HAVE_PERMISSION(10005,HttpStatus.FORBIDDEN,"해당 작업은 관리자 권한이 필요합니다." ),
 
-
+    /**
+     * 11000: Post 오류
+     */
+    INVALID_POST_CREATE(11000, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
+    POST_NOT_EXIST(11001, HttpStatus.BAD_REQUEST, "존재하지 않는 게시글 id입니다.");
 
     private final int code;
     private final HttpStatus status;

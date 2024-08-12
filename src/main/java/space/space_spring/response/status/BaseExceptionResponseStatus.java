@@ -75,6 +75,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     G(7006, HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다."),
 
 
+
+
+
     /**
      * 8000: Chat 오류
      */
@@ -83,7 +86,20 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /**
      * 9000 : MultipartFile 오류
      */
-    IS_NOT_IMAGE_FILE(9000, HttpStatus.BAD_REQUEST, "지원되는 이미지 파일의 형식이 아닙니다.");
+
+    IS_NOT_IMAGE_FILE(9000, HttpStatus.BAD_REQUEST, "지원되는 이미지 파일의 형식이 아닙니다."),
+
+    /*
+     * 10000: voice room 오류
+     */
+    VOICEROOM_NOT_EXIST(10001, HttpStatus.BAD_REQUEST,"존재하지 않는 보이스룸 id입니다."),
+    INVALID_VOICEROOM_REQUEST(10002, HttpStatus.BAD_REQUEST,"잘못된 요청 인자 입니다."),
+
+    VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
+    VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
+    VOICEROOM_DO_NOT_HAVE_PERMISSION(10005,HttpStatus.FORBIDDEN,"해당 작업은 관리자 권한이 필요합니다." );
+
+
 
     private final int code;
     private final HttpStatus status;

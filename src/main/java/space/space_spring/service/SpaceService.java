@@ -7,13 +7,23 @@ import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.space.GetSpaceJoinDto;
+import space.space_spring.dto.space.PostSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
+import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
+import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.entity.enumStatus.UserSpaceAuth;
+import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
+import space.space_spring.util.user.UserUtils;
+import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 
 @Service
@@ -24,6 +34,8 @@ public class SpaceService {
     private final UserDao userDao;
     private final UserSpaceDao userSpaceDao;
     private final SpaceUtils spaceUtils;
+    private final UserSpaceUtils userSpaceUtils;
+    private final UserUtils userUtils;
 
     @Transactional
     public Long createSpace(Long userId, String spaceName, String spaceImgUrl) {
@@ -33,7 +45,7 @@ public class SpaceService {
 
         // TODO 2. 유저_스페이스 매핑 정보 db insert
         User manager = userDao.findUserByUserId(userId);
-        UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace);
+        UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace, UserSpaceAuth.MANAGER);
 
         return saveSpace.getSpaceId();
     }
@@ -73,5 +85,73 @@ public class SpaceService {
                 spaceCreatedDate,
                 memberNum
         );
+    }
+
+    @Transactional
+    public GetUserProfileInSpaceDto.Response getUserProfileInSpace(Long userId, Long spaceId) {
+        // TODO 1. userId, spaceId로 UserSpace find
+        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
+
+        // TODO 2. user의 프로필 정보 return
+        if (userInSpace.isPresent()) {
+            UserSpace userSpace = userInSpace.get();
+
+            return new GetUserProfileInSpaceDto.Response(
+                    userSpace.getUserProfileImg(),
+                    userSpace.getUserName(),
+                    userSpace.getUserSpaceAuth(),
+                    userSpace.getUserProfileMsg()
+            );
+        }
+
+        // userSpaceUtils.isUserInSpace 메서드에서도 해당 에러를 던지기는 하지만
+        // 컴파일 에러의 방지를 위해 일단 이중으로 예외를 던지도록 구현했습니다
+        throw new UserSpaceException(USER_IS_NOT_IN_SPACE);
+    }
+
+    @Transactional
+    public PutUserProfileInSpaceDto.Response changeUserProfileInSpace(Long userId, Long spaceId, PutUserProfileInSpaceDto putUserProfileInSpaceDto) {
+
+        // TODO 1. userId, spaceId로 UserSpace find
+        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
+
+        if (userInSpace.isPresent()) {
+            UserSpace userSpace = userInSpace.get();
+
+            // TODO 2. UserSpace의 필드값 수정
+            userSpace.changeUserName(putUserProfileInSpaceDto.getUserName());
+            userSpace.changeUserProfileImg(putUserProfileInSpaceDto.getUserProfileImg());
+            userSpace.changeUserProfileMsg(putUserProfileInSpaceDto.getUserProfileMsg());
+
+            // TODO 3. return
+            return new PutUserProfileInSpaceDto.Response(
+                    userSpace.getUserProfileImg(),
+                    userSpace.getUserSpaceAuth(),
+                    userSpace.getUserName(),
+                    userSpace.getUserProfileMsg()
+            );
+        }
+
+        // userSpaceUtils.isUserInSpace 메서드에서도 해당 에러를 던지기는 하지만
+        // 컴파일 에러의 방지를 위해 일단 이중으로 예외를 던지도록 구현했습니다
+        throw new UserSpaceException(USER_IS_NOT_IN_SPACE);
+
+    }
+
+    @Transactional
+    public void createUserSpace(Long userId, Long spaceId, PostSpaceJoinDto postSpaceJoinDto) {
+
+        // TODO 1. userId에 해당하는 User find
+        User userByUserId = userUtils.findUserByUserId(userId);
+
+        // TODO 2. spaceId에 해당하는 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 3. 유저_스페이스 매핑 정보 db insert
+        UserSpace userSpace = userSpaceDao.createUserSpace(userByUserId, spaceBySpaceId, UserSpaceAuth.NORMAL);
+
+        userSpace.changeUserProfileImg(postSpaceJoinDto.getUserProfileImg());
+        userSpace.changeUserName(postSpaceJoinDto.getUserName());
+        userSpace.changeUserProfileMsg(postSpaceJoinDto.getUserProfileMsg());
     }
 }

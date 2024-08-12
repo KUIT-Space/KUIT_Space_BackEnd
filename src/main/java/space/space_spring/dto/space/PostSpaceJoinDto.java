@@ -2,13 +2,22 @@ package space.space_spring.dto.space;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
+@Getter
+@AllArgsConstructor
 public class PostSpaceJoinDto {
+
+    private String userProfileImg;
+
+    private String userName;
+
+    private String userProfileMsg;
 
     @Getter
     @Setter

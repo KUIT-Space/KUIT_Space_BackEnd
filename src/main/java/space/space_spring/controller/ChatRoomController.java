@@ -6,6 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
+import space.space_spring.dto.chat.request.JoinChatRoomRequest;
+import space.space_spring.dto.chat.response.ChatSuccessResponse;
 import space.space_spring.dto.chat.response.CreateChatRoomResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomMemberResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomResponse;
@@ -67,5 +69,17 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}/member")
     public BaseResponse<ReadChatRoomMemberResponse> readChatRoomMembers(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @PathVariable Long chatRoomId) {
         return new BaseResponse<>(chatRoomService.readChatRoomMembers(spaceId, chatRoomId));
+    }
+
+    /**
+     * 특정 채팅방에 유저 초대
+     */
+    @PostMapping("/{chatRoomId}/member")
+    public BaseResponse<ChatSuccessResponse> joinChatRoom(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long chatRoomId,
+            @RequestBody JoinChatRoomRequest joinChatRoomRequest) {
+        return new BaseResponse<>(chatRoomService.joinChatRoom(userId, chatRoomId, joinChatRoomRequest));
     }
 }

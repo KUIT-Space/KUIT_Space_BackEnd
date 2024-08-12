@@ -3,6 +3,7 @@ package space.space_spring.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 import space.space_spring.response.status.ResponseStatus;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.SUCCESS;
@@ -12,7 +13,7 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.SUC
 public class BaseResponse<T> implements ResponseStatus {
 
     private final int code;
-    private final int status;
+    private final HttpStatus status;
     private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,7 +32,7 @@ public class BaseResponse<T> implements ResponseStatus {
     }
 
     @Override
-    public int getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
 

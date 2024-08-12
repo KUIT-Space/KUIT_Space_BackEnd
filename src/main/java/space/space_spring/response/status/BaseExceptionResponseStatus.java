@@ -88,7 +88,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      */
 
     IS_NOT_IMAGE_FILE(9000, HttpStatus.BAD_REQUEST, "지원되는 이미지 파일의 형식이 아닙니다."),
-
+    MULTIPARTFILE_CONVERT_FAILE_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
     /*
      * 10000: voice room 오류
      */

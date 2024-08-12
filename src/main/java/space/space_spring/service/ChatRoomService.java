@@ -15,10 +15,7 @@ import space.space_spring.dto.chat.response.CreateChatRoomResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomMemberResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomResponse;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
-import space.space_spring.entity.ChatRoom;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
-import space.space_spring.entity.UserChatRoom;
+import space.space_spring.entity.*;
 import space.space_spring.entity.document.ChatMessage;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
@@ -26,6 +23,7 @@ import space.space_spring.util.user.UserUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -103,32 +101,26 @@ public class ChatRoomService {
 
     @Transactional
     public ReadChatRoomMemberResponse readChatRoomMembers(Long spaceId, Long chatRoomId) {
+        List<UserInfoInSpace> userList = new ArrayList<>();
+
         // TODO 1: spaceId에 해당하는 space find
         Space spaceById = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 2: 해당 space의 모든 유저 정보 find
-        List<UserInfoInSpace> userListInSpace = userSpaceDao.findUserInfoInSpace(spaceById);
-        List<UserInfoInSpace> userList = new ArrayList<>();
+        // TODO 2: chatRoomId에 해당하는 chatRoom find
+        Optional<ChatRoom> chatRoomById = chatRoomDao.findById(chatRoomId);
 
-        // TODO 3: 해당 space에서 생성된 chatroom들 find
-        List<ChatRoom> chatRoomBySpace = chatRoomDao.findBySpace(spaceById);
+        chatRoomById.ifPresent(chatRoom -> {
+            // TODO 3: 해당 chatRoom의 userChatRoom 리스트 find
+            List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoom(chatRoom);
 
-        chatRoomBySpace.forEach(chatRoom -> {
-            // TODO 4: userChatRoom에서 해당하는 chatroom들 find
-            List<UserChatRoom> userChatRooms = userChatRoomDao.findByChatRoom(chatRoom);
-
-            userChatRooms.forEach(userChatRoom -> {
+            userChatRoomList.forEach(userChatRoom -> {
                 User user = userChatRoom.getUser();
-                Long userId = user.getUserId();
+                // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
+                Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById);
 
-                // TODO 5: userListInSpace에서 userId가 동일한 UserInfoInSpace를 찾아서 필터링
-                userListInSpace.stream()
-                        .filter(userInfo -> userInfo.getUserId().equals(userId))
-                        .findFirst()
-                        .ifPresent(matchingUserInfo -> {
-                            // TODO 6: userList에 일치하는 유저 정보 추가
-                            userList.add(new UserInfoInSpace(userId, matchingUserInfo.getUserName(), matchingUserInfo.getProfileImgUrl(), user.getSignupType()));
-                        });
+                userSpace.ifPresent(us -> {
+                    userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), us.getUserProfileImg(), user.getSignupType()));
+                });
             });
         });
 

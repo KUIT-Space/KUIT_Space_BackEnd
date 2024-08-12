@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.user.GetUserProfileListDto;
 import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
@@ -91,4 +92,12 @@ public class UserService {
         return new GetSpaceInfoForUserResponse(userName, spaceChoiceViewDto.getLastUserSpaceId(), spaceChoiceViewDto.getSpaceChoiceInfoList());
     }
 
+    @Transactional
+    public GetUserProfileListDto.Response getUserProfileList(Long userId) {
+        // TODO 1. userId로 User find
+        User userByUserId = userUtils.findUserByUserId(userId);
+
+        // TODO 2. 유저가 속해있는 UserSpace list get
+        userSpaceDao.findUserSpaceListByUser(userByUserId);
+    }
 }

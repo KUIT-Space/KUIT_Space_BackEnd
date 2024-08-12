@@ -35,6 +35,7 @@ public class UserSpaceValidationInterceptor implements HandlerInterceptor {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         CheckUserSpace methodAnnotation= handlerMethod.getMethodAnnotation(CheckUserSpace.class);
         if(methodAnnotation!=null && !methodAnnotation.required()){
+            System.out.print("[DeBug]Interceptor pass By Annotation");
             return true;
         }
         Long userId = (Long) request.getAttribute("userId");

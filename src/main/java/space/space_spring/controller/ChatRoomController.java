@@ -113,4 +113,15 @@ public class ChatRoomController {
 
         return new BaseResponse<>(chatRoomService.modifyChatRoomName(chatRoomId, name));
     }
+
+    /**
+     * 특정 채팅방에서 나가기
+     */
+    @PostMapping("/{chatRoomId}/exit")
+    public BaseResponse<ChatSuccessResponse> exitChatRoom(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long chatRoomId) {
+        return new BaseResponse<>(chatRoomService.exitChatRoom(userId, chatRoomId));
+    }
 }

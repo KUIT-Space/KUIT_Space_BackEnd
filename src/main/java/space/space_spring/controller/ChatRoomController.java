@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.chat.response.CreateChatRoomResponse;
+import space.space_spring.dto.chat.response.ReadChatRoomMemberResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomResponse;
 import space.space_spring.exception.ChatException;
 import space.space_spring.response.BaseResponse;
@@ -28,11 +29,17 @@ public class ChatRoomController {
     private final S3Uploader s3Uploader;
     private final UserSpaceUtils userSpaceUtils;
 
+    /**
+     * 모든 채팅방 정보 조회
+     */
     @GetMapping("/chatroom")
     public BaseResponse<ReadChatRoomResponse> readChatRooms(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
         return new BaseResponse<>(chatRoomService.readChatRooms(userId, spaceId));
     }
 
+    /**
+     * 채팅방 생성
+     */
     @PostMapping("/chatroom")
     public BaseResponse<CreateChatRoomResponse> createChatRoom(
             @JwtLoginAuth Long userId,
@@ -52,5 +59,13 @@ public class ChatRoomController {
         String chatRoomImgUrl = s3Uploader.upload(createChatRoomRequest.getImg(), chatRoomDirName);
 
         return new BaseResponse<>(chatRoomService.createChatRoom(userId, spaceId, createChatRoomRequest, chatRoomImgUrl));
+    }
+
+    /**
+     * 특정 채팅방의 모든 유저 정보 조회
+     */
+    @GetMapping("/{chatRoomId}/member")
+    public BaseResponse<ReadChatRoomMemberResponse> readChatRoomMembers(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @PathVariable Long chatRoomId) {
+        return new BaseResponse<>(chatRoomService.readChatRoomMembers(spaceId, chatRoomId));
     }
 }

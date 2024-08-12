@@ -11,6 +11,7 @@ import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.entity.enumStatus.UserSpaceAuth;
 
 import java.util.*;
 
@@ -22,9 +23,9 @@ public class UserSpaceDao {
     @PersistenceContext
     private EntityManager em;
 
-    public UserSpace createUserSpace(User manager, Space saveSpace) {
+    public UserSpace createUserSpace(User manager, Space saveSpace, UserSpaceAuth userSpaceAuth) {
         UserSpace userSpace = new UserSpace();
-        userSpace.createUserSpace(manager, saveSpace, MANAGER);
+        userSpace.createUserSpace(manager, saveSpace, userSpaceAuth);
 
         em.persist(userSpace);
         return userSpace;

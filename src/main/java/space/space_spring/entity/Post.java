@@ -1,13 +1,16 @@
 package space.space_spring.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Table(name = "Posts")
 @Getter
+@NoArgsConstructor
 public class Post extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "post_id")
@@ -33,10 +36,19 @@ public class Post extends BaseEntity {
     @Column(name = "post_like")
     private int like;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostComment> postComments;
 
+    @Builder
+    public Post(User user, Space space, String title, String content, String type, List<PostImage> postImages) {
+        this.user = user;
+        this.space = space;
+        this.title = title;
+        this.content = content;
+        this.type = type;
+        this.postImages = postImages;
+    }
 }

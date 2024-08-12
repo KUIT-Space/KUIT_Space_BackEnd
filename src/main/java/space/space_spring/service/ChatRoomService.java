@@ -165,8 +165,23 @@ public class ChatRoomService {
         return ChatSuccessResponse.of(true);
     }
 
+    public ChatSuccessResponse exitChatRoom(Long userId, Long chatRoomId) {
+        User userByUserId = userUtils.findUserByUserId(userId);
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
+                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
+
+        // TODO 1: 해당 userChatRoom find
+        UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
+
+        // TODO 2: 해당 userChatRoom inactive로 변경
+        userChatRoom.updateInactive();
+
+        return ChatSuccessResponse.of(true);
+    }
+
     private boolean isUserInChatRoom(User userByUserId, ChatRoom chatRoomByChatRoomId) {
         List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoom(chatRoomByChatRoomId);
         return chatRoomList.stream().anyMatch(userChatRoom -> userChatRoom.getUser().equals(userByUserId));
     }
+
 }

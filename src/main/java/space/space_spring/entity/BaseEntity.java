@@ -35,4 +35,6 @@ public abstract class BaseEntity {
     protected void initializeBaseEntityFields() {
         onCreate();
     }
+
+    public void updateInactive() { this.status = "INACTIVE"; }
 }

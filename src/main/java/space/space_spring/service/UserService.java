@@ -12,7 +12,7 @@ import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
 import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
-import space.space_spring.exception.UserSpaceException;
+import space.space_spring.exception.CustomException;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
@@ -54,7 +54,8 @@ public class UserService {
 
     private void validateEmailForLocalSignup(String email) {
         if (userDao.hasDuplicateEmail(email, UserSignupType.LOCAL)) {
-            throw new UserException(DUPLICATE_EMAIL);
+            //throw new UserException(DUPLICATE_EMAIL);
+            throw new CustomException(DUPLICATE_EMAIL);
         }
     }
 

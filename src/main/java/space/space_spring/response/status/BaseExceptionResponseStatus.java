@@ -36,6 +36,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     MALFORMED_TOKEN(4004, HttpStatus.UNAUTHORIZED, "토큰이 올바르게 구성되지 않았습니다."),
     EXPIRED_TOKEN(4005, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     TOKEN_MISMATCH(4006, HttpStatus.UNAUTHORIZED, "로그인 정보가 토큰 정보와 일치하지 않습니다."),
+    CANNOT_FIND_USER_ID(4007, HttpStatus.UNAUTHORIZED,"토큰의 userId정보를 찾을 수 없습니다."),
 
     /**
      * 5000: User 오류
@@ -53,9 +54,11 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 6000: Space 오류
      */
     INVALID_SPACE_CREATE(6000, HttpStatus.BAD_REQUEST, "스페이스 생성 요청에서 잘못된 값이 존재합니다."),
+
     SPACE_NOT_FOUND(6001, HttpStatus.BAD_REQUEST, "존재하지 않는 스페이스입니다."),
     INVALID_USER_SPACE_PROFILE(6002, HttpStatus.BAD_REQUEST, "스페이스 별 유저 프로필 정보 수정 요청에서 잘못된 값이 존재합니다."),
     INVALID_SPACE_JOIN_REQUEST(6003, HttpStatus.BAD_REQUEST, "스페이스 가입 요청에서 잘못된 값이 존재합니다."),
+
     nff(6004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     gnf(6005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
     fb(6006, HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다."),

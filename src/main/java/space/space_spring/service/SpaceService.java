@@ -7,6 +7,7 @@ import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.space.GetSpaceJoinDto;
+import space.space_spring.dto.space.PostSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
 import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;

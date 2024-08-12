@@ -1,4 +1,4 @@
-package space.space_spring.dto.post;
+package space.space_spring.dto.post.response;
 
 import lombok.*;
 import space.space_spring.entity.Post;
@@ -30,11 +30,11 @@ public class ReadPostsResponse {
     private List<String> postImage;
     private String time;
     private String type;
-    private int post_count;
+    private int postCount;
 
     // 댓글 및 좋아요
-    private int comment_count;
-    private int like_count;
+    private int commentCount;
+    private int likeCount;
 
     public static ReadPostsResponse of(Post post, int postCount, UserSpace userSpace) {
         List<String> postImageUrls = post.getPostImages().stream()
@@ -51,9 +51,9 @@ public class ReadPostsResponse {
                 .content(post.getContent())
                 .time(ConvertCreatedDate.setCreatedDate(post.getCreatedAt()))
                 .type(post.getType())
-                .post_count(postCount)
-                .comment_count(post.getPostComments().size())
-                .like_count(post.getLike())
+                .postCount(postCount)
+                .commentCount(post.getPostComments().size())
+                .likeCount(post.getLike())
                 .postImage(postImageUrls)
                 .build();
     }

@@ -6,7 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.PostSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;

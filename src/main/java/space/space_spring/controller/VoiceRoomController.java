@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.argument_resolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;

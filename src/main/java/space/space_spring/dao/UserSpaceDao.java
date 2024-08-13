@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dto.user.dto.SpaceChoiceInfo;
 import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
@@ -115,5 +116,22 @@ public class UserSpaceDao {
         query.setParameter("space", space);
 
         return query.getSingleResult().intValue();
+    }
+
+    public List<UserSpace> findUserSpaceListByUser(User user) {
+        String jpql = "SELECT us FROM UserSpace us WHERE us.user = :user AND us.status = 'ACTIVE'";
+        TypedQuery<UserSpace> query = em.createQuery(jpql, UserSpace.class);
+        query.setParameter("user", user);
+
+        return query.getResultList();
+    }
+
+    @Transactional(readOnly = true)
+    public String findUserSpaceAuthById(Long userSpaceId) {
+        String jpql = "SELECT us.userSpaceAuth FROM UserSpace us WHERE us.userSpaceId = :userSpaceId";
+        return em.createQuery(jpql, String.class)
+                .setParameter("userSpaceId", userSpaceId)
+                .getSingleResult();
+
     }
 }

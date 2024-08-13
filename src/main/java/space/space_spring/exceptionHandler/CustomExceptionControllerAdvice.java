@@ -19,7 +19,7 @@ public class CustomExceptionControllerAdvice {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<BaseErrorResponse> handle_JwtBadRequestException(CustomException e) {
         log.error("[handle_JwtBadRequestException]", e);
-        BaseErrorResponse errorResponse = new BaseErrorResponse(e.getExceptionStatus());
+        BaseErrorResponse errorResponse = new BaseErrorResponse(e.getExceptionStatus(), e.getMessage());
         return ResponseEntity.status(e.getExceptionStatus().getStatus()).body(errorResponse);
     }
 }

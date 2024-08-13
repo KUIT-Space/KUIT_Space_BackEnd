@@ -15,7 +15,6 @@ import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.CustomException;
-import space.space_spring.exception.UserSpaceException;
 
 import java.util.Map;
 import java.util.Optional;

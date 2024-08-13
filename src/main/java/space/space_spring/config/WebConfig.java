@@ -59,7 +59,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns(String.valueOf(List.of(DEVELOP_FRONT_ADDRESS, "http://localhost:3000")))
+                .allowedOriginPatterns("http://localhost:5173/", "https://localhost:5173/",
+                        "http://localhost:5173/KUIT-Space-Front/", "https://localhost:5173/KUIT-Space-Front/",
+                        "https://kuit-space.github.io/KUIT-Space-front/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .exposedHeaders("location")
                 .allowedHeaders("*")

@@ -11,7 +11,7 @@ import space.space_spring.dto.chat.response.ChatSuccessResponse;
 import space.space_spring.dto.chat.response.CreateChatRoomResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomMemberResponse;
 import space.space_spring.dto.chat.response.ReadChatRoomResponse;
-import space.space_spring.exception.ChatException;
+import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.ChatRoomService;
 import space.space_spring.service.S3Uploader;
@@ -49,11 +49,11 @@ public class ChatRoomController {
             BindingResult bindingResult) throws IOException {
 
         if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new ChatException(UNAUTHORIZED_USER);
+            throw new CustomException(UNAUTHORIZED_USER);
         }
 
         if (bindingResult.hasErrors()) {
-            throw new ChatException(INVALID_CHATROOM_CREATE, getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_CHATROOM_CREATE, getErrorMessage(bindingResult));
         }
 
         String chatRoomDirName = "chatRoomImg";
@@ -69,7 +69,7 @@ public class ChatRoomController {
     public BaseResponse<ReadChatRoomMemberResponse> readChatRoomMembers(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @PathVariable Long chatRoomId) {
 
         if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new ChatException(UNAUTHORIZED_USER);
+            throw new CustomException(UNAUTHORIZED_USER);
         }
 
         return new BaseResponse<>(chatRoomService.readChatRoomMembers(spaceId, chatRoomId));
@@ -87,11 +87,11 @@ public class ChatRoomController {
             BindingResult bindingResult) {
 
         if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new ChatException(UNAUTHORIZED_USER);
+            throw new CustomException(UNAUTHORIZED_USER);
         }
 
         if(bindingResult.hasErrors()){
-            throw new ChatException(INVALID_CHATROOM_JOIN,getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_CHATROOM_JOIN,getErrorMessage(bindingResult));
         }
 
         return new BaseResponse<>(chatRoomService.joinChatRoom(chatRoomId, joinChatRoomRequest));
@@ -108,7 +108,7 @@ public class ChatRoomController {
             @RequestParam String name) {
 
         if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new ChatException(UNAUTHORIZED_USER);
+            throw new CustomException(UNAUTHORIZED_USER);
         }
 
         return new BaseResponse<>(chatRoomService.modifyChatRoomName(chatRoomId, name));
@@ -135,7 +135,7 @@ public class ChatRoomController {
             @PathVariable Long chatRoomId) {
 
         if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new ChatException(UNAUTHORIZED_USER);
+            throw new CustomException(UNAUTHORIZED_USER);
         }
 
         return new BaseResponse<>(chatRoomService.deleteChatRoom(chatRoomId));

@@ -38,7 +38,7 @@ public class SpaceService {
     private final UserUtils userUtils;
 
     @Transactional
-    public Long createSpace(Long userId, String spaceName, String spaceImgUrl) {
+    public Space createSpace(Long userId, String spaceName, String spaceImgUrl) {
 
         // TODO 1. 스페이스 생성 정보 db insert
         Space saveSpace = spaceDao.saveSpace(spaceName, spaceImgUrl);
@@ -47,7 +47,7 @@ public class SpaceService {
         User manager = userDao.findUserByUserId(userId);
         UserSpace userSpace = userSpaceDao.createUserSpace(manager, saveSpace, UserSpaceAuth.MANAGER);
 
-        return saveSpace.getSpaceId();
+        return saveSpace;
     }
 
     @Transactional

@@ -9,11 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.PostSpaceJoinDto;
+import space.space_spring.dto.space.request.PostSpaceCreateDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
-import space.space_spring.dto.space.request.PostSpaceCreateRequest;
 
 import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
 import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
+import space.space_spring.entity.Space;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.S3Uploader;
@@ -39,7 +40,7 @@ public class SpaceController {
     private final UserSpaceUtils userSpaceUtils;
 
     @PostMapping("")
-    public BaseResponse<String> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
+    public BaseResponse<PostSpaceCreateDto.Response> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateDto.Request postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_SPACE_CREATE, getErrorMessage(bindingResult));
         }
@@ -48,9 +49,9 @@ public class SpaceController {
         String spaceImgUrl = processSpaceImage(postSpaceCreateRequest.getSpaceProfileImg());
 
         // TODO 2. s3에 저장하고 받은 이미지 url 정보와 spaceName 정보로 space create 작업 수행
-        spaceService.createSpace(userId, postSpaceCreateRequest.getSpaceName(), spaceImgUrl);
+        Space createSpace = spaceService.createSpace(userId, postSpaceCreateRequest.getSpaceName(), spaceImgUrl);
 
-        return new BaseResponse<>("스페이스 생성 성공");
+        return new BaseResponse<>(new PostSpaceCreateDto.Response(createSpace.getSpaceId()));
     }
 
     private String processSpaceImage(MultipartFile spaceProfileImg) throws IOException {

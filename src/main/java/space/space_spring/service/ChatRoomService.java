@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.chat.ChatRoomDao;
 import space.space_spring.dao.chat.ChattingDao;
@@ -15,12 +14,10 @@ import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
 import space.space_spring.entity.document.ChatMessage;
-import space.space_spring.exception.ChatException;
-import space.space_spring.exception.CustomException;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_EXIST;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
-import space.space_spring.exception.UserSpaceException;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -28,14 +25,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final UserDao userDao;
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
     private final UserSpaceDao userSpaceDao;
@@ -113,7 +108,7 @@ public class ChatRoomService {
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
         ChatRoom chatRoomById = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 3: 해당 chatRoom의 userChatRoom 리스트 find
         List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoom(chatRoomById);
@@ -123,7 +118,7 @@ public class ChatRoomService {
 
             // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
             UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById)
-                    .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE));
+                    .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
             userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), userSpace.getUserProfileImg(), user.getSignupType()));
         });
@@ -135,7 +130,7 @@ public class ChatRoomService {
     public ChatSuccessResponse joinChatRoom(Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
         List<Long> memberIdList = joinChatRoomRequest.getMemberList();
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         for (Long memberId : Objects.requireNonNull(memberIdList)) {
             // TODO 1: 초대한 유저 조회
@@ -156,7 +151,7 @@ public class ChatRoomService {
     public ChatSuccessResponse modifyChatRoomName(Long chatRoomId, String name) {
         // TODO 1: 해당 채팅방 find
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 2: 채팅방 이름 변경
         chatRoomByChatRoomId.updateName(name);
@@ -168,7 +163,7 @@ public class ChatRoomService {
     public ChatSuccessResponse exitChatRoom(Long userId, Long chatRoomId) {
         User userByUserId = userUtils.findUserByUserId(userId);
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 1: 해당 userChatRoom find
         UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
@@ -182,7 +177,7 @@ public class ChatRoomService {
     public ChatSuccessResponse deleteChatRoom(Long chatRoomId) {
         // TODO 1: 해당 chatRoom find
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new ChatException(CHATROOM_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         chatRoomByChatRoomId.updateInactive();
 

@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.chat.ChatRoomDao;
 import space.space_spring.dao.chat.ChattingDao;
@@ -19,7 +18,6 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.CHA
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 import space.space_spring.exception.CustomException;
-import space.space_spring.exception.UserSpaceException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -120,7 +118,7 @@ public class ChatRoomService {
 
             // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
             UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById)
-                    .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE));
+                    .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
             userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), userSpace.getUserProfileImg(), user.getSignupType()));
         });

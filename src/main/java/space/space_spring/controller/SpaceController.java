@@ -14,10 +14,7 @@ import space.space_spring.dto.space.request.PostSpaceCreateRequest;
 
 import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
 import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
-import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.CustomException;
-import space.space_spring.exception.MultipartFileException;
-import space.space_spring.exception.SpaceException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.S3Uploader;
 import space.space_spring.service.SpaceService;
@@ -44,7 +41,7 @@ public class SpaceController {
     @PostMapping("")
     public BaseResponse<String> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateRequest postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
-            throw new SpaceException(INVALID_SPACE_CREATE, getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_SPACE_CREATE, getErrorMessage(bindingResult));
         }
 
         // TODO 1. 스페이스 썸네일을 s3에 upload
@@ -67,7 +64,7 @@ public class SpaceController {
 
     private void validateImageFile(MultipartFile spaceProfileImg) {
         if (!s3Uploader.isFileImage(spaceProfileImg)) {
-            throw new MultipartFileException(IS_NOT_IMAGE_FILE);
+            throw new CustomException(IS_NOT_IMAGE_FILE);
         }
     }
 
@@ -133,7 +130,7 @@ public class SpaceController {
     @PutMapping("/{spaceId}/member-profile")
     public BaseResponse<PutUserProfileInSpaceDto.Response> updateUserProfileInSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @ModelAttribute PutUserProfileInSpaceDto.Request request, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
-            throw new SpaceException(INVALID_USER_SPACE_PROFILE, getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_USER_SPACE_PROFILE, getErrorMessage(bindingResult));
         }
 
         // TODO 1. 유저가 스페이스에 가입되어 있는지 검증

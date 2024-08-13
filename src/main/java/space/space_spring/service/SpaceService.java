@@ -15,7 +15,7 @@ import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
-import space.space_spring.exception.UserSpaceException;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -106,7 +106,7 @@ public class SpaceService {
 
         // userSpaceUtils.isUserInSpace 메서드에서도 해당 에러를 던지기는 하지만
         // 컴파일 에러의 방지를 위해 일단 이중으로 예외를 던지도록 구현했습니다
-        throw new UserSpaceException(USER_IS_NOT_IN_SPACE);
+        throw new CustomException(USER_IS_NOT_IN_SPACE);
     }
 
     @Transactional
@@ -134,7 +134,7 @@ public class SpaceService {
 
         // userSpaceUtils.isUserInSpace 메서드에서도 해당 에러를 던지기는 하지만
         // 컴파일 에러의 방지를 위해 일단 이중으로 예외를 던지도록 구현했습니다
-        throw new UserSpaceException(USER_IS_NOT_IN_SPACE);
+        throw new CustomException(USER_IS_NOT_IN_SPACE);
 
     }
 

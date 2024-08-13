@@ -13,7 +13,6 @@ import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
 import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
 import space.space_spring.exception.CustomException;
-import space.space_spring.exception.SpaceException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.UserService;
 import space.space_spring.util.userSpace.UserSpaceUtils;

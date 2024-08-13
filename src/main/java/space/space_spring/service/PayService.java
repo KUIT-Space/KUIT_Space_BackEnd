@@ -11,7 +11,7 @@ import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
 import space.space_spring.dto.pay.response.PostPayCompleteResponse;
 import space.space_spring.entity.*;
-import space.space_spring.exception.UserSpaceException;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -186,7 +186,7 @@ public class PayService {
         User userByUserId = userDao.findUserByUserId(targetUserId);
 
         UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, space)
-                .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE));
+                .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
         String userName = userSpace.getUserName();
         String userProfileImg = userSpace.getUserProfileImg();

@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum UserSpaceValidationInterceptorURL {
     //SPACE("/space/**"),
     TEST("/space/{spaceId}/test/**"),
+    VOICEROOM("/space/{spaceId}/voiceRoom/**")
     ;
 
     private final String urlPattern;

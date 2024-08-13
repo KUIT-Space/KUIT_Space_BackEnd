@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.entity.enumStatus.UserSignupType;
-import space.space_spring.exception.UserException;
+import space.space_spring.exception.CustomException;
 
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ public class UserUtils {
     public User findUserByEmail(String email) {
         User findUser = userDao.getUserByEmail(email);
         if (findUser == null) {
-            throw new UserException(EMAIL_NOT_FOUND);
+            throw new CustomException(EMAIL_NOT_FOUND);
         }
         return findUser;
     }
@@ -32,7 +32,7 @@ public class UserUtils {
     public User findUserByUserId(Long userId) {
         User userByUserId = userDao.findUserByUserId(userId);
         if (userByUserId == null) {
-            throw new UserException(USER_NOT_FOUND);
+            throw new CustomException(USER_NOT_FOUND);
         }
         return userByUserId;
     }

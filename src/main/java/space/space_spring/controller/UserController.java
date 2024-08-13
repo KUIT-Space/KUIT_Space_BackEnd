@@ -11,7 +11,7 @@ import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
 import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
-import space.space_spring.exception.UserException;
+import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.UserService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -34,7 +34,7 @@ public class UserController {
     @PostMapping("/signup")
     public BaseResponse<String> signup(@Validated @RequestBody PostUserSignupRequest postUserSignupRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_SIGNUP, getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_USER_SIGNUP, getErrorMessage(bindingResult));
         }
 
         userService.signup(postUserSignupRequest);
@@ -48,7 +48,7 @@ public class UserController {
     @PostMapping("/login")
     public BaseResponse<String> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
         }
 
         String jwtLogin = userService.login(postUserLoginRequest);
@@ -74,8 +74,6 @@ public class UserController {
      */
     @GetMapping("/profile")
     public BaseResponse<GetUserProfileListDto.Response> showUserProfileList(@JwtLoginAuth Long userId) {
-
-        log.info("userId = {}", userId);
 
         return new BaseResponse<>(userService.getUserProfileList(userId));
     }

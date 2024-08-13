@@ -11,10 +11,8 @@ import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
-import space.space_spring.entity.UserSpace;
-import space.space_spring.exception.VoiceRoomException;
+
+import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.LiveKitService;
 import space.space_spring.service.VoiceRoomService;
@@ -51,7 +49,7 @@ public class VoiceRoomController {
             @UserSpaceAuth String userSpaceAuth,
             BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            throw new VoiceRoomException(INVALID_VOICEROOM_REQUEST,getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_VOICEROOM_REQUEST,getErrorMessage(bindingResult));
         }
 
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
@@ -127,7 +125,7 @@ public class VoiceRoomController {
     ){
 
         if(bindingResult.hasErrors()){
-            throw new VoiceRoomException(INVALID_VOICEROOM_REQUEST,getErrorMessage(bindingResult));
+            throw new CustomException(INVALID_VOICEROOM_REQUEST,getErrorMessage(bindingResult));
         }
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
         validateManagerPermission(userSpaceAuth);
@@ -168,26 +166,26 @@ public class VoiceRoomController {
     private boolean validateVoiceRoom(long voiceRoomId){
         //Todo 해당 보이스룸이 존재하는지 확인
         if(!voiceRoomRepository.existsByVoiceRoomId(voiceRoomId)){
-            throw new VoiceRoomException(VOICEROOM_NOT_EXIST);
+            throw new CustomException(VOICEROOM_NOT_EXIST);
         }
         return true;
     }
     private boolean validateVoiceRoomNameExist(String voiceRoomName){
         if(!voiceRoomRepository.existsByName(voiceRoomName)){
-            throw new VoiceRoomException(VOICEROOM_NAME_ALREADY_EXIST);
+            throw new CustomException(VOICEROOM_NAME_ALREADY_EXIST);
         }
         return true;
     }
     private boolean validateVoiceRoomInSpace(long spaceId,long voiceRoomId){
         if(! (voiceRoomRepository.findById(voiceRoomId).getSpace().getSpaceId().equals(spaceId))){
-            throw new VoiceRoomException(VOICEROOM_NOT_IN_SPACE);
+            throw new CustomException(VOICEROOM_NOT_IN_SPACE);
         }
         return true;
     }
     private boolean validateManagerPermission(String userSpaceAuth){
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
         if(!userSpaceAuth.equals(MANAGER.getAuth())){
-            throw new VoiceRoomException(VOICEROOM_DO_NOT_HAVE_PERMISSION);
+            throw new CustomException(VOICEROOM_DO_NOT_HAVE_PERMISSION);
         }
         return true;
     }

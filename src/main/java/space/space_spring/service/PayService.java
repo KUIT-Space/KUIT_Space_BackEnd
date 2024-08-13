@@ -107,7 +107,11 @@ public class PayService {
         String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
         int requestAmount = payRequestTarget.getRequestAmount();
 
-        return new PayReceiveInfoDto(payRequestTarget.getPayRequestTargetId(), payCreatorName, requestAmount);
+        // 정산 생성자가 요청한 은행 정보도 response에 추가
+        String bankName = payRequestTarget.getPayRequest().getBankName();
+        String bankAccountNum = payRequestTarget.getPayRequest().getBankAccountNum();
+
+        return new PayReceiveInfoDto(payRequestTarget.getPayRequestTargetId(), payCreatorName, requestAmount, bankName, bankAccountNum);
     }
 
     @Transactional

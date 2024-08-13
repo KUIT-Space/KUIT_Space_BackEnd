@@ -63,7 +63,7 @@ public class UserSpaceValidationInterceptor implements HandlerInterceptor {
         }
         Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
         Optional.ofNullable(userSpace
-                .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE)));
+                .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE)));
         return userSpace.get().getUserSpaceId();
     }
 

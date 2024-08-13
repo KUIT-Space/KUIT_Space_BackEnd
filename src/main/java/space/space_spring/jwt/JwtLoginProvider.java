@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import space.space_spring.entity.User;
+import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtMalformedTokenException;
@@ -56,10 +57,13 @@ public class JwtLoginProvider {
             throw new JwtMalformedTokenException(MALFORMED_TOKEN);
         } catch (IllegalArgumentException e) {
             throw new JwtInvalidTokenException(INVALID_TOKEN);
-        } catch (JwtException e) {
+        } catch (SignatureException e){
+            throw new CustomException(WRONG_SIGNATURE_JWT);
+        }catch (JwtException e) {
             log.error("[JwtTokenProvider.validateAccessToken]", e);
             throw e;
         }
+
     }
 
     public Long getUserIdFromToken(String accessToken) {

@@ -27,7 +27,6 @@ public class WebConfig implements WebMvcConfigurer {
     private final UserSpaceAuthHandlerArgumentResolver userSpaceAuthHandlerArgumentResolver;
     private final UserSpaceValidationInterceptor userSpaceValidationInterceptor;
 
-    private static final String DEVELOP_FRONT_ADDRESS = "http://localhost:5173";
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -59,7 +58,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:5173/", "https://localhost:5173/",
+                .allowedOriginPatterns("http://localhost:3000/", "http://localhost:5173/", "https://localhost:5173/",
                         "http://localhost:5173/KUIT-Space-Front/", "https://localhost:5173/KUIT-Space-Front/",
                         "https://kuit-space.github.io/KUIT-Space-front/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")

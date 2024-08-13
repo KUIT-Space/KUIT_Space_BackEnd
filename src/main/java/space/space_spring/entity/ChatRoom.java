@@ -48,6 +48,10 @@ public class ChatRoom extends BaseEntity{
                 .build();
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     //    // 양방향 매핑
 //    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
 //    private List<UserChatRoom> userChatRooms;

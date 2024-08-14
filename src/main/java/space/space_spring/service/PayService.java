@@ -11,7 +11,7 @@ import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
 import space.space_spring.dto.pay.response.PostPayCompleteResponse;
 import space.space_spring.entity.*;
-import space.space_spring.exception.UserSpaceException;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -107,7 +107,11 @@ public class PayService {
         String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
         int requestAmount = payRequestTarget.getRequestAmount();
 
-        return new PayReceiveInfoDto(payRequestTarget.getPayRequestTargetId(), payCreatorName, requestAmount);
+        // 정산 생성자가 요청한 은행 정보도 response에 추가
+        String bankName = payRequestTarget.getPayRequest().getBankName();
+        String bankAccountNum = payRequestTarget.getPayRequest().getBankAccountNum();
+
+        return new PayReceiveInfoDto(payRequestTarget.getPayRequestTargetId(), payCreatorName, requestAmount, bankName, bankAccountNum);
     }
 
     @Transactional
@@ -186,7 +190,7 @@ public class PayService {
         User userByUserId = userDao.findUserByUserId(targetUserId);
 
         UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, space)
-                .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE));
+                .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
         String userName = userSpace.getUserName();
         String userProfileImg = userSpace.getUserProfileImg();

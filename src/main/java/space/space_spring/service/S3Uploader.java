@@ -1,7 +1,6 @@
 package space.space_spring.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -17,7 +16,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.Optional;
+import java.util.UUID;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.MULTIPARTFILE_CONVERT_FAILE_IN_MEMORY;
 
@@ -99,4 +100,60 @@ public class S3Uploader {
 
         return AllowedImageFileExtensions.contains(extension);
     }
+
+    public String uploadBase64File(String base64File, String dirName) throws IOException {
+        String[] base64Components = base64File.split(","); // ","을 기준으로 바이트 코드를 나눠준다
+        byte[] decodedBytes;
+        String fileExtension = "";
+
+        // TODO 1: 확장자 설정
+        if (base64Components.length > 1) {
+            decodedBytes = Base64.getDecoder().decode(base64Components[1]);
+
+            String filePrefix = base64Components[0].split(";")[0].split(":")[1];
+
+            switch (filePrefix) {
+                case "image/jpeg" -> fileExtension = "jpeg";
+                case "image/png" -> fileExtension = "png";
+                case "image/jpg" -> fileExtension = "jpg";
+                case "image/gif" -> fileExtension = "gif";
+                case "image/webp" -> fileExtension = "webp";
+                case "image/svg+xml" -> fileExtension = "svg";
+                case "image/bmp" -> fileExtension = "bmp";
+                case "image/tif" -> fileExtension = "tif";
+                case "image/tiff" -> fileExtension = "tiff";
+                case "image/heic" -> fileExtension = "heic";
+                case "application/pdf" -> fileExtension = "pdf";
+                case "application/msword" -> fileExtension = "doc";
+                case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> fileExtension = "docx";
+                case "application/vnd.hancom.hwp" -> fileExtension = "hwp";
+                case "text/plain" -> fileExtension = "txt";
+                default -> log.error("Unsupported file prefix: " + filePrefix);
+            }
+
+        } else {
+            log.error("No prefix found");
+            decodedBytes = Base64.getDecoder().decode(base64File);
+        }
+
+        // TODO 2: S3에 업로드될 고유한 파일명 설정
+        String decodedFileName = "upload_" + UUID.randomUUID().toString() + fileExtension;
+        String originalFileName = dirName + "/" + decodedFileName;
+
+        // TODO 3: 임시 리소스 생성
+        File uploadFile = new File(System.getProperty("java.io.tmpdir"), decodedFileName);
+        try (FileOutputStream fos = new FileOutputStream(uploadFile)) {
+            fos.write(decodedBytes);
+        } catch (IOException e) {
+            log.error("Error writing bytes to file: {}", e.getMessage());
+            throw e;
+        }
+
+        // TODO 4: S3에 파일 업로드 및 임시 리소스 삭제
+        String uploadImageUrl = putS3(uploadFile, originalFileName);
+        uploadFile.delete();
+
+        return uploadImageUrl;
+    }
+
 }

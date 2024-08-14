@@ -34,7 +34,7 @@ public class Post extends BaseEntity {
     private String type;
 
     @Column(name = "post_like")
-    private int like;
+    private int likeCount;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages;
@@ -50,5 +50,13 @@ public class Post extends BaseEntity {
         this.content = content;
         this.type = type;
         this.postImages = postImages;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount--;
     }
 }

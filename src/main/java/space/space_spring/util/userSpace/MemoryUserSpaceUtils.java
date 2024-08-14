@@ -10,7 +10,7 @@ import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
-import space.space_spring.exception.UserSpaceException;
+import space.space_spring.exception.CustomException;
 
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public class MemoryUserSpaceUtils implements UserSpaceUtils {
         Space spaceBySpaceId = spaceDao.findSpaceBySpaceId(spaceId);
 
         return Optional.ofNullable(userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId)
-                .orElseThrow(() -> new UserSpaceException(USER_IS_NOT_IN_SPACE)));
+                .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE)));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MemoryUserSpaceUtils implements UserSpaceUtils {
         Optional<UserSpace> userSpaceByUserAndSpace = userSpaceDao.findUserSpaceByUserAndSpace(userByUserId, spaceBySpaceId);
 
         if (userSpaceByUserAndSpace.isPresent()) {
-            throw new UserSpaceException(USER_IS_ALREADY_IN_SPACE);
+            throw new CustomException(USER_IS_ALREADY_IN_SPACE);
         }
     }
 }

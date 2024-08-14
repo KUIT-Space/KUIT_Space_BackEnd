@@ -101,7 +101,7 @@ public class S3Uploader {
         return AllowedImageFileExtensions.contains(extension);
     }
 
-    public String uploadBase64File(String base64File, String dirName) throws IOException {
+    public String uploadBase64File(String base64File, String dirName, String fileName) throws IOException {
         String[] base64Components = base64File.split(","); // ","을 기준으로 바이트 코드를 나눠준다
         byte[] decodedBytes;
         String fileExtension = "";
@@ -137,7 +137,7 @@ public class S3Uploader {
         }
 
         // TODO 2: S3에 업로드될 고유한 파일명 설정
-        String decodedFileName = "upload_" + UUID.randomUUID().toString() + fileExtension;
+        String decodedFileName = "upload_" + UUID.randomUUID() + "_" + fileName + "_" +fileExtension;
         String originalFileName = dirName + "/" + decodedFileName;
 
         // TODO 3: 임시 리소스 생성

@@ -42,8 +42,8 @@ public class ChattingService {
 
         // TODO 3: 이미지 및 파일 포함하는 경우 S3 업로드
         String s3Url = switch (chatMessageRequest.getMessageType()) {
-            case IMG -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("image") , "chattingImg");
-            case FILE -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("file") , "chattingFile");
+            case IMG -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("image") , "chattingImg", "img");
+            case FILE -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("file") , "chattingFile", chatMessageRequest.getContent().get("fileName"));
             default -> "";
         };
 

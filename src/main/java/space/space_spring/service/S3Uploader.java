@@ -106,41 +106,22 @@ public class S3Uploader {
         byte[] decodedBytes;
         String fileExtension = "";
 
-        // TODO 1: 확장자 설정
         if (base64Components.length > 1) {
+            // TODO 1: base64 디코딩
             decodedBytes = Base64.getDecoder().decode(base64Components[1]);
 
-            String filePrefix = base64Components[0].split(";")[0].split(":")[1];
-
-            switch (filePrefix) {
-                case "image/jpeg" -> fileExtension = "jpeg";
-                case "image/png" -> fileExtension = "png";
-                case "image/jpg" -> fileExtension = "jpg";
-                case "image/gif" -> fileExtension = "gif";
-                case "image/webp" -> fileExtension = "webp";
-                case "image/svg+xml" -> fileExtension = "svg";
-                case "image/bmp" -> fileExtension = "bmp";
-                case "image/tif" -> fileExtension = "tif";
-                case "image/tiff" -> fileExtension = "tiff";
-                case "image/heic" -> fileExtension = "heic";
-                case "application/pdf" -> fileExtension = "pdf";
-                case "application/msword" -> fileExtension = "doc";
-                case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> fileExtension = "docx";
-                case "application/vnd.hancom.hwp" -> fileExtension = "hwp";
-                case "text/plain" -> fileExtension = "txt";
-                default -> log.error("Unsupported file prefix: " + filePrefix);
-            }
-
+            // TODO 2: 확장자 설정
+            fileExtension = getFileExtension(base64Components);
         } else {
             log.error("No prefix found");
             decodedBytes = Base64.getDecoder().decode(base64File);
         }
 
-        // TODO 2: S3에 업로드될 고유한 파일명 설정
+        // TODO 3: S3에 업로드될 고유한 파일명 설정
         String decodedFileName = "upload_" + UUID.randomUUID() + "_" + fileName + "_" +fileExtension;
         String originalFileName = dirName + "/" + decodedFileName;
 
-        // TODO 3: 임시 리소스 생성
+        // TODO 4: 임시 리소스 생성
         File uploadFile = new File(System.getProperty("java.io.tmpdir"), decodedFileName);
         try (FileOutputStream fos = new FileOutputStream(uploadFile)) {
             fos.write(decodedBytes);
@@ -149,11 +130,34 @@ public class S3Uploader {
             throw e;
         }
 
-        // TODO 4: S3에 파일 업로드 및 임시 리소스 삭제
+        // TODO 5: S3에 파일 업로드 및 임시 리소스 삭제
         String uploadImageUrl = putS3(uploadFile, originalFileName);
         uploadFile.delete();
 
         return uploadImageUrl;
     }
 
+    private String getFileExtension(String[] base64Components) {
+        String filePrefix = base64Components[0].split(";")[0].split(":")[1];
+        return switch (filePrefix) {
+            case "image/jpeg" -> ".jpeg";
+            case "image/png" -> ".png";
+            case "image/jpg" -> ".jpg";
+            case "image/gif" -> ".gif";
+            case "image/webp" -> ".webp";
+            case "image/svg+xml" -> ".svg";
+            case "image/bmp" -> ".bmp";
+            case "image/tif" -> ".tif";
+            case "image/tiff" -> ".tiff";
+            case "image/heic" -> ".heic";
+            case "application/pdf" -> ".pdf";
+            case "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> ".docx";
+            case "application/vnd.hwp" -> ".hwp";
+            case "text/plain" -> ".txt";
+            default -> {
+                log.info("Unsupported file prefix: " + filePrefix);
+                yield ".bin"; // 기본 확장자
+            }
+        };
+    }
 }

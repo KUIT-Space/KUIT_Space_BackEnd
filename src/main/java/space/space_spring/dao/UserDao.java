@@ -38,10 +38,11 @@ public class UserDao {
         return count > 0;
     }
 
-    public User getUserByEmail(String email) {
+    public User getUserByEmail(String email, UserSignupType signupType) {
         try {
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email AND u.signupType = :userSignupType AND u.status = 'ACTIVE'", User.class);
             query.setParameter("email", email);
+            query.setParameter("userSignupType", signupType.getSignupType());
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null;

@@ -21,7 +21,7 @@ public class PostUserSignupRequest {
 
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$",
-            message = "8~16글자의 영문 대/소문자, 숫자, 특수문자가 포함되어야 합니다."
+            message = "비밀번호에는 8~16글자의 영문 대/소문자, 숫자, 특수문자가 포함되어야 합니다."
     )
     @NotBlank
     private String password;

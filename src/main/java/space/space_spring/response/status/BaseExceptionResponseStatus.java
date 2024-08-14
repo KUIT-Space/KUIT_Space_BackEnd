@@ -18,6 +18,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     BAD_REQUEST(2000, HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
     URL_NOT_FOUND(2001, HttpStatus.BAD_REQUEST, "유효하지 않은 URL 입니다."),
     METHOD_NOT_ALLOWED(2002, HttpStatus.METHOD_NOT_ALLOWED, "해당 URL에서는 지원하지 않는 HTTP Method 입니다."),
+    HTTP_MESSAGE_NOT_READABLE(2003, HttpStatus.BAD_REQUEST,"request body 양식에 문제가 있습니다"),
 
     /**
      * 3000: Server, Database 오류 (INTERNAL_SERVER_ERROR)
@@ -37,6 +38,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EXPIRED_TOKEN(4005, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     TOKEN_MISMATCH(4006, HttpStatus.UNAUTHORIZED, "로그인 정보가 토큰 정보와 일치하지 않습니다."),
     CANNOT_FIND_USER_ID(4007, HttpStatus.UNAUTHORIZED,"토큰의 userId정보를 찾을 수 없습니다."),
+    WRONG_SIGNATURE_JWT(4008,HttpStatus.UNAUTHORIZED,"JWT 서명이 잘못 되었습니다."),
 
     /**
      * 5000: User 오류
@@ -103,7 +105,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      */
     INVALID_POST_CREATE(11000, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
     POST_NOT_EXIST(11001, HttpStatus.BAD_REQUEST, "존재하지 않는 게시글 id입니다."),
-    POST_IS_NOT_IN_SPACE(11002, HttpStatus.BAD_REQUEST, "해당 게시글은 이 스페이스에 속하지 않습니다.");
+    POST_IS_NOT_IN_SPACE(11002, HttpStatus.BAD_REQUEST, "해당 게시글은 이 스페이스에 속하지 않습니다."),
+    ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
+    NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다.");
 
     private final int code;
     private final HttpStatus status;

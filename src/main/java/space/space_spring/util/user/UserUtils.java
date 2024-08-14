@@ -20,8 +20,8 @@ public class UserUtils {
     private final UserDao userDao;
 
     @Transactional
-    public User findUserByEmail(String email) {
-        User findUser = userDao.getUserByEmail(email);
+    public User findUserByEmail(String email, UserSignupType userSignupType) {
+        User findUser = userDao.getUserByEmail(email, userSignupType);
         if (findUser == null) {
             throw new CustomException(EMAIL_NOT_FOUND);
         }

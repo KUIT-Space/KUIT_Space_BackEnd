@@ -18,7 +18,9 @@ public class CreateChatRoomRequest {
     @NotBlank(message = "채팅방 이름은 공백일 수 없습니다.")
     private String name;
 
+    @NotBlank(message = "채팅방 이미지는 공백일 수 없습니다.")
     private MultipartFile img;
 
+    @NotBlank(message = "1명 이상의 멤버를 초대해야 합니다.")
     private List<Long> memberList;
 }

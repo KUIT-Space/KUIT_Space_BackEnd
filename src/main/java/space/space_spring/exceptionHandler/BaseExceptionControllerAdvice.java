@@ -79,7 +79,7 @@ public class BaseExceptionControllerAdvice {
         String requestBody = getRequestBody(request);
 
 
-        return new BaseErrorResponse(SERVER_ERROR,"request body content : "+requestBody + " :content end");
+        return new BaseErrorResponse(HTTP_MESSAGE_NOT_READABLE,HTTP_MESSAGE_NOT_READABLE.getMessage()+" : request body content : "+requestBody + " :content end");
     }
 
     private String getRequestBody(HttpServletRequest request){

@@ -10,16 +10,13 @@ import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
 import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
-import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.dao.UserDao;
 import space.space_spring.entity.User;
-import space.space_spring.exception.UserException;
 import space.space_spring.util.user.UserUtils;
-import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +54,6 @@ public class UserService {
 
     private void validateEmailForLocalSignup(String email) {
         if (userDao.hasDuplicateEmail(email, UserSignupType.LOCAL)) {
-            //throw new UserException(DUPLICATE_EMAIL);
             throw new CustomException(DUPLICATE_EMAIL);
         }
     }
@@ -80,7 +76,7 @@ public class UserService {
 
     private void validatePassword(User userByEmail, String password) {
         if (!userByEmail.passwordMatch(password)) {
-            throw new UserException(PASSWORD_NO_MATCH);
+            throw new CustomException(PASSWORD_NO_MATCH);
         }
     }
 

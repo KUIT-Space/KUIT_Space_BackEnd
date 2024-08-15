@@ -53,7 +53,7 @@ public class ReadPostsResponse {
                 .time(ConvertCreatedDate.setCreatedDate(post.getCreatedAt()))
                 .type(post.getType())
                 .postCount(postCount)
-                .commentCount(post.getPostComments().size())
+                .commentCount(post.getComments().size())
                 .likeCount(post.getLikeCount())
                 .isLike(isLike)
                 .postImage(postImageUrls)

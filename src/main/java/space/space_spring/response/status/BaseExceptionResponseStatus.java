@@ -104,10 +104,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 11000: Post 오류
      */
     INVALID_POST_CREATE(11000, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
-    POST_NOT_EXIST(11001, HttpStatus.BAD_REQUEST, "존재하지 않는 게시글 id입니다."),
+    POST_NOT_EXIST(11001, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 id입니다."),
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.BAD_REQUEST, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
-    NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다.");
+    NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),
+    COMMENT_NOT_EXIST(11004, HttpStatus.NOT_FOUND, "존재하지 않는 댓글 id입니다."),
+    ALREADY_LIKED_THE_COMMENT(11005, HttpStatus.BAD_REQUEST, "해당 댓글에 이미 좋아요를 눌렀습니다."),
+    NOT_LIKED_THE_COMMENT_YET(11006, HttpStatus.BAD_REQUEST, "유저가 해당 댓글에 좋아요를 누르지 않았습니다.");
 
     private final int code;
     private final HttpStatus status;

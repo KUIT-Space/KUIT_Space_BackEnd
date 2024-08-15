@@ -4,11 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import space.space_spring.dao.CommentDao;
 import space.space_spring.dao.LikeDao;
 import space.space_spring.dao.PostDao;
-import space.space_spring.entity.Post;
-import space.space_spring.entity.PostLike;
-import space.space_spring.entity.User;
+import space.space_spring.entity.*;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -23,6 +22,7 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 public class LikeService {
     private final LikeDao likeDao;
     private final PostDao postDao;
+    private final CommentDao commentDao;
     private final UserUtils userUtils;
     private final UserSpaceUtils userSpaceUtils;
 
@@ -33,8 +33,8 @@ public class LikeService {
         }
     }
 
-    // TODO 2: 유저가 해당 게시글에 이미 좋아요를 눌렀는지 검증
-    public void validateAlreadyLiked(Long userId, Long postId) {
+    // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
+    public void validateAlreadyLikedPost(Long userId, Long postId) {
         User user = userUtils.findUserByUserId(userId);
         Post post = postDao.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
@@ -43,18 +43,22 @@ public class LikeService {
 
         if(existingLike.isPresent()) {
             throw new CustomException(ALREADY_LIKED_THE_POST);
+        } else if(existingLike.isEmpty()) {
+            throw new CustomException(NOT_LIKED_THE_POST_YET);
         }
     }
 
-    // TODO 3: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
-    public void validateNotLikedYet(Long userId, Long postId) {
+    // TODO 3: 유저가 해당 댓글에 좋아요를 눌렀는지 검증
+    public void validateAlreadyLikedComment(Long userId, Long commentId) {
         User user = userUtils.findUserByUserId(userId);
-        Post post = postDao.findById(postId)
-                .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+        Comment comment = commentDao.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
 
-        Optional<PostLike> existingLike = likeDao.findByUserAndPost(user, post);
+        Optional<CommentLike> existingLike = likeDao.findByUserAndComment(user, comment);
 
-        if (existingLike.isEmpty()) {
+        if(existingLike.isPresent()) {
+            throw new CustomException(ALREADY_LIKED_THE_POST);
+        } else if(existingLike.isEmpty()) {
             throw new CustomException(NOT_LIKED_THE_POST_YET);
         }
     }

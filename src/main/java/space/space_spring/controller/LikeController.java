@@ -25,8 +25,8 @@ public class LikeController {
         // TODO 1: 유저가 스페이스에 속하는지 검증
         likeService.validateUserInSpace(userId, spaceId);
 
-        // TODO 2: 유저가 해당 게시글에 이미 좋아요를 눌렀는지 검증
-        likeService.validateAlreadyLiked(userId, postId);
+        // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
+        likeService.validateAlreadyLikedPost(userId, postId);
 
         // TODO 3: 좋아요 로직 수행
         likeService.likePost(userId, postId);
@@ -46,7 +46,7 @@ public class LikeController {
         likeService.validateUserInSpace(userId, spaceId);
 
         // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
-        likeService.validateNotLikedYet(userId, postId);
+        likeService.validateAlreadyLikedPost(userId, postId);
 
         // TODO 3: 좋아요 취소 로직 수행
         likeService.unlikePost(userId, postId);

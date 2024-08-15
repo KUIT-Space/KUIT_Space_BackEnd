@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PostDao;
+import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostDetailResponse;
 import space.space_spring.dto.post.response.ReadPostsResponse;
@@ -32,6 +33,7 @@ public class PostService {
     private final SpaceUtils spaceUtils;
     private final UserSpaceUtils userSpaceUtils;
     private final PostDao postDao;
+    private final UserSpaceDao userSpaceDao;
     private final S3Uploader s3Uploader;
 
     @Transactional
@@ -55,7 +57,7 @@ public class PostService {
 
         return posts.stream()
                 .map(post ->{
-                    Optional<UserSpace> userSpace = userSpaceUtils.isUserInSpace(post.getUser().getUserId(), spaceId);
+                    Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(post.getUser(), post.getSpace());
                     boolean isLike = postDao.isUserLikedPost(post.getPostId(), userId);
                     return ReadPostsResponse.of(post, postCount, userSpace.orElse(null), isLike);
                 })

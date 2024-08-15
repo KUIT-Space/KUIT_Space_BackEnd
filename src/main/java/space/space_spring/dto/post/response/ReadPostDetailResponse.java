@@ -1,8 +1,8 @@
 package space.space_spring.dto.post.response;
 
 import lombok.*;
+import space.space_spring.entity.Comment;
 import space.space_spring.entity.Post;
-import space.space_spring.entity.PostComment;
 import space.space_spring.entity.PostImage;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.util.post.ConvertCreatedDate;
@@ -33,7 +33,7 @@ public class ReadPostDetailResponse {
 
     // 댓글 및 좋아요
     private int commentCount;
-    private List<PostComment> postComments;
+    private List<Comment> postComments;
     private int likeCount;
     private boolean isLike;
 
@@ -52,8 +52,8 @@ public class ReadPostDetailResponse {
                 .content(post.getContent())
                 .time(ConvertCreatedDate.setCreatedDate(post.getCreatedAt()))
                 .type(post.getType())
-                .commentCount(post.getPostComments().size())
-                .postComments(post.getPostComments())
+                .commentCount(post.getComments().size())
+                .postComments(post.getComments())
                 .likeCount(post.getLikeCount())
                 .isLike(isLike)
                 .postImage(postImageUrls)

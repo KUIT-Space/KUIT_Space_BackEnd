@@ -134,4 +134,11 @@ public class UserSpaceDao {
                 .getSingleResult();
 
     }
+
+    public Optional<String> findProfileImageById(Long userSpaceId){
+        String jpql = "SELECT us.userProfileImg FROM UserSpace us WHERE us.userSpaceId = :userSpaceId AND us.status = 'ACTIVE'";
+        return em.createQuery(jpql, String.class)
+                .setParameter("userSpaceId",userSpaceId)
+                .getResultList().stream().findFirst();
+    }
 }

@@ -12,6 +12,7 @@ import space.space_spring.dto.VoiceRoom.*;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.VoiceRoom;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
@@ -19,6 +20,8 @@ import space.space_spring.util.user.UserUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +78,7 @@ public class VoiceRoomService {
                 List<ParticipantDto> participantDtoList = getParticipantDtoListById(roomDto.getId());
                 for(ParticipantDto participantDto: participantDtoList){
                     //Todo profileIamge 집어넣기
-                    participantDto.setProfileImage(findProfileImageByUserId(participantDto.getId()));
+                    participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
                 }
                 //RoomDto에 값 집어넣기
                     //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
@@ -121,8 +124,8 @@ public class VoiceRoomService {
         //Todo Base Entity에 일괄적으로 soft Delete를 적용하는 방법을 다같이 정하는 것이 좋아보임
     }
 
-    private String findProfileImageByUserId(Long userId){
-        return userDao.findProfileImageByUserId(userId);
+    private String findProfileImageByUserId(Long userSpaceId){
+        return userSpaceDao.findProfileImageById(userSpaceId).orElse("");
     }
     public List<VoiceRoom> findBySpaceId(long spaceId){
         return findBySpace(spaceUtils.findSpaceBySpaceId(spaceId));
@@ -138,7 +141,7 @@ public class VoiceRoomService {
         }
         for(ParticipantDto participantDto: participantDtoList){
             //profileIamge 집어넣기
-            participantDto.setProfileImage(findProfileImageByUserId(participantDto.getId()));
+            participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
             //userSpaceId 집어 넣기
             User user = userDao.findUserByUserId(participantDto.getId());
             participantDto.setUserSpaceId(userSpaceDao.findUserSpaceByUserAndSpace(user,space).get().getUserSpaceId());

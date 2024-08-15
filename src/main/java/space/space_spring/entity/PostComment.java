@@ -30,5 +30,5 @@ public class PostComment extends BaseEntity{
     private boolean isReply;
 
     @Column(name = "comment_target_id")
-    private String targetId;
+    private Long targetId;
 }

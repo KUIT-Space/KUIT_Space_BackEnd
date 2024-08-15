@@ -132,7 +132,7 @@ public class VoiceRoomService {
     }
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
         Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
-        List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId));
+        List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));
         if(participantDtoList==null||participantDtoList.isEmpty()){
             return Collections.emptyList();
         }
@@ -162,8 +162,10 @@ public class VoiceRoomService {
     public String getToken(long spaceId,long userId,long voiceRoomId){
         String userName=userDao.findUserByUserId(userId).getUserName();
         String userIdentity=String.valueOf(userId);
+        //Todo  profileImage 추가
         String metadata="";
-        String roomName=findNameTagById(voiceRoomId);
+        //String roomName=findNameTagById(voiceRoomId);
+        String roomName = String.valueOf(voiceRoomId);
         return liveKitUtils.getRoomToken(userName,userIdentity,roomName,metadata).toJwt();
     }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Entity
 @Table(name = "Post_Comment")
 @Getter
-public class PostComment extends BaseEntity{
+public class Comment extends BaseEntity{
     @Id
     @GeneratedValue
     @Column(name = "comment_id")

@@ -1,11 +1,9 @@
 package space.space_spring.dto.comment.response;
 
 import lombok.*;
-import space.space_spring.entity.PostComment;
+import space.space_spring.entity.Comment;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.util.post.ConvertCreatedDate;
-
-import java.util.List;
 
 @Builder
 @Getter
@@ -27,7 +25,7 @@ public class ReadCommentsResponse {
     private boolean isReply;
     private Long targetId;
 
-    public static ReadCommentsResponse of(PostComment comment, UserSpace userSpace, boolean isLike, int commentCount) {
+    public static ReadCommentsResponse of(Comment comment, UserSpace userSpace, boolean isLike, int commentCount) {
         return ReadCommentsResponse.builder()
                 .commentId(comment.getCommentId())
                 .userName(userSpace != null ? userSpace.getUserName() : null)

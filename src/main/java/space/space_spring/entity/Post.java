@@ -40,7 +40,7 @@ public class Post extends BaseEntity {
     private List<PostImage> postImages;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostComment> postComments;
+    private List<Comment> Comments;
 
     @Builder
     public Post(User user, Space space, String title, String content, String type, List<PostImage> postImages) {

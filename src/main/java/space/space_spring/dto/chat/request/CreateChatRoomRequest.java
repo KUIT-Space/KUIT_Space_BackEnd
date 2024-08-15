@@ -1,10 +1,12 @@
 package space.space_spring.dto.chat.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -14,13 +16,13 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateChatRoomRequest {
 
-    @Length(min = 2, max = 15, message = "채팅방 이름은 2자 이상, 15자 이내의 문자열이어야 합니다.")
+    @Size(min = 2, max = 15, message = "채팅방 이름은 2자 이상, 15자 이내의 문자열이어야 합니다.")
     @NotBlank(message = "채팅방 이름은 공백일 수 없습니다.")
     private String name;
 
-    @NotBlank(message = "채팅방 이미지는 공백일 수 없습니다.")
+    @NotNull(message = "채팅방 이미지는 공백일 수 없습니다.")
     private MultipartFile img;
 
-    @NotBlank(message = "1명 이상의 멤버를 초대해야 합니다.")
+    @NotEmpty(message = "1명 이상의 멤버를 초대해야 합니다.")
     private List<Long> memberList;
 }

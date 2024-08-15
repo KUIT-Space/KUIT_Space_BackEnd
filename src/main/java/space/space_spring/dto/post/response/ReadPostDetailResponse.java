@@ -33,7 +33,7 @@ public class ReadPostDetailResponse {
 
     // 댓글 및 좋아요
     private int commentCount;
-    private List<Comment> postComments;
+    private List<Comment> Comments;
     private int likeCount;
     private boolean isLike;
 
@@ -53,7 +53,7 @@ public class ReadPostDetailResponse {
                 .time(ConvertCreatedDate.setCreatedDate(post.getCreatedAt()))
                 .type(post.getType())
                 .commentCount(post.getComments().size())
-                .postComments(post.getComments())
+                .Comments(post.getComments())
                 .likeCount(post.getLikeCount())
                 .isLike(isLike)
                 .postImage(postImageUrls)

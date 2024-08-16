@@ -143,4 +143,12 @@ public class UserSpaceDao {
                 .getResultList();
         return result.isEmpty() ? Optional.empty() : Optional.ofNullable(result.get(0));
     }
+
+    public String findUserNameById(Long userSpaceId){
+        String jpql = "SELECT us.userName FROM UserSpace us WHERE us.userSpaceId = :userSpaceId AND us.status = 'ACTIVE'";
+        return em.createQuery(jpql, String.class)
+                .setParameter("userSpaceId", userSpaceId)
+                .getSingleResult();
+
+    }
 }

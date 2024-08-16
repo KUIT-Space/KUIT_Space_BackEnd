@@ -165,8 +165,9 @@ public class VoiceRoomService {
     public String getToken(long spaceId,long userId,long userSpaceId,long voiceRoomId){
         String userName=userDao.findUserByUserId(userId).getUserName();
         String userIdentity=String.valueOf(userId);
-        //Todo  profileImage 추가
-        String metadata="userProfileImage : "+userSpaceDao.findProfileImageById(userSpaceId).orElse("");
+        //Metadata에 profileImage와 userName 추가
+        String metadata="userProfileImage : "+userSpaceDao.findProfileImageById(userSpaceId).orElse("")
+                +", userName : "+userSpaceDao.findUserNameById(userSpaceId);
         //String roomName=findNameTagById(voiceRoomId);
         String roomName = String.valueOf(voiceRoomId);
         return liveKitUtils.getRoomToken(userName,userIdentity,roomName,metadata).toJwt();

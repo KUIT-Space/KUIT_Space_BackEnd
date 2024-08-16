@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.SpaceDao;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.space.GetSpaceHomeDto;
 import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.PostSpaceJoinDto;
 import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
@@ -154,4 +155,23 @@ public class SpaceService {
         userSpace.changeUserName(postSpaceJoinDto.getUserName());
         userSpace.changeUserProfileMsg(postSpaceJoinDto.getUserProfileMsg());
     }
+
+    public GetSpaceHomeDto.SpaceInfoForHome getSpaceInfoForHome(Long spaceId) {
+
+        // TODO 1. spaceId로 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 2. Space의 이름, 프로필 이미지, 멤버 수 get
+        String spaceName = spaceBySpaceId.getSpaceName();
+        String spaceProfileImg = spaceBySpaceId.getSpaceProfileImg();
+        int memberNum = userSpaceDao.calculateSpaceMemberNum(spaceBySpaceId);
+
+        // TODO 3. return
+        return new GetSpaceHomeDto.SpaceInfoForHome(
+                spaceName,
+                spaceProfileImg,
+                memberNum
+        );
+    }
+
 }

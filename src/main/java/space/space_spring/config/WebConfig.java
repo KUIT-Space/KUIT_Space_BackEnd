@@ -8,9 +8,10 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuthHandlerArgumentResolver;
-import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuthHandlerArgumentResolver;
 import space.space_spring.argumentResolver.userSpace.UserSpaceIdHandlerArgumentResolver;
+import space.space_spring.config.interceptorURL.JwtLoginInterceptorURL;
+import space.space_spring.config.interceptorURL.UserSpaceValidationInterceptorURL;
 import space.space_spring.interceptor.UserSpaceValidationInterceptor;
 import space.space_spring.interceptor.jwtLogin.JwtLoginAuthInterceptor;
 
@@ -34,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
                 registry.addInterceptor(jwtLoginAuthInterceptor)
                 .order(1);
 
-        for (InterceptorURL interceptorURL : InterceptorURL.values()) {
+        for (JwtLoginInterceptorURL interceptorURL : JwtLoginInterceptorURL.values()) {
             registration.addPathPatterns(interceptorURL.getUrlPattern());
         }
 
@@ -60,9 +61,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOriginPatterns("http://localhost:3000/", "http://localhost:5173/", "https://localhost:5173/",
                         "http://localhost:5173/KUIT-Space-Front/", "https://localhost:5173/KUIT-Space-Front/",
-                        "https://kuit-space.github.io/KUIT-Space-front/")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .exposedHeaders("location")
+                        "https://kuit-space.github.io/", "https://kuit-space-front.vercel.app/")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+                .exposedHeaders("location", "Authorization")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

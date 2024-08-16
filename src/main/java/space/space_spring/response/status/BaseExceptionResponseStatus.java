@@ -56,7 +56,6 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 6000: Space 오류
      */
     INVALID_SPACE_CREATE(6000, HttpStatus.BAD_REQUEST, "스페이스 생성 요청에서 잘못된 값이 존재합니다."),
-
     SPACE_NOT_FOUND(6001, HttpStatus.NOT_FOUND, "존재하지 않는 스페이스입니다."),
     INVALID_USER_SPACE_PROFILE(6002, HttpStatus.BAD_REQUEST, "스페이스 별 유저 프로필 정보 수정 요청에서 잘못된 값이 존재합니다."),
     INVALID_SPACE_JOIN_REQUEST(6003, HttpStatus.BAD_REQUEST, "스페이스 가입 요청에서 잘못된 값이 존재합니다."),
@@ -69,7 +68,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 7000: UserSpace 오류
      */
     USER_IS_NOT_IN_SPACE(7000, HttpStatus.NOT_FOUND, "해당 스페이스에 속하지 않는 유저입니다."),
-    UNAUTHORIZED_USER(7001, HttpStatus.UNAUTHORIZED, "해당 스페이스에 관리자 권한이 없는 유저입니다."),
+    UNAUTHORIZED_USER(7001, HttpStatus.FORBIDDEN, "해당 스페이스에 관리자 권한이 없는 유저입니다."),
     USER_IS_ALREADY_IN_SPACE(7002, HttpStatus.BAD_REQUEST, "해당 스페이스에 이미 가입되어 있는 유저입니다"),
     D(7003, HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     E(7004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
@@ -99,7 +98,6 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
     VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
-    VOICEROOM_DO_NOT_HAVE_PERMISSION(10005,HttpStatus.FORBIDDEN,"해당 작업은 관리자 권한이 필요합니다." ),
 
     /**
      * 11000: Post 오류

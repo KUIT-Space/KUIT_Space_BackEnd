@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.argumentResolver.userSpace.UserSpaceId;
 import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
@@ -91,6 +92,7 @@ public class SpaceController {
     /**
      * 스페이스 가입 view를 위한 데이터 조회
      */
+    @CheckUserSpace(required = false)
     @GetMapping("/{spaceId}/join")
     public BaseResponse<GetSpaceJoinDto.Response> getSpaceJoin(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
 
@@ -171,6 +173,7 @@ public class SpaceController {
     /**
      * 유저의 스페이스 가입 처리
      */
+    @CheckUserSpace(required = false)
     @PostMapping("/{spaceId}/join")
     public BaseResponse<String> joinUserToSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @ModelAttribute PostSpaceJoinDto.Request request, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {

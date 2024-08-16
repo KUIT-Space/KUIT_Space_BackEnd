@@ -1,9 +1,9 @@
-package space.space_spring.config;
+package space.space_spring.config.interceptorURL;
 
 import lombok.Getter;
 
 @Getter
-public enum InterceptorURL {
+public enum JwtLoginInterceptorURL {
     SPACE("/space/**"),
     TEST("/test/**"),
     SPACE_LIST_FOR_USER("/user/space-choice"),
@@ -12,7 +12,7 @@ public enum InterceptorURL {
 
     private final String urlPattern;
 
-    InterceptorURL(String urlPattern) {
+    JwtLoginInterceptorURL(String urlPattern) {
         this.urlPattern = urlPattern;
     }
 }

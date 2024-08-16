@@ -7,9 +7,6 @@ import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
 import space.space_spring.dto.pay.dto.PayRequestInfoDto;
 import java.util.List;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class GetSpaceHomeDto {
 
     @Getter

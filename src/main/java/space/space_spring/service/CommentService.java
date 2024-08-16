@@ -63,7 +63,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Long createComment(Long userId, Long postId, CreateCommentRequest createCommentRequest) {
+    public Long createComment(Long userId, Long postId, CreateCommentRequest.Request createCommentRequest) {
         // TODO 1: userId에 해당하는 user find
         User user = userUtils.findUserByUserId(userId);
 

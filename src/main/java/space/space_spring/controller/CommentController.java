@@ -36,18 +36,19 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping
-    public BaseResponse<String> createComment(
+    public BaseResponse<CreateCommentRequest.Response> createComment(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
             @PathVariable Long postId,
-            @RequestBody @Valid CreateCommentRequest createCommentRequest
+            @RequestBody @Valid CreateCommentRequest.Request createCommentRequest
             ) {
         // TODO 1: 유저가 스페이스에 속하는 지 검증
         commentService.validateUserInSpace(userId, spaceId);
 
         // TODO 2: 작성한 댓글 저장 및 아이디 반환
         Long commentId = commentService.createComment(userId, postId, createCommentRequest);
-        return new BaseResponse<>("commentId : " + commentId);
+        CreateCommentRequest.Response response = CreateCommentRequest.Response.of(commentId);
+        return new BaseResponse<>(response);
     }
 
 }

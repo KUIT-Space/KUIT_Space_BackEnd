@@ -3,6 +3,7 @@ package space.space_spring.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PostDao;
 import space.space_spring.dto.post.request.CreatePostRequest;
@@ -126,7 +127,8 @@ public class PostService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2. Space에 해당하는 notice 게시글 get
-        List<Post> noticeList = postDao.findBySpaceAndType(spaceBySpaceId, "notice");
+        // 공지사항 중 3개만 return
+        List<Post> noticeList = postDao.findBySpaceAndTypeSortedByNewest(spaceBySpaceId, "notice", Pageable.ofSize(3));
 
         // TODO 3. return
         List<GetSpaceHomeDto.SpaceHomeNotice> spaceHomeNoticeList = new ArrayList<>();

@@ -4,8 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import space.space_spring.dao.CommentDao;
 import space.space_spring.dao.PostDao;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.comment.response.ReadCommentsResponse;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostDetailResponse;
 import space.space_spring.dto.post.response.ReadPostsResponse;
@@ -34,6 +36,7 @@ public class PostService {
     private final UserSpaceUtils userSpaceUtils;
     private final PostDao postDao;
     private final UserSpaceDao userSpaceDao;
+    private final CommentDao commentDao;
     private final S3Uploader s3Uploader;
 
     @Transactional
@@ -116,7 +119,18 @@ public class PostService {
         // TODO 5: 유저가 해당 게시글에 좋아요를 눌렀는지 여부 확인
         boolean isLike = postDao.isUserLikedPost(post.getPostId(), userId);
 
-        // TODO 6: ReadPostDetailResponse 객체로 변환
-        return ReadPostDetailResponse.of(post, userSpace.orElse(null), isLike);
+        // TODO 6: 댓글 리스트를 ReadCommentsResponse로 변환
+        List<ReadCommentsResponse> comments = post.getComments().stream()
+                .map(comment -> {
+                    int commentCount = commentDao.countByTargetId(comment.getCommentId());
+                    boolean isCommentLiked = commentDao.isUserLikedComment(comment.getCommentId(), userId);
+                    Optional<UserSpace> userSpaceOpt = userSpaceDao.findUserSpaceByUserAndSpace(comment.getUser(), post.getSpace());
+
+                    return ReadCommentsResponse.of(comment, userSpaceOpt.orElse(null), isCommentLiked, commentCount);
+                })
+                .collect(Collectors.toList());
+
+        // TODO 7: ReadPostDetailResponse 객체로 변환
+        return ReadPostDetailResponse.of(post, userSpace.orElse(null), isLike, comments);
     }
 }

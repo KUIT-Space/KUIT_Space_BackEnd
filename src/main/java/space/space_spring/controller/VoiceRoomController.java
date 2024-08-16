@@ -185,7 +185,7 @@ public class VoiceRoomController {
     private boolean validateManagerPermission(String userSpaceAuth){
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
         if(!userSpaceAuth.equals(MANAGER.getAuth())){
-            throw new CustomException(VOICEROOM_DO_NOT_HAVE_PERMISSION);
+            throw new CustomException(UNAUTHORIZED_USER);
         }
         return true;
     }

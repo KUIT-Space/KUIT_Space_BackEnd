@@ -23,6 +23,7 @@ import space.space_spring.util.user.UserUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,18 +54,15 @@ public class ChatRoomService {
                 .map(cr -> {
                     // TODO 4: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
-                    LocalDateTime lastUpdateTime = lastMsg.getCreatedAt();
-                    String lastContent = switch (lastMsg.getMessageType()) {
-                        case TEXT -> lastMsg.getContent().get("text");
-                        /**
-                         * TODO: 메시지 타입 관련하여 미리보기 뷰에 따라 변경 가능
-                         */
-//                        case IMG -> "img";
-//                        case FILE -> "file";
-//                        case POST -> "post";
-//                        case PAY -> "pay";
-                        default -> lastMsg.getMessageType().toString();
-                    };
+
+                    LocalDateTime lastUpdateTime = LocalDateTime.now();
+                    HashMap<String, String> lastContent = new HashMap<>();
+                    lastContent.put("text", "메시지를 전송해보세요");
+
+                    if (lastMsg != null) {
+                        lastUpdateTime = lastMsg.getCreatedAt();
+                        lastContent = lastMsg.getContent();
+                    }
 
                     // TODO 5: 각 채팅방의 안읽은 메시지 개수 계산
                     UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);

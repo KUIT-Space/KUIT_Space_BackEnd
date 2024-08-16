@@ -82,13 +82,14 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST, "채팅방 생성 요청에서 잘못된 값이 존재합니다."),
     CHATROOM_NOT_EXIST(8001, HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
     INVALID_CHATROOM_JOIN(8001, HttpStatus.BAD_REQUEST, "채팅방 멤버 초대 요청에서 잘못된 값이 존재합니다."),
+    BASE64_CONVERT_FAIL_IN_MEMORY(8002, HttpStatus.INTERNAL_SERVER_ERROR, "base64 파일 변환 과정에서 문제가 생겼습니다."),
 
     /**
      * 9000 : MultipartFile 오류
      */
 
     IS_NOT_IMAGE_FILE(9000, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 이미지 파일의 형식이 아닙니다."),
-    MULTIPARTFILE_CONVERT_FAILE_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
+    MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
 
     /**
      * 10000: voice room 오류

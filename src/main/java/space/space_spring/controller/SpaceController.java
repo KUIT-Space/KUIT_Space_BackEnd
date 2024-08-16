@@ -7,6 +7,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
+import space.space_spring.argumentResolver.userSpace.UserSpaceId;
+import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
+import space.space_spring.dto.pay.dto.PayRequestInfoDto;
+import space.space_spring.dto.space.GetSpaceHomeDto;
 import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.PostSpaceJoinDto;
 import space.space_spring.dto.space.request.PostSpaceCreateDto;
@@ -17,11 +22,14 @@ import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
 import space.space_spring.entity.Space;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
+import space.space_spring.service.PayService;
+import space.space_spring.service.PostService;
 import space.space_spring.service.S3Uploader;
 import space.space_spring.service.SpaceService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
@@ -38,6 +46,8 @@ public class SpaceController {
     private final String spaceImgDirName = "spaceImg";
     private final String userProfileImgDirName = "userProfileImg";
     private final UserSpaceUtils userSpaceUtils;
+    private final PayService payService;
+    private final PostService postService;
 
     @PostMapping("")
     public BaseResponse<PostSpaceCreateDto.Response> createSpace(@JwtLoginAuth Long userId, @Validated @ModelAttribute PostSpaceCreateDto.Request postSpaceCreateRequest, BindingResult bindingResult) throws IOException {
@@ -162,7 +172,7 @@ public class SpaceController {
      * 유저의 스페이스 가입 처리
      */
     @PostMapping("/{spaceId}/join")
-    BaseResponse<String> joinUserToSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @ModelAttribute PostSpaceJoinDto.Request request, BindingResult bindingResult) throws IOException {
+    public BaseResponse<String> joinUserToSpace(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @ModelAttribute PostSpaceJoinDto.Request request, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_SPACE_JOIN_REQUEST, getErrorMessage(bindingResult));
         }
@@ -183,5 +193,37 @@ public class SpaceController {
         spaceService.createUserSpace(userId, spaceId, postSpaceJoinDto);
 
         return new BaseResponse<>("유저의 스페이스 가입 처리 성공");
+    }
+
+    /**
+     * 스페이스 홈 화면
+     */
+    @GetMapping("/{spaceId}")
+    public BaseResponse<GetSpaceHomeDto.Response> showSpaceHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @UserSpaceId Long userSpaceId, @UserSpaceAuth String userAuth) {
+        log.info("userId = {}, spaceId = {}, userSpaceID = {}, userAuth = {}", userId, spaceId, userSpaceId, userAuth);
+
+        // TODO 1. 스페이스 정보 get
+        GetSpaceHomeDto.SpaceInfoForHome spaceInfoForHome = spaceService.getSpaceInfoForHome(spaceId);
+
+        // TODO 2. 해당 스페이스에서의 유저 정산 정보 get
+        // 유저가 요청한 정산 중 현재 진행중인 정산 리스트
+        // AND
+        // 유저가 요청받은 정산 중 현재 진행중인 정산 리스트
+        List<PayRequestInfoDto> payRequestInfoForUser = payService.getPayRequestInfoForUser(userId, spaceId, false);
+        List<PayReceiveInfoDto> payReceiveInfoForUser = payService.getPayReceiveInfoForUser(userId, spaceId, false);
+
+        // TODO 3. 해당 스페이스의 공지사항 get
+        List<GetSpaceHomeDto.SpaceHomeNotice> noticeInfoForHome = postService.getNoticeInfoForHome(spaceId);
+
+        // TODO 4. return
+        return new BaseResponse<>(new GetSpaceHomeDto.Response(
+                spaceInfoForHome.getSpaceName(),
+                spaceInfoForHome.getSpaceProfileImg(),
+                payRequestInfoForUser,
+                payReceiveInfoForUser,
+                noticeInfoForHome,
+                spaceInfoForHome.getMemberNum(),
+                userAuth
+        ));
     }
 }

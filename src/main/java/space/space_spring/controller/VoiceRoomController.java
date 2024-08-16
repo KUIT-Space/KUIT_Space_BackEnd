@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
+import space.space_spring.argumentResolver.userSpace.UserSpaceId;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;
@@ -84,6 +85,7 @@ public class VoiceRoomController {
             @PathVariable("spaceId") @NotNull long spaceId,
             @JwtLoginAuth Long userId,
             @PathVariable("voiceRoomId") @NotNull Long roomId,
+            @UserSpaceId Long userSpaceId,
             HttpServletResponse response
     ){
 
@@ -92,7 +94,7 @@ public class VoiceRoomController {
         //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
         validateVoiceRoomInSpace(spaceId,roomId);
 
-        response.setHeader("Authorization", "Bearer " + voiceRoomService.getToken(spaceId, userId,roomId));
+        response.setHeader("Authorization", "Bearer " + voiceRoomService.getToken(spaceId, userId,userSpaceId,roomId));
         return new BaseResponse<String>(
             "보이스룸 토큰 생성에 성공했습니다."
         );

@@ -14,6 +14,7 @@ import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
 
@@ -137,8 +138,9 @@ public class UserSpaceDao {
 
     public Optional<String> findProfileImageById(Long userSpaceId){
         String jpql = "SELECT us.userProfileImg FROM UserSpace us WHERE us.userSpaceId = :userSpaceId AND us.status = 'ACTIVE'";
-        return em.createQuery(jpql, String.class)
+        List<String> result = em.createQuery(jpql, String.class)
                 .setParameter("userSpaceId",userSpaceId)
-                .getResultList().stream().findFirst();
+                .getResultList();
+        return result.isEmpty() ? Optional.empty() : Optional.ofNullable(result.get(0));
     }
 }

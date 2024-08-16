@@ -7,19 +7,21 @@ import org.springframework.stereotype.Service;
 import space.space_spring.dao.CommentDao;
 import space.space_spring.dao.PostDao;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.comment.request.CreateCommentRequest;
 import space.space_spring.dto.comment.response.ReadCommentsResponse;
 import space.space_spring.entity.Post;
 import space.space_spring.entity.Comment;
+import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.CustomException;
+import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.POST_NOT_EXIST;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @Slf4j
@@ -28,6 +30,7 @@ public class CommentService {
     private final PostDao postDao;
     private final CommentDao commentDao;
     private final UserSpaceDao userSpaceDao;
+    private final UserUtils userUtils;
     private final UserSpaceUtils userSpaceUtils;
     private final LikeService likeService;
 
@@ -40,7 +43,7 @@ public class CommentService {
 
     @Transactional
     public List<ReadCommentsResponse> getCommentsByPost(Long postId, Long userId) {
-        // TODO 1: 게시글 존재 여부 확인
+        // TODO 1: postId에 해당하는 post find
         Post post = postDao.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
@@ -59,5 +62,18 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public Long createComment(Long userId, Long postId, CreateCommentRequest createCommentRequest) {
+        // TODO 1: userId에 해당하는 user find
+        User user = userUtils.findUserByUserId(userId);
 
+        // TODO 2: postId에 해당하는 post find
+        Post post = postDao.findById(postId)
+                .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+
+        Comment comment = createCommentRequest.toEntity(user, post);
+        commentDao.save(comment);
+
+        return comment.getCommentId();
+    }
 }

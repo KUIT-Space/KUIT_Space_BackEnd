@@ -1,12 +1,11 @@
 package space.space_spring.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.dto.comment.request.CreateCommentRequest;
 import space.space_spring.dto.comment.response.ReadCommentsResponse;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.CommentService;
@@ -34,4 +33,21 @@ public class CommentController {
         List<ReadCommentsResponse> comments = commentService.getCommentsByPost(postId, userId);
         return new BaseResponse<>(comments);
     }
+
+    // 댓글 생성
+    @PostMapping
+    public BaseResponse<String> createComment(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long postId,
+            @RequestBody @Valid CreateCommentRequest createCommentRequest
+            ) {
+        // TODO 1: 유저가 스페이스에 속하는 지 검증
+        commentService.validateUserInSpace(userId, spaceId);
+
+        // TODO 2: 작성한 댓글 저장 및 아이디 반환
+        Long commentId = commentService.createComment(userId, postId, createCommentRequest);
+        return new BaseResponse<>("commentId : " + commentId);
+    }
+
 }

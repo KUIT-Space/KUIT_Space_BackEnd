@@ -1,4 +1,4 @@
-package space.space_spring.config;
+package space.space_spring.config.interceptorURL;
 
 import lombok.Getter;
 
@@ -6,7 +6,9 @@ import lombok.Getter;
 public enum UserSpaceValidationInterceptorURL {
     //SPACE("/space/**"),
     TEST("/space/{spaceId}/test/**"),
-    VOICEROOM("/space/{spaceId}/voiceRoom/**")
+//    VOICEROOM("/space/{spaceId}/voiceRoom/**"),
+//    CHATROOM("/space/{spaceId}/chat/**")
+    SPACE("/space/{spaceId}/**")
     ;
 
     private final String urlPattern;

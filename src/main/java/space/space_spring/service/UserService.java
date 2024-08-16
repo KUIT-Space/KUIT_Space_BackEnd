@@ -61,7 +61,7 @@ public class UserService {
     @Transactional
     public String login(PostUserLoginRequest postUserLoginRequest) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
-        User userByEmail = userUtils.findUserByEmail(postUserLoginRequest.getEmail());
+        User userByEmail = userUtils.findUserByEmail(postUserLoginRequest.getEmail(), LOCAL);
         log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
 
         // TODO 2. 비밀번호 일치 여부 확인

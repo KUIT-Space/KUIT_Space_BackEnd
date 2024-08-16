@@ -54,7 +54,7 @@ public class ReadPostsResponse {
                 .type(post.getType())
                 .postCount(postCount)
                 .commentCount(post.getPostComments().size())
-                .likeCount(post.getLike())
+                .likeCount(post.getLikeCount())
                 .isLike(isLike)
                 .postImage(postImageUrls)
                 .build();

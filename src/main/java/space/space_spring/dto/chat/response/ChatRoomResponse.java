@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.entity.ChatRoom;
 
+import java.util.HashMap;
+
 @Builder
 @Getter
 @AllArgsConstructor
@@ -15,13 +17,13 @@ public class ChatRoomResponse {
 
     private String imgUrl;
 
-    private String lastMsg;
+    private HashMap<String, String> lastMsg;
 
     private String lastTime;
 
     private int unreadMsgCount;
 
-    public static ChatRoomResponse of(ChatRoom chatRoom, String lastMsg, String lastTime, int unreadMsgCount) {
+    public static ChatRoomResponse of(ChatRoom chatRoom, HashMap<String, String> lastMsg, String lastTime, int unreadMsgCount) {
         return ChatRoomResponse.builder()
                 .id(chatRoom.getId())
                 .name(chatRoom.getName())

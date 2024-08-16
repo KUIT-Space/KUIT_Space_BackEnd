@@ -5,6 +5,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.chat.request.JoinChatRoomRequest;
 import space.space_spring.dto.chat.response.ChatSuccessResponse;
@@ -19,6 +20,7 @@ import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 
+import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
@@ -45,16 +47,15 @@ public class ChatRoomController {
     public BaseResponse<CreateChatRoomResponse> createChatRoom(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
+            @UserSpaceAuth String userSpaceAuth,
             @Validated @ModelAttribute CreateChatRoomRequest createChatRoomRequest,
             BindingResult bindingResult) throws IOException {
-
-        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new CustomException(UNAUTHORIZED_USER);
-        }
 
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_CHATROOM_CREATE, getErrorMessage(bindingResult));
         }
+
+        validateManagerPermission(userSpaceAuth);
 
         String chatRoomDirName = "chatRoomImg";
         String chatRoomImgUrl = s3Uploader.upload(createChatRoomRequest.getImg(), chatRoomDirName);
@@ -66,11 +67,13 @@ public class ChatRoomController {
      * 특정 채팅방의 모든 유저 정보 조회
      */
     @GetMapping("/{chatRoomId}/member")
-    public BaseResponse<ReadChatRoomMemberResponse> readChatRoomMembers(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @PathVariable Long chatRoomId) {
+    public BaseResponse<ReadChatRoomMemberResponse> readChatRoomMembers(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long chatRoomId,
+            @UserSpaceAuth String userSpaceAuth) {
 
-        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new CustomException(UNAUTHORIZED_USER);
-        }
+        validateManagerPermission(userSpaceAuth);
 
         return new BaseResponse<>(chatRoomService.readChatRoomMembers(spaceId, chatRoomId));
     }
@@ -83,16 +86,15 @@ public class ChatRoomController {
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
             @PathVariable Long chatRoomId,
+            @UserSpaceAuth String userSpaceAuth,
             @RequestBody JoinChatRoomRequest joinChatRoomRequest,
             BindingResult bindingResult) {
-
-        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new CustomException(UNAUTHORIZED_USER);
-        }
 
         if(bindingResult.hasErrors()){
             throw new CustomException(INVALID_CHATROOM_JOIN,getErrorMessage(bindingResult));
         }
+
+        validateManagerPermission(userSpaceAuth);
 
         return new BaseResponse<>(chatRoomService.joinChatRoom(chatRoomId, joinChatRoomRequest));
     }
@@ -105,11 +107,10 @@ public class ChatRoomController {
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
             @PathVariable Long chatRoomId,
-            @RequestParam String name) {
+            @RequestParam String name,
+            @UserSpaceAuth String userSpaceAuth) {
 
-        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new CustomException(UNAUTHORIZED_USER);
-        }
+        validateManagerPermission(userSpaceAuth);
 
         return new BaseResponse<>(chatRoomService.modifyChatRoomName(chatRoomId, name));
     }
@@ -132,12 +133,17 @@ public class ChatRoomController {
     public BaseResponse<ChatSuccessResponse> deleteChatRoom(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
-            @PathVariable Long chatRoomId) {
+            @PathVariable Long chatRoomId,
+            @UserSpaceAuth String userSpaceAuth) {
 
-        if (!userSpaceUtils.isUserManager(userId, spaceId)) {
-            throw new CustomException(UNAUTHORIZED_USER);
-        }
+        validateManagerPermission(userSpaceAuth);
 
         return new BaseResponse<>(chatRoomService.deleteChatRoom(chatRoomId));
+    }
+
+    private void validateManagerPermission(String userSpaceAuth){
+        if(!userSpaceAuth.equals(MANAGER.getAuth())){
+            throw new CustomException(UNAUTHORIZED_USER);
+        }
     }
 }

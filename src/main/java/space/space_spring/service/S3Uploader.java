@@ -20,7 +20,8 @@ import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.MULTIPARTFILE_CONVERT_FAILE_IN_MEMORY;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.BASE64_CONVERT_FAIL_IN_MEMORY;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ public class S3Uploader {
             return amazonS3Client.getUrl(bucket, fileName).toString();
         } catch (IOException e) {
             log.error("Error uploading file: {}", fileName, e);
-            throw new CustomException(MULTIPARTFILE_CONVERT_FAILE_IN_MEMORY,"Failed to upload file");
+            throw new CustomException(MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY,"Failed to upload file");
         }
     }
 
@@ -127,7 +128,7 @@ public class S3Uploader {
             fos.write(decodedBytes);
         } catch (IOException e) {
             log.error("Error writing bytes to file: {}", e.getMessage());
-            throw e;
+            throw new CustomException(BASE64_CONVERT_FAIL_IN_MEMORY,"Failed to upload file");
         }
 
         // TODO 5: S3에 파일 업로드 및 임시 리소스 삭제

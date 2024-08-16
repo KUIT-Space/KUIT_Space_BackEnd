@@ -60,8 +60,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOriginPatterns("http://localhost:3000/", "http://localhost:5173/", "https://localhost:5173/",
                         "http://localhost:5173/KUIT-Space-Front/", "https://localhost:5173/KUIT-Space-Front/",
-                        "https://kuit-space.github.io/KUIT-Space-front/")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        "https://kuit-space.github.io/", "https://kuit-space-front.vercel.app/")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                 .exposedHeaders("location", "Authorization")
                 .allowedHeaders("*")
                 .allowCredentials(true);

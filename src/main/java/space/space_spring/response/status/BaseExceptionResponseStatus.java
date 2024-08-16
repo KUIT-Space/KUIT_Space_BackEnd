@@ -31,8 +31,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 4000: Authorization 오류
      */
     JWT_ERROR(4000, HttpStatus.UNAUTHORIZED, "JWT에서 오류가 발생하였습니다."),
-    TOKEN_NOT_FOUND(4001, HttpStatus.BAD_REQUEST, "토큰이 HTTP Header에 없습니다."),
-    UNSUPPORTED_TOKEN_TYPE(4002, HttpStatus.BAD_REQUEST, "지원되지 않는 토큰 형식입니다."),
+    TOKEN_NOT_FOUND(4001, HttpStatus.UNAUTHORIZED, "토큰이 HTTP Header에 없습니다."),
+    UNSUPPORTED_TOKEN_TYPE(4002, HttpStatus.UNAUTHORIZED, "지원되지 않는 토큰 형식입니다."),
     INVALID_TOKEN(4003, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     MALFORMED_TOKEN(4004, HttpStatus.UNAUTHORIZED, "토큰이 올바르게 구성되지 않았습니다."),
     EXPIRED_TOKEN(4005, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
@@ -46,10 +46,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_USER_SIGNUP(5000, HttpStatus.BAD_REQUEST, "회원가입 요청에서 잘못된 값이 존재합니다."),
     DUPLICATE_EMAIL(5001, HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
     DUPLICATE_NICKNAME(5002, HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다."),
-    USER_NOT_FOUND(4003, HttpStatus.BAD_REQUEST, "존재하지 않는 회원입니다."),
+    USER_NOT_FOUND(4003, HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     PASSWORD_NO_MATCH(4004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     INVALID_USER_STATUS(4005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
-    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다."),
+    EMAIL_NOT_FOUND(4006, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
     INVALID_USER_LOGIN(4007, HttpStatus.BAD_REQUEST, "로그인 요청에서 잘못된 값이 존재합니다."),
 
     /**
@@ -57,43 +57,43 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      */
     INVALID_SPACE_CREATE(6000, HttpStatus.BAD_REQUEST, "스페이스 생성 요청에서 잘못된 값이 존재합니다."),
 
-    SPACE_NOT_FOUND(6001, HttpStatus.BAD_REQUEST, "존재하지 않는 스페이스입니다."),
+    SPACE_NOT_FOUND(6001, HttpStatus.NOT_FOUND, "존재하지 않는 스페이스입니다."),
     INVALID_USER_SPACE_PROFILE(6002, HttpStatus.BAD_REQUEST, "스페이스 별 유저 프로필 정보 수정 요청에서 잘못된 값이 존재합니다."),
     INVALID_SPACE_JOIN_REQUEST(6003, HttpStatus.BAD_REQUEST, "스페이스 가입 요청에서 잘못된 값이 존재합니다."),
 
     nff(6004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     gnf(6005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
-    fb(6006, HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다."),
+    fb(6006, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
 
     /**
      * 7000: UserSpace 오류
      */
-    USER_IS_NOT_IN_SPACE(7000, HttpStatus.BAD_REQUEST, "해당 스페이스에 속하지 않는 유저입니다."),
+    USER_IS_NOT_IN_SPACE(7000, HttpStatus.NOT_FOUND, "해당 스페이스에 속하지 않는 유저입니다."),
     UNAUTHORIZED_USER(7001, HttpStatus.UNAUTHORIZED, "해당 스페이스에 관리자 권한이 없는 유저입니다."),
     USER_IS_ALREADY_IN_SPACE(7002, HttpStatus.BAD_REQUEST, "해당 스페이스에 이미 가입되어 있는 유저입니다"),
-    D(7003, HttpStatus.BAD_REQUEST, "존재하지 않는 회원입니다."),
+    D(7003, HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     E(7004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     F(7005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
-    G(7006, HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다."),
+    G(7006, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
 
     /**
      * 8000: Chat 오류
      */
     INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST, "채팅방 생성 요청에서 잘못된 값이 존재합니다."),
-    CHATROOM_NOT_EXIST(8001, HttpStatus.BAD_REQUEST, "존재하지 않는 채팅방입니다."),
+    CHATROOM_NOT_EXIST(8001, HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
     INVALID_CHATROOM_JOIN(8001, HttpStatus.BAD_REQUEST, "채팅방 멤버 초대 요청에서 잘못된 값이 존재합니다."),
 
     /**
      * 9000 : MultipartFile 오류
      */
 
-    IS_NOT_IMAGE_FILE(9000, HttpStatus.BAD_REQUEST, "지원되는 이미지 파일의 형식이 아닙니다."),
+    IS_NOT_IMAGE_FILE(9000, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 이미지 파일의 형식이 아닙니다."),
     MULTIPARTFILE_CONVERT_FAILE_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
 
     /**
      * 10000: voice room 오류
      */
-    VOICEROOM_NOT_EXIST(10001, HttpStatus.BAD_REQUEST,"존재하지 않는 보이스룸 id입니다."),
+    VOICEROOM_NOT_EXIST(10001, HttpStatus.NOT_FOUND,"존재하지 않는 보이스룸 id입니다."),
     INVALID_VOICEROOM_REQUEST(10002, HttpStatus.BAD_REQUEST,"잘못된 요청 인자 입니다."),
 
     VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
@@ -104,8 +104,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 11000: Post 오류
      */
     INVALID_POST_CREATE(11000, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
-    POST_NOT_EXIST(11001, HttpStatus.BAD_REQUEST, "존재하지 않는 게시글 id입니다."),
-    POST_IS_NOT_IN_SPACE(11002, HttpStatus.BAD_REQUEST, "해당 게시글은 이 스페이스에 속하지 않습니다."),
+    POST_NOT_EXIST(11001, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 id입니다."),
+    POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다.");
 

@@ -29,23 +29,6 @@ public class VoiceRoomDao  {
             return null;
         }
     }
-    @Transactional
-    public Integer findMaxOrderBySpace(Space space) {
-        String jpql = "SELECT MAX(r.order) FROM voice_room r WHERE r.space = :space";
-
-        return entityManager.createQuery(jpql, Integer.class)
-                .setParameter("space", space)
-                .getSingleResult();
-    }
-
-    @Transactional
-    public VoiceRoom findRoomWithMaxOrderBySpace(Space space) {
-        String jpql = "SELECT r FROM VoiceRoom r WHERE r.space = :space AND r.order = (SELECT MAX(r2.order) FROM VoiceRoom r2 WHERE r2.space = :space)";
-
-        return entityManager.createQuery(jpql, VoiceRoom.class)
-                .setParameter("space", space)
-                .getSingleResult();
-    }
 
 
 }

@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.CommentDao;
-import space.space_spring.dao.LikeDao;
+import space.space_spring.dao.CommentLikeDao;
+import space.space_spring.dao.PostLikeDao;
 import space.space_spring.dao.PostDao;
 import space.space_spring.entity.*;
 import space.space_spring.exception.CustomException;
@@ -20,7 +21,8 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 @Slf4j
 @RequiredArgsConstructor
 public class LikeService {
-    private final LikeDao likeDao;
+    private final PostLikeDao postLikeDao;
+    private final CommentLikeDao commentLikeDao;
     private final PostDao postDao;
     private final CommentDao commentDao;
     private final UserUtils userUtils;
@@ -39,7 +41,7 @@ public class LikeService {
         Post post = postDao.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
-        Optional<PostLike> existingLike = likeDao.findByUserAndPost(user, post);
+        Optional<PostLike> existingLike = postLikeDao.findByUserAndPost(user, post);
 
         if(existingLike.isPresent()) {
             throw new CustomException(ALREADY_LIKED_THE_POST);
@@ -54,7 +56,7 @@ public class LikeService {
         Comment comment = commentDao.findById(commentId)
                 .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
 
-        Optional<CommentLike> existingLike = likeDao.findByUserAndComment(user, comment);
+        Optional<CommentLike> existingLike = commentLikeDao.findByUserAndComment(user, comment);
 
         if(existingLike.isPresent()) {
             throw new CustomException(ALREADY_LIKED_THE_POST);
@@ -72,7 +74,7 @@ public class LikeService {
 
         // 새 좋아요 생성 및 저장
         PostLike postLike = new PostLike(user, post);
-        likeDao.save(postLike);
+        postLikeDao.save(postLike);
 
         // 게시글의 좋아요 수 증가
         post.increaseLikeCount();
@@ -86,8 +88,8 @@ public class LikeService {
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
         // 좋아요 취소 및 삭제
-        Optional<PostLike> existingLike = likeDao.findByUserAndPost(user, post);
-        likeDao.delete(existingLike.get());
+        Optional<PostLike> existingLike = postLikeDao.findByUserAndPost(user, post);
+        postLikeDao.delete(existingLike.get());
 
         // 게시글의 좋아요 수 감소
         post.decreaseLikeCount();

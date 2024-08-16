@@ -3,11 +3,13 @@ package space.space_spring.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.PostDao;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostDetailResponse;
 import space.space_spring.dto.post.response.ReadPostsResponse;
+import space.space_spring.dto.space.GetSpaceHomeDto;
 import space.space_spring.entity.*;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
@@ -15,6 +17,7 @@ import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -116,5 +119,24 @@ public class PostService {
 
         // TODO 6: ReadPostDetailResponse 객체로 변환
         return ReadPostDetailResponse.of(post, userSpace.orElse(null), isLike);
+    }
+
+    public List<GetSpaceHomeDto.SpaceHomeNotice> getNoticeInfoForHome(Long spaceId) {
+
+        // TODO 1. spaceId로 Space find
+        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
+
+        // TODO 2. Space에 해당하는 notice 게시글 get
+        // 공지사항 중 3개만 return
+        List<Post> noticeList = postDao.findBySpaceAndTypeSortedByNewest(spaceBySpaceId, "notice", Pageable.ofSize(3));
+
+        // TODO 3. return
+        List<GetSpaceHomeDto.SpaceHomeNotice> spaceHomeNoticeList = new ArrayList<>();
+        for (Post post : noticeList) {
+            GetSpaceHomeDto.SpaceHomeNotice notice = new GetSpaceHomeDto.SpaceHomeNotice(post.getPostId(), post.getTitle());
+            spaceHomeNoticeList.add(notice);
+        }
+
+        return spaceHomeNoticeList;
     }
 }

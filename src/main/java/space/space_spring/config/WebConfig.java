@@ -8,9 +8,10 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuthHandlerArgumentResolver;
-import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuthHandlerArgumentResolver;
 import space.space_spring.argumentResolver.userSpace.UserSpaceIdHandlerArgumentResolver;
+import space.space_spring.config.interceptorURL.JwtLoginInterceptorURL;
+import space.space_spring.config.interceptorURL.UserSpaceValidationInterceptorURL;
 import space.space_spring.interceptor.UserSpaceValidationInterceptor;
 import space.space_spring.interceptor.jwtLogin.JwtLoginAuthInterceptor;
 
@@ -34,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
                 registry.addInterceptor(jwtLoginAuthInterceptor)
                 .order(1);
 
-        for (InterceptorURL interceptorURL : InterceptorURL.values()) {
+        for (JwtLoginInterceptorURL interceptorURL : JwtLoginInterceptorURL.values()) {
             registration.addPathPatterns(interceptorURL.getUrlPattern());
         }
 

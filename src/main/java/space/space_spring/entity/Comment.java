@@ -1,11 +1,14 @@
 package space.space_spring.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Post_Comment")
 @Getter
+@NoArgsConstructor
 public class Comment extends BaseEntity{
     @Id
     @GeneratedValue
@@ -31,4 +34,13 @@ public class Comment extends BaseEntity{
 
     @Column(name = "comment_target_id")
     private Long targetId;
+
+    @Builder
+    public Comment(User user, Post post, String content, Boolean isReply, Long targetId) {
+        this.user = user;
+        this.post = post;
+        this.content = content;
+        this.isReply = isReply;
+        this.targetId = targetId;
+    }
 }

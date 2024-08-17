@@ -32,7 +32,6 @@ public class CommentService {
     private final UserSpaceDao userSpaceDao;
     private final UserUtils userUtils;
     private final UserSpaceUtils userSpaceUtils;
-    private final LikeService likeService;
 
     // TODO 1: 유저가 스페이스에 속하는지 검증
     public void validateUserInSpace(Long userId, Long spaceId) {
@@ -64,6 +63,14 @@ public class CommentService {
 
     @Transactional
     public Long createComment(Long userId, Long postId, CreateCommentRequest.Request createCommentRequest) {
+        // TODO 1: isReply와 targetId 유효성 검사
+        if(createCommentRequest.isReply() && createCommentRequest.getTargetId() == null) {
+            throw new CustomException(INVALID_REPLY_TARGET);
+        }
+        if(!createCommentRequest.isReply() && createCommentRequest.getTargetId() != null) {
+            throw new CustomException(INVALID_COMMENT_TARGET);
+        }
+
         // TODO 1: userId에 해당하는 user find
         User user = userUtils.findUserByUserId(userId);
 
@@ -71,6 +78,7 @@ public class CommentService {
         Post post = postDao.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
+        // TODO 3: 댓글 또는 대댓글 생성
         Comment comment = createCommentRequest.toEntity(user, post);
         commentDao.save(comment);
 

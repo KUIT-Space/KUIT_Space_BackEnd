@@ -33,7 +33,7 @@ public class ReadCommentsResponse {
                 .content(comment.getContent())
                 .time(ConvertCreatedDate.setCreatedDate(comment.getCreatedAt()))
                 .commentCount(commentCount)
-                .likeCount(comment.getLike())
+                .likeCount(comment.getLikeCount())
                 .isLike(isLike)
                 .isReply(comment.isReply())
                 .targetId(comment.getTargetId())

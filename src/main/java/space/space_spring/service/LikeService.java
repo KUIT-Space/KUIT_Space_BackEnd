@@ -94,4 +94,34 @@ public class LikeService {
         // 게시글의 좋아요 수 감소
         post.decreaseLikeCount();
     }
+
+    @Transactional
+    public void likeComment(Long userId, Long commentId) {
+        // 유저와 댓글 조회
+        User user = userUtils.findUserByUserId(userId);
+        Comment comment = commentDao.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
+
+        // 좋아요 생성 및 저장
+        CommentLike commentLike = new CommentLike(user, comment);
+        commentLikeDao.save(commentLike);
+
+        // 게시글의 좋아요 수 증가
+        comment.increaseLikeCount();
+    }
+
+    @Transactional
+    public void unlikeComment(Long userId, Long commentId) {
+        // 유저와 게시글 조회
+        User user = userUtils.findUserByUserId(userId);
+        Comment comment = commentDao.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
+
+        // 좋아요 취소 및 삭제
+        Optional<CommentLike> existingLike = commentLikeDao.findByUserAndComment(user, comment);
+        commentLikeDao.delete(existingLike.get());
+
+        // 게시글의 좋아요 수 감소
+        comment.decreaseLikeCount();
+    }
 }

@@ -35,7 +35,20 @@ public class LikeService {
         }
     }
 
-    // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
+    // TODO 2: 댓글이 해당 게시글에 속하는지 검증
+    public void validateCommentInPost(Long postId, Long commentId) {
+        Post post = postDao.findById(postId)
+                .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+
+        Comment comment = commentDao.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
+
+        if(!comment.getPost().getPostId().equals(postId)) {
+            throw new CustomException(COMMENT_IS_NOT_IN_POST);
+        }
+    }
+
+    // TODO 3: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
     public void validateAlreadyLikedPost(Long userId, Long postId) {
         User user = userUtils.findUserByUserId(userId);
         Post post = postDao.findById(postId)
@@ -48,7 +61,7 @@ public class LikeService {
         }
     }
 
-    // TODO 3: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
+    // TODO 4: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
     public void validateNotLikedPost(Long userId, Long postId) {
         User user = userUtils.findUserByUserId(userId);
         Post post = postDao.findById(postId)
@@ -61,7 +74,7 @@ public class LikeService {
         }
     }
 
-    // TODO 4: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
+    // TODO 5: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
     public void validateAlreadyLikedComment(Long userId, Long commentId) {
         User user = userUtils.findUserByUserId(userId);
         Comment comment = commentDao.findById(commentId)
@@ -74,7 +87,7 @@ public class LikeService {
         }
     }
 
-    // TODO 5: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
+    // TODO 6: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
     public void validateNotLikedComment(Long userId, Long commentId) {
         User user = userUtils.findUserByUserId(userId);
         Comment comment = commentDao.findById(commentId)

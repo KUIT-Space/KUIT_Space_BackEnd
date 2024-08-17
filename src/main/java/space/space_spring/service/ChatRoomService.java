@@ -22,6 +22,7 @@ import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ public class ChatRoomService {
                     // TODO 4: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
-                    LocalDateTime lastUpdateTime = LocalDateTime.now();
+                    LocalDateTime lastUpdateTime = cr.getLastModifiedAt();
                     HashMap<String, String> lastContent = new HashMap<>();
                     lastContent.put("text", "메시지를 전송해보세요");
 
@@ -91,7 +92,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest, chatRoomImgUrl));
 
         // TODO 4: user_chatRoom 매핑 정보 저장
-        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
+        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now(ZoneId.of("Asia/Seoul"))));
 
         // TODO 5: chatroom id 반환
         return CreateChatRoomResponse.of(chatRoom.getId());
@@ -140,7 +141,7 @@ public class ChatRoomService {
             }
 
             // TODO 3: 초대한 유저에 대한 userChatRoom 테이블 생성
-            userChatRoomDao.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now()));
+            userChatRoomDao.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now(ZoneId.of("Asia/Seoul"))));
         }
 
         return ChatSuccessResponse.of(true);

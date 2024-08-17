@@ -109,7 +109,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),
     COMMENT_NOT_EXIST(11004, HttpStatus.NOT_FOUND, "존재하지 않는 댓글 id입니다."),
     ALREADY_LIKED_THE_COMMENT(11005, HttpStatus.BAD_REQUEST, "해당 댓글에 이미 좋아요를 눌렀습니다."),
-    NOT_LIKED_THE_COMMENT_YET(11006, HttpStatus.BAD_REQUEST, "유저가 해당 댓글에 좋아요를 누르지 않았습니다.");
+    NOT_LIKED_THE_COMMENT_YET(11006, HttpStatus.BAD_REQUEST, "유저가 해당 댓글에 좋아요를 누르지 않았습니다."),
+    INVALID_REPLY_TARGET(11007, HttpStatus.BAD_REQUEST, "대댓글 일 때는 targetId는 null 일 수 없습니다."),
+    INVALID_COMMENT_TARGET(11008, HttpStatus.BAD_REQUEST, "댓글일 때는 targetId가 null이어야 합니다.");
 
     private final int code;
     private final HttpStatus status;

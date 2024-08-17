@@ -27,7 +27,7 @@ public class Comment extends BaseEntity{
     private String content;
 
     @Column(name = "comment_like")
-    private int like;
+    private int likeCount;
 
     @Column(name = "isReply")
     private boolean isReply;
@@ -42,5 +42,13 @@ public class Comment extends BaseEntity{
         this.content = content;
         this.isReply = isReply;
         this.targetId = targetId;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount--;
     }
 }

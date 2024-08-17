@@ -35,7 +35,7 @@ public class LikeService {
         }
     }
 
-    // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
+    // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
     public void validateAlreadyLikedPost(Long userId, Long postId) {
         User user = userUtils.findUserByUserId(userId);
         Post post = postDao.findById(postId)
@@ -45,12 +45,23 @@ public class LikeService {
 
         if(existingLike.isPresent()) {
             throw new CustomException(ALREADY_LIKED_THE_POST);
-        } else if(existingLike.isEmpty()) {
+        }
+    }
+
+    // TODO 3: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
+    public void validateNotLikedPost(Long userId, Long postId) {
+        User user = userUtils.findUserByUserId(userId);
+        Post post = postDao.findById(postId)
+                .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+
+        Optional<PostLike> existingLike = postLikeDao.findByUserAndPost(user, post);
+
+        if(existingLike.isEmpty()) {
             throw new CustomException(NOT_LIKED_THE_POST_YET);
         }
     }
 
-    // TODO 3: 유저가 해당 댓글에 좋아요를 눌렀는지 검증
+    // TODO 4: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
     public void validateAlreadyLikedComment(Long userId, Long commentId) {
         User user = userUtils.findUserByUserId(userId);
         Comment comment = commentDao.findById(commentId)
@@ -60,7 +71,18 @@ public class LikeService {
 
         if(existingLike.isPresent()) {
             throw new CustomException(ALREADY_LIKED_THE_COMMENT);
-        } else if(existingLike.isEmpty()) {
+        }
+    }
+
+    // TODO 5: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
+    public void validateNotLikedComment(Long userId, Long commentId) {
+        User user = userUtils.findUserByUserId(userId);
+        Comment comment = commentDao.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
+
+        Optional<CommentLike> existingLike = commentLikeDao.findByUserAndComment(user, comment);
+
+        if(existingLike.isEmpty()) {
             throw new CustomException(NOT_LIKED_THE_COMMENT_YET);
         }
     }

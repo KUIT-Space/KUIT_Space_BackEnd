@@ -16,7 +16,7 @@ public class CreateCommentRequest {
         private String content;
         private boolean isReply;
         @Nullable
-        private long targetId;
+        private Long targetId;
 
         @Builder
         public Comment toEntity(User user, Post post) {

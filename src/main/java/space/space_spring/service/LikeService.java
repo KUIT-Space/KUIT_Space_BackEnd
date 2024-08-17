@@ -59,9 +59,9 @@ public class LikeService {
         Optional<CommentLike> existingLike = commentLikeDao.findByUserAndComment(user, comment);
 
         if(existingLike.isPresent()) {
-            throw new CustomException(ALREADY_LIKED_THE_POST);
+            throw new CustomException(ALREADY_LIKED_THE_COMMENT);
         } else if(existingLike.isEmpty()) {
-            throw new CustomException(NOT_LIKED_THE_POST_YET);
+            throw new CustomException(NOT_LIKED_THE_COMMENT_YET);
         }
     }
 

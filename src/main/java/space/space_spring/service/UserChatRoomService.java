@@ -33,6 +33,7 @@ public class UserChatRoomService {
         chatRoomByChatRoomId.ifPresent(chatRoom -> {
             UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoom);
             targetChatRoom.setLastReadTime(LocalDateTime.now());
+            log.info("socket disconnect 시 마지막으로 읽은 시간" + targetChatRoom.getLastReadTime());
         });
     }
 }

@@ -68,16 +68,19 @@ public class ChatRoomService {
                     if (lastMsg != null) {
                         lastUpdateTime = lastMsg.getCreatedAt();
                         lastContent = lastMsg.getContent();
+                        log.info("마지막으로 업데이트된 시간: " + lastUpdateTime + " 마지막으로 읽은 내용 : " + lastContent);
                     }
 
                     // TODO 6: 각 채팅방의 안읽은 메시지 개수 계산
                     UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
                     LocalDateTime lastReadTime = userChatRoom.getLastReadTime().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                    log.info("마지막으로 읽은 시간: " + lastReadTime);
                     int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
                             cr.getId(),
                             lastReadTime,
                             lastUpdateTime
                     );
+                    log.info("안읽은 메시지 개수: " + unreadMsgCount);
 
                     return ChatRoomResponse.of(cr, lastContent, String.valueOf(lastUpdateTime), unreadMsgCount);
                 })

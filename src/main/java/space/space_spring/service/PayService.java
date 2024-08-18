@@ -15,6 +15,7 @@ import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -158,20 +159,24 @@ public class PayService {
         // TODO 2. payRequestId 로 PayRequest 엔티티 find
         PayRequest payRequestById = payDao.findPayRequestById(payRequestId);
 
-        // TODO 3. PayRequest로 해당 정산의 정보 get
+        // TODO 3. PayRequest의 생성일 형식 'yyyy년 mm월 dd일' 로 변경
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        String payCreatedDate = payRequestById.getCreatedAt().format(formatter);
+
+        // TODO 4. PayRequest로 해당 정산의 정보 get
         PayRequestInfoDto payRequestInfoDto = createPayRequestInfoDto(payRequestById);
 
-        // TODO 4. PayRequest의 PayRequestTarget find
+        // TODO 5. PayRequest의 PayRequestTarget find
         List<PayRequestTarget> payRequestTargetListByPayRequest = payDao.findPayRequestTargetListByPayRequest(payRequestById);
 
-        // TODO 5. 정산 타겟 유저 정보 get
+        // TODO 6. 정산 타겟 유저 정보 get
         List<PayTargetInfoDto> payTargetInfoDtoList = new ArrayList<>();
         for (PayRequestTarget payRequestTarget : payRequestTargetListByPayRequest) {
             PayTargetInfoDto payTargetInfoDto = createPayTargetInfoDto(payRequestTarget, spaceBySpaceId);
             payTargetInfoDtoList.add(payTargetInfoDto);
         }
 
-        // TODO 6. return 타입 구성
+        // TODO 7. return 타입 구성
         return new TotalPayInfoDto(
                 payRequestId,
                 payRequestById.getBankName(),
@@ -181,7 +186,8 @@ public class PayService {
                 payRequestInfoDto.getTotalTargetNum(),
                 payRequestInfoDto.getReceiveTargetNum(),
                 payTargetInfoDtoList,
-                payRequestById.isComplete()
+                payRequestById.isComplete(),
+                payCreatedDate
         );
     }
 

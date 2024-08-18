@@ -22,7 +22,6 @@ public class ReadCommentsResponse {
     private int commentCount;
     private int likeCount;
     private boolean isLike;
-    private boolean isReply;
     private Long targetId;
 
     public static ReadCommentsResponse of(Comment comment, UserSpace userSpace, boolean isLike, int commentCount) {
@@ -35,7 +34,6 @@ public class ReadCommentsResponse {
                 .commentCount(commentCount)
                 .likeCount(comment.getLikeCount())
                 .isLike(isLike)
-                .isReply(comment.isReply())
                 .targetId(comment.getTargetId())
                 .build();
     }

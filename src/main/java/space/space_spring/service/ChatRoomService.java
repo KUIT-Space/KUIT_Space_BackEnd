@@ -14,8 +14,6 @@ import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
 import space.space_spring.entity.document.ChatMessage;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_EXIST;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
@@ -27,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @Slf4j
@@ -137,7 +137,7 @@ public class ChatRoomService {
 
             // TODO 2: 유저가 이미 채팅방에 초대되어있는지 검증
             if (isUserInChatRoom(userByUserId, chatRoomByChatRoomId)) {
-                return ChatSuccessResponse.of(false);
+                throw new CustomException(USER_IS_ALREADY_IN_CHAT_ROOM);
             }
 
             // TODO 3: 초대한 유저에 대한 userChatRoom 테이블 생성

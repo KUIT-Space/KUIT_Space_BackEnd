@@ -97,7 +97,7 @@ public class RoomDto {
         if(liveKitRoomList==null||liveKitRoomList.isEmpty()){return;}
         boolean find = false;
         for(LivekitModels.Room resRoom : liveKitRoomList){
-            if(EqualRoomIdByNameTag(resRoom.getName(),this.id)){
+            if(String.valueOf(this.id).equals( resRoom.getName() )){
                 this.numParticipants = resRoom.getNumParticipants();
                 this.sid = resRoom.getSid();
                 this.metadata = resRoom.getMetadata();

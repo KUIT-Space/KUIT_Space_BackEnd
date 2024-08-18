@@ -15,6 +15,8 @@ import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -181,7 +183,8 @@ public class PayService {
                 payRequestInfoDto.getTotalTargetNum(),
                 payRequestInfoDto.getReceiveTargetNum(),
                 payTargetInfoDtoList,
-                payRequestById.isComplete()
+                payRequestById.isComplete(),
+                payRequestById.getCreatedAt().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()
         );
     }
 

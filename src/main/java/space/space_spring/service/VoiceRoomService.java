@@ -20,6 +20,9 @@ import space.space_spring.util.user.UserUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
@@ -103,6 +106,96 @@ public class VoiceRoomService {
         //return null;
     }
 
+    /**
+    // room 정보 가져오기 병렬적용 버전
+    */
+    public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoListConcurrency(long spaceId,GetVoiceRoomList.Request req){
+        Integer limit = req.getLimit();
+        boolean showParticipant =req.isShowParticipant();
+
+
+        //해당 space VoiceRoom 가져오기 (VoiceRoom List)
+        //Todo 가져오기에 limit 적용
+        List<VoiceRoom> voiceRoomDataList = findBySpaceId(spaceId);
+        List<RoomDto> roomDtoList = RoomDto.convertRoomDtoListByVoiceRoom(voiceRoomDataList);
+        //VoiceRoom과 Room mapping
+        //#1 Response 받아오기
+        List<LivekitModels.Room> roomResponsesTemp = liveKitUtils.getRoomList();
+
+        //불변 list로 변환
+        List<LivekitModels.Room> roomResponses = Collections.unmodifiableList(roomResponsesTemp);
+        /**
+         * 병렬 처리 적용대상 1
+         */
+        //#2 Room과 mapping 시키기
+        for(RoomDto roomDto : roomDtoList){
+            roomDto.setActiveRoom(roomResponses);
+        }
+        List<CompletableFuture<RoomDto>> roomDtoFutureList = roomDtoList.stream()
+                .map(r->CompletableFuture.supplyAsync(()->  setActiveRoom(r,roomResponses))
+                        .thenCompose(activeRoomDto->CompletableFuture
+                                .supplyAsync(
+                                        ()-> showParticipant ? setActiveParticipant.apply(activeRoomDto):activeRoomDto
+
+                                        )
+                        )
+                ).collect(Collectors.toList());
+
+        // 모든 Future의 완료를 기다림
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(
+                roomDtoFutureList.toArray(new CompletableFuture[0]));
+
+        // 결과 수집 및 출력
+        allOf.thenRun(() -> {
+            List<RoomDto> results = roomDtoFutureList.stream()
+                    .map(CompletableFuture::join)
+                    .collect(Collectors.toList());
+            System.out.println("Processed string lengths: " + results);
+        }).join();
+        //ToDo Response로 convert
+        //#1 Active/inActive 분리
+
+        //#2 convert
+        if(limit==null||limit<=0) {
+            return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList);
+        }else{
+            return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList,limit);
+        }
+        //return null;
+    }
+
+    private static RoomDto setActiveRoom(RoomDto roomDto,List<LivekitModels.Room> livekitRoomResponses){
+        roomDto.setActiveRoom(livekitRoomResponses);
+        return roomDto;
+    }
+
+    private Function<RoomDto,RoomDto> setActiveParticipant= roomDto->{
+
+            if(roomDto.getNumParticipants()==0){
+                //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+                System.out.print("\n[DEBUG]Participant Number : 0\n");
+                roomDto.setParticipantDTOList(Collections.emptyList());
+
+            }
+            //participantDto List 가져오기
+            List<ParticipantDto> participantDtoList = this.getParticipantDtoListById(roomDto.getId());
+//                for(ParticipantDto participantDto: participantDtoList){
+//                    //Todo profileIamge 집어넣기
+//                    participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
+//                }
+            //RoomDto에 값 집어넣기
+            //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+            if(participantDtoList==null||participantDtoList.isEmpty()){
+                System.out.print("\n\n[DEBUG]participant response is empty or null"+participantDtoList.toString()+
+                        "participant number is \n\n");
+                roomDto.setParticipantDTOList(Collections.emptyList());
+            }else {
+                roomDto.setParticipantDTOList(participantDtoList);
+            }
+        return roomDto;
+
+    };
+
     public boolean updateVoiceRoom(List<PatchVoiceRoom.UpdateRoom> updateRoomList){
 
         //Todo 입력된 order가 유효한지 확인 필요
@@ -148,6 +241,24 @@ public class VoiceRoomService {
         }
         return participantDtoList;
     }
+//
+//    private static List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
+//
+//
+//        Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
+//        List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));
+//        if(participantDtoList==null||participantDtoList.isEmpty()){
+//            return Collections.emptyList();
+//        }
+//        for(ParticipantDto participantDto: participantDtoList){
+//            //profileIamge 집어넣기
+//            participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
+//            //userSpaceId 집어 넣기
+//            User user = userDao.findUserByUserId(participantDto.getId());
+//            participantDto.setUserSpaceId(userSpaceDao.findUserSpaceByUserAndSpace(user,space).get().getUserSpaceId());
+//        }
+//        return participantDtoList;
+//    }
 
     public List<GetParticipantList.ParticipantInfo> getParticipantInfoListById(long voiceRoomId){
         return GetParticipantList.ParticipantInfo.convertParticipantDtoList(

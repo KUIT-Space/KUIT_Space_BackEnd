@@ -56,7 +56,7 @@ public class ChatRoomService {
                     // TODO 4: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
-                    LocalDateTime lastUpdateTime = cr.getLastModifiedAt();
+                    LocalDateTime lastUpdateTime = cr.getCreatedAt().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
                     HashMap<String, String> lastContent = new HashMap<>();
                     lastContent.put("text", "메시지를 전송해보세요");
 
@@ -67,7 +67,7 @@ public class ChatRoomService {
 
                     // TODO 5: 각 채팅방의 안읽은 메시지 개수 계산
                     UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
-                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime();
+                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
                     int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
                             cr.getId(),
                             lastReadTime,
@@ -92,7 +92,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest, chatRoomImgUrl));
 
         // TODO 4: user_chatRoom 매핑 정보 저장
-        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now(ZoneId.of("Asia/Seoul"))));
+        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
 
         // TODO 5: chatroom id 반환
         return CreateChatRoomResponse.of(chatRoom.getId());
@@ -141,7 +141,7 @@ public class ChatRoomService {
             }
 
             // TODO 3: 초대한 유저에 대한 userChatRoom 테이블 생성
-            userChatRoomDao.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now(ZoneId.of("Asia/Seoul"))));
+            userChatRoomDao.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now()));
         }
 
         return ChatSuccessResponse.of(true);

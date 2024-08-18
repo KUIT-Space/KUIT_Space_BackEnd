@@ -3,6 +3,7 @@ package space.space_spring.dto.pay.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,6 @@ public class TotalPayInfoDto {
 
     private boolean isComplete;
 
-    private String createdAt;           // 정산 생성일 정보를 yyyy년 mm월 dd일 형식으로 변화한 문자열
+    private LocalDateTime createdAt;           // 정산 생성일 정보
 
 }

@@ -21,6 +21,7 @@ import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -75,15 +76,11 @@ public class SpaceService {
         // TODO 3. 해당 스페이스의 멤버 수 get
         int memberNum = userSpaceDao.calculateSpaceMemberNum(spaceBySpaceId);
 
-        // TODO 4. 스페이스 생성일 형식 'yyyy년 mm월 dd일' 로 변경
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
-        String spaceCreatedDate = getSpaceJoinDto.getCreatedAt().format(formatter);
-
-        // TODO 5. return
+        // TODO 4. return
         return new GetSpaceJoinDto.Response(
                 getSpaceJoinDto.getSpaceProfileImg(),
                 getSpaceJoinDto.getSpaceName(),
-                spaceCreatedDate,
+                spaceBySpaceId.getCreatedAt().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime(),
                 memberNum
         );
     }

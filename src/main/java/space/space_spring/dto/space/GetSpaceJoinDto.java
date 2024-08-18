@@ -22,7 +22,7 @@ public class GetSpaceJoinDto {
 
         private String spaceName;
 
-        private String createdAt;           // 스페이스 개설일의 정보를 yyyy년 mm월 dd일 형식으로 변환한 문자열
+        private LocalDateTime createdAt;
 
         private int memberNum;
     }

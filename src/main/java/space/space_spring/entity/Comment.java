@@ -29,8 +29,6 @@ public class Comment extends BaseEntity{
     @Column(name = "comment_like")
     private int likeCount;
 
-    @Column(name = "isReply")
-    private boolean isReply;
 
     @Column(name = "comment_target_id")
     private Long targetId;
@@ -40,7 +38,6 @@ public class Comment extends BaseEntity{
         this.user = user;
         this.post = post;
         this.content = content;
-        this.isReply = isReply;
         this.targetId = targetId;
     }
 

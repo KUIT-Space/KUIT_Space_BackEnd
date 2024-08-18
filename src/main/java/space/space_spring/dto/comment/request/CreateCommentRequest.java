@@ -1,6 +1,7 @@
 package space.space_spring.dto.comment.request;
 
 import com.mongodb.lang.Nullable;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import space.space_spring.entity.Comment;
 import space.space_spring.entity.Post;
@@ -13,10 +14,9 @@ public class CreateCommentRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
+        @NotBlank
         private String content;
-        private boolean isReply;
-        @Nullable
-        private Long targetId;
+        private Long targetId = null;
 
         @Builder
         public Comment toEntity(User user, Post post) {
@@ -24,7 +24,6 @@ public class CreateCommentRequest {
                     .user(user)
                     .post(post)
                     .content(content)
-                    .isReply(isReply)
                     .targetId(targetId)
                     .build();
         }

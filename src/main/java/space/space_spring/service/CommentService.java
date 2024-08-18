@@ -40,6 +40,18 @@ public class CommentService {
         }
     }
 
+    // TODO 2: 댓글 유효성 검사
+    public void validateCommentRequest(CreateCommentRequest.Request request, Long postId) {
+        if (request.getTargetId() != null) {
+            Comment targetComment = commentDao.findById(request.getTargetId())
+                    .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
+
+            if(!targetComment.getPost().getPostId().equals(postId)) {
+                throw new CustomException(COMMENT_IS_NOT_IN_POST);
+            }
+        }
+    }
+
     @Transactional
     public List<ReadCommentsResponse> getCommentsByPost(Long postId, Long userId) {
         // TODO 1: postId에 해당하는 post find
@@ -63,13 +75,8 @@ public class CommentService {
 
     @Transactional
     public Long createComment(Long userId, Long postId, CreateCommentRequest.Request createCommentRequest) {
-        // TODO 1: isReply와 targetId 유효성 검사
-        if(createCommentRequest.isReply() && createCommentRequest.getTargetId() == null) {
-            throw new CustomException(INVALID_REPLY_TARGET);
-        }
-        if(!createCommentRequest.isReply() && createCommentRequest.getTargetId() != null) {
-            throw new CustomException(INVALID_COMMENT_TARGET);
-        }
+        // TODO 1: 댓글 유효성 검사
+        validateCommentRequest(createCommentRequest, postId);
 
         // TODO 1: userId에 해당하는 user find
         User user = userUtils.findUserByUserId(userId);

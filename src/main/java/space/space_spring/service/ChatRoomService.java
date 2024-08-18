@@ -49,11 +49,16 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 return
-        List<ChatRoom> result = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
+        List<ChatRoom> chatRoomList = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
 
-        return ReadChatRoomResponse.of(result.stream()
+        // TODO 4: chatRoom 리스트에서 active만 find
+        List<ChatRoom> activeChatRooms = chatRoomList.stream()
+                .filter(userChatRoom -> "ACTIVE".equals(userChatRoom.getStatus()))
+                .toList();
+
+        return ReadChatRoomResponse.of(activeChatRooms.stream()
                 .map(cr -> {
-                    // TODO 4: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
+                    // TODO 5: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
                     LocalDateTime lastUpdateTime = cr.getCreatedAt().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
@@ -65,7 +70,7 @@ public class ChatRoomService {
                         lastContent = lastMsg.getContent();
                     }
 
-                    // TODO 5: 각 채팅방의 안읽은 메시지 개수 계산
+                    // TODO 6: 각 채팅방의 안읽은 메시지 개수 계산
                     UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
                     LocalDateTime lastReadTime = userChatRoom.getLastReadTime().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
                     int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
@@ -112,10 +117,15 @@ public class ChatRoomService {
         // TODO 3: 해당 chatRoom의 userChatRoom 리스트 find
         List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoom(chatRoomById);
 
-        userChatRoomList.forEach(userChatRoom -> {
+        // TODO 4: userChatRoom 리스트에서 active만 find
+        List<UserChatRoom> activeUserChatRooms = userChatRoomList.stream()
+                .filter(userChatRoom -> "ACTIVE".equals(userChatRoom.getStatus()))
+                .toList();
+
+        activeUserChatRooms.forEach(userChatRoom -> {
             User user = userChatRoom.getUser();
 
-            // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
+            // TODO 5: 스페이스 프로필 이미지 get 위해 userSpace find
             UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById)
                     .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
@@ -170,6 +180,9 @@ public class ChatRoomService {
         // TODO 2: 해당 userChatRoom inactive로 변경
         userChatRoom.updateInactive();
 
+        // TODO 3: DB에 변경 사항 저장
+        userChatRoomDao.save(userChatRoom);
+
         return ChatSuccessResponse.of(true);
     }
 
@@ -178,7 +191,11 @@ public class ChatRoomService {
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
+        // TODO 2: 해당 chatRoom inactive로 변경
         chatRoomByChatRoomId.updateInactive();
+
+        // TODO 3: DB에 변경 사항 저장
+        chatRoomDao.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
     }

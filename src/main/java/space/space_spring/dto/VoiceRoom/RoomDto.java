@@ -32,8 +32,9 @@ public class RoomDto {
                 .map(ParticipantDto::convertParticipant)
                 .collect(Collectors.toList());
     }
-    public void setParticipantDTOList(List<ParticipantDto> participantDtoList){
+    public RoomDto setParticipantDTOList(List<ParticipantDto> participantDtoList){
         this.participantDTOList =  participantDtoList;
+        return this;
     }
 
     public static RoomDto convertRoom(LivekitModels.Room room){
@@ -108,6 +109,7 @@ public class RoomDto {
 
         }
         if(!find){this.numParticipants=0;}
+        //return this;
     }
     private static boolean EqualRoomIdByNameTag(String roomName,long Id){
         return roomName.endsWith("#"+String.valueOf(Id));

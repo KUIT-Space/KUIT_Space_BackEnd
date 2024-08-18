@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.dto.oAuth.KakaoInfo;
+import space.space_spring.dto.oAuth.OAuthLoginResponse;
 import space.space_spring.entity.User;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.OAuthService;
@@ -35,7 +36,7 @@ public class OAuthController {
      * 유저가 카카오 로그인 동의 시 호출될 콜백 함수
      */
     @GetMapping("/callback/kakao")
-    public BaseResponse<String> kakaoCallback(@RequestParam(name = "code") String code, HttpServletResponse response) {
+    public BaseResponse<OAuthLoginResponse> kakaoCallback(@RequestParam(name = "code") String code, HttpServletResponse response) {
 
         // TODO 1. 인가코드 받기
         // 카카오 인증 서버는 서비스 서버의 Redirect URI로 인가 코드를 전달함
@@ -70,6 +71,6 @@ public class OAuthController {
         response.setHeader("Authorization", "Bearer " + jwtOAuthLogin);
         log.info("jwtOAuthLogin = {}", jwtOAuthLogin);
 
-        return new BaseResponse<>("카카오 로그인 성공");
+        return new BaseResponse<>(new OAuthLoginResponse(userByOAuthInfo.getUserId()));
     }
 }

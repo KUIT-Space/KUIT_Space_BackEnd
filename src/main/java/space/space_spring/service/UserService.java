@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.user.GetUserProfileListDto;
+import space.space_spring.dto.user.PostLoginDto;
 import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
@@ -59,19 +60,22 @@ public class UserService {
     }
 
     @Transactional
-    public String login(PostUserLoginRequest postUserLoginRequest) {
+    public PostLoginDto login(PostLoginDto.Request request) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
-        User userByEmail = userUtils.findUserByEmail(postUserLoginRequest.getEmail(), LOCAL);
+        User userByEmail = userUtils.findUserByEmail(request.getEmail(), LOCAL);
         log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
 
         // TODO 2. 비밀번호 일치 여부 확인
-        validatePassword(userByEmail, postUserLoginRequest.getPassword());
+        validatePassword(userByEmail, request.getPassword());
 
         // TODO 3. JWT 발급
         String jwtLogin = jwtLoginProvider.generateToken(userByEmail);
         log.info("jwtLogin: {}", jwtLogin);
 
-        return jwtLogin;
+        return new PostLoginDto(
+                jwtLogin,
+                userByEmail.getUserId()
+        );
     }
 
     private void validatePassword(User userByEmail, String password) {

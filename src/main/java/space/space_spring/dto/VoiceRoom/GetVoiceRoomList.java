@@ -36,6 +36,7 @@ public class GetVoiceRoomList {
         private int numParticipant;
         private int order;
         private List<GetParticipantList.ParticipantInfo> participantInfoList;
+        private String metadate;
 
         public static VoiceRoomInfo convertRoomDto(RoomDto roomDto){
             if(roomDto==null){return null;}
@@ -45,6 +46,7 @@ public class GetVoiceRoomList {
                     .Active(roomDto.getNumParticipants()!=0)
                     .numParticipant(roomDto.getNumParticipants())
                     .order(roomDto.getOrder())
+                    .metadate(roomDto.getMetadata())
                     .participantInfoList(
                             GetParticipantList.ParticipantInfo.convertParticipantDtoList(roomDto.getParticipantDTOList())
                     )

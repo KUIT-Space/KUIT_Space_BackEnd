@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.dto.user.GetUserProfileListDto;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.dto.user.PostLoginDto;
 import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
 import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
@@ -49,15 +50,15 @@ public class UserController {
      * 로그인
      */
     @PostMapping("/login")
-    public BaseResponse<String> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult, HttpServletResponse response) {
+    public BaseResponse<PostLoginDto.Response> login(@Validated @RequestBody PostLoginDto.Request request, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
         }
 
-        String jwtLogin = userService.login(postUserLoginRequest);
-        response.setHeader("Authorization", "Bearer " + jwtLogin);
+        PostLoginDto login = userService.login(request);
+        response.setHeader("Authorization", "Bearer " + login.getJwt());
 
-        return new BaseResponse<>("로컬 로그인 성공");
+        return new BaseResponse<>(new PostLoginDto.Response(login.getUserId()));
     }
 
     /**

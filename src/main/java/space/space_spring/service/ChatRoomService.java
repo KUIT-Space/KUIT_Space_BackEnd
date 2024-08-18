@@ -119,7 +119,7 @@ public class ChatRoomService {
             UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById)
                     .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
-            userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), userSpace.getUserProfileImg(), user.getSignupType()));
+            userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), userSpace.getUserProfileImg(), userSpace.getUserSpaceAuth()));
         });
 
         return ReadChatRoomMemberResponse.of(userList);

@@ -36,5 +36,8 @@ public abstract class BaseEntity {
         onCreate();
     }
 
+    public void updateActive() { this.status = "ACTIVE"; }
+
+
     public void updateInactive() { this.status = "INACTIVE"; }
 }

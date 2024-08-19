@@ -237,6 +237,11 @@ public class VoiceRoomService {
 
     public void deleteVoiceRoom(long voiceRoomId){
         //Todo Base Entity에 일괄적으로 soft Delete를 적용하는 방법을 다같이 정하는 것이 좋아보임
+        VoiceRoom voiceRoom = voiceRoomRepository.findById(voiceRoomId);
+        voiceRoom.updateInactive();
+        voiceRoomRepository.save(voiceRoom);
+
+
     }
 
     private String findProfileImageByUserId(Long userSpaceId){

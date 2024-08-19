@@ -80,35 +80,7 @@ public class completableFutureTest {
                         .thenCompose(length -> CompletableFuture.supplyAsync(()->length <= 3 ? length * 10 : length)))
                 .collect(Collectors.toList());
     }
-    @Mock
-    private VoiceRoomRepository repository;
-    @Mock
-    private SpaceUtils spaceUtils;
-    @Mock
-    private LiveKitUtils liveKitUtils;
-    @ParameterizedTest
-    @ValueSource(booleans =  {true, false})
-    public void getRoomListTest(boolean showParticipant){
-        long spaceId = 1;
-        Space space1 = new Space();
-        space1.saveSpace("space1","asdf");
-        VoiceRoom voiceRoom1= VoiceRoom.createVoiceRoom("room1",1,space1);
-        VoiceRoom voiceRoom2= VoiceRoom.createVoiceRoom("room2",2,space1);
-        VoiceRoom voiceRoom3= VoiceRoom.createVoiceRoom("room3",3,space1);
-        List<VoiceRoom> voiceRoomList= List.of(voiceRoom1,voiceRoom2,voiceRoom3);
-        List<LivekitModels.Room> roomList = new ArrayList<LivekitModels.Room>();
-        //roomList.add(LivekitModels.Room.newBuilder())
-        //private static List<VoiceRoom> findBySpace(long userID){return null;}
-        when(spaceUtils.findSpaceBySpaceId(spaceId)).thenReturn(space1);
-        when(repository.findBySpace(spaceUtils.findSpaceBySpaceId(spaceId))).thenReturn(voiceRoomList);
-        //when(liveKitUtils.getRoomList()).thenReturn()
 
-        List<VoiceRoom> voiceRoomDataList = repository.findBySpace(spaceUtils.findSpaceBySpaceId(spaceId));
-        List<RoomDto> roomDtoList = RoomDto.convertRoomDtoListByVoiceRoom(voiceRoomDataList);
-
-
-
-    }
 
 
 

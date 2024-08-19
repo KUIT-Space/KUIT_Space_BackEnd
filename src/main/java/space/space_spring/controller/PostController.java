@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import org.springframework.web.multipart.MultipartFile;
 
+import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostDetailResponse;
 import space.space_spring.dto.post.response.ReadPostsResponse;
@@ -33,6 +34,7 @@ public class PostController {
 
     // 게시글 조회
     @GetMapping("/board")
+    @CheckUserSpace(required = false)
     public BaseResponse<List<ReadPostsResponse>> getBoard(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
@@ -49,6 +51,7 @@ public class PostController {
 
     // 게시글 작성
     @PostMapping("/board/post")
+    @CheckUserSpace(required = false)
     public BaseResponse<String> createPost(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
@@ -70,6 +73,7 @@ public class PostController {
 
     // 게시글 상세 조회
     @GetMapping("/board/post/{postId}")
+    @CheckUserSpace(required = false)
     public BaseResponse<ReadPostDetailResponse> getPost(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,

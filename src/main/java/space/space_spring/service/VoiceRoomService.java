@@ -3,6 +3,7 @@ package space.space_spring.service;
 import livekit.LivekitModels;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
@@ -37,6 +38,7 @@ public class VoiceRoomService {
     private final LiveKitUtils liveKitUtils;
     private final UserDao userDao;
     private final UserSpaceDao userSpaceDao;
+    private final TaskExecutor taskExecutor;
 
     public Long createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
         Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
@@ -106,9 +108,12 @@ public class VoiceRoomService {
         //return null;
     }
 
+
+
+
     /**
-    // room 정보 가져오기 병렬적용 버전
-    */
+     // room 정보 가져오기 병렬적용 Ver - 2
+     */
     public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoListConcurrency(long spaceId,GetVoiceRoomList.Request req){
         Integer limit = req.getLimit();
         boolean showParticipant =req.isShowParticipant();
@@ -131,27 +136,16 @@ public class VoiceRoomService {
         for(RoomDto roomDto : roomDtoList){
             roomDto.setActiveRoom(roomResponses);
         }
-        List<CompletableFuture<RoomDto>> roomDtoFutureList = roomDtoList.stream()
-                .map(r->CompletableFuture.supplyAsync(()->  setActiveRoom(r,roomResponses))
-                        .thenCompose(activeRoomDto->CompletableFuture
-                                .supplyAsync(
-                                        ()-> showParticipant ? setActiveParticipant.apply(activeRoomDto):activeRoomDto
+        List<CompletableFuture<Void>> roomDtoFutureList = roomDtoList.stream()
+                .map(r->CompletableFuture.runAsync(()->setRoomDto(r,roomResponses,req),taskExecutor)).collect(Collectors.toList());
 
-                                        )
-                        )
-                ).collect(Collectors.toList());
 
         // 모든 Future의 완료를 기다림
         CompletableFuture<Void> allOf = CompletableFuture.allOf(
                 roomDtoFutureList.toArray(new CompletableFuture[0]));
 
         // 결과 수집 및 출력
-        allOf.thenRun(() -> {
-            List<RoomDto> results = roomDtoFutureList.stream()
-                    .map(CompletableFuture::join)
-                    .collect(Collectors.toList());
-            System.out.println("Processed string lengths: " + results);
-        }).join();
+        allOf.join();
         //ToDo Response로 convert
         //#1 Active/inActive 분리
 
@@ -164,10 +158,35 @@ public class VoiceRoomService {
         //return null;
     }
 
-    private static RoomDto setActiveRoom(RoomDto roomDto,List<LivekitModels.Room> livekitRoomResponses){
-        roomDto.setActiveRoom(livekitRoomResponses);
-        return roomDto;
+    private void setRoomDto(RoomDto roomDto,List<LivekitModels.Room> roomResponses,GetVoiceRoomList.Request req){
+        roomDto.setActiveRoom(roomResponses);
+
+        if(!req.isShowParticipant()){
+            return;
+        }
+
+        if(roomDto.getNumParticipants()==0){
+            //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+            System.out.print("\n[DEBUG]Participant Number : 0\n");
+            roomDto.setParticipantDTOList(Collections.emptyList());
+            return;
+        }
+        //participantDto List 가져오기
+        List<ParticipantDto> participantDtoList = getParticipantDtoListById(roomDto.getId());
+
+        //RoomDto에 값 집어넣기
+        //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+        if(participantDtoList==null||participantDtoList.isEmpty()){
+            System.out.print("\n\n[DEBUG]participant response is empty or null"+participantDtoList.toString()+
+                    "participant number is \n\n");
+            roomDto.setParticipantDTOList(Collections.emptyList());
+        }else {
+            roomDto.setParticipantDTOList(participantDtoList);
+        }
+
     }
+
+
 
     private Function<RoomDto,RoomDto> setActiveParticipant= roomDto->{
 

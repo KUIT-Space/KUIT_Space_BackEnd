@@ -54,7 +54,8 @@ public class S3Uploader {
         metadata.setContentLength(file.getSize());
 
         try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, uniqueFilename, inputStream, metadata));
+            //amazonS3Client.putObject(new PutObjectRequest(bucket, uniqueFilename, inputStream, metadata));
+            putS3( uniqueFilename, inputStream, metadata);
             log.info("File uploaded successfully: {}", uniqueFilename);
             return amazonS3Client.getUrl(bucket, uniqueFilename).toString();
         } catch (IOException e) {
@@ -80,7 +81,12 @@ public class S3Uploader {
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
-    // 이미지 지우기
+    private String putS3(String fileName,InputStream uploadFile, ObjectMetadata metadata) {
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile,metadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+        // 이미지 지우기
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
             log.info("File delete success");

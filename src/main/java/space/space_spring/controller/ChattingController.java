@@ -6,6 +6,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
@@ -47,15 +49,15 @@ public class ChattingController {
     }
 
     // socket disconnect 시 호출
-    @EventListener
-    @CheckUserSpace(required = false)
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-
-        Long userId = (Long) sessionAttributes.get("userId");
-        Long chatRoomId = (Long) sessionAttributes.get("chatRoomId");
-
-        userChatRoomService.saveLastReadTime(userId, chatRoomId);
-    }
+//    @EventListener
+//    @CheckUserSpace(required = false)
+//    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//        Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
+//
+//        Long userId = (Long) sessionAttributes.get("userId");
+//        Long chatRoomId = (Long) sessionAttributes.get("chatRoomId");
+//        log.info("userId: " + userId + " chatRoomid: " + chatRoomId);
+//        userChatRoomService.saveLastReadTime(userId, chatRoomId);
+//    }
 }

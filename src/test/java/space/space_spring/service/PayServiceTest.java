@@ -77,7 +77,7 @@ class PayServiceTest {
         testSpace.saveSpace("testSpace", "test_profile_img_url");
 
         testPayRequest_user1 = new PayRequest();
-        testPayRequest_user1.savePayRequest(user1, testSpace, 30000, "우리은행", "111-111-111", false);
+        testPayRequest_user1.savePayRequest(user1, testSpace, 30000, "우리은행", "111-111-111", 0, false);
 
         testPayRequestTarget_user2 = new PayRequestTarget();
         testPayRequestTarget_user2.savePayRequestTarget(testPayRequest_user1, user2.getUserId(), 10000, false);
@@ -89,7 +89,7 @@ class PayServiceTest {
         testPayRequestTarget_user4.savePayRequestTarget(testPayRequest_user1, user4.getUserId(), 10000, true);
 
         testPayRequest_user2 = new PayRequest();
-        testPayRequest_user2.savePayRequest(user2, testSpace, 10000, "국민은행", "111-111-111", true);
+        testPayRequest_user2.savePayRequest(user2, testSpace, 10000, "국민은행", "111-111-111", 0, true);
 
         testPayRequestTarget_user1 = new PayRequestTarget();
         testPayRequestTarget_user1.savePayRequestTarget(testPayRequest_user2, user1.getUserId(), 10000, true);
@@ -194,7 +194,7 @@ class PayServiceTest {
         );
 
         PayRequest testPayRequest = new PayRequest();
-        testPayRequest.savePayRequest(user5, testSpace, testDto.getTotalAmount(), testDto.getBankName(), testDto.getBankAccountNum(), false);
+        testPayRequest.savePayRequest(user5, testSpace, testDto.getTotalAmount(), testDto.getBankName(), testDto.getBankAccountNum(), 0, false);
 
         PayRequestTarget testPayRequestTarget_1 = new PayRequestTarget();
         testPayRequestTarget_1.savePayRequestTarget(testPayRequest, user6.getUserId(), 10000, false);
@@ -203,12 +203,12 @@ class PayServiceTest {
 
         when(userUtils.findUserByUserId(user5.getUserId())).thenReturn(user5);
         when(spaceUtils.findSpaceBySpaceId(testSpace.getSpaceId())).thenReturn(testSpace);
-        when(payDao.createPayRequest(user5, testSpace, testDto.getTotalAmount(), testDto.getBankName(), testDto.getBankAccountNum(), false)).thenReturn(testPayRequest);
-        when(payDao.createPayRequestTarget(testPayRequest, testTargetInfo1.getTargetUserId(), testTargetInfo1.getRequestAmount(), false)).thenReturn(testPayRequestTarget_1);
+        when(payDao.createPayRequest(user5, testSpace, testDto.getTotalAmount(), testDto.getBankName(), testDto.getBankAccountNum(), 0, false)).thenReturn(testPayRequest);
+        when(payDao.createPayRequestTarget(testPayRequest, testTargetInfo1.getTargetUserId(), testTargetInfo1.getRequestAmount(),  false)).thenReturn(testPayRequestTarget_1);
         when(payDao.createPayRequestTarget(testPayRequest, testTargetInfo2.getTargetUserId(), testTargetInfo2.getRequestAmount(), false)).thenReturn(testPayRequestTarget_2);
 
         //when
-        List<PayRequestTarget> testPayRequestTargetList = payService.createPay(user5.getUserId(), testSpace.getSpaceId(), testDto);
+        List<PayRequestTarget> testPayRequestTargetList = payService.createPay(user5.getUserId(), testSpace.getSpaceId(), testDto, 0);
 
         //then
         PayRequestTarget result_1 = testPayRequestTargetList.get(0);

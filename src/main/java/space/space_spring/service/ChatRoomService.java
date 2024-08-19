@@ -67,7 +67,10 @@ public class ChatRoomService {
                     // TODO 6: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
-                    LocalDateTime lastUpdateTime = cr.getCreatedAt().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                    LocalDateTime lastUpdateTime = cr.getCreatedAt()
+                            .atZone(ZoneId.of("UTC")) // UTC로 해석
+                            .withZoneSameInstant(ZoneId.of("Asia/Seoul")) // 서울 시간대로 변환
+                            .toLocalDateTime(); // LocalDateTime으로 변환
                     HashMap<String, String> lastContent = new HashMap<>();
                     lastContent.put("text", "메시지를 전송해보세요");
 

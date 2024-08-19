@@ -128,11 +128,11 @@ public class PayController {
         // => 추후에 은행 이름들의 목록을 enum으로 만들어서 관리 & 유효성 검사 하도록 ??
 
         // TODO 5. 정산 요청 금액의 유효성 검사
-        // return 값 : 나머지 금액
-        int remainingAmount = validatePayAmount(postPayCreateRequest);
+        // return 값 : 미정산 금액
+        int unRequestedAmount = validatePayAmount(postPayCreateRequest);
 
         // TODO 6. 정산 생성
-        payService.createPay(userId, spaceId, postPayCreateRequest, remainingAmount);
+        payService.createPay(userId, spaceId, postPayCreateRequest, unRequestedAmount);
 
         return new BaseResponse<>("정산 생성 성공");
     }
@@ -144,24 +144,24 @@ public class PayController {
         // 2-1. 만약 일치한다면 유효성 검사 통과
         // 2-2. 만약 일치하지 않는다면, totalAmount와 requestAmount들의 합의 차이가 n-1보다 작거나 같은지 확인
 
-        // 3-1, 만약 n-1보다 작거나 같은 경우, 유효성 검사 통과 ('나머지 값' 확인)
+        // 3-1, 만약 n-1보다 작거나 같은 경우, 유효성 검사 통과 ('미정산 금액' 확인)
         // 3-2, 만약 n-1보다 클 경우, 유효성 검사 통과 X (예외 처리)
 
         int totalRequestAmount = calculateSumOfRequestAmount(postPayCreateRequest.getTargetInfoList());
         int totalAmount = postPayCreateRequest.getTotalAmount();
         int targetSize = postPayCreateRequest.getTargetInfoList().size();
-        int remainingAmount = 0;
+        int unRequestedAmount = 0;
 
         if (totalRequestAmount != totalAmount) {
             if ((totalAmount - totalRequestAmount) <= (targetSize - 1)) {
-                remainingAmount = totalAmount - totalRequestAmount;
-                return remainingAmount;
+                unRequestedAmount = totalAmount - totalRequestAmount;
+                return unRequestedAmount;
             }
 
             throw new CustomException(INVALID_PAY_AMOUNT);
         }
 
-        return remainingAmount;
+        return unRequestedAmount;
     }
 
     private int calculateSumOfRequestAmount(List<PostPayCreateRequest.TargetInfo> targetInfoList) {

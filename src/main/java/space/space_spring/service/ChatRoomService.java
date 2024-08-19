@@ -78,7 +78,11 @@ public class ChatRoomService {
                     }
 
                     // TODO 7: 각 채팅방의 안읽은 메시지 개수 계산
-                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime()
+                            .atZone(ZoneId.of("UTC")) // UTC로 해석
+                            .withZoneSameInstant(ZoneId.of("Asia/Seoul")) // 서울 시간대로 변환
+                            .toLocalDateTime(); // LocalDateTime으로 변환
+
                     log.info("마지막으로 읽은 시간: " + lastReadTime);
                     int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
                             cr.getId(),

@@ -32,7 +32,7 @@ public class UserChatRoomService {
 
         chatRoomByChatRoomId.ifPresent(chatRoom -> {
             UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoom);
-            targetChatRoom.setLastReadTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+            targetChatRoom.setLastReadTime(LocalDateTime.now());
         });
     }
 }

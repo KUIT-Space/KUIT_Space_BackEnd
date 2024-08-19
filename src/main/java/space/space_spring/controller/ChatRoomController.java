@@ -70,11 +70,7 @@ public class ChatRoomController {
     public BaseResponse<ReadChatRoomMemberResponse> readChatRoomMembers(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
-            @PathVariable Long chatRoomId,
-            @UserSpaceAuth String userSpaceAuth) {
-
-        validateManagerPermission(userSpaceAuth);
-
+            @PathVariable Long chatRoomId) {
         return new BaseResponse<>(chatRoomService.readChatRoomMembers(spaceId, chatRoomId));
     }
 

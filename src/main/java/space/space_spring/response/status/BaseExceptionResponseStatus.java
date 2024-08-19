@@ -98,7 +98,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_VOICEROOM_REQUEST(10002, HttpStatus.BAD_REQUEST,"잘못된 요청 인자 입니다."),
 
     VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
-    VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
+    VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST,"해당 스페이스에 없는 보이스 룸입니다."),
 
     /**
      * 11000: Post 오류

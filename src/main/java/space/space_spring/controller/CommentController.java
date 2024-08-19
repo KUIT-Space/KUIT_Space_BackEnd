@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.dto.comment.request.CreateCommentRequest;
 import space.space_spring.dto.comment.response.ReadCommentsResponse;
 import space.space_spring.response.BaseResponse;
@@ -21,6 +22,7 @@ public class CommentController {
 
     // 댓글 조회
     @GetMapping
+    @CheckUserSpace(required = false)
     public BaseResponse<List<ReadCommentsResponse>> getComments(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
@@ -34,6 +36,7 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping
+    @CheckUserSpace(required = false)
     public BaseResponse<CreateCommentRequest.Response> createComment(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,

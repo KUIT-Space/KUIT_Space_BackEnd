@@ -13,8 +13,10 @@ import java.util.List;
 @Repository
 public interface PostDao extends JpaRepository<Post, Long> {
 
+    @Query("SELECT p FROM Post p WHERE p.space = :space AND p.status = 'ACTIVE' ORDER BY p.createdAt DESC")
     List<Post> findBySpace(Space space);
 
+    @Query("SELECT p FROM Post p WHERE p.space = :space AND p.type = :type AND p.status = 'ACTIVE' ORDER BY p.createdAt DESC")
     List<Post> findBySpaceAndType(Space space, String type);
 
     @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END " +

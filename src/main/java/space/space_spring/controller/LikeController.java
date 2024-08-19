@@ -22,13 +22,10 @@ public class LikeController {
             @PathVariable Long spaceId,
             @PathVariable Long postId
     ) {
-        // TODO 1: 유저가 스페이스에 속하는지 검증
-        likeService.validateUserInSpace(userId, spaceId);
-
-        // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
+        // TODO 1: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
         likeService.validateAlreadyLikedPost(userId, postId);
 
-        // TODO 3: 좋아요 로직 수행
+        // TODO 2: 좋아요 로직 수행
         likeService.likePost(userId, postId);
 
         return new BaseResponse<>("게시글에 좋아요를 눌렀습니다.");
@@ -42,13 +39,11 @@ public class LikeController {
             @PathVariable Long spaceId,
             @PathVariable Long postId
     ) {
-        // TODO 1: 유저가 스페이스에 속하는지 검증
-        likeService.validateUserInSpace(userId, spaceId);
 
-        // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
+        // TODO 1: 유저가 해당 게시글에 좋아요를 눌렀는지 검증
         likeService.validateNotLikedPost(userId, postId);
 
-        // TODO 3: 좋아요 취소 로직 수행
+        // TODO 2: 좋아요 취소 로직 수행
         likeService.unlikePost(userId, postId);
 
         return new BaseResponse<>("게시글에 좋아요를 취소하였습니다.");
@@ -62,16 +57,14 @@ public class LikeController {
             @PathVariable Long postId,
             @PathVariable Long commentId
     ) {
-        // TODO 1: 유저가 스페이스에 속하는지 검증
-        likeService.validateUserInSpace(userId, spaceId);
 
-        // TODO 2: 댓글이 게시글에 속하는지 검증
+        // TODO 1: 댓글이 게시글에 속하는지 검증
         likeService.validateCommentInPost(postId, commentId);
 
-        // TODO 3: 유저가 해당 댓글에 좋아요를 눌렀는지 검증
+        // TODO 2: 유저가 해당 댓글에 좋아요를 눌렀는지 검증
         likeService.validateAlreadyLikedComment(userId, commentId);
 
-        // TODO 4: 좋아요 로직 수행
+        // TODO 3: 좋아요 로직 수행
         likeService.likeComment(userId, commentId);
 
 
@@ -88,16 +81,14 @@ public class LikeController {
             @PathVariable Long postId,
             @PathVariable Long commentId
     ) {
-        // TODO 1: 유저가 스페이스에 속하는지 검증
-        likeService.validateUserInSpace(userId, spaceId);
 
-        // TODO 2: 댓글이 게시글에 속하는지 검증
+        // TODO 1: 댓글이 게시글에 속하는지 검증
         likeService.validateCommentInPost(postId, commentId);
 
-        // TODO 3: 유저가 해당 댓글에 좋아요를 눌렀는지 검증
+        // TODO 2: 유저가 해당 댓글에 좋아요를 눌렀는지 검증
         likeService.validateNotLikedComment(userId, commentId);
 
-        // TODO 4: 좋아요 취소 로직 수행
+        // TODO 3: 좋아요 취소 로직 수행
         likeService.unlikeComment(userId, commentId);
 
 

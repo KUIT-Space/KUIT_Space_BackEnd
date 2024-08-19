@@ -28,14 +28,7 @@ public class LikeService {
     private final UserUtils userUtils;
     private final UserSpaceUtils userSpaceUtils;
 
-    // TODO 1: 유저가 스페이스에 속하는지 검증
-    public void validateUserInSpace(Long userId, Long spaceId) {
-        if (userSpaceUtils.isUserInSpace(userId, spaceId).isEmpty()) {
-            throw new CustomException(USER_IS_NOT_IN_SPACE);
-        }
-    }
-
-    // TODO 2: 댓글이 해당 게시글에 속하는지 검증
+    // TODO 1: 댓글이 해당 게시글에 속하는지 검증
     public void validateCommentInPost(Long postId, Long commentId) {
         Post post = postDao.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
@@ -48,7 +41,7 @@ public class LikeService {
         }
     }
 
-    // TODO 3: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
+    // TODO 2: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
     public void validateAlreadyLikedPost(Long userId, Long postId) {
         User user = userUtils.findUserByUserId(userId);
         Post post = postDao.findById(postId)
@@ -61,7 +54,7 @@ public class LikeService {
         }
     }
 
-    // TODO 4: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
+    // TODO 3: 유저가 해당 게시글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
     public void validateNotLikedPost(Long userId, Long postId) {
         User user = userUtils.findUserByUserId(userId);
         Post post = postDao.findById(postId)
@@ -74,7 +67,7 @@ public class LikeService {
         }
     }
 
-    // TODO 5: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
+    // TODO 4: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (좋아요 중복 방지)
     public void validateAlreadyLikedComment(Long userId, Long commentId) {
         User user = userUtils.findUserByUserId(userId);
         Comment comment = commentDao.findById(commentId)
@@ -87,7 +80,7 @@ public class LikeService {
         }
     }
 
-    // TODO 6: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
+    // TODO 5: 유저가 해당 댓글에 좋아요를 눌렀는지 검증 (취소 중복 방지)
     public void validateNotLikedComment(Long userId, Long commentId) {
         User user = userUtils.findUserByUserId(userId);
         Comment comment = commentDao.findById(commentId)

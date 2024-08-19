@@ -33,14 +33,7 @@ public class CommentService {
     private final UserUtils userUtils;
     private final UserSpaceUtils userSpaceUtils;
 
-    // TODO 1: 유저가 스페이스에 속하는지 검증
-    public void validateUserInSpace(Long userId, Long spaceId) {
-        if (userSpaceUtils.isUserInSpace(userId, spaceId).isEmpty()) {
-            throw new CustomException(USER_IS_NOT_IN_SPACE);
-        }
-    }
-
-    // TODO 2: 댓글 유효성 검사
+    // TODO 1: 댓글 유효성 검사
     public void validateCommentRequest(CreateCommentRequest.Request request, Long postId) {
         if (request.getTargetId() != null) {
             Comment targetComment = commentDao.findById(request.getTargetId())

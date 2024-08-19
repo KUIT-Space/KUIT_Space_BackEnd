@@ -64,6 +64,17 @@ public class ChatRoomController {
     }
 
     /**
+     * 특정 유저가 채팅방에서 떠난 시간 저장
+     */
+    @PostMapping("/{chatRoomId}/leave")
+    public BaseResponse<ChatSuccessResponse> updateLastReadTime(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long chatRoomId) {
+        return new BaseResponse<>(chatRoomService.updateLastReadTime(userId, spaceId, chatRoomId));
+    }
+
+    /**
      * 특정 채팅방의 모든 유저 정보 조회
      */
     @GetMapping("/{chatRoomId}/member")

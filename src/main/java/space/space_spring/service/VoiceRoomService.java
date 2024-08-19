@@ -137,7 +137,10 @@ public class VoiceRoomService {
             roomDto.setActiveRoom(roomResponses);
         }
         List<CompletableFuture<Void>> roomDtoFutureList = roomDtoList.stream()
-                .map(r->CompletableFuture.runAsync(()->setRoomDto(r,roomResponses,req),taskExecutor)).collect(Collectors.toList());
+                .map(r->CompletableFuture.runAsync(()->setRoomDto(r,roomResponses,req),taskExecutor)
+                        //.exceptionally(ex->{throws ex;})
+                )
+                .collect(Collectors.toList());
 
 
         // 모든 Future의 완료를 기다림

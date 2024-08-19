@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.LikeService;
 
@@ -17,6 +18,7 @@ public class LikeController {
 
     // 게시글 좋아요
     @PostMapping("/like")
+    @CheckUserSpace(required = false)
     public BaseResponse<String> likePost(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
@@ -34,6 +36,7 @@ public class LikeController {
 
     // 게시글 좋아요 취소
     @DeleteMapping("/like")
+    @CheckUserSpace(required = false)
     public BaseResponse<String> unlikePost(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
@@ -51,6 +54,7 @@ public class LikeController {
 
     // 댓글 좋아요
     @PostMapping("/comment/{commentId}/like")
+    @CheckUserSpace(required = false)
     public BaseResponse<String> likeComment(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
@@ -75,6 +79,7 @@ public class LikeController {
 
     // 댓글 좋아요 취소
     @DeleteMapping("/comment/{commentId}/like")
+    @CheckUserSpace(required = false)
     public BaseResponse<String> unlikeComment(
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,

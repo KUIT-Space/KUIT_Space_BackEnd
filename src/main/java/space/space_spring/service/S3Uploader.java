@@ -44,21 +44,28 @@ public class S3Uploader {
 
     // File에 저장하지 않고 Memory에서 변환 시행
     public String upload(MultipartFile file, String dirName) throws IOException{
-        String fileName = dirName + "/" + file.getOriginalFilename();
+        String originFileName = file.getOriginalFilename();
+        String fileExtension = getFileExtension(originFileName);
+        String uniqueFilename = generateUniqueFileName(dirName,fileExtension);
+
+        //String fileName = dirName + "/" + file.getOriginalFilename();
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
 
         try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, metadata));
-            log.info("File uploaded successfully: {}", fileName);
-            return amazonS3Client.getUrl(bucket, fileName).toString();
+            amazonS3Client.putObject(new PutObjectRequest(bucket, uniqueFilename, inputStream, metadata));
+            log.info("File uploaded successfully: {}", uniqueFilename);
+            return amazonS3Client.getUrl(bucket, uniqueFilename).toString();
         } catch (IOException e) {
-            log.error("Error uploading file: {}", fileName, e);
+            log.error("Error uploading file: {}", uniqueFilename, e);
             throw new CustomException(MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY,"Failed to upload file");
         }
     }
 
+    private String generateUniqueFileName(String dirName ,String fileExtension){
+        return dirName + "/" +UUID.randomUUID().toString() + fileExtension;
+    }
 
 //    public String upload(File uploadFile, String dirName){
 //        String fileName = dirName+"/"+uploadFile.getName();
@@ -160,5 +167,16 @@ public class S3Uploader {
                 yield ".bin"; // 기본 확장자
             }
         };
+    }
+
+    private String getFileExtension(String fileName){
+        if(fileName==null){
+            return "";
+        }
+        int lastIndexOf = fileName.lastIndexOf(".");
+        if(lastIndexOf==-1){
+            return "";
+        }
+        return fileName.substring(lastIndexOf);
     }
 }

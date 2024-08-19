@@ -8,7 +8,7 @@ public enum UserSpaceValidationInterceptorURL {
     TEST("/space/{spaceId}/test/**"),
 //    VOICEROOM("/space/{spaceId}/voiceRoom/**"),
 //    CHATROOM("/space/{spaceId}/chat/**")
-    SPACE("/space/{spaceId}/**")
+    SPACE("/space/{spaceId}/**"),
     ;
 
     private final String urlPattern;

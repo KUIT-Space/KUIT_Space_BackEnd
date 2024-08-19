@@ -74,9 +74,9 @@ public class PayDao {
                 .collect(Collectors.toList());
     }
 
-    public PayRequest createPayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, boolean isComplete) {
+    public PayRequest createPayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, int unRequestedAmount, boolean isComplete) {
         PayRequest payRequest = new PayRequest();
-        payRequest.savePayRequest(payCreateUser, space, totalAmount, bankName, bankAccountNum, isComplete);
+        payRequest.savePayRequest(payCreateUser, space, totalAmount, bankName, bankAccountNum, unRequestedAmount, isComplete);
 
         em.persist(payRequest);
         return payRequest;

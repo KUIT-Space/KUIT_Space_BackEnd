@@ -30,15 +30,19 @@ public class PayRequest extends BaseEntity {
     @Column(name = "bank_account_num")
     private String bankAccountNum;      // 정산 받을 은행 계좌번호
 
+    @Column(name = "un_requested_amount")
+    private int unRequestedAmount;      // 미정산 금액
+
     @Column(name = "is_complete")
     private boolean isComplete;
 
-    public void savePayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, boolean isComplete) {
+    public void savePayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, int unRequestedAmount, boolean isComplete) {
         this.payCreateUser = payCreateUser;
         this.space = space;
         this.totalAmount = totalAmount;
         this.bankName = bankName;
         this.bankAccountNum = bankAccountNum;
+        this.unRequestedAmount = unRequestedAmount;
         this.isComplete = isComplete;
     }
 

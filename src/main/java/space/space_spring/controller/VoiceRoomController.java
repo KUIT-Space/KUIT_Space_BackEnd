@@ -161,8 +161,11 @@ public class VoiceRoomController {
         }
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
         validateManagerPermission(userSpaceAuth);
-        //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
+
         for(PatchVoiceRoom.UpdateRoom updateRoom : patchVoiceRoom.getUpdateRoomList()) {
+            //해당 voiceRoomId가 존재하는지 확인
+            validateVoiceRoom(updateRoom.getRoomId());
+            //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
             validateVoiceRoomInSpace(spaceId, updateRoom.getRoomId());
         }
 
@@ -181,6 +184,8 @@ public class VoiceRoomController {
 
         //해당 유저가 현재 space에 대해 관리자 권한을 갖고 있는지 확인
         validateManagerPermission(userSpaceAuth);
+        //해당 보이스룸이 존재하는지 확인
+        validateVoiceRoom(voiceRoomId);
         //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
         validateVoiceRoomInSpace(spaceId, voiceRoomId);
 

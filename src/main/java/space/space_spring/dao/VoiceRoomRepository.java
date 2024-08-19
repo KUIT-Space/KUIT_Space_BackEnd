@@ -11,12 +11,15 @@ import java.util.List;
 @Repository
 public interface VoiceRoomRepository extends JpaRepository<VoiceRoom,Long> {
 
-    //Todo limit 개수 만큼 가져오도록 기능과 파라미터 수정
-    List<VoiceRoom> findBySpace(Space space);
-    @Query("SELECT MAX(r.order) FROM VoiceRoom r WHERE r.space = :space")
-    Integer findMaxOrderBySpace(@Param("space") Space space);
 
-    boolean existsByVoiceRoomId(long voiceRoomId);
-    boolean existsByName(String voiceRoomName);
-    VoiceRoom findById(long Id);
+    @Query("SELECT v FROM VoiceRoom v WHERE v.space = :space AND v.status = 'ACTIVE'")
+    List<VoiceRoom> findBySpace(@Param("space")Space space);
+    @Query("SELECT MAX(r.order) FROM VoiceRoom r WHERE r.space = :space AND r.status = 'ACTIVE'")
+    Integer findMaxOrderBySpace(@Param("space") Space space);
+    @Query("SELECT CASE WHEN COUNT(v) > 0 THEN true ELSE false END FROM VoiceRoom v WHERE v.voiceRoomId = :id AND v.status = 'ACTIVE'")
+    boolean existsByVoiceRoomId(@Param("id")long voiceRoomId);
+    @Query("SELECT CASE WHEN COUNT(v) > 0 THEN true ELSE false END FROM VoiceRoom v WHERE v.name = :voiceRoomName AND v.status = 'ACTIVE'")
+    boolean existsByName(@Param("voiceRoomName") String voiceRoomName);
+    @Query("SELECT v FROM VoiceRoom v WHERE v.voiceRoomId = :id AND v.status = 'ACTIVE'")
+    VoiceRoom findById(@Param("id") long Id);
 }

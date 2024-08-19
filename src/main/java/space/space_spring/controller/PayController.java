@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
 import space.space_spring.dto.pay.dto.PayRequestInfoDto;
 import space.space_spring.dto.pay.dto.TotalPayInfoDto;
@@ -100,6 +101,7 @@ public class PayController {
      * 유저가 최근 정산받은 은행 계좌 정보 조회
      * 해당 api는 유저가 속한 스페이스의 정보가 필요없다고 판단해서 spaceId 를 request로 받지 않음
      */
+    @CheckUserSpace(required = false)
     @GetMapping("/space/pay/recent-bank-info")
     public BaseResponse<GetRecentPayRequestBankInfoResponse> showRecentBankInfo(@JwtLoginAuth Long userId) {
 

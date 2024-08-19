@@ -42,11 +42,22 @@ public class UserSpaceValidationInterceptor implements HandlerInterceptor {
 
         // URL에서 spaceId 추출
         Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        Long spaceId = Long.parseLong((String) pathVariables.get("spaceId"));
+        //Long spaceId;
+        try {
+            Long spaceId = Long.parseLong((String) pathVariables.get("spaceId"));
 
-        request.setAttribute("userSpaceId",getUserSpace(spaceId,userId));
-        System.out.print("userSpaceID:"+getUserSpace(spaceId,userId));
-        return true;
+            if(spaceId==null){
+                throw new CustomException(SPACE_ID_PATHVARIABLE_NULL);
+            }
+            request.setAttribute("userSpaceId",getUserSpace(spaceId,userId));
+            System.out.print("userSpaceID:"+getUserSpace(spaceId,userId));
+            return true;
+
+        }catch (NumberFormatException e){
+            throw new CustomException(SPACE_ID_PATHVARIABLE_ERROR);
+
+        }
+
 
     }
 

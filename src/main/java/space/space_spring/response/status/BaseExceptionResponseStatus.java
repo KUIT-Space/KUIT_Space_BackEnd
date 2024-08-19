@@ -19,6 +19,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     URL_NOT_FOUND(2001, HttpStatus.BAD_REQUEST, "유효하지 않은 URL 입니다."),
     METHOD_NOT_ALLOWED(2002, HttpStatus.METHOD_NOT_ALLOWED, "해당 URL에서는 지원하지 않는 HTTP Method 입니다."),
     HTTP_MESSAGE_NOT_READABLE(2003, HttpStatus.BAD_REQUEST,"request body 양식에 문제가 있습니다"),
+    SPACE_ID_PATHVARIABLE_ERROR(2004,HttpStatus.BAD_REQUEST,"URL에 포함된 SPACE_ID 값이 잘못되었습니다."),
+    SPACE_ID_PATHVARIABLE_NULL(2005,HttpStatus.BAD_REQUEST,"URL에 포함된 SPACE_ID 값이 없습니다"),
+
 
     /**
      * 3000: Server, Database 오류 (INTERNAL_SERVER_ERROR)

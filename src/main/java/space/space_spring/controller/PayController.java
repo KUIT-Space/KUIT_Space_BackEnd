@@ -2,6 +2,8 @@ package space.space_spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
@@ -10,11 +12,16 @@ import space.space_spring.dto.pay.dto.TotalPayInfoDto;
 import space.space_spring.dto.pay.request.PostPayCompleteRequest;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.*;
+import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PayService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.util.List;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_PAY_AMOUNT;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_PAY_CREATE;
+import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
 @RequiredArgsConstructor
@@ -99,12 +106,17 @@ public class PayController {
      * response 추가 협의 필요 -> 굳이 PayRequestId를 response 안해도 될꺼같음
      */
     @PostMapping("/space/{spaceId}/pay")
-    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @RequestBody PostPayCreateRequest postPayCreateRequest) {
+    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PostPayCreateRequest postPayCreateRequest, BindingResult bindingResult) {
 
-        // TODO 1. 유저가 스페이스에 속하는 지 검증
+        // TODO 1. request dto validation
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
+        }
+
+        // TODO 2. 유저가 스페이스에 속하는 지 검증
         validateIsUserInSpace(userId, spaceId);
 
-        // TODO 2. PostPayCreateRequest의 targetInfoList 유저들이 모두 해당 스페이스에 속하는지 검증
+        // TODO 3. PostPayCreateRequest의 targetInfoList 유저들이 모두 해당 스페이스에 속하는지 검증
         // 현재 검증 시 에러가 발생하면 그냥 "스페이스에 속하는 유저가 아닙니다" 라는 에러메시지만 나오고,
         // 어떤 유저가 스페이스에 속하지 않는지에 대한 정보가 없음
         // => 추후 에러메시지의 수정이 필요할듯??
@@ -112,13 +124,52 @@ public class PayController {
             validateIsUserInSpace(targetInfo.getTargetUserId(), spaceId);
         }
 
-        // TODO 3. PostPayCreateRequest의 bankName, bankAccountNum 검증
-        // 만약 이걸 해야할 경우, @RequestBody 를 validate 하는 방식으로 검증 수행해야 할 듯
+        // TODO 4. PostPayCreateRequest의 bankName, bankAccountNum 검증
+        // => 추후에 은행 이름들의 목록을 enum으로 만들어서 관리 & 유효성 검사 하도록 ??
 
-        // TODO 4. 정산 생성
-        payService.createPay(userId, spaceId, postPayCreateRequest);
+        // TODO 5. 정산 요청 금액의 유효성 검사
+        // return 값 : 나머지 금액
+        int remainingAmount = validatePayAmount(postPayCreateRequest);
+
+        // TODO 6. 정산 생성
+        payService.createPay(userId, spaceId, postPayCreateRequest, remainingAmount);
 
         return new BaseResponse<>("정산 생성 성공");
+    }
+
+    private int validatePayAmount(PostPayCreateRequest postPayCreateRequest) {
+
+        // 1. requestAmount 들의 합이 totalAmount 와 일치하는지 확인
+
+        // 2-1. 만약 일치한다면 유효성 검사 통과
+        // 2-2. 만약 일치하지 않는다면, totalAmount와 requestAmount들의 합의 차이가 n-1보다 작거나 같은지 확인
+
+        // 3-1, 만약 n-1보다 작거나 같은 경우, 유효성 검사 통과 ('나머지 값' 확인)
+        // 3-2, 만약 n-1보다 클 경우, 유효성 검사 통과 X (예외 처리)
+
+        int totalRequestAmount = calculateSumOfRequestAmount(postPayCreateRequest.getTargetInfoList());
+        int totalAmount = postPayCreateRequest.getTotalAmount();
+        int targetSize = postPayCreateRequest.getTargetInfoList().size();
+        int remainingAmount = 0;
+
+        if (totalRequestAmount != totalAmount) {
+            if ((totalAmount - totalRequestAmount) <= (targetSize - 1)) {
+                remainingAmount = totalAmount - totalRequestAmount;
+                return remainingAmount;
+            }
+
+            throw new CustomException(INVALID_PAY_AMOUNT);
+        }
+
+        return remainingAmount;
+    }
+
+    private int calculateSumOfRequestAmount(List<PostPayCreateRequest.TargetInfo> targetInfoList) {
+        int totalRequestAmount = 0;
+        for (PostPayCreateRequest.TargetInfo targetInfo : targetInfoList) {
+            totalRequestAmount += targetInfo.getRequestAmount();
+        }
+        return totalRequestAmount;
     }
 
     /**

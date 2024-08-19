@@ -53,12 +53,18 @@ public class ChatRoomService {
 
         // TODO 4: chatRoom 리스트에서 active만 find
         List<ChatRoom> activeChatRooms = chatRoomList.stream()
-                .filter(userChatRoom -> "ACTIVE".equals(userChatRoom.getStatus()))
+                .filter(chatRoom -> "ACTIVE".equals(chatRoom.getStatus()))
                 .toList();
 
         return ReadChatRoomResponse.of(activeChatRooms.stream()
                 .map(cr -> {
-                    // TODO 5: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
+                    // TODO 5: userChatRoom active인지 확인
+                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
+                    if (!userChatRoom.getStatus().equals("ACTIVE")) {
+                        return null;
+                    }
+
+                    // TODO 6: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
                     LocalDateTime lastUpdateTime = cr.getCreatedAt().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
@@ -68,19 +74,22 @@ public class ChatRoomService {
                     if (lastMsg != null) {
                         lastUpdateTime = lastMsg.getCreatedAt();
                         lastContent = lastMsg.getContent();
+                        log.info("마지막으로 업데이트된 시간: " + lastUpdateTime + " 마지막으로 읽은 내용 : " + lastContent);
                     }
 
-                    // TODO 6: 각 채팅방의 안읽은 메시지 개수 계산
-                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
+                    // TODO 7: 각 채팅방의 안읽은 메시지 개수 계산
                     LocalDateTime lastReadTime = userChatRoom.getLastReadTime().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                    log.info("마지막으로 읽은 시간: " + lastReadTime);
                     int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
                             cr.getId(),
                             lastReadTime,
                             lastUpdateTime
                     );
+                    log.info("안읽은 메시지 개수: " + unreadMsgCount);
 
                     return ChatRoomResponse.of(cr, lastContent, String.valueOf(lastUpdateTime), unreadMsgCount);
                 })
+                .filter(Objects::nonNull) // null 값을 제거
                 .toList()
         );
     }
@@ -133,6 +142,20 @@ public class ChatRoomService {
         });
 
         return ReadChatRoomMemberResponse.of(userList);
+    }
+
+    @Transactional
+    public ChatSuccessResponse updateLastReadTime(Long userId, Long spaceId, Long chatRoomId) {
+        User userByUserId = userUtils.findUserByUserId(userId);
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+
+        UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
+        targetChatRoom.setLastReadTime(LocalDateTime.now());
+        userChatRoomDao.save(targetChatRoom);
+        log.info("userId: " + userId + " socket disconnect 시 마지막으로 읽은 시간: " + targetChatRoom.getLastReadTime());
+
+        return ChatSuccessResponse.of(true);
     }
 
     @Transactional
@@ -204,5 +227,4 @@ public class ChatRoomService {
         List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoom(chatRoomByChatRoomId);
         return chatRoomList.stream().anyMatch(userChatRoom -> userChatRoom.getUser().equals(userByUserId));
     }
-
 }

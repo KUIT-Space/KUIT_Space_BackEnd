@@ -139,6 +139,20 @@ public class ChatRoomService {
     }
 
     @Transactional
+    public ChatSuccessResponse updateLastReadTime(Long userId, Long spaceId, Long chatRoomId) {
+        User userByUserId = userUtils.findUserByUserId(userId);
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
+                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+
+        UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
+        targetChatRoom.setLastReadTime(LocalDateTime.now());
+        userChatRoomDao.save(targetChatRoom);
+        log.info("userId: " + userId + " socket disconnect 시 마지막으로 읽은 시간: " + targetChatRoom.getLastReadTime());
+
+        return ChatSuccessResponse.of(true);
+    }
+
+    @Transactional
     public ChatSuccessResponse joinChatRoom(Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
         List<Long> memberIdList = joinChatRoomRequest.getMemberList();
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
@@ -207,5 +221,4 @@ public class ChatRoomService {
         List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoom(chatRoomByChatRoomId);
         return chatRoomList.stream().anyMatch(userChatRoom -> userChatRoom.getUser().equals(userByUserId));
     }
-
 }

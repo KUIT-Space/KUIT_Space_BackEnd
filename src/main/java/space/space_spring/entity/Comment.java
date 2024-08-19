@@ -1,12 +1,15 @@
 package space.space_spring.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Post_Comment")
 @Getter
-public class PostComment extends BaseEntity{
+@NoArgsConstructor
+public class Comment extends BaseEntity{
     @Id
     @GeneratedValue
     @Column(name = "comment_id")
@@ -24,11 +27,25 @@ public class PostComment extends BaseEntity{
     private String content;
 
     @Column(name = "comment_like")
-    private int like;
+    private int likeCount;
 
-    @Column(name = "isReply")
-    private boolean isReply;
 
     @Column(name = "comment_target_id")
-    private String targetId;
+    private Long targetId;
+
+    @Builder
+    public Comment(User user, Post post, String content, Boolean isReply, Long targetId) {
+        this.user = user;
+        this.post = post;
+        this.content = content;
+        this.targetId = targetId;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount--;
+    }
 }

@@ -26,10 +26,8 @@ public class CommentController {
             @PathVariable Long spaceId,
             @PathVariable Long postId
     ) {
-        // TODO 1: 유저가 스페이스에 속하는 지 검증
-        commentService.validateUserInSpace(userId, spaceId);
 
-        // TODO 2: 특정 게시글의 댓글 리스트 get
+        // TODO 1: 특정 게시글의 댓글 리스트 get
         List<ReadCommentsResponse> comments = commentService.getCommentsByPost(postId, userId);
         return new BaseResponse<>(comments);
     }
@@ -42,10 +40,8 @@ public class CommentController {
             @PathVariable Long postId,
             @RequestBody @Valid CreateCommentRequest.Request createCommentRequest
             ) {
-        // TODO 1: 유저가 스페이스에 속하는 지 검증
-        commentService.validateUserInSpace(userId, spaceId);
 
-        // TODO 2: 작성한 댓글 저장 및 아이디 반환
+        // TODO 1: 작성한 댓글 저장 및 아이디 반환
         Long commentId = commentService.createComment(userId, postId, createCommentRequest);
         CreateCommentRequest.Response response = CreateCommentRequest.Response.of(commentId);
         return new BaseResponse<>(response);

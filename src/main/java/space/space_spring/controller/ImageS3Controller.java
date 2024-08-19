@@ -20,7 +20,7 @@ public class ImageS3Controller {
     @PostMapping("")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            String uploadedFileUrl = s3Uploader.upload(file, "test-image");
+            String uploadedFileUrl = s3Uploader.upload(file, "test-image1");
             return ResponseEntity.ok(uploadedFileUrl);
         } catch (IOException e) {
             return ResponseEntity.badRequest().body("Failed to upload image: " + e.getMessage());

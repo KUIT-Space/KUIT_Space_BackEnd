@@ -12,15 +12,18 @@ import space.space_spring.dto.pay.dto.TotalPayInfoDto;
 import space.space_spring.dto.pay.request.PostPayCompleteRequest;
 import space.space_spring.dto.pay.request.PostPayCreateRequest;
 import space.space_spring.dto.pay.response.*;
+import space.space_spring.entity.PayRequestTarget;
+import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PayService;
+import space.space_spring.util.pay.PayUtils;
+import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.util.List;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_PAY_AMOUNT;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_PAY_CREATE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
@@ -30,6 +33,8 @@ public class PayController {
 
     private final PayService payService;
     private final UserSpaceUtils userSpaceUtils;
+    private final UserUtils userUtils;
+    private final PayUtils payUtils;
 
     /**
      * 정산 홈 view
@@ -194,8 +199,24 @@ public class PayController {
         // TODO 1. 유저가 스페이스에 속하는 지 검증
         validateIsUserInSpace(userId, spaceId);
 
-        // TODO 2. 정산 타겟 유저의 정산 완료 처리
+        // TODO 2. 유저와 정산 타겟 유저가 일치하는지 검증
+        checkPayRequestTargetUser(userId, postPayCompleteRequest.getPayRequestTargetId());
+
+        // TODO 3. 정산 타겟 유저의 정산 완료 처리
         return new BaseResponse<>(payService.setPayRequestTargetToComplete(postPayCompleteRequest.getPayRequestTargetId()));
+    }
+
+    private void checkPayRequestTargetUser(Long userId, Long payRequestTargetId) {
+
+        User userByUserId = userUtils.findUserByUserId(userId);
+        PayRequestTarget payRequestTargetById = payUtils.findPayRequestTargetById(payRequestTargetId);
+
+        Long realUserId = userByUserId.getUserId();
+        Long targetUserId = payRequestTargetById.getTargetUserId();
+
+        if (!realUserId.equals(targetUserId)) {
+            throw new CustomException(INVALID_PAY_REQUEST_TARGET_ID);
+        }
     }
 
 }

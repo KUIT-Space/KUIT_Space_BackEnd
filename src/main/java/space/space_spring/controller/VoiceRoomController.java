@@ -75,7 +75,37 @@ public class VoiceRoomController {
 
         GetVoiceRoomList.Request voiceRoomList=new GetVoiceRoomList.Request(limit, showParticipant);
 
-        List<GetVoiceRoomList.VoiceRoomInfo> roomInfoList = voiceRoomService.getVoiceRoomInfoList(spaceId,voiceRoomList);
+        List<GetVoiceRoomList.VoiceRoomInfo> roomInfoList = voiceRoomService.getVoiceRoomInfoListConcurrency(spaceId,voiceRoomList);
+        return new BaseResponse<GetVoiceRoomList.Response>(new GetVoiceRoomList.Response(roomInfoList));
+    }
+
+    @GetMapping("/con/{version}")
+    public BaseResponse<GetVoiceRoomList.Response> getRoomListNonConCurrent(
+            @PathVariable("spaceId") @NotNull long spaceId,
+            @JwtLoginAuth Long userId,
+            //@RequestBody GetVoiceRoomList.Request voiceRoomList,
+            @RequestParam(required = false,defaultValue = "0") Integer limit,
+            @RequestParam(required = false,defaultValue = "false") Boolean showParticipant,
+            @PathVariable("version") Integer version){
+
+        boolean showParticipantValue = (showParticipant != null) ? showParticipant : false;
+
+
+        GetVoiceRoomList.Request voiceRoomList=new GetVoiceRoomList.Request(limit, showParticipant);
+        List<GetVoiceRoomList.VoiceRoomInfo> roomInfoList;
+        if(version==null){
+            version =1;
+        }
+        if(version==1){
+            roomInfoList= voiceRoomService.getVoiceRoomInfoListConcurrency(spaceId,voiceRoomList);
+        }
+        if(version==2){
+            roomInfoList = voiceRoomService.getVoiceRoomInfoList(spaceId,voiceRoomList);
+        }
+        else{
+            roomInfoList= voiceRoomService.getVoiceRoomInfoListConcurrency(spaceId,voiceRoomList);
+        }
+
         return new BaseResponse<GetVoiceRoomList.Response>(new GetVoiceRoomList.Response(roomInfoList));
     }
 

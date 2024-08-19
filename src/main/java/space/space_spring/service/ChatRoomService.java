@@ -174,10 +174,20 @@ public class ChatRoomService {
 
             // TODO 2: 유저가 이미 채팅방에 초대되어있는지 검증
             if (isUserInChatRoom(userByUserId, chatRoomByChatRoomId)) {
-                throw new CustomException(USER_IS_ALREADY_IN_CHAT_ROOM);
+                // TODO 3: 유저가 채팅방에 초대된 이력이 있다면 userChatRoom의 status 변경
+                if (userByUserId.getStatus().equals("INACTIVE")) {
+                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
+                    userChatRoom.setLastReadTime(LocalDateTime.now());
+                    userChatRoom.updateActive();
+                    userChatRoomDao.save(userChatRoom);
+                    return ChatSuccessResponse.of(true);
+                } else {
+                    // TODO 4: 유저가 채팅방에 초대되어있고 ACTIVE이므로 예외 발생
+                    throw new CustomException(USER_IS_ALREADY_IN_CHAT_ROOM);
+                }
             }
 
-            // TODO 3: 초대한 유저에 대한 userChatRoom 테이블 생성
+            // TODO 5: 초대한 유저에 대한 userChatRoom 테이블 생성
             userChatRoomDao.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now()));
         }
 

@@ -14,18 +14,19 @@ import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
 import space.space_spring.entity.document.ChatMessage;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_EXIST;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @Slf4j
@@ -48,14 +49,19 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 return
-        List<ChatRoom> result = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
+        List<ChatRoom> chatRoomList = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
 
-        return ReadChatRoomResponse.of(result.stream()
+        // TODO 4: chatRoom 리스트에서 active만 find
+        List<ChatRoom> activeChatRooms = chatRoomList.stream()
+                .filter(userChatRoom -> "ACTIVE".equals(userChatRoom.getStatus()))
+                .toList();
+
+        return ReadChatRoomResponse.of(activeChatRooms.stream()
                 .map(cr -> {
-                    // TODO 4: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
+                    // TODO 5: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
-                    LocalDateTime lastUpdateTime = LocalDateTime.now();
+                    LocalDateTime lastUpdateTime = cr.getCreatedAt().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
                     HashMap<String, String> lastContent = new HashMap<>();
                     lastContent.put("text", "메시지를 전송해보세요");
 
@@ -64,9 +70,9 @@ public class ChatRoomService {
                         lastContent = lastMsg.getContent();
                     }
 
-                    // TODO 5: 각 채팅방의 안읽은 메시지 개수 계산
+                    // TODO 6: 각 채팅방의 안읽은 메시지 개수 계산
                     UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
-                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime();
+                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
                     int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
                             cr.getId(),
                             lastReadTime,
@@ -111,14 +117,19 @@ public class ChatRoomService {
         // TODO 3: 해당 chatRoom의 userChatRoom 리스트 find
         List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoom(chatRoomById);
 
-        userChatRoomList.forEach(userChatRoom -> {
+        // TODO 4: userChatRoom 리스트에서 active만 find
+        List<UserChatRoom> activeUserChatRooms = userChatRoomList.stream()
+                .filter(userChatRoom -> "ACTIVE".equals(userChatRoom.getStatus()))
+                .toList();
+
+        activeUserChatRooms.forEach(userChatRoom -> {
             User user = userChatRoom.getUser();
 
-            // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
+            // TODO 5: 스페이스 프로필 이미지 get 위해 userSpace find
             UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById)
                     .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
-            userList.add(new UserInfoInSpace(user.getUserId(), user.getUserName(), userSpace.getUserProfileImg(), user.getSignupType()));
+            userList.add(new UserInfoInSpace(user.getUserId(), userSpace.getUserName(), userSpace.getUserProfileImg(), userSpace.getUserSpaceAuth()));
         });
 
         return ReadChatRoomMemberResponse.of(userList);
@@ -136,7 +147,7 @@ public class ChatRoomService {
 
             // TODO 2: 유저가 이미 채팅방에 초대되어있는지 검증
             if (isUserInChatRoom(userByUserId, chatRoomByChatRoomId)) {
-                return ChatSuccessResponse.of(false);
+                throw new CustomException(USER_IS_ALREADY_IN_CHAT_ROOM);
             }
 
             // TODO 3: 초대한 유저에 대한 userChatRoom 테이블 생성
@@ -169,6 +180,9 @@ public class ChatRoomService {
         // TODO 2: 해당 userChatRoom inactive로 변경
         userChatRoom.updateInactive();
 
+        // TODO 3: DB에 변경 사항 저장
+        userChatRoomDao.save(userChatRoom);
+
         return ChatSuccessResponse.of(true);
     }
 
@@ -177,7 +191,11 @@ public class ChatRoomService {
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
+        // TODO 2: 해당 chatRoom inactive로 변경
         chatRoomByChatRoomId.updateInactive();
+
+        // TODO 3: DB에 변경 사항 저장
+        chatRoomDao.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
     }

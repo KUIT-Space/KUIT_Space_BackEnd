@@ -82,6 +82,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     CHATROOM_NOT_EXIST(8001, HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
     INVALID_CHATROOM_JOIN(8001, HttpStatus.BAD_REQUEST, "채팅방 멤버 초대 요청에서 잘못된 값이 존재합니다."),
     BASE64_CONVERT_FAIL_IN_MEMORY(8002, HttpStatus.INTERNAL_SERVER_ERROR, "base64 파일 변환 과정에서 문제가 생겼습니다."),
+    USER_IS_ALREADY_IN_CHAT_ROOM(8003, HttpStatus.BAD_REQUEST, "해당 채팅방에 이미 초대된 멤버가 포함되어 있습니다."),
 
     /**
      * 9000 : MultipartFile 오류

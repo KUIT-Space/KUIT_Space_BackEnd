@@ -1,5 +1,6 @@
 package space.space_spring.dto.post.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.entity.Post;
@@ -15,7 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreatePostRequest {
+    @NotBlank
     private String title;
+    @NotBlank
     private String content;
     private String type; // "notice" or "general"
     private List<MultipartFile> postImages;

@@ -88,4 +88,27 @@ public class PostController {
 
         return new BaseResponse<>(readPostDetailResponse);
     }
+
+    // 게시글 수정
+    @PostMapping("/board/post/postId}")
+    @CheckUserSpace(required = false)
+    public BaseResponse<String> updatePost(
+        @JwtLoginAuth Long userId,
+        @PathVariable Long spaceId,
+        @PathVariable Long postId,
+        @ModelAttribute @Validated CreatePostRequest updatePostRequest,
+        BindingResult bindingResult) {
+        // TODO 1: 예외처리
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(INVALID_POST_CREATE);
+        }
+        // TODO 2: 유저가 스페이스에 속하는 지 검증
+        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
+        log.info("UserName = {}, UserSpaceAuth = {}", userInSpace.get().getUserName(), userInSpace.get().getUserSpaceAuth());
+
+        // TODO 3: 게시글 수정 작업 수행
+        postService.updatePost(userId, spaceId, postId, updatePostRequest);
+
+        return new BaseResponse<>("게시글이 수정되었습니다.");
+    }
 }

@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Comment_Like")
+@Table(name = "Comment_Like",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "post_comment_id"})})
 @Getter
 @NoArgsConstructor
 public class CommentLike extends BaseEntity{

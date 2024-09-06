@@ -52,10 +52,12 @@ public class Post extends BaseEntity {
         this.postImages = postImages;
     }
 
+    // 좋아요 개수 증가
     public void increaseLikeCount() {
         this.likeCount++;
     }
 
+    // 좋아요 개수 감소
     public void decreaseLikeCount() {
         this.likeCount--;
     }

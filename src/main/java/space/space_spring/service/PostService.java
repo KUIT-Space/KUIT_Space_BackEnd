@@ -185,4 +185,20 @@ public class PostService {
         postDao.save(post);
     }
 
+    @Transactional
+    public void deletePost(Long userId, Long spaceId, Long postId) {
+        // TODO 1: postId에 해당하는 post find
+        Post post = postDao.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+
+        // TODO 2: 게시글이 해당 스페이스에 속하는 지 검증
+        if(!post.getSpace().getSpaceId().equals(spaceId)) {
+            throw new CustomException(POST_IS_NOT_IN_SPACE);
+        }
+
+        // TODO 3: 게시글 삭제
+        post.updateInactive();
+        postDao.save(post);
+
+    }
+
 }

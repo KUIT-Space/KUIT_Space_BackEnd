@@ -111,4 +111,22 @@ public class PostController {
 
         return new BaseResponse<>("게시글이 수정되었습니다.");
     }
+
+    // 게시글 삭제
+    @DeleteMapping("/board/post/{postId}")
+    @CheckUserSpace(required = false)
+    public BaseResponse<String> deletePost(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long postId) {
+
+        // TODO 1: 유저가 스페이스에 속하는지 검증
+        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
+        log.info("UserName = {}, UserSpaceAuth = {}", userInSpace.get().getUserName(), userInSpace.get().getUserSpaceAuth());
+
+        // TODO 2: 게시글 삭제 작업 수행
+        postService.deletePost(userId, spaceId, postId);
+
+        return new BaseResponse<>("게시글이 삭제되었습니다.");
+    }
 }

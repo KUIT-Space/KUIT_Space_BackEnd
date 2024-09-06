@@ -155,4 +155,34 @@ public class PostService {
 
         return spaceHomeNoticeList;
     }
+
+    @Transactional
+    public void updatePost(Long userId, Long spaceId, Long postId, CreatePostRequest updatePostReqeust) {
+        // TODO 1: postId에 해당하는 post find
+        Post post = postDao.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+
+        // TODO 2: 게시글이 해당 스페이스에 속하는 지 검증
+        if(!post.getSpace().getSpaceId().equals(spaceId)) {
+            throw new CustomException(POST_IS_NOT_IN_SPACE);
+        }
+
+        // TODO 3: 기존 이미지 삭제 및 새로운 이미지 업로드 처리
+        List<PostImage> updateImages = Optional.ofNullable(updatePostReqeust.getPostImages())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(file -> {
+                    try {
+                        String postImgUrl = s3Uploader.upload(file, "postImg");
+                        return PostImage.builder().postImgUrl(postImgUrl).build();
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to upload file", e);
+                    }
+                }).collect(Collectors.toList());
+
+        post.updatePost(updatePostReqeust.getTitle(), updatePostReqeust.getContent(), updateImages);
+
+        updateImages.forEach(image -> image.setPost(post));
+        postDao.save(post);
+    }
+
 }

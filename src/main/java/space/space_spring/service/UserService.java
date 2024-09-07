@@ -2,6 +2,7 @@ package space.space_spring.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
@@ -35,6 +36,7 @@ public class UserService {
     private final JwtLoginProvider jwtLoginProvider;
     private final UserSpaceDao userSpaceDao;
     private final UserUtils userUtils;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long signup(PostUserSignupRequest postUserSignupRequest) {
@@ -45,7 +47,7 @@ public class UserService {
 
         // TODO 2. 회원정보 db insert
         String email = postUserSignupRequest.getEmail();
-        String password = postUserSignupRequest.getPassword();
+        String password = passwordEncoder.encode(postUserSignupRequest.getPassword());
         String userName = postUserSignupRequest.getUserName();
 
         User saveUser = userDao.saveUser(email, password, userName, LOCAL);

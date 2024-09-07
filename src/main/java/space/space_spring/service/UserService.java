@@ -81,9 +81,11 @@ public class UserService {
     }
 
     private void validatePassword(User userByEmail, String password) {
-        if (!userByEmail.passwordMatch(password)) {
+        String encodePassword = userByEmail.getPassword();
+        if(!passwordEncoder.matches(password,encodePassword)){
             throw new CustomException(PASSWORD_NO_MATCH);
         }
+
     }
 
     @Transactional

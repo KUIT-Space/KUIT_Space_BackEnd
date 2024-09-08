@@ -13,6 +13,9 @@ import space.space_spring.dto.jwt.TokenDTO;
 @AllArgsConstructor
 public class PostLoginDto {
 
+    private TokenDTO tokenDTO;
+    private Long userId;
+
     @Getter
     @Setter
     @NoArgsConstructor
@@ -34,7 +37,6 @@ public class PostLoginDto {
     @AllArgsConstructor
     public static class Response {
 
-        private TokenDTO tokenDTO;
         private Long userId;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Slf4j
 public class ViewTestController {
+    // RestController가 아니라 Controller 의 테스트가 필요할 경우
 
     /**
      * 카카오 로그인 요청 처리

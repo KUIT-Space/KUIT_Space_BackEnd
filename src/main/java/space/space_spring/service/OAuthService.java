@@ -105,9 +105,15 @@ public class OAuthService {
         return userUtils.findOrCreateUserForOAuthInfo(email, nickname, KAKAO);
     }
 
+    @Transactional
     public TokenDTO provideJwtToOAuthUser(User userByOAuthInfo) {
+
+        // TODO 1. access token, refresh token 발급
         String accessToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.ACCESS);
         String refreshToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.REFRESH);
+
+        // TODO 2. 카카오 로그인을 이용한 유저의 refresh token 정보 db에 저장
+        userByOAuthInfo.updateRefreshToken(refreshToken);
 
         return new TokenDTO(accessToken, refreshToken);
     }

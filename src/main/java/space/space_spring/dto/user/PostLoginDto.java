@@ -6,15 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import space.space_spring.dto.jwt.TokenDTO;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostLoginDto {
-
-    private String jwt;
-
-    private Long userId;
 
     @Getter
     @Setter
@@ -37,6 +34,7 @@ public class PostLoginDto {
     @AllArgsConstructor
     public static class Response {
 
+        private TokenDTO tokenDTO;
         private Long userId;
     }
 }

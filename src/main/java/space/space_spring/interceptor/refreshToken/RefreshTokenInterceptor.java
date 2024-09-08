@@ -1,4 +1,4 @@
-package space.space_spring.interceptor.jwtLogin;
+package space.space_spring.interceptor.refreshToken;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +15,7 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Component
 @RequiredArgsConstructor
-public class JwtLoginAuthInterceptor implements HandlerInterceptor{
+public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
@@ -23,18 +23,14 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String accessToken = resolveAccessToken(request);
-        validateAccessToken(accessToken);
-
-        // jwt에서 userId get
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(accessToken);
-        request.setAttribute("userId", userIdFromToken);
+        String refreshToken = resolveAccessToken(request);
+        validateRefreshToken(refreshToken);
 
         return true;
     }
 
-    private void validateAccessToken(String accessToken) {
-        if (jwtLoginProvider.isExpiredToken(accessToken)) {
+    private void validateRefreshToken(String refreshToken) {
+        if (jwtLoginProvider.isExpiredToken(refreshToken)) {
             throw new JwtExpiredTokenException(EXPIRED_TOKEN);
         }
     }
@@ -53,6 +49,4 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
             throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
         }
     }
-
-
 }

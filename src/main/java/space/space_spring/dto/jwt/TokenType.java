@@ -1,6 +1,6 @@
 package space.space_spring.dto.jwt;
 
-public enum tokenType {
+public enum TokenType {
     REFRESH,
     ACCESS
 }

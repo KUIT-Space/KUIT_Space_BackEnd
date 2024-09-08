@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.dto.jwt.TokenDTO;
+import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.user.GetUserProfileListDto;
 import space.space_spring.dto.user.PostLoginDto;
 import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
@@ -60,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public PostLoginDto login(PostLoginDto.Request request) {
+    public PostLoginDto.Response login(PostLoginDto.Request request) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
         User userByEmail = userUtils.findUserByEmail(request.getEmail(), LOCAL);
         log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
@@ -68,12 +70,12 @@ public class UserService {
         // TODO 2. 비밀번호 일치 여부 확인
         validatePassword(userByEmail, request.getPassword());
 
-        // TODO 3. JWT 발급
-        String jwtLogin = jwtLoginProvider.generateToken(userByEmail);
-        log.info("jwtLogin: {}", jwtLogin);
+        // TODO 3. JWT 발급 -> access token, refresh token 2개 발급
+        String accessToken = jwtLoginProvider.generateToken(userByEmail, TokenType.ACCESS);
+        String refreshToken = jwtLoginProvider.generateToken(userByEmail, TokenType.REFRESH);
 
-        return new PostLoginDto(
-                jwtLogin,
+        return new PostLoginDto.Response(
+                new TokenDTO(accessToken, refreshToken),
                 userByEmail.getUserId()
         );
     }

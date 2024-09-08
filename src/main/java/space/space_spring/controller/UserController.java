@@ -55,10 +55,7 @@ public class UserController {
             throw new CustomException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
         }
 
-        PostLoginDto login = userService.login(request);
-        response.setHeader("Authorization", "Bearer " + login.getJwt());
-
-        return new BaseResponse<>(new PostLoginDto.Response(login.getUserId()));
+        return new BaseResponse<>(userService.login(request));
     }
 
     /**

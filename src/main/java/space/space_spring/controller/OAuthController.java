@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.dto.oAuth.OAuthLoginResponse;
 import space.space_spring.entity.User;
@@ -69,18 +70,22 @@ public class OAuthController {
         User userByOAuthInfo = oAuthService.findUserByOAuthInfo(kakaoInfo);
 
         // TODO 5. 카카오 로그인 유저에게 jwt 발급
-        String jwtOAuthLogin = oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
-        response.setHeader("Authorization", "Bearer " + jwtOAuthLogin);
-        log.info("jwtOAuthLogin = {}", jwtOAuthLogin);
+        TokenDTO tokenDTO = oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
+        userByOAuthInfo.updateRefreshToken(tokenDTO.getRefreshToken());
 
-        // Construct the redirect URL with the JWT and userId as query parameters
+        System.out.println("tokenDTO.getAccessToken() = " + tokenDTO.getAccessToken());
+        System.out.println("tokenDTO.getRefreshToken() = " + tokenDTO.getRefreshToken());
+        
+        // 클라이언트로 response 전달
+        // -> 메서드 분리 ??
+        // 공백문자가 %20 으로 전달되는 듯 함 -> 프론트 분들과 협의 필요할 듯
         String redirectUrl = String.format(
-                "https://kuit-space.github.io/KUIT-Space-front/login?jwt=Bearer %s&userId=%s",
-                jwtOAuthLogin,
+                "https://kuit-space.github.io/KUIT-Space-front/login?access-token=%s&refresh-token=%s&userId=%s",
+                "Bearer " + tokenDTO.getAccessToken(),
+                "Bearer " + tokenDTO.getRefreshToken(),
                 userByOAuthInfo.getUserId()
         );
 
-        // Redirect to the specified URL
         response.sendRedirect(redirectUrl);
     }
 }

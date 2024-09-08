@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
 import space.space_spring.jwt.JwtLoginProvider;
@@ -104,6 +105,6 @@ public class OAuthService {
     }
 
     public String provideJwtToOAuthUser(User userByOAuthInfo) {
-        return jwtLoginProvider.generateToken(userByOAuthInfo);
+        return jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.ACCESS);
     }
 }

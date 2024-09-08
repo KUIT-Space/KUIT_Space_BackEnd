@@ -62,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public PostLoginDto.Response login(PostLoginDto.Request request) {
+    public PostLoginDto login(PostLoginDto.Request request) {
         // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
         User userByEmail = userUtils.findUserByEmail(request.getEmail(), LOCAL);
         log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
@@ -74,7 +74,10 @@ public class UserService {
         String accessToken = jwtLoginProvider.generateToken(userByEmail, TokenType.ACCESS);
         String refreshToken = jwtLoginProvider.generateToken(userByEmail, TokenType.REFRESH);
 
-        return new PostLoginDto.Response(
+        // TODO 4. refresh token db에 저장
+        userByEmail.updateRefreshToken(refreshToken);
+
+        return new PostLoginDto (
                 new TokenDTO(accessToken, refreshToken),
                 userByEmail.getUserId()
         );

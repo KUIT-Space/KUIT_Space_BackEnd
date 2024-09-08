@@ -83,4 +83,5 @@ public class UserController {
 
         return new BaseResponse<>(userService.getUserProfileList(userId));
     }
+
 }

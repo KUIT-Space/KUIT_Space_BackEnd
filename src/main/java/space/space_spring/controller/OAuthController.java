@@ -5,10 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.dto.oAuth.OAuthLoginResponse;
@@ -74,7 +71,7 @@ public class OAuthController {
 
         System.out.println("tokenDTO.getAccessToken() = " + tokenDTO.getAccessToken());
         System.out.println("tokenDTO.getRefreshToken() = " + tokenDTO.getRefreshToken());
-        
+
         // 클라이언트로 response 전달
         // -> 메서드 분리 ??
         // 공백문자가 %20 으로 전달되는 듯 함 -> 프론트 분들과 협의 필요할 듯

@@ -11,7 +11,9 @@ import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuthHandlerArgumentR
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuthHandlerArgumentResolver;
 import space.space_spring.argumentResolver.userSpace.UserSpaceIdHandlerArgumentResolver;
 import space.space_spring.config.interceptorURL.JwtLoginInterceptorURL;
+import space.space_spring.config.interceptorURL.RefreshTokenInterceptorURL;
 import space.space_spring.config.interceptorURL.UserSpaceValidationInterceptorURL;
+import space.space_spring.interceptor.refreshToken.RefreshTokenInterceptor;
 import space.space_spring.interceptor.UserSpaceValidationInterceptor;
 import space.space_spring.interceptor.jwtLogin.JwtLoginAuthInterceptor;
 
@@ -22,11 +24,12 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final JwtLoginAuthInterceptor jwtLoginAuthInterceptor;
+    private final UserSpaceValidationInterceptor userSpaceValidationInterceptor;
+    private final RefreshTokenInterceptor refreshTokenInterceptor;
 
     private final JwtLoginAuthHandlerArgumentResolver jwtLoginAuthHandlerArgumentResolver;
     private final UserSpaceIdHandlerArgumentResolver userSpaceIdHandlerArgumentResolver;
     private final UserSpaceAuthHandlerArgumentResolver userSpaceAuthHandlerArgumentResolver;
-    private final UserSpaceValidationInterceptor userSpaceValidationInterceptor;
 
 
     @Override
@@ -39,14 +42,20 @@ public class WebConfig implements WebMvcConfigurer {
             registration.addPathPatterns(interceptorURL.getUrlPattern());
         }
 
+        InterceptorRegistration refreshTokenRegistration =
+                registry.addInterceptor(refreshTokenInterceptor)
+                        .order(2);
+
+        for (RefreshTokenInterceptorURL interceptorURL : RefreshTokenInterceptorURL.values()) {
+            registration.addPathPatterns(interceptorURL.getUrlPattern());
+        }
+
         InterceptorRegistration userSpaceRegistration =
                 registry.addInterceptor(userSpaceValidationInterceptor)
-                        .order(2);
+                        .order(3);
         for(UserSpaceValidationInterceptorURL url:UserSpaceValidationInterceptorURL.values()) {
             userSpaceRegistration.addPathPatterns(url.getUrlPattern());
         }
-
-
     }
 
     @Override

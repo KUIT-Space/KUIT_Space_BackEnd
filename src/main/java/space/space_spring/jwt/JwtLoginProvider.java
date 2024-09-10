@@ -81,7 +81,6 @@ public class JwtLoginProvider {
         } catch (IllegalArgumentException e) {
             throw new JwtInvalidTokenException(INVALID_TOKEN);
         } catch (SignatureException e){
-            log.error("비밀키 : " + choiceSecretKey(tokenType));
             throw new CustomException(WRONG_SIGNATURE_JWT);
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.validateAccessToken]", e);

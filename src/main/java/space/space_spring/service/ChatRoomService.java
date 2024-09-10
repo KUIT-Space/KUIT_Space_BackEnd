@@ -110,7 +110,7 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: chatRoom 생성 및 저장
-        ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest, chatRoomImgUrl));
+        ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest.getName(), chatRoomImgUrl));
 
         // TODO 4: user_chatRoom 매핑 정보 저장
         UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));

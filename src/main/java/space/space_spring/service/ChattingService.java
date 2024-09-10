@@ -58,11 +58,13 @@ public class ChattingService {
 
         // TODO 4: DB에 메시지 저장
         ChatMessage message = chattingDao.insert(ChatMessage.of(
-                chatMessageRequest,
+                chatMessageRequest.getContent(),
                 chatRoomId,
+                chatMessageRequest.getSpaceId(),
                 senderId,
                 senderName,
-                senderProfileImg
+                senderProfileImg,
+                chatMessageRequest.getMessageType()
         ));
 
         return ChatMessageResponse.of(message);

@@ -7,10 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-import space.space_spring.dto.chat.request.CreateChatRoomRequest;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -40,10 +36,10 @@ public class ChatRoom extends BaseEntity{
     @Column(name = "chat_room_img")
     private String img;
 
-    public static ChatRoom of(Space space, CreateChatRoomRequest createChatRoomRequest, String chatRoomImgUrl) {
+    public static ChatRoom of(Space space, String chatRoomName, String chatRoomImgUrl) {
         return ChatRoom.builder()
                 .space(space)
-                .name(createChatRoomRequest.getName())
+                .name(chatRoomName)
                 .img(chatRoomImgUrl)
                 .build();
     }

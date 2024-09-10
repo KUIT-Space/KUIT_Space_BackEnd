@@ -12,7 +12,6 @@ import space.space_spring.argumentResolver.userSpace.UserSpaceAuthHandlerArgumen
 import space.space_spring.argumentResolver.userSpace.UserSpaceIdHandlerArgumentResolver;
 import space.space_spring.config.interceptorURL.JwtLoginInterceptorURL;
 import space.space_spring.config.interceptorURL.UserSpaceValidationInterceptorURL;
-import space.space_spring.interceptor.refreshToken.RefreshTokenInterceptor;
 import space.space_spring.interceptor.UserSpaceValidationInterceptor;
 import space.space_spring.interceptor.jwtLogin.JwtLoginAuthInterceptor;
 

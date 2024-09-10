@@ -21,10 +21,11 @@ public class JwtLoginProvider {
     @Value("${secret.jwt-login-secret-key}")
     private String JWT_LOGIN_SECRET_KEY;
 
-    @Value("${secret.jwt-expired-in}")
-    private Long JWT_EXPIRED_IN;
+    @Value("${secret.access-expired-in}")
+    private Long ACCESS_EXPIRED_IN;
 
-    private static int times = 168;         // 1시간 * times == refresh token 만료 시간
+    @Value("${secret.refresh-expired-in}")
+    private Long REFRESH_EXPIRED_IN;
 
     public String generateToken(User user, TokenType tokenType) {
 //        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());
@@ -46,11 +47,11 @@ public class JwtLoginProvider {
     private Date setExpiration(Date now, TokenType tokenType) {
         if (tokenType.equals(TokenType.ACCESS)) {
             // 엑세스 토큰 : 1시간
-            return new Date(now.getTime() + JWT_EXPIRED_IN);
+            return new Date(now.getTime() + ACCESS_EXPIRED_IN);
         }
 
         // 리프레쉬 토큰 : 7일
-        return new Date(now.getTime() + JWT_EXPIRED_IN * times);
+        return new Date(now.getTime() + REFRESH_EXPIRED_IN);
     }
 
     public boolean isExpiredToken(String token) {

@@ -57,6 +57,9 @@ public class UserController {
 
         PostLoginDto login = userService.login(request);
 
+        System.out.println("login.getTokenDTO().getRefreshToken() = " + login.getTokenDTO().getRefreshToken());
+        System.out.println("login.getTokenDTO().getAccessToken() = " + login.getTokenDTO().getAccessToken());
+        
         response.setHeader("Authorization-refresh", "Bearer " + login.getTokenDTO().getRefreshToken());
         response.setHeader("Authorization", "Bearer " + login.getTokenDTO().getAccessToken());
 

@@ -126,7 +126,7 @@ public class OAuthService {
     @Transactional
     public void validateRefreshToken(String refreshToken) {
         // TODO 1. refresh token의 만료시간 체크
-        if (jwtLoginProvider.isExpiredToken(refreshToken)) {
+        if (jwtLoginProvider.isExpiredToken(refreshToken, TokenType.REFRESH)) {
             // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
             throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
         }
@@ -140,7 +140,7 @@ public class OAuthService {
 
     public TokenDTO updateTokenPair(String refreshToken) {
         // TODO 1. refresh token으로 user find
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(refreshToken);
+        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(refreshToken, TokenType.REFRESH);
         User userByUserId = userUtils.findUserByUserId(userIdFromToken);
 
         // TODO 2. new access token, refresh token 발급

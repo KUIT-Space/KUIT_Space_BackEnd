@@ -23,7 +23,7 @@ public class ChatRoom extends BaseEntity{
     private Long id;
 
     @Comment("채팅방이 속한 스페이스 ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "space_id")
     private Space space;
 

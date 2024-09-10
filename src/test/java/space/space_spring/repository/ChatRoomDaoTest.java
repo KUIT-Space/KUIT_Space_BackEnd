@@ -45,7 +45,7 @@ public class ChatRoomDaoTest {
 
         testSpace = new Space();
 
-        // testSpace에 속한 채팅방 생성
+        // testSpace에 속한 chatRoom 엔티티 생성
         testChatRoom1 = ChatRoom.of(testSpace, "testChatRoom1", "");
         testChatRoom2 = ChatRoom.of(testSpace, "testChatRoom2", "");
     }
@@ -60,8 +60,8 @@ public class ChatRoomDaoTest {
         ChatRoom savedTestChatRoom2 = chatRoomDao.save(testChatRoom2);
 
         // then
-        assertThat(savedTestChatRoom1.getName()).isEqualTo(testChatRoom1.getName());
-        assertThat(savedTestChatRoom2.getName()).isEqualTo(testChatRoom2.getName());
+        assertThat(savedTestChatRoom1.getId()).isEqualTo(testChatRoom1.getId());
+        assertThat(savedTestChatRoom2.getId()).isEqualTo(testChatRoom2.getId());
     }
 
     @Test

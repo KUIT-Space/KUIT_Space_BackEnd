@@ -34,7 +34,6 @@ public class JwtLoginProvider {
 
         Long userId = user.getUserId();
 
-        // refresh token의 경우에는 payload에 userId 값을 넣을 필요는 없어보이나 일단 이전 generateToken 메서드를 재활용 해보겠음
         return Jwts.builder()
 //                .setClaims(claims)
                 .setIssuedAt(now)
@@ -54,11 +53,11 @@ public class JwtLoginProvider {
         return new Date(now.getTime() + JWT_EXPIRED_IN * times);
     }
 
-    public boolean isExpiredToken(String accessToken) {
+    public boolean isExpiredToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(JWT_LOGIN_SECRET_KEY).build()
-                    .parseClaimsJws(accessToken);
+                    .parseClaimsJws(token);
             return claims.getBody().getExpiration().before(new Date());
 
         } catch (ExpiredJwtException e) {

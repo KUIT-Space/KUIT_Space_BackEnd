@@ -1,10 +1,12 @@
 package space.space_spring.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.oAuth.KakaoInfo;
@@ -87,4 +89,25 @@ public class OAuthController {
 
         response.sendRedirect(redirectUrl);
     }
+
+    /**
+     * 엑세스 토큰 갱신 요청 처리
+     * -> 엑세스 토큰, 리프레시 토큰 갱신 (RTR 패턴)
+     */
+    @PostMapping("/new-token")
+    public BaseResponse<String> updateAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // request header 에서 refresh token 파싱
+        String refreshToken = request.getHeader("Authorization-refresh");
+
+        // refresh token 유효성 검사
+        oAuthService.validateRefreshToken(refreshToken);
+
+        // access token, refresh token 새로 발급
+        TokenDTO tokenDTO = oAuthService.updateTokenPair(refreshToken);
+
+        // response header에 새로 발급한 token pair set
+
+        // return
+    }
+
 }

@@ -49,10 +49,8 @@ public class JwtLoginProvider {
 
     private String choiceSecretKey(TokenType tokenType) {
         if (tokenType.equals(TokenType.ACCESS)) {
-            System.out.println("access token : " + ACCESS_SECRET_KEY);
             return ACCESS_SECRET_KEY;
         }
-        System.out.println("refresh token : " + REFRESH_SECRET_KEY);
         return REFRESH_SECRET_KEY;
     }
 
@@ -83,6 +81,7 @@ public class JwtLoginProvider {
         } catch (IllegalArgumentException e) {
             throw new JwtInvalidTokenException(INVALID_TOKEN);
         } catch (SignatureException e){
+            log.error("비밀키 : " + choiceSecretKey(tokenType));
             throw new CustomException(WRONG_SIGNATURE_JWT);
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.validateAccessToken]", e);

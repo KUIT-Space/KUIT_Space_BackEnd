@@ -78,11 +78,11 @@ public class JwtLoginProvider {
 
     }
 
-    public Long getUserIdFromToken(String accessToken) {
+    public Long getUserIdFromToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(JWT_LOGIN_SECRET_KEY).build()
-                    .parseClaimsJws(accessToken);
+                    .parseClaimsJws(token);
             return claims.getBody().get("userId", Long.class);
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.getJwtPayloadDtoFromToken]", e);

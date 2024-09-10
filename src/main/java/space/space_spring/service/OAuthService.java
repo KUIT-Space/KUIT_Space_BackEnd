@@ -3,6 +3,7 @@ package space.space_spring.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,14 +19,16 @@ import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
+import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
+import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.util.user.UserUtils;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.EXPIRED_REFRESH_TOKEN;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_TOKEN;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.UNSUPPORTED_TOKEN_TYPE;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,9 @@ public class OAuthService {
     private final UserUtils userUtils;
     private final JwtLoginProvider jwtLoginProvider;
     private final UserDao userDao;
+
+    private static final String JWT_TOKEN_PREFIX = "Bearer ";
+
 
     /**
      * 카카오 인증 서버가 전달해준 유저의 인가코드로 토큰 발급 요청
@@ -123,6 +129,22 @@ public class OAuthService {
         user.updateRefreshToken(refreshToken);
     }
 
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization-refresh");
+        validateToken(token);
+        return token.substring(JWT_TOKEN_PREFIX.length());
+
+    }
+
+    private void validateToken(String token) {
+        if (token == null) {
+            throw new JwtNoTokenException(TOKEN_NOT_FOUND);
+        }
+        if (!token.startsWith(JWT_TOKEN_PREFIX)) {
+            throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
+        }
+    }
+
     @Transactional
     public void validateRefreshToken(String refreshToken) {
         // TODO 1. refresh token의 만료시간 체크
@@ -138,6 +160,7 @@ public class OAuthService {
         }
     }
 
+    @Transactional
     public TokenDTO updateTokenPair(String refreshToken) {
         // TODO 1. refresh token으로 user find
         Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(refreshToken, TokenType.REFRESH);
@@ -151,7 +174,7 @@ public class OAuthService {
         userByUserId.updateRefreshToken(newRefreshToken);
 
         // TODO 4. return
-        return new TokenDTO(newAccessToken, newRefreshToken);
+        return new TokenDTO(newRefreshToken, newAccessToken);
     }
 
 }

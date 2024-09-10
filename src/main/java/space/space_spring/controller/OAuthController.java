@@ -96,8 +96,8 @@ public class OAuthController {
      */
     @PostMapping("/new-token")
     public BaseResponse<String> updateAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // request header 에서 refresh token 파싱
-        String refreshToken = request.getHeader("Authorization-refresh");
+        // refresh token 파싱
+        String refreshToken = oAuthService.resolveRefreshToken(request);
 
         // refresh token 유효성 검사
         oAuthService.validateRefreshToken(refreshToken);
@@ -115,5 +115,4 @@ public class OAuthController {
         // return
         return new BaseResponse<>("토큰 갱신 요청 성공");
     }
-
 }

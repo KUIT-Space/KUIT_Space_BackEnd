@@ -77,8 +77,8 @@ public class UserService {
         // TODO 4. refresh token db에 저장
         userByEmail.updateRefreshToken(refreshToken);
 
-        return new PostLoginDto (
-                new TokenDTO(accessToken, refreshToken),
+        return new PostLoginDto(
+                new TokenDTO(refreshToken, accessToken),
                 userByEmail.getUserId()
         );
     }

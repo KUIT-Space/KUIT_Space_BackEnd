@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import space.space_spring.dao.UserDao;
+import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
@@ -30,12 +31,12 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
         String accessToken = resolveAccessToken(request);
 
         // TODO 2. AT 유효성 검사
-        if (jwtLoginProvider.isExpiredToken(accessToken)) {
-            throw new JwtExpiredTokenException(EXPIRED_TOKEN);
+        if (jwtLoginProvider.isExpiredToken(accessToken, TokenType.ACCESS)) {
+            throw new JwtExpiredTokenException(EXPIRED_ACCESS_TOKEN);
         }
 
         // TODO 3. AT 의 payload 로 부터 userId 값 get
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(accessToken);
+        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(accessToken, TokenType.ACCESS);
         request.setAttribute("userId", userIdFromToken);
 
         return true;

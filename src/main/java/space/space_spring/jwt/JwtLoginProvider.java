@@ -18,8 +18,11 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 @Slf4j
 @Component
 public class JwtLoginProvider {
-    @Value("${secret.jwt-login-secret-key}")
-    private String JWT_LOGIN_SECRET_KEY;
+    @Value("${secret.access-secret-key}")
+    private String ACCESS_SECRET_KEY;
+
+    @Value("${secret.refresh-secret-key}")
+    private String REFRESH_SECRET_KEY;
 
     @Value("${secret.access-expired-in}")
     private Long ACCESS_EXPIRED_IN;
@@ -40,8 +43,17 @@ public class JwtLoginProvider {
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .claim("userId", userId)
-                .signWith(SignatureAlgorithm.HS256, JWT_LOGIN_SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, choiceSecretKey(tokenType))
                 .compact();
+    }
+
+    private String choiceSecretKey(TokenType tokenType) {
+        if (tokenType.equals(TokenType.ACCESS)) {
+            System.out.println("access token : " + ACCESS_SECRET_KEY);
+            return ACCESS_SECRET_KEY;
+        }
+        System.out.println("refresh token : " + REFRESH_SECRET_KEY);
+        return REFRESH_SECRET_KEY;
     }
 
     private Date setExpiration(Date now, TokenType tokenType) {
@@ -54,17 +66,17 @@ public class JwtLoginProvider {
         return new Date(now.getTime() + REFRESH_EXPIRED_IN);
     }
 
-    public boolean isExpiredToken(String token) {
+    public boolean isExpiredToken(String token, TokenType tokenType) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(JWT_LOGIN_SECRET_KEY).build()
+                    .setSigningKey(choiceSecretKey(tokenType)).build()
                     .parseClaimsJws(token);
             return claims.getBody().getExpiration().before(new Date());
 
         } catch (ExpiredJwtException e) {
             return true;
 
-        }catch (UnsupportedJwtException e) {
+        } catch (UnsupportedJwtException e) {
             throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
         } catch (MalformedJwtException e) {
             throw new JwtMalformedTokenException(MALFORMED_TOKEN);
@@ -72,17 +84,17 @@ public class JwtLoginProvider {
             throw new JwtInvalidTokenException(INVALID_TOKEN);
         } catch (SignatureException e){
             throw new CustomException(WRONG_SIGNATURE_JWT);
-        }catch (JwtException e) {
+        } catch (JwtException e) {
             log.error("[JwtTokenProvider.validateAccessToken]", e);
             throw e;
         }
 
     }
 
-    public Long getUserIdFromToken(String token) {
+    public Long getUserIdFromToken(String token, TokenType tokenType) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(JWT_LOGIN_SECRET_KEY).build()
+                    .setSigningKey(choiceSecretKey(tokenType)).build()
                     .parseClaimsJws(token);
             return claims.getBody().get("userId", Long.class);
         } catch (JwtException e) {

@@ -68,7 +68,9 @@ public class OAuthController {
 
         // TODO 5. 카카오 로그인 유저에게 jwt 발급
         TokenDTO tokenDTO = oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
-        userByOAuthInfo.updateRefreshToken(tokenDTO.getRefreshToken());
+
+        // TODO 6. 카카오 로그인 유저에게 발급한 refresh token을 db에 저장
+        oAuthService.updateRefreshToken(userByOAuthInfo, tokenDTO.getRefreshToken());
 
         System.out.println("tokenDTO.getAccessToken() = " + tokenDTO.getAccessToken());
         System.out.println("tokenDTO.getRefreshToken() = " + tokenDTO.getRefreshToken());

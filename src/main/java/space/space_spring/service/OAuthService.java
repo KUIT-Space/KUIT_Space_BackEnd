@@ -111,4 +111,9 @@ public class OAuthService {
 
         return new TokenDTO(accessToken, refreshToken);
     }
+
+    @Transactional
+    public void updateRefreshToken(User user, String refreshToken) {
+        user.updateRefreshToken(refreshToken);
+    }
 }

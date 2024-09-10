@@ -34,6 +34,7 @@ public class JwtLoginProvider {
 
         Long userId = user.getUserId();
 
+        // refresh token의 경우에는 payload에 userId 값을 넣을 필요는 없어보이나 일단 이전 generateToken 메서드를 재활용 해보겠음
         return Jwts.builder()
 //                .setClaims(claims)
                 .setIssuedAt(now)

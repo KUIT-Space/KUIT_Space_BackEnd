@@ -106,8 +106,14 @@ public class OAuthController {
         TokenDTO tokenDTO = oAuthService.updateTokenPair(refreshToken);
 
         // response header에 새로 발급한 token pair set
+        response.setHeader("Authorization-refresh", "Bearer " + tokenDTO.getRefreshToken());
+        response.setHeader("Authorization", "Bearer " + tokenDTO.getAccessToken());
 
+        System.out.println("tokenDTO.getAccessToken() = " + tokenDTO.getAccessToken());
+        System.out.println("tokenDTO.getRefreshToken() = " + tokenDTO.getRefreshToken());
+        
         // return
+        return new BaseResponse<>("토큰 갱신 요청 성공");
     }
 
 }

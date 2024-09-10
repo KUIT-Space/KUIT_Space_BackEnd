@@ -13,14 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import space.space_spring.dao.UserDao;
 import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
+import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
+import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.util.user.UserUtils;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.EXPIRED_REFRESH_TOKEN;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class OAuthService {
 
     private final UserUtils userUtils;
     private final JwtLoginProvider jwtLoginProvider;
+    private final UserDao userDao;
 
     /**
      * 카카오 인증 서버가 전달해준 유저의 인가코드로 토큰 발급 요청
@@ -116,4 +122,36 @@ public class OAuthService {
     public void updateRefreshToken(User user, String refreshToken) {
         user.updateRefreshToken(refreshToken);
     }
+
+    @Transactional
+    public void validateRefreshToken(String refreshToken) {
+        // TODO 1. refresh token의 만료시간 체크
+        if (jwtLoginProvider.isExpiredToken(refreshToken)) {
+            // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
+            throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
+        }
+
+        // TODO 2. refresh token이 db에 실제로 존재하는지 체크
+        if (userDao.findUserByRefreshToken(refreshToken).isEmpty()) {
+            // refresh token이 db에 존재하지 않느 경우 -> 유효하지 않은 refresh token이므로 예외 발생
+            throw new JwtInvalidTokenException(INVALID_TOKEN);
+        }
+    }
+
+    public TokenDTO updateTokenPair(String refreshToken) {
+        // TODO 1. refresh token으로 user find
+        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(refreshToken);
+        User userByUserId = userUtils.findUserByUserId(userIdFromToken);
+
+        // TODO 2. new access token, refresh token 발급
+        String newAccessToken = jwtLoginProvider.generateToken(userByUserId, TokenType.ACCESS);
+        String newRefreshToken = jwtLoginProvider.generateToken(userByUserId, TokenType.REFRESH);
+
+        // TODO 3. db의 refresh token update
+        userByUserId.updateRefreshToken(newRefreshToken);
+
+        // TODO 4. return
+        return new TokenDTO(newAccessToken, newRefreshToken);
+    }
+
 }

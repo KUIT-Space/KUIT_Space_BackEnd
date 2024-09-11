@@ -40,7 +40,6 @@ public class OAuthService {
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
-
     /**
      * 카카오 인증 서버가 전달해준 유저의 인가코드로 토큰 발급 요청
      */

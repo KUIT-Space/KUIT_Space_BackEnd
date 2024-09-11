@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import space.space_spring.dao.JwtRepository;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.oAuth.KakaoInfo;
+import space.space_spring.entity.TokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
@@ -37,6 +39,7 @@ public class OAuthService {
     private final UserUtils userUtils;
     private final JwtLoginProvider jwtLoginProvider;
     private final UserDao userDao;
+    private final JwtRepository jwtRepository;
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
@@ -120,12 +123,19 @@ public class OAuthService {
         String accessToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.ACCESS);
         String refreshToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.REFRESH);
 
-        return new TokenDTO(accessToken, refreshToken);
+        return TokenDTO.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Transactional
     public void updateRefreshToken(User user, String refreshToken) {
-        user.updateRefreshToken(refreshToken);
+        // TODO 1. TokenStorage entity find
+        TokenStorage tokenStorage = jwtRepository.findByUser(user);
+
+        // TODO 2. tokenValue 값을 새로 발급한 refresh token으로 update
+        tokenStorage.updateTokenValue(refreshToken);
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {

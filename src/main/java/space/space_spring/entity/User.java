@@ -26,17 +26,6 @@ public class User extends BaseEntity {
     @Column(name = "signup_type")
     private String signupType;              // 유저가 회원가입을 진행한 방식 (local, kakao, naver, google 등등)
 
-    @Column(name = "refresh_token")
-    private String refreshToken;
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    public void destroyRefreshToken() {
-        this.refreshToken = null;
-    }
-
     public void saveUser(String email, String password, String userName, UserSignupType signupType) {
         this.email = email;
         this.password = password;

@@ -70,16 +70,14 @@ public class ChatRoomDaoTest {
         // given
         ChatRoom savedTestChatRoom1 = chatRoomDao.save(testChatRoom1);
         ChatRoom savedTestChatRoom2 = chatRoomDao.save(testChatRoom2);
-        Long testChatRoom1Id = savedTestChatRoom1.getId();
-        Long testChatRoom2Id = savedTestChatRoom2.getId();
 
         // when
-        Optional<ChatRoom> chatRoom1byId = chatRoomDao.findById(testChatRoom1Id);
-        Optional<ChatRoom> chatRoom2byId = chatRoomDao.findById(testChatRoom2Id);
+        Optional<ChatRoom> chatRoom1byId = chatRoomDao.findById(savedTestChatRoom1.getId());
+        Optional<ChatRoom> chatRoom2byId = chatRoomDao.findById(savedTestChatRoom2.getId());
 
         // then
-        chatRoom1byId.ifPresent(chatRoom -> assertThat(chatRoom.getId()).isEqualTo(testChatRoom1Id));
-        chatRoom2byId.ifPresent(chatRoom -> assertThat(chatRoom.getId()).isEqualTo(testChatRoom2Id));
+        chatRoom1byId.ifPresent(chatRoom -> assertThat(chatRoom.getId()).isEqualTo(savedTestChatRoom1.getId()));
+        chatRoom2byId.ifPresent(chatRoom -> assertThat(chatRoom.getId()).isEqualTo(savedTestChatRoom2.getId()));
     }
 
     @Test

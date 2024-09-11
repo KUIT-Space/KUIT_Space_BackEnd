@@ -34,8 +34,6 @@ public class User extends BaseEntity {
         initializeBaseEntityFields();
     }
 
-    public boolean passwordMatch(String password) {
-        return this.password.equals(password);
-    }
+
 
 }

@@ -38,11 +38,24 @@ public class JwtLoginProvider {
 
         Long userId = user.getUserId();
 
+        return makeToken(tokenType, userId, now, expiration);
+    }
+
+    private String makeToken(TokenType tokenType, Long userId, Date now, Date expiration) {
+        if (tokenType.equals(TokenType.ACCESS)) {
+            return Jwts.builder()
+//                .setClaims(claims)
+                    .setIssuedAt(now)
+                    .setExpiration(expiration)
+                    .claim("userId", userId)
+                    .signWith(SignatureAlgorithm.HS256, choiceSecretKey(tokenType))
+                    .compact();
+        }
+
         return Jwts.builder()
 //                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .claim("userId", userId)
                 .signWith(SignatureAlgorithm.HS256, choiceSecretKey(tokenType))
                 .compact();
     }

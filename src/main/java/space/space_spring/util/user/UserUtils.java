@@ -10,7 +10,6 @@ import space.space_spring.exception.CustomException;
 
 import java.util.UUID;
 
-import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Component

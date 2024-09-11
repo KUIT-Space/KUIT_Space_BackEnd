@@ -18,16 +18,16 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 @Slf4j
 @Component
 public class JwtLoginProvider {
-    @Value("${secret.access-secret-key}")
+    @Value("${secret.jwt.access-secret-key}")
     private String ACCESS_SECRET_KEY;
 
-    @Value("${secret.refresh-secret-key}")
+    @Value("${secret.jwt.refresh-secret-key}")
     private String REFRESH_SECRET_KEY;
 
-    @Value("${secret.access-expired-in}")
+    @Value("${secret.jwt.access-expired-in}")
     private Long ACCESS_EXPIRED_IN;
 
-    @Value("${secret.refresh-expired-in}")
+    @Value("${secret.jwt.refresh-expired-in}")
     private Long REFRESH_EXPIRED_IN;
 
     public String generateToken(User user, TokenType tokenType) {

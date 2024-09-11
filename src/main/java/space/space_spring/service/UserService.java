@@ -4,15 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.dao.JwtRepository;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.user.GetUserProfileListDto;
 import space.space_spring.dto.user.PostLoginDto;
 import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
-import space.space_spring.dto.user.request.PostUserLoginRequest;
 import space.space_spring.dto.user.request.PostUserSignupRequest;
 import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
+import space.space_spring.entity.TokenStorage;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.CustomException;
@@ -23,7 +24,6 @@ import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
@@ -37,6 +37,7 @@ public class UserService {
     private final JwtLoginProvider jwtLoginProvider;
     private final UserSpaceDao userSpaceDao;
     private final UserUtils userUtils;
+    private final JwtRepository jwtRepository;
 
     @Transactional
     public Long signup(PostUserSignupRequest postUserSignupRequest) {
@@ -75,12 +76,22 @@ public class UserService {
         String refreshToken = jwtLoginProvider.generateToken(userByEmail, TokenType.REFRESH);
 
         // TODO 4. refresh token db에 저장
-        userByEmail.updateRefreshToken(refreshToken);
+        TokenStorage tokenStorage = TokenStorage.builder()
+                .user(userByEmail)
+                .tokenValue(refreshToken)
+                .build();
+        jwtRepository.save(tokenStorage);
 
-        return new PostLoginDto(
-                new TokenDTO(refreshToken, accessToken),
-                userByEmail.getUserId()
-        );
+        // TODO 5. return
+        TokenDTO tokenDTO = TokenDTO.builder()
+                .refreshToken(refreshToken)
+                .accessToken(accessToken)
+                .build();
+
+        return PostLoginDto.builder()
+                .tokenDTO(tokenDTO)
+                .userId(userByEmail.getUserId())
+                .build();
     }
 
     private void validatePassword(User userByEmail, String password) {

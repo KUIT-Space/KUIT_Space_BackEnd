@@ -113,7 +113,7 @@ jobs:
 
     - name: Set YML
       run: |
-        echo "${{ secrets.APPLICATION_YML_DEV }}" | base64 --decode > src/main/resources/application.yml
+        echo "${{ secrets.APPLICATION_YML_DEV }}" > src/main/resources/application.yml
 
       # (5) Gradle build (Test 제외)
     - name: Build with Gradle

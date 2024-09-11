@@ -113,7 +113,11 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest.getName(), chatRoomImgUrl));
 
         // TODO 4: user_chatRoom 매핑 정보 저장
-        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
+        userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
+        for (Long id : createChatRoomRequest.getMemberList()) {
+            User user = userUtils.findUserByUserId(id);
+            userChatRoomDao.save(UserChatRoom.of(chatRoom, user, LocalDateTime.now()));
+        }
 
         // TODO 5: chatroom id 반환
         return CreateChatRoomResponse.of(chatRoom.getId());

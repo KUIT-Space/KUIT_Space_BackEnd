@@ -71,7 +71,7 @@ public class ChatRoomController {
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
             @PathVariable Long chatRoomId) {
-        return new BaseResponse<>(chatRoomService.updateLastReadTime(userId, spaceId, chatRoomId));
+        return new BaseResponse<>(chatRoomService.updateLastReadTime(userId, chatRoomId));
     }
 
     /**

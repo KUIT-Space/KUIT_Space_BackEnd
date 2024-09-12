@@ -25,6 +25,7 @@ import space.space_spring.util.user.UserUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,26 +88,17 @@ class ChatRoomServiceTest {
 
     private JoinChatRoomRequest joinChatRoomRequest;
 
+    private LocalDateTime mockTime;
+
     @BeforeEach
     void 채팅방_테스트_설정() {
         /**
          * <관리자인 user1은 chatRoom1, chatRoom2 생성>
          * <user1은 chatRoom1 생성 시 user2 포함, 추후에 user3을 초대>
          */
-        user1 = new User();
-        user1.saveUser("user1@test.com", "Asdf1234!", "user1", UserSignupType.LOCAL);
-        ReflectionTestUtils.setField(user1, "userId", 0L);
-        lenient().when(userUtils.findUserByUserId(0L)).thenReturn(user1);
-
-        user2 = new User();
-        user2.saveUser("user2@test.com", "Asdf1234!", "user2", UserSignupType.LOCAL);
-        ReflectionTestUtils.setField(user2, "userId", 1L);
-        lenient().when(userUtils.findUserByUserId(1L)).thenReturn(user2);
-
-        user3 = new User();
-        user3.saveUser("user3@test.com", "Asdf1234!", "user3", UserSignupType.LOCAL);
-        ReflectionTestUtils.setField(user3, "userId", 2L);
-        lenient().when(userUtils.findUserByUserId(2L)).thenReturn(user3);
+        user1 = createUser("user1@test.com", 0L);
+        user2 = createUser("user2@test.com", 1L);
+        user3 = createUser("user3@test.com", 2L);
 
         testSpace = new Space();
         testSpace.saveSpace("testSpace", "");
@@ -116,23 +108,19 @@ class ChatRoomServiceTest {
         testUserSpace1 = new UserSpace();
         testUserSpace2 = new UserSpace();
         testUserSpace3 = new UserSpace();
-        testUserSpace1.createUserSpace(user1, testSpace, UserSpaceAuth.MANAGER);
-        testUserSpace2.createUserSpace(user2, testSpace, UserSpaceAuth.NORMAL);
+        testUserSpace1.createUserSpace(this.user1, testSpace, UserSpaceAuth.MANAGER);
+        testUserSpace2.createUserSpace(this.user2, testSpace, UserSpaceAuth.NORMAL);
         testUserSpace3.createUserSpace(user3, testSpace, UserSpaceAuth.NORMAL);
+
+        mockTime = LocalDateTime.now();
 
         lenient().when(chatRoomDao.save(any(ChatRoom.class))).thenAnswer(invocationOnMock -> {
             ChatRoom savedChatRoom = invocationOnMock.getArgument(0);
             if ("chatRoom1".equals(savedChatRoom.getName())) {
-                chatRoom1 = savedChatRoom;
-                ReflectionTestUtils.setField(chatRoom1, "id", 0L);
-                ReflectionTestUtils.setField(chatRoom1, "status", "ACTIVE");
-                ReflectionTestUtils.setField(chatRoom1, "createdAt", LocalDateTime.now());
+                chatRoom1 = createChatRoom("chatRoom1", 0L);
                 return chatRoom1;
             } else if ("chatRoom2".equals(savedChatRoom.getName())) {
-                chatRoom2 = savedChatRoom;
-                ReflectionTestUtils.setField(chatRoom2, "id", 1L);
-                ReflectionTestUtils.setField(chatRoom2, "status", "ACTIVE");
-                ReflectionTestUtils.setField(chatRoom2, "createdAt", LocalDateTime.now());
+                chatRoom2 = createChatRoom("chatRoom2", 1L);
                 return chatRoom2;
             }
             return null;
@@ -158,29 +146,17 @@ class ChatRoomServiceTest {
             UserChatRoom savedChatRoom = invocationOnMock.getArgument(0);
             if ("chatRoom1".equals(savedChatRoom.getChatRoom().getName())) {
                 if ("user1".equals(savedChatRoom.getUser().getUserName())) {
-                    userChatRoom1 = savedChatRoom;
-                    ReflectionTestUtils.setField(userChatRoom1, "id", 0L);
-                    ReflectionTestUtils.setField(userChatRoom1, "status", "ACTIVE");
-                    ReflectionTestUtils.setField(userChatRoom1, "createdAt", LocalDateTime.now());
+                    userChatRoom1 = createUserChatRoom(0L, chatRoom1, user1);
                     return userChatRoom1;
                 } else if ("user2".equals(savedChatRoom.getUser().getUserName())) {
-                    userChatRoom1ByUser2 = savedChatRoom;
-                    ReflectionTestUtils.setField(userChatRoom1ByUser2, "id", 1L);
-                    ReflectionTestUtils.setField(userChatRoom1ByUser2, "status", "ACTIVE");
-                    ReflectionTestUtils.setField(userChatRoom1ByUser2, "createdAt", LocalDateTime.now());
+                    userChatRoom1ByUser2 = createUserChatRoom(1L, chatRoom1, user2);
                     return userChatRoom1ByUser2;
                 } else {
-                    userChatRoom1ByUser3 = savedChatRoom;
-                    ReflectionTestUtils.setField(userChatRoom1ByUser3, "id", 2L);
-                    ReflectionTestUtils.setField(userChatRoom1ByUser3, "status", "ACTIVE");
-                    ReflectionTestUtils.setField(userChatRoom1ByUser3, "createdAt", LocalDateTime.now());
+                    userChatRoom1ByUser3 = createUserChatRoom(2L, chatRoom1, user3);
                     return userChatRoom1ByUser3;
                 }
             } else if ("chatRoom2".equals(savedChatRoom.getChatRoom().getName())) {
-                userChatRoom2 = savedChatRoom;
-                ReflectionTestUtils.setField(userChatRoom2, "id", 3L);
-                ReflectionTestUtils.setField(userChatRoom2, "status", "ACTIVE");
-                ReflectionTestUtils.setField(userChatRoom2, "createdAt", LocalDateTime.now());
+                userChatRoom2 = createUserChatRoom(3L, chatRoom2, user1);
                 return userChatRoom2;
             }
             return null;
@@ -208,13 +184,13 @@ class ChatRoomServiceTest {
         chatRoomService.createChatRoom(user1.getUserId(), testSpace.getSpaceId(), createChatRoomRequest1, "");
         chatRoomService.createChatRoom(user1.getUserId(), testSpace.getSpaceId(), createChatRoomRequest2, "");
 
-        lenient().when(chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom1.getId())).thenReturn(null); // 마지막 메시지가 없다고 가정
-        lenient().when(chattingDao.countByChatRoomIdAndCreatedAtBetween(chatRoom1.getId(), LocalDateTime.now(), LocalDateTime.now())).thenReturn(0);
+        when(chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom1.getId())).thenReturn(null); // 마지막 메시지가 없다고 가정
+        when(chattingDao.countByChatRoomIdAndCreatedAtBetween(chatRoom1.getId(), convertToKoreaTime(mockTime), convertToKoreaTime(mockTime))).thenReturn(0);
         when(chatRoomDao.findByUserAndSpace(user1, testSpace)).thenReturn(List.of(chatRoom1, chatRoom2));
         when(userChatRoomDao.findByUserAndChatRoom(user1, chatRoom1)).thenReturn(userChatRoom1);
 
-        lenient().when(chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom2.getId())).thenReturn(null); // 마지막 메시지가 없다고 가정
-        lenient().when(chattingDao.countByChatRoomIdAndCreatedAtBetween(chatRoom2.getId(), LocalDateTime.now(), LocalDateTime.now())).thenReturn(0);
+        when(chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom2.getId())).thenReturn(null); // 마지막 메시지가 없다고 가정
+        when(chattingDao.countByChatRoomIdAndCreatedAtBetween(chatRoom2.getId(), convertToKoreaTime(mockTime), convertToKoreaTime(mockTime))).thenReturn(0);
         when(userChatRoomDao.findByUserAndChatRoom(user1, chatRoom2)).thenReturn(userChatRoom2);
 
         // when
@@ -222,6 +198,8 @@ class ChatRoomServiceTest {
 
         // then
         assertThat(readChatRoomResponse.getChatRoomList().size()).isEqualTo(2);
+        assertThat(readChatRoomResponse.getChatRoomList().get(0).getName()).isEqualTo("chatRoom1");
+        assertThat(readChatRoomResponse.getChatRoomList().get(1).getName()).isEqualTo("chatRoom2");
     }
 
     @Test
@@ -322,5 +300,39 @@ class ChatRoomServiceTest {
 
         // then
         assertThat(chatSuccessResponse.isSuccess()).isEqualTo(true);
+    }
+
+    private User createUser(String email, Long userId) {
+        User user = new User();
+        user.saveUser(email, "Asdf1234!", email.split("@")[0], UserSignupType.LOCAL);
+        ReflectionTestUtils.setField(user, "userId", userId);
+        lenient().when(userUtils.findUserByUserId(userId)).thenReturn(user);
+        return user;
+    }
+
+    private ChatRoom createChatRoom(String name, Long id) {
+        ChatRoom chatRoom = new ChatRoom();
+        ReflectionTestUtils.setField(chatRoom, "id", id);
+        ReflectionTestUtils.setField(chatRoom, "status", "ACTIVE");
+        ReflectionTestUtils.setField(chatRoom, "createdAt", mockTime);
+        ReflectionTestUtils.setField(chatRoom, "name", name);
+        return chatRoom;
+    }
+
+    private UserChatRoom createUserChatRoom(Long id, ChatRoom chatRoom, User user) {
+        UserChatRoom userChatRoom = new UserChatRoom();
+        ReflectionTestUtils.setField(userChatRoom, "id", id);
+        ReflectionTestUtils.setField(userChatRoom, "status", "ACTIVE");
+        ReflectionTestUtils.setField(userChatRoom, "createdAt", mockTime);
+        ReflectionTestUtils.setField(userChatRoom, "chatRoom", chatRoom);
+        ReflectionTestUtils.setField(userChatRoom, "user", user);
+        ReflectionTestUtils.setField(userChatRoom, "lastReadTime", mockTime);
+        return userChatRoom;
+    }
+
+    private LocalDateTime convertToKoreaTime(LocalDateTime time) {
+        return time.atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+                .toLocalDateTime();
     }
 }

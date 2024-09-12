@@ -156,7 +156,7 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ChatSuccessResponse updateLastReadTime(Long userId, Long spaceId, Long chatRoomId) {
+    public ChatSuccessResponse updateLastReadTime(Long userId, Long chatRoomId) {
         User userByUserId = userUtils.findUserByUserId(userId);
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));

@@ -128,19 +128,21 @@ class ChatRoomServiceTest {
 
         // chatRoom1, chatRoom2 생성 시 사용할 request
         MockMultipartFile mockImgFile = new MockMultipartFile("mockImgFile", "test.png", "png", "test file".getBytes(StandardCharsets.UTF_8) );
-        createChatRoomRequest1 = new CreateChatRoomRequest();
-        createChatRoomRequest1.setName("chatRoom1");
-        createChatRoomRequest1.setImg(mockImgFile);
-        createChatRoomRequest1.setMemberList(List.of(1L));
 
-        createChatRoomRequest2 = new CreateChatRoomRequest();
-        createChatRoomRequest2.setName("chatRoom2");
-        createChatRoomRequest2.setImg(mockImgFile);
-        createChatRoomRequest2.setMemberList(List.of());
+        createChatRoomRequest1 = CreateChatRoomRequest.builder()
+                .name("chatRoom1")
+                .img(mockImgFile)
+                .memberList(List.of(1L))
+                .build();
+
+        createChatRoomRequest2 = CreateChatRoomRequest.builder()
+                .name("chatRoom2")
+                .img(mockImgFile)
+                .memberList(List.of())
+                .build();
 
         // user3 초대 시 사용할 request
-        joinChatRoomRequest = new JoinChatRoomRequest();
-        ReflectionTestUtils.setField(joinChatRoomRequest, "memberList", List.of(2L));
+        joinChatRoomRequest = JoinChatRoomRequest.builder().memberList(List.of(2L)).build();
 
         lenient().when(userChatRoomDao.save(any(UserChatRoom.class))).thenAnswer(invocationOnMock -> {
             UserChatRoom savedChatRoom = invocationOnMock.getArgument(0);

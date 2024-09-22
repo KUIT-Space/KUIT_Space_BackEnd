@@ -5,8 +5,11 @@ import org.springframework.stereotype.Repository;
 import space.space_spring.entity.TokenStorage;
 import space.space_spring.entity.User;
 
+import java.util.Optional;
+
 @Repository
 public interface JwtRepository extends JpaRepository<TokenStorage, Long> {
 
-    TokenStorage findByUser(User user);
+    Optional<TokenStorage> findByUser(User user);
+    void deleteByUser(User user);
 }

@@ -94,21 +94,24 @@ public class OAuthController {
      */
     @PostMapping("/new-token")
     public BaseResponse<String> updateAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // refresh token 파싱
-        String refreshToken = oAuthService.resolveRefreshToken(request);
+        // access token, refresh token 파싱
+        TokenDTO tokenDTO  = oAuthService.resolveTokenPair(request);
+
+        // access token 로부터 user find
+        User userByAccessToken = oAuthService.getUserByAccessToken(tokenDTO.getAccessToken());
 
         // refresh token 유효성 검사
-        oAuthService.validateRefreshToken(refreshToken);
+        oAuthService.validateRefreshToken(userByAccessToken, tokenDTO.getRefreshToken());
 
         // access token, refresh token 새로 발급
-        TokenDTO tokenDTO = oAuthService.updateTokenPair(refreshToken);
+        TokenDTO newTokenDTO = oAuthService.updateTokenPair(userByAccessToken);
 
         // response header에 새로 발급한 token pair set
-        response.setHeader("Authorization-refresh", "Bearer " + tokenDTO.getRefreshToken());
-        response.setHeader("Authorization", "Bearer " + tokenDTO.getAccessToken());
+        response.setHeader("Authorization-refresh", "Bearer " + newTokenDTO.getRefreshToken());
+        response.setHeader("Authorization", "Bearer " + newTokenDTO.getAccessToken());
 
-        System.out.println("tokenDTO.getAccessToken() = " + tokenDTO.getAccessToken());
-        System.out.println("tokenDTO.getRefreshToken() = " + tokenDTO.getRefreshToken());
+        System.out.println("tokenDTO.getAccessToken() = " + newTokenDTO.getAccessToken());
+        System.out.println("tokenDTO.getRefreshToken() = " + newTokenDTO.getRefreshToken());
         
         // return
         return new BaseResponse<>("토큰 갱신 요청 성공");

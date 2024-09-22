@@ -39,7 +39,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_TOKEN(4003, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     MALFORMED_TOKEN(4004, HttpStatus.UNAUTHORIZED, "토큰이 올바르게 구성되지 않았습니다."),
     EXPIRED_ACCESS_TOKEN(4005, HttpStatus.UNAUTHORIZED, "만료된 access token 입니다."),
-    TOKEN_MISMATCH(4006, HttpStatus.UNAUTHORIZED, "로그인 정보가 토큰 정보와 일치하지 않습니다."),
+    TOKEN_MISMATCH(4006, HttpStatus.UNAUTHORIZED, "저장된 refresh token 과 전달받은 refresh token 이 일치하지 않습니다. 다시 로그인해야합니다."),
     CANNOT_FIND_USER_ID(4007, HttpStatus.UNAUTHORIZED,"토큰의 userId정보를 찾을 수 없습니다."),
     WRONG_SIGNATURE_JWT(4008,HttpStatus.UNAUTHORIZED,"JWT 서명이 잘못 되었습니다."),
     EXPIRED_REFRESH_TOKEN(4009, HttpStatus.UNAUTHORIZED, "만료된 refresh token 입니다. 다시 로그인해야합니다."),

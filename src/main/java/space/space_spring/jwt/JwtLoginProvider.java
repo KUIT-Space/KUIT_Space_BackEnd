@@ -108,6 +108,9 @@ public class JwtLoginProvider {
                     .setSigningKey(choiceSecretKey(tokenType)).build()
                     .parseClaimsJws(token);
             return claims.getBody().get("userId", Long.class);
+        } catch (ExpiredJwtException e) {
+            // 만료된 토큰에서 userId 추출
+            return e.getClaims().get("userId", Long.class);
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.getJwtPayloadDtoFromToken]", e);
             throw e;

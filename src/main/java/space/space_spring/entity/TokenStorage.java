@@ -19,7 +19,7 @@ public class TokenStorage {
     private Long tokenStorageId;
 
     @OneToOne
-    @Column(name = "user_id")
+//    @Column(name = "user_id")
     private User user;
 
     @Column(name = "token_value")
@@ -27,6 +27,10 @@ public class TokenStorage {
 
     public void updateTokenValue(String tokenValue) {
         this.tokenValue = tokenValue;
+    }
+
+    public boolean checkTokenValue(String tokenValue) {
+        return this.tokenValue.equals(tokenValue);
     }
 
 }

@@ -16,15 +16,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import space.space_spring.dao.JwtRepository;
 import space.space_spring.dao.UserDao;
+import space.space_spring.dao.UserRepository;
 import space.space_spring.dto.jwt.TokenDTO;
 import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.TokenStorage;
 import space.space_spring.entity.User;
+import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
-import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
+import space.space_spring.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.util.user.UserUtils;
 
@@ -40,6 +42,7 @@ public class OAuthService {
     private final JwtLoginProvider jwtLoginProvider;
     private final UserDao userDao;
     private final JwtRepository jwtRepository;
+    private final UserRepository userRepository;
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
@@ -131,18 +134,26 @@ public class OAuthService {
 
     @Transactional
     public void updateRefreshToken(User user, String refreshToken) {
-        // TODO 1. TokenStorage entity find
-        TokenStorage tokenStorage = jwtRepository.findByUser(user);
+        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+                .orElseThrow(() -> new JwtUnauthorizedTokenException(TOKEN_MISMATCH));
 
-        // TODO 2. tokenValue 값을 새로 발급한 refresh token으로 update
         tokenStorage.updateTokenValue(refreshToken);
     }
 
-    public String resolveRefreshToken(HttpServletRequest request) {
-        String token = request.getHeader("Authorization-refresh");
-        validateToken(token);
-        return token.substring(JWT_TOKEN_PREFIX.length());
+    public TokenDTO resolveTokenPair(HttpServletRequest request) {
+        // TODO 1. access token 파싱
+        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        validateToken(accessToken);
 
+        // TODO 2. refresh token 파싱
+        String refreshToken = request.getHeader("Authorization-refresh");
+        validateToken(refreshToken);
+
+        // TODO 3. return
+        return TokenDTO.builder()
+                .accessToken(accessToken.substring(JWT_TOKEN_PREFIX.length()))
+                .refreshToken(refreshToken.substring(JWT_TOKEN_PREFIX.length()))
+                .build();
     }
 
     private void validateToken(String token) {
@@ -155,35 +166,55 @@ public class OAuthService {
     }
 
     @Transactional
-    public void validateRefreshToken(String refreshToken) {
+    public void validateRefreshToken(User user, String refreshToken) {
+        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+                .orElseThrow(() ->
+                {
+                    // db에서 row delete 하는 코드 추가
+                    jwtRepository.deleteByUser(user);
+                    throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
+                });
+
         // TODO 1. refresh token의 만료시간 체크
         if (jwtLoginProvider.isExpiredToken(refreshToken, TokenType.REFRESH)) {
             // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
+            // db에서 row delete 하는 코드 추가
+            jwtRepository.deleteByUser(user);
             throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
         }
 
         // TODO 2. refresh token이 db에 실제로 존재하는지 체크
-        if (userDao.findUserByRefreshToken(refreshToken).isEmpty()) {
+        if (!tokenStorage.checkTokenValue(refreshToken)) {
             // refresh token이 db에 존재하지 않느 경우 -> 유효하지 않은 refresh token이므로 예외 발생
-            throw new JwtInvalidTokenException(INVALID_TOKEN);
+            // db에서 row delete 하는 코드 추가
+            jwtRepository.deleteByUser(user);
+            throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
     }
 
     @Transactional
-    public TokenDTO updateTokenPair(String refreshToken) {
-        // TODO 1. refresh token으로 user find
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(refreshToken, TokenType.REFRESH);
-        User userByUserId = userUtils.findUserByUserId(userIdFromToken);
+    public TokenDTO updateTokenPair(User user) {
+        // TODO 1. new access token, refresh token 발급
+        String newAccessToken = jwtLoginProvider.generateToken(user, TokenType.ACCESS);
+        String newRefreshToken = jwtLoginProvider.generateToken(user, TokenType.REFRESH);
 
-        // TODO 2. new access token, refresh token 발급
-        String newAccessToken = jwtLoginProvider.generateToken(userByUserId, TokenType.ACCESS);
-        String newRefreshToken = jwtLoginProvider.generateToken(userByUserId, TokenType.REFRESH);
+        // TODO 2. db의 refresh token update
+        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+                .orElseThrow(() -> new JwtUnauthorizedTokenException(TOKEN_MISMATCH));
 
-        // TODO 3. db의 refresh token update
-        userByUserId.updateRefreshToken(newRefreshToken);
+        tokenStorage.updateTokenValue(newRefreshToken);
 
-        // TODO 4. return
-        return new TokenDTO(newRefreshToken, newAccessToken);
+        // TODO 3. return
+        return TokenDTO.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
     }
 
+    public User getUserByAccessToken(String accessToken) {
+        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(accessToken, TokenType.ACCESS);
+
+        return userRepository.findByUserId(userIdFromToken)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    }
 }

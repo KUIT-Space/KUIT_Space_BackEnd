@@ -53,11 +53,11 @@ public class UserController {
 
         PostLoginDto login = userService.login(request);
 
-        System.out.println("login.getTokenDTO().getRefreshToken() = " + login.getTokenDTO().getRefreshToken());
-        System.out.println("login.getTokenDTO().getAccessToken() = " + login.getTokenDTO().getAccessToken());
+        System.out.println("login.getTokenPairDTO().getRefreshToken() = " + login.getTokenPairDTO().getRefreshToken());
+        System.out.println("login.getTokenPairDTO().getAccessToken() = " + login.getTokenPairDTO().getAccessToken());
         
-        response.setHeader("Authorization-refresh", "Bearer " + login.getTokenDTO().getRefreshToken());
-        response.setHeader("Authorization", "Bearer " + login.getTokenDTO().getAccessToken());
+        response.setHeader("Authorization-refresh", "Bearer " + login.getTokenPairDTO().getRefreshToken());
+        response.setHeader("Authorization", "Bearer " + login.getTokenPairDTO().getAccessToken());
 
         return new BaseResponse<>(new PostLoginDto.Response(login.getUserId()));
     }

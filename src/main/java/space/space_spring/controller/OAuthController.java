@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.dto.jwt.TokenDTO;
+import space.space_spring.dto.jwt.TokenPairDTO;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
 import space.space_spring.response.BaseResponse;
@@ -67,21 +67,21 @@ public class OAuthController {
         User userByOAuthInfo = oAuthService.findUserByOAuthInfo(kakaoInfo);
 
         // TODO 5. 카카오 로그인 유저에게 jwt 발급
-        TokenDTO tokenDTO = oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
+        TokenPairDTO tokenPairDTO = oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
 
         // TODO 6. 카카오 로그인 유저에게 발급한 refresh token을 db에 저장
-        oAuthService.updateRefreshToken(userByOAuthInfo, tokenDTO.getRefreshToken());
+        oAuthService.updateRefreshToken(userByOAuthInfo, tokenPairDTO.getRefreshToken());
 
-        System.out.println("tokenDTO.getAccessToken() = " + tokenDTO.getAccessToken());
-        System.out.println("tokenDTO.getRefreshToken() = " + tokenDTO.getRefreshToken());
+        System.out.println("tokenPairDTO.getAccessToken() = " + tokenPairDTO.getAccessToken());
+        System.out.println("tokenPairDTO.getRefreshToken() = " + tokenPairDTO.getRefreshToken());
 
         // 클라이언트로 response 전달
         // -> 메서드 분리 ??
         // 공백문자가 %20 으로 전달되는 듯 함 -> 프론트 분들과 협의 필요할 듯
         String redirectUrl = String.format(
                 "https://kuit-space.github.io/KUIT-Space-front/login?access-token=%s&refresh-token=%s&userId=%s",
-                "Bearer " + tokenDTO.getAccessToken(),
-                "Bearer " + tokenDTO.getRefreshToken(),
+                "Bearer " + tokenPairDTO.getAccessToken(),
+                "Bearer " + tokenPairDTO.getRefreshToken(),
                 userByOAuthInfo.getUserId()
         );
 
@@ -95,23 +95,23 @@ public class OAuthController {
     @PostMapping("/new-token")
     public BaseResponse<String> updateAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // access token, refresh token 파싱
-        TokenDTO tokenDTO  = oAuthService.resolveTokenPair(request);
+        TokenPairDTO tokenPairDTO  = oAuthService.resolveTokenPair(request);
 
         // access token 로부터 user find
-        User userByAccessToken = oAuthService.getUserByAccessToken(tokenDTO.getAccessToken());
+        User userByAccessToken = oAuthService.getUserByAccessToken(tokenPairDTO.getAccessToken());
 
         // refresh token 유효성 검사
-        oAuthService.validateRefreshToken(userByAccessToken, tokenDTO.getRefreshToken());
+        oAuthService.validateRefreshToken(userByAccessToken, tokenPairDTO.getRefreshToken());
 
         // access token, refresh token 새로 발급
-        TokenDTO newTokenDTO = oAuthService.updateTokenPair(userByAccessToken);
+        TokenPairDTO newTokenPairDTO = oAuthService.updateTokenPair(userByAccessToken);
 
         // response header에 새로 발급한 token pair set
-        response.setHeader("Authorization-refresh", "Bearer " + newTokenDTO.getRefreshToken());
-        response.setHeader("Authorization", "Bearer " + newTokenDTO.getAccessToken());
+        response.setHeader("Authorization-refresh", "Bearer " + newTokenPairDTO.getRefreshToken());
+        response.setHeader("Authorization", "Bearer " + newTokenPairDTO.getAccessToken());
 
-        System.out.println("tokenDTO.getAccessToken() = " + newTokenDTO.getAccessToken());
-        System.out.println("tokenDTO.getRefreshToken() = " + newTokenDTO.getRefreshToken());
+        System.out.println("tokenPairDTO.getAccessToken() = " + newTokenPairDTO.getAccessToken());
+        System.out.println("tokenPairDTO.getRefreshToken() = " + newTokenPairDTO.getRefreshToken());
         
         // return
         return new BaseResponse<>("토큰 갱신 요청 성공");

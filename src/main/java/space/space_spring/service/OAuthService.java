@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import space.space_spring.dao.JwtRepository;
 import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserRepository;
-import space.space_spring.dto.jwt.TokenDTO;
+import space.space_spring.dto.jwt.TokenPairDTO;
 import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.TokenStorage;
@@ -122,11 +122,11 @@ public class OAuthService {
         return userUtils.findOrCreateUserForOAuthInfo(email, nickname, KAKAO);
     }
 
-    public TokenDTO provideJwtToOAuthUser(User userByOAuthInfo) {
+    public TokenPairDTO provideJwtToOAuthUser(User userByOAuthInfo) {
         String accessToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.ACCESS);
         String refreshToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.REFRESH);
 
-        return TokenDTO.builder()
+        return TokenPairDTO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -140,7 +140,7 @@ public class OAuthService {
         tokenStorage.updateTokenValue(refreshToken);
     }
 
-    public TokenDTO resolveTokenPair(HttpServletRequest request) {
+    public TokenPairDTO resolveTokenPair(HttpServletRequest request) {
         // TODO 1. access token 파싱
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         validateToken(accessToken);
@@ -150,7 +150,7 @@ public class OAuthService {
         validateToken(refreshToken);
 
         // TODO 3. return
-        return TokenDTO.builder()
+        return TokenPairDTO.builder()
                 .accessToken(accessToken.substring(JWT_TOKEN_PREFIX.length()))
                 .refreshToken(refreshToken.substring(JWT_TOKEN_PREFIX.length()))
                 .build();
@@ -193,7 +193,7 @@ public class OAuthService {
     }
 
     @Transactional
-    public TokenDTO updateTokenPair(User user) {
+    public TokenPairDTO updateTokenPair(User user) {
         // TODO 1. new access token, refresh token 발급
         String newAccessToken = jwtLoginProvider.generateToken(user, TokenType.ACCESS);
         String newRefreshToken = jwtLoginProvider.generateToken(user, TokenType.REFRESH);
@@ -205,7 +205,7 @@ public class OAuthService {
         tokenStorage.updateTokenValue(newRefreshToken);
 
         // TODO 3. return
-        return TokenDTO.builder()
+        return TokenPairDTO.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
                 .build();

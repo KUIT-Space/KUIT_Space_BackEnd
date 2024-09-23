@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.JwtRepository;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.jwt.TokenDTO;
+import space.space_spring.dto.jwt.TokenPairDTO;
 import space.space_spring.dto.jwt.TokenType;
 import space.space_spring.dto.user.GetUserProfileListDto;
 import space.space_spring.dto.user.PostLoginDto;
@@ -85,13 +85,13 @@ public class UserService {
         jwtRepository.save(tokenStorage);
 
         // TODO 5. return
-        TokenDTO tokenDTO = TokenDTO.builder()
+        TokenPairDTO tokenPairDTO = TokenPairDTO.builder()
                 .refreshToken(refreshToken)
                 .accessToken(accessToken)
                 .build();
 
         return PostLoginDto.builder()
-                .tokenDTO(tokenDTO)
+                .TokenPairDTO(tokenPairDTO)
                 .userId(userByEmail.getUserId())
                 .build();
     }

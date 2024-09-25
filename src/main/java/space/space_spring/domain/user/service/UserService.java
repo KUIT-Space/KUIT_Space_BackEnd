@@ -1,25 +1,19 @@
-package space.space_spring.service;
+package space.space_spring.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.dao.JwtRepository;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.jwt.TokenPairDTO;
-import space.space_spring.dto.jwt.TokenType;
-import space.space_spring.dto.user.GetUserProfileListDto;
-import space.space_spring.dto.user.PostLoginDto;
-import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
-import space.space_spring.dto.user.request.PostUserSignupRequest;
-import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
-import space.space_spring.entity.TokenStorage;
+import space.space_spring.domain.user.model.GetUserProfileListDto;
+import space.space_spring.domain.user.model.dto.SpaceChoiceViewDto;
+import space.space_spring.domain.user.model.request.PostUserSignupRequest;
+import space.space_spring.domain.user.model.response.GetSpaceInfoForUserResponse;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.CustomException;
-import space.space_spring.jwt.JwtLoginProvider;
-import space.space_spring.dao.UserDao;
+import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.util.user.UserUtils;
 
@@ -35,10 +29,8 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 public class UserService {
 
     private final UserDao userDao;
-    private final JwtLoginProvider jwtLoginProvider;
     private final UserSpaceDao userSpaceDao;
     private final UserUtils userUtils;
-    private final JwtRepository jwtRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -64,45 +56,6 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public PostLoginDto login(PostLoginDto.Request request) {
-        // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
-        User userByEmail = userUtils.findUserByEmail(request.getEmail(), LOCAL);
-        log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
-
-        // TODO 2. 비밀번호 일치 여부 확인
-        validatePassword(userByEmail, request.getPassword());
-
-        // TODO 3. JWT 발급 -> access token, refresh token 2개 발급
-        String accessToken = jwtLoginProvider.generateToken(userByEmail, TokenType.ACCESS);
-        String refreshToken = jwtLoginProvider.generateToken(userByEmail, TokenType.REFRESH);
-
-        // TODO 4. refresh token db에 저장
-        TokenStorage tokenStorage = TokenStorage.builder()
-                .user(userByEmail)
-                .tokenValue(refreshToken)
-                .build();
-        jwtRepository.save(tokenStorage);
-
-        // TODO 5. return
-        TokenPairDTO tokenPairDTO = TokenPairDTO.builder()
-                .refreshToken(refreshToken)
-                .accessToken(accessToken)
-                .build();
-
-        return PostLoginDto.builder()
-                .TokenPairDTO(tokenPairDTO)
-                .userId(userByEmail.getUserId())
-                .build();
-    }
-
-    private void validatePassword(User userByEmail, String password) {
-        String encodePassword = userByEmail.getPassword();
-        if(!passwordEncoder.matches(password,encodePassword)){
-            throw new CustomException(PASSWORD_NO_MATCH);
-        }
-
-    }
 
     @Transactional
     public GetSpaceInfoForUserResponse getSpaceListForUser(Long userId, int size, Long lastUserSpaceId) {

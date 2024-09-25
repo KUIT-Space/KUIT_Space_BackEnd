@@ -1,4 +1,4 @@
-package space.space_spring.dao;
+package space.space_spring.domain.authorization.jwt.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

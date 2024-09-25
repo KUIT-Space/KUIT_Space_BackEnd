@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import space.space_spring.dto.jwt.TokenType;
+import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;

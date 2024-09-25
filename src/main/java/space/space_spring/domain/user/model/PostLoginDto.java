@@ -1,9 +1,9 @@
-package space.space_spring.dto.user;
+package space.space_spring.domain.user.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import space.space_spring.dto.jwt.TokenPairDTO;
+import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 
 @Getter
 @NoArgsConstructor

@@ -6,13 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import space.space_spring.dao.UserDao;
-import space.space_spring.dto.jwt.TokenType;
-import space.space_spring.exception.CustomException;
+import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
-import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.jwt.JwtLoginProvider;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;

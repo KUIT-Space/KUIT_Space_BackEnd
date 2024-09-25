@@ -1,4 +1,4 @@
-package space.space_spring.dto.jwt;
+package space.space_spring.domain.authorization.jwt.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

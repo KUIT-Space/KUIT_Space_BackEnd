@@ -1,17 +1,16 @@
-package space.space_spring.controller;
+package space.space_spring.domain.authorization.OAuth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.dto.jwt.TokenPairDTO;
+import space.space_spring.domain.authorization.jwt.service.JwtService;
+import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
-import space.space_spring.response.BaseResponse;
-import space.space_spring.service.OAuthService;
+import space.space_spring.domain.authorization.OAuth.service.OAuthService;
 
 import java.io.IOException;
 
@@ -22,6 +21,7 @@ import java.io.IOException;
 public class OAuthController {
 
     private final OAuthService oAuthService;
+    private final JwtService jwtService;
 
     @Value("${oauth.kakao.client.id}")
     private String clientId;
@@ -67,10 +67,10 @@ public class OAuthController {
         User userByOAuthInfo = oAuthService.findUserByOAuthInfo(kakaoInfo);
 
         // TODO 5. 카카오 로그인 유저에게 jwt 발급
-        TokenPairDTO tokenPairDTO = oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
+        TokenPairDTO tokenPairDTO = jwtService.provideJwtToOAuthUser(userByOAuthInfo);
 
         // TODO 6. 카카오 로그인 유저에게 발급한 refresh token을 db에 저장
-        oAuthService.updateRefreshToken(userByOAuthInfo, tokenPairDTO.getRefreshToken());
+        jwtService.updateRefreshToken(userByOAuthInfo, tokenPairDTO.getRefreshToken());
 
         System.out.println("tokenPairDTO.getAccessToken() = " + tokenPairDTO.getAccessToken());
         System.out.println("tokenPairDTO.getRefreshToken() = " + tokenPairDTO.getRefreshToken());
@@ -88,32 +88,4 @@ public class OAuthController {
         response.sendRedirect(redirectUrl);
     }
 
-    /**
-     * 엑세스 토큰 갱신 요청 처리
-     * -> 엑세스 토큰, 리프레시 토큰 갱신 (RTR 패턴)
-     */
-    @PostMapping("/new-token")
-    public BaseResponse<String> updateAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // access token, refresh token 파싱
-        TokenPairDTO tokenPairDTO  = oAuthService.resolveTokenPair(request);
-
-        // access token 로부터 user find
-        User userByAccessToken = oAuthService.getUserByAccessToken(tokenPairDTO.getAccessToken());
-
-        // refresh token 유효성 검사
-        oAuthService.validateRefreshToken(userByAccessToken, tokenPairDTO.getRefreshToken());
-
-        // access token, refresh token 새로 발급
-        TokenPairDTO newTokenPairDTO = oAuthService.updateTokenPair(userByAccessToken);
-
-        // response header에 새로 발급한 token pair set
-        response.setHeader("Authorization-refresh", "Bearer " + newTokenPairDTO.getRefreshToken());
-        response.setHeader("Authorization", "Bearer " + newTokenPairDTO.getAccessToken());
-
-        System.out.println("tokenPairDTO.getAccessToken() = " + newTokenPairDTO.getAccessToken());
-        System.out.println("tokenPairDTO.getRefreshToken() = " + newTokenPairDTO.getRefreshToken());
-        
-        // return
-        return new BaseResponse<>("토큰 갱신 요청 성공");
-    }
 }

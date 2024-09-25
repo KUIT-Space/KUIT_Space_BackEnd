@@ -1,4 +1,4 @@
-package space.space_spring.dao;
+package space.space_spring.domain.user.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;

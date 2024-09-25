@@ -1,8 +1,8 @@
-package space.space_spring.dto.user.response;
+package space.space_spring.domain.user.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import space.space_spring.dto.user.dto.SpaceChoiceInfo;
+import space.space_spring.domain.user.model.dto.SpaceChoiceInfo;
 
 import java.util.List;
 

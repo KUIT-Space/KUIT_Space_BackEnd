@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
-import space.space_spring.dto.jwt.TokenType;
+import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;

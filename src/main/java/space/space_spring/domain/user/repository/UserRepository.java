@@ -1,4 +1,4 @@
-package space.space_spring.dao;
+package space.space_spring.domain.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

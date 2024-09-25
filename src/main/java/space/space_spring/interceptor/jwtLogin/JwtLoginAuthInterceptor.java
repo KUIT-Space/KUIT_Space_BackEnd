@@ -36,7 +36,7 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
         }
 
         // TODO 3. AT 의 payload 로 부터 userId 값 get
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(accessToken, TokenType.ACCESS);
+        Long userIdFromToken = jwtLoginProvider.getUserIdFromAccessToken(accessToken);
         request.setAttribute("userId", userIdFromToken);
 
         return true;

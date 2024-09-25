@@ -212,7 +212,7 @@ public class OAuthService {
     }
 
     public User getUserByAccessToken(String accessToken) {
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(accessToken, TokenType.ACCESS);
+        Long userIdFromToken = jwtLoginProvider.getUserIdFromAccessToken(accessToken);
 
         return userRepository.findByUserId(userIdFromToken)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));

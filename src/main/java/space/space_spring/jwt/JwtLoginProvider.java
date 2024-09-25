@@ -102,10 +102,10 @@ public class JwtLoginProvider {
 
     }
 
-    public Long getUserIdFromToken(String token, TokenType tokenType) {
+    public Long getUserIdFromAccessToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(choiceSecretKey(tokenType)).build()
+                    .setSigningKey(ACCESS_SECRET_KEY).build()
                     .parseClaimsJws(token);
             return claims.getBody().get("userId", Long.class);
         } catch (ExpiredJwtException e) {

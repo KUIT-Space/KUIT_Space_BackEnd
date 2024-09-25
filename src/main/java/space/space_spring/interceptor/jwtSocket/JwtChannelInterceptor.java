@@ -33,7 +33,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
             String validatedToken = validateAccessToken(jwtToken);
 
             // 검증 후 사용자 정보를 세션에 저장
-            Long userId = jwtLoginProvider.getUserIdFromToken(validatedToken, TokenType.ACCESS);
+            Long userId = jwtLoginProvider.getUserIdFromAccessToken(validatedToken);
             accessor.getSessionAttributes().put("userId", userId);
         }
         return message;

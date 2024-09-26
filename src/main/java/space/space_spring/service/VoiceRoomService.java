@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
-import space.space_spring.dao.UserDao;
+import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomDao;
 import space.space_spring.dao.VoiceRoomRepository;
@@ -13,19 +13,14 @@ import space.space_spring.dto.VoiceRoom.*;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.VoiceRoom;
-import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
-import space.space_spring.util.user.UserUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 @Service
 @RequiredArgsConstructor

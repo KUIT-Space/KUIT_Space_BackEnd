@@ -5,8 +5,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.dto.user.dto.SpaceChoiceInfo;
-import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
+import space.space_spring.domain.user.model.dto.SpaceChoiceInfo;
+import space.space_spring.domain.user.model.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
@@ -14,9 +14,6 @@ import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 
 import java.util.*;
-import java.util.stream.Stream;
-
-import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
 
 @Repository
 public class UserSpaceDao {

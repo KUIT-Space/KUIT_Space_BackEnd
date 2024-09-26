@@ -1,19 +1,16 @@
-package space.space_spring.controller;
+package space.space_spring.domain.authorization.OAuth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import space.space_spring.domain.authorization.jwt.service.JwtService;
+import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 import space.space_spring.dto.oAuth.KakaoInfo;
-import space.space_spring.dto.oAuth.OAuthLoginResponse;
 import space.space_spring.entity.User;
-import space.space_spring.response.BaseResponse;
-import space.space_spring.service.OAuthService;
+import space.space_spring.domain.authorization.OAuth.service.OAuthService;
 
 import java.io.IOException;
 
@@ -24,6 +21,7 @@ import java.io.IOException;
 public class OAuthController {
 
     private final OAuthService oAuthService;
+    private final JwtService jwtService;
 
     @Value("${oauth.kakao.client.id}")
     private String clientId;
@@ -69,18 +67,25 @@ public class OAuthController {
         User userByOAuthInfo = oAuthService.findUserByOAuthInfo(kakaoInfo);
 
         // TODO 5. 카카오 로그인 유저에게 jwt 발급
-        String jwtOAuthLogin = oAuthService.provideJwtToOAuthUser(userByOAuthInfo);
-        response.setHeader("Authorization", "Bearer " + jwtOAuthLogin);
-        log.info("jwtOAuthLogin = {}", jwtOAuthLogin);
+        TokenPairDTO tokenPairDTO = jwtService.provideJwtToOAuthUser(userByOAuthInfo);
 
-        // Construct the redirect URL with the JWT and userId as query parameters
+        // TODO 6. 카카오 로그인 유저에게 발급한 refresh token을 db에 저장
+        jwtService.updateRefreshToken(userByOAuthInfo, tokenPairDTO.getRefreshToken());
+
+        System.out.println("tokenPairDTO.getAccessToken() = " + tokenPairDTO.getAccessToken());
+        System.out.println("tokenPairDTO.getRefreshToken() = " + tokenPairDTO.getRefreshToken());
+
+        // 클라이언트로 response 전달
+        // -> 메서드 분리 ??
+        // 공백문자가 %20 으로 전달되는 듯 함 -> 프론트 분들과 협의 필요할 듯
         String redirectUrl = String.format(
-                "https://kuit-space.github.io/KUIT-Space-front/login?jwt=Bearer %s&userId=%s",
-                jwtOAuthLogin,
+                "https://kuit-space.github.io/KUIT-Space-front/login?access-token=%s&refresh-token=%s&userId=%s",
+                "Bearer " + tokenPairDTO.getAccessToken(),
+                "Bearer " + tokenPairDTO.getRefreshToken(),
                 userByOAuthInfo.getUserId()
         );
 
-        // Redirect to the specified URL
         response.sendRedirect(redirectUrl);
     }
+
 }

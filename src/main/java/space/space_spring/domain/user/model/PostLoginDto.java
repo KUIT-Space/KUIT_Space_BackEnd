@@ -1,19 +1,17 @@
-package space.space_spring.dto.user;
+package space.space_spring.domain.user.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PostLoginDto {
 
-    private String jwt;
-
+    private TokenPairDTO TokenPairDTO;
     private Long userId;
 
     @Getter

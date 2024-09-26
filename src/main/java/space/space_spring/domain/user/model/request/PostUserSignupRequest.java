@@ -1,4 +1,4 @@
-package space.space_spring.dto.user.request;
+package space.space_spring.domain.user.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

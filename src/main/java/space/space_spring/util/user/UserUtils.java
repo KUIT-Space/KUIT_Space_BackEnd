@@ -3,14 +3,13 @@ package space.space_spring.util.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.dao.UserDao;
+import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.CustomException;
 
 import java.util.UUID;
 
-import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Component

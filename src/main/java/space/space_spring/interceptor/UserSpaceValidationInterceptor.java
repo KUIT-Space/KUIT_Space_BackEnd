@@ -9,7 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.dao.SpaceDao;
-import space.space_spring.dao.UserDao;
+import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;

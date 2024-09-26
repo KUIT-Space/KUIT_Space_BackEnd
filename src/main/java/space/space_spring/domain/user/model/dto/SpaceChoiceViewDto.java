@@ -1,4 +1,4 @@
-package space.space_spring.dto.user.dto;
+package space.space_spring.domain.user.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

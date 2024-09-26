@@ -1,4 +1,4 @@
-package space.space_spring.service;
+package space.space_spring.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,23 +6,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.user.GetUserProfileListDto;
-import space.space_spring.dto.user.PostLoginDto;
-import space.space_spring.dto.user.dto.SpaceChoiceViewDto;
-import space.space_spring.dto.user.request.PostUserLoginRequest;
-import space.space_spring.dto.user.request.PostUserSignupRequest;
-import space.space_spring.dto.user.response.GetSpaceInfoForUserResponse;
+import space.space_spring.domain.user.model.GetUserProfileListDto;
+import space.space_spring.domain.user.model.dto.SpaceChoiceViewDto;
+import space.space_spring.domain.user.model.request.PostUserSignupRequest;
+import space.space_spring.domain.user.model.response.GetSpaceInfoForUserResponse;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.CustomException;
-import space.space_spring.jwt.JwtLoginProvider;
-import space.space_spring.dao.UserDao;
+import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.entity.User;
 import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
@@ -33,7 +29,6 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 public class UserService {
 
     private final UserDao userDao;
-    private final JwtLoginProvider jwtLoginProvider;
     private final UserSpaceDao userSpaceDao;
     private final UserUtils userUtils;
     private final PasswordEncoder passwordEncoder;
@@ -61,32 +56,6 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public PostLoginDto login(PostLoginDto.Request request) {
-        // TODO 1. 이메일 존재 여부 확인(아이디 존재 여부 확인)
-        User userByEmail = userUtils.findUserByEmail(request.getEmail(), LOCAL);
-        log.info("userByEmail.getUserId: {}", userByEmail.getUserId());
-
-        // TODO 2. 비밀번호 일치 여부 확인
-        validatePassword(userByEmail, request.getPassword());
-
-        // TODO 3. JWT 발급
-        String jwtLogin = jwtLoginProvider.generateToken(userByEmail);
-        log.info("jwtLogin: {}", jwtLogin);
-
-        return new PostLoginDto(
-                jwtLogin,
-                userByEmail.getUserId()
-        );
-    }
-
-    private void validatePassword(User userByEmail, String password) {
-        String encodePassword = userByEmail.getPassword();
-        if(!passwordEncoder.matches(password,encodePassword)){
-            throw new CustomException(PASSWORD_NO_MATCH);
-        }
-
-    }
 
     @Transactional
     public GetSpaceInfoForUserResponse getSpaceListForUser(Long userId, int size, Long lastUserSpaceId) {

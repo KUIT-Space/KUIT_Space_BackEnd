@@ -121,7 +121,10 @@ public class VoiceRoomService {
 
         //해당 space VoiceRoom 가져오기 (VoiceRoom List)
         //Todo 가져오기에 limit 적용
+        //todo 일급 객체 `voiceRoomEntityList`로 변경
         List<VoiceRoom> voiceRoomDataList = findBySpaceId(spaceId);
+        //todo voiceRoomEntityList 객체에 책임 위임
+        //todo RoomDtoList 일급 객체 생성
         List<RoomDto> roomDtoList = RoomDto.convertRoomDtoListByVoiceRoom(voiceRoomDataList);
         //VoiceRoom과 Room mapping
         //#1 Response 받아오기
@@ -136,6 +139,8 @@ public class VoiceRoomService {
         for(RoomDto roomDto : roomDtoList){
             roomDto.setActiveRoom(roomResponses);
         }
+        //ToDo setRoomDto 함수를 RoomDtoList 객체로 이동
+            //todo 책임을 위임해도 이 병렬처리 코드가 잘 동작할까?
         List<CompletableFuture<Void>> roomDtoFutureList = roomDtoList.stream()
                 .map(r->CompletableFuture.runAsync(()->setRoomDto(r,roomResponses,req),taskExecutor)
                         //.exceptionally(ex->{throws ex;})
@@ -160,7 +165,7 @@ public class VoiceRoomService {
         }
         //return null;
     }
-
+    //todo 해당 함수의 책임을 RoomDto에게 위임
     private void setRoomDto(RoomDto roomDto,List<LivekitModels.Room> roomResponses,GetVoiceRoomList.Request req){
         roomDto.setActiveRoom(roomResponses);
 
@@ -222,7 +227,7 @@ public class VoiceRoomService {
 
         //Todo 입력된 order가 유효한지 확인 필요
 
-
+        //Todo 병렬적으로 update하도록 수정
         for(PatchVoiceRoom.UpdateRoom updateRoom : updateRoomList){
             VoiceRoom voiceRoom = voiceRoomRepository.findById(updateRoom.getRoomId()).get();
             String newName =updateRoom.getName();

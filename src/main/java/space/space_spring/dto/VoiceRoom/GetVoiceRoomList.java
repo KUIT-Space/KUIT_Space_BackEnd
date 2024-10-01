@@ -52,6 +52,7 @@ public class GetVoiceRoomList {
                     )
                     .build();
         }
+        //Todo VoiceRoomDto로 이전예정
         public static List<VoiceRoomInfo> convertRoomDtoList(List<RoomDto> roomDtoList,Integer limit){
             if(roomDtoList==null||roomDtoList.isEmpty()){return null;}
             Stream<RoomDto> sortedStream = roomDtoList.stream()
@@ -65,6 +66,7 @@ public class GetVoiceRoomList {
                     .collect(Collectors.toList());
 
         }
+        //Todo VoiceRoomDto로 이전예정
         public static List<VoiceRoomInfo> convertRoomDtoList(List<RoomDto> roomDtoList) {
             return convertRoomDtoList(roomDtoList, null);
         }

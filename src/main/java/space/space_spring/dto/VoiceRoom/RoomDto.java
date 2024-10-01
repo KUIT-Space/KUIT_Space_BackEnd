@@ -49,6 +49,7 @@ public class RoomDto {
                 .build();
     }
 
+    //Todo VoiceRoomDtoList 로 이전 예정
     public static List<RoomDto> convertRoomDtoListByVoiceRoom(List<VoiceRoom> voiceRoomList){
         if(voiceRoomList==null||voiceRoomList.isEmpty()){return null;}
         return voiceRoomList.stream()
@@ -110,6 +111,7 @@ public class RoomDto {
     }
 
     public void setActiveRoom(LivekitModels.Room resRoom,boolean checkId){
+        //null에 대한 예외 처리
         if(checkId || String.valueOf(this.id).equals( resRoom.getName() )){
             this.numParticipants = resRoom.getNumParticipants();
             this.sid = resRoom.getSid();

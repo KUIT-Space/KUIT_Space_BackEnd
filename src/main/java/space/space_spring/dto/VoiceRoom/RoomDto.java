@@ -99,10 +99,7 @@ public class RoomDto {
         boolean find = false;
         for(LivekitModels.Room resRoom : liveKitRoomList){
             if(String.valueOf(this.id).equals( resRoom.getName() )){
-                this.numParticipants = resRoom.getNumParticipants();
-                this.sid = resRoom.getSid();
-                this.metadata = resRoom.getMetadata();
-                this.startTime= resRoom.getCreationTime();
+                setActiveRoom(resRoom,true);
                 find = true;
                 break;
             }
@@ -110,6 +107,19 @@ public class RoomDto {
         }
         if(!find){this.numParticipants=0;}
         //return this;
+    }
+
+    public void setActiveRoom(LivekitModels.Room resRoom,boolean checkId){
+        if(checkId || String.valueOf(this.id).equals( resRoom.getName() )){
+            this.numParticipants = resRoom.getNumParticipants();
+            this.sid = resRoom.getSid();
+            this.metadata = resRoom.getMetadata();
+            this.startTime= resRoom.getCreationTime();
+
+        }
+    }
+    public void setActiveRoom(LivekitModels.Room resRoom){
+        setActiveRoom(resRoom,false);
     }
     private static boolean EqualRoomIdByNameTag(String roomName,long Id){
         return roomName.endsWith("#"+String.valueOf(Id));

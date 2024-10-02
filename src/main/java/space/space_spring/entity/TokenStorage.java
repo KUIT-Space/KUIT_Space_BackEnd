@@ -18,7 +18,7 @@ public class TokenStorage {
     @Column(name = "token_storage_id")
     private Long tokenStorageId;
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
 //    @Column(name = "user_id")
     private User user;
 

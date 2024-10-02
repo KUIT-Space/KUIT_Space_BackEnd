@@ -134,16 +134,16 @@ public class VoiceRoomService {
 
         //불변 list로 변환
         List<LivekitModels.Room> roomResponses = Collections.unmodifiableList(roomResponsesTemp);
+
         VoiceRoomDtoList voiceRoomDtoList=VoiceRoomDtoList.from(voiceRoomDataList);
         voiceRoomDtoList.setActiveRoom(roomResponsesTemp);
 
-        /**
-         * 병렬 처리 적용대상 1
-         */
+        //Todo 대체됨. 관련 함수 삭제 예정
         //#2 Room과 mapping 시키기
         for(RoomDto roomDto : roomDtoList){
             roomDto.setActiveRoom(roomResponses);
         }
+
         //ToDo setRoomDto 함수를 RoomDtoList 객체로 이동
             //todo 책임을 위임해도 이 병렬처리 코드가 잘 동작할까?
         List<CompletableFuture<Void>> roomDtoFutureList = roomDtoList.stream()

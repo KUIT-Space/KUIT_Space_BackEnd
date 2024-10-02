@@ -12,7 +12,7 @@ import space.space_spring.domain.user.model.PostLoginDto;
 import space.space_spring.entity.TokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
-import space.space_spring.jwt.JwtLoginProvider;
+import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 import space.space_spring.util.user.UserUtils;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;

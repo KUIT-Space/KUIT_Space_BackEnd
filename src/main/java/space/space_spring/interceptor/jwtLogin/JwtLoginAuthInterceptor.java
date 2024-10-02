@@ -10,7 +10,7 @@ import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
-import space.space_spring.jwt.JwtLoginProvider;
+import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 

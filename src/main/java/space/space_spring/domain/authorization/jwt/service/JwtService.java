@@ -2,9 +2,9 @@ package space.space_spring.domain.authorization.jwt.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.authorization.jwt.model.TokenResolver;
 import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.repository.UserRepository;
 import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
@@ -12,51 +12,39 @@ import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.entity.TokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
-import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
-import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
-import space.space_spring.jwt.JwtLoginProvider;
+import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class JwtService {
 
     private final JwtRepository jwtRepository;
     private final JwtLoginProvider jwtLoginProvider;
     private final UserRepository userRepository;
 
-    private static final String JWT_TOKEN_PREFIX = "Bearer ";
+    @Transactional
+    public TokenPairDTO updateAccessToken(HttpServletRequest request) {
+        // request에서 기존의 TokenPair를 찾아와서
+        TokenPairDTO oldTokenPair = TokenResolver.resolveTokenPair(request);
 
+        // 여기서 User 찾고
+        User userByAccessToken = getUserByAccessToken(oldTokenPair.getAccessToken());
 
-    public TokenPairDTO resolveTokenPair(HttpServletRequest request) {
-        // TODO 1. access token 파싱
-        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        validateToken(accessToken);
+        // 이 User로 refresh token의 유효성 검사 진행하고
+        validateRefreshToken(userByAccessToken, oldTokenPair.getRefreshToken());
 
-        // TODO 2. refresh token 파싱
-        String refreshToken = request.getHeader("Authorization-refresh");
-        validateToken(refreshToken);
+        // access, refresh 새로 발급
+        TokenPairDTO tokenPairDTO = updateTokenPair(userByAccessToken);
 
-        // TODO 3. return
-        return TokenPairDTO.builder()
-                .accessToken(accessToken.substring(JWT_TOKEN_PREFIX.length()))
-                .refreshToken(refreshToken.substring(JWT_TOKEN_PREFIX.length()))
-                .build();
+        return tokenPairDTO;
     }
 
-    private void validateToken(String token) {
-        if (token == null) {
-            throw new JwtNoTokenException(TOKEN_NOT_FOUND);
-        }
-        if (!token.startsWith(JWT_TOKEN_PREFIX)) {
-            throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
-        }
-    }
-
-    public User getUserByAccessToken(String accessToken) {
+    private User getUserByAccessToken(String accessToken) {
         Long userIdFromToken = jwtLoginProvider.getUserIdFromAccessToken(accessToken);
 
         return userRepository.findByUserId(userIdFromToken)
@@ -64,7 +52,7 @@ public class JwtService {
     }
 
     @Transactional
-    public void validateRefreshToken(User user, String refreshToken) {
+    protected void validateRefreshToken(User user, String refreshToken) {
         TokenStorage tokenStorage = jwtRepository.findByUser(user)
                 .orElseThrow(() ->
                 {
@@ -91,7 +79,7 @@ public class JwtService {
     }
 
     @Transactional
-    public TokenPairDTO updateTokenPair(User user) {
+    protected TokenPairDTO updateTokenPair(User user) {
         // TODO 1. new access token, refresh token 발급
         String newAccessToken = jwtLoginProvider.generateToken(user, TokenType.ACCESS);
         String newRefreshToken = jwtLoginProvider.generateToken(user, TokenType.REFRESH);
@@ -126,5 +114,6 @@ public class JwtService {
 
         tokenStorage.updateTokenValue(refreshToken);
     }
+
 
 }

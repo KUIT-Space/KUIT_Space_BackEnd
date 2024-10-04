@@ -85,26 +85,16 @@ public class VoiceRoomController {
             @JwtLoginAuth Long userId,
             //@RequestBody GetVoiceRoomList.Request voiceRoomList,
             @RequestParam(required = false,defaultValue = "0") Integer limit,
-            @RequestParam(required = false,defaultValue = "false") Boolean showParticipant,
-            @PathVariable("version") Integer version){
+            @RequestParam(required = false,defaultValue = "false") Boolean showParticipant
+            ){
 
         boolean showParticipantValue = (showParticipant != null) ? showParticipant : false;
 
 
         GetVoiceRoomList.Request voiceRoomList=new GetVoiceRoomList.Request(limit, showParticipant);
         List<GetVoiceRoomList.VoiceRoomInfo> roomInfoList;
-        if(version==null){
-            version =1;
-        }
-        if(version==1){
-            roomInfoList= voiceRoomService.getVoiceRoomInfoListConcurrency(spaceId,voiceRoomList);
-        }
-        if(version==2){
-            roomInfoList = voiceRoomService.getVoiceRoomInfoList(spaceId,voiceRoomList);
-        }
-        else{
-            roomInfoList= voiceRoomService.getVoiceRoomInfoListConcurrency(spaceId,voiceRoomList);
-        }
+
+        roomInfoList= voiceRoomService.getVoiceRoomInfoListConcurrency(spaceId,voiceRoomList);
 
         return new BaseResponse<GetVoiceRoomList.Response>(new GetVoiceRoomList.Response(roomInfoList));
     }

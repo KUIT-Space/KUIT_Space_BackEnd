@@ -56,16 +56,7 @@ public class RoomDto {
                 .map(RoomDto::convertRoom)
                 .collect(Collectors.toList());
     }
-//    public static Room convertRoom(LiveKitSession session){
-//        return Room.builder()
-//                .name(session.)
-//                .numParticipants(room.getNumParticipants())
-//                .creationTime(room.getCreationTime())
-//                .sid(room.getSid())
-//                .metadata(room.getMetadata())
-//                .participantList(null)
-//                .build();
-//    }
+
     public static RoomDto convertRoom(VoiceRoom voiceRoom){
         if(voiceRoom==null){return null;}
         return RoomDto.builder()

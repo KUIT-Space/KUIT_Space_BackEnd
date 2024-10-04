@@ -1,4 +1,4 @@
-package space.space_spring.service;
+package space.space_spring.domain.authorization.OAuth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dto.oAuth.KakaoInfo;
 import space.space_spring.entity.User;
-import space.space_spring.jwt.JwtLoginProvider;
 import space.space_spring.util.user.UserUtils;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;
@@ -25,7 +25,8 @@ import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;
 public class OAuthService {
 
     private final UserUtils userUtils;
-    private final JwtLoginProvider jwtLoginProvider;
+    private final UserDao userDao;
+
 
     /**
      * 카카오 인증 서버가 전달해준 유저의 인가코드로 토큰 발급 요청
@@ -103,7 +104,7 @@ public class OAuthService {
         return userUtils.findOrCreateUserForOAuthInfo(email, nickname, KAKAO);
     }
 
-    public String provideJwtToOAuthUser(User userByOAuthInfo) {
-        return jwtLoginProvider.generateToken(userByOAuthInfo);
-    }
+
+
+
 }

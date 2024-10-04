@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
@@ -23,21 +24,19 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // TODO 1. request header에서 access token 파싱
         String accessToken = resolveAccessToken(request);
-        validateAccessToken(accessToken);
 
-        // jwt에서 userId get
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromToken(accessToken);
+        // TODO 2. AT 유효성 검사
+        if (jwtLoginProvider.isExpiredToken(accessToken, TokenType.ACCESS)) {
+            throw new JwtExpiredTokenException(EXPIRED_ACCESS_TOKEN);
+        }
+
+        // TODO 3. AT 의 payload 로 부터 userId 값 get
+        Long userIdFromToken = jwtLoginProvider.getUserIdFromAccessToken(accessToken);
         request.setAttribute("userId", userIdFromToken);
 
         return true;
-    }
-
-    private void validateAccessToken(String accessToken) {
-        if (jwtLoginProvider.isExpiredToken(accessToken)) {
-            throw new JwtExpiredTokenException(EXPIRED_TOKEN);
-        }
-
     }
 
     private String resolveAccessToken(HttpServletRequest request) {

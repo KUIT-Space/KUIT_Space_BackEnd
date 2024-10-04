@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
@@ -32,7 +33,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
             String validatedToken = validateAccessToken(jwtToken);
 
             // 검증 후 사용자 정보를 세션에 저장
-            Long userId = jwtLoginProvider.getUserIdFromToken(validatedToken);
+            Long userId = jwtLoginProvider.getUserIdFromAccessToken(validatedToken);
             accessor.getSessionAttributes().put("userId", userId);
         }
         return message;
@@ -51,8 +52,8 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
         String tokenWithoutPrefix = token.substring(JWT_TOKEN_PREFIX.length());
 
         // access token 값 validate
-        if (jwtLoginProvider.isExpiredToken(tokenWithoutPrefix)) {
-            throw new JwtExpiredTokenException(EXPIRED_TOKEN);
+        if (jwtLoginProvider.isExpiredToken(tokenWithoutPrefix, TokenType.ACCESS)) {
+            throw new JwtExpiredTokenException(EXPIRED_ACCESS_TOKEN);
         }
 
         return tokenWithoutPrefix;

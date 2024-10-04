@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.dao.SpaceDao;
-import space.space_spring.dao.UserDao;
+import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dto.space.GetSpaceHomeDto;
 import space.space_spring.dto.space.GetSpaceJoinDto;
@@ -22,7 +22,6 @@ import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;

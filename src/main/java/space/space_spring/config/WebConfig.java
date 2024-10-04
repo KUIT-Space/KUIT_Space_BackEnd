@@ -22,11 +22,11 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final JwtLoginAuthInterceptor jwtLoginAuthInterceptor;
+    private final UserSpaceValidationInterceptor userSpaceValidationInterceptor;
 
     private final JwtLoginAuthHandlerArgumentResolver jwtLoginAuthHandlerArgumentResolver;
     private final UserSpaceIdHandlerArgumentResolver userSpaceIdHandlerArgumentResolver;
     private final UserSpaceAuthHandlerArgumentResolver userSpaceAuthHandlerArgumentResolver;
-    private final UserSpaceValidationInterceptor userSpaceValidationInterceptor;
 
 
     @Override
@@ -45,8 +45,6 @@ public class WebConfig implements WebMvcConfigurer {
         for(UserSpaceValidationInterceptorURL url:UserSpaceValidationInterceptorURL.values()) {
             userSpaceRegistration.addPathPatterns(url.getUrlPattern());
         }
-
-
     }
 
     @Override

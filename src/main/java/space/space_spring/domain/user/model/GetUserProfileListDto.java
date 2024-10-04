@@ -1,8 +1,7 @@
-package space.space_spring.dto.user;
+package space.space_spring.domain.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 

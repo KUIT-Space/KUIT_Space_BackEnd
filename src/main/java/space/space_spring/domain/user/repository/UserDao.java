@@ -1,4 +1,4 @@
-package space.space_spring.dao;
+package space.space_spring.domain.user.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -7,6 +7,8 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import space.space_spring.entity.User;
 import space.space_spring.entity.enumStatus.UserSignupType;
+
+import java.util.Optional;
 
 @Repository
 public class UserDao {
@@ -53,4 +55,15 @@ public class UserDao {
         return em.find(User.class, userId);
     }
 
+    public Optional<User> findUserByRefreshToken(String refreshToken) {
+        String jpql = "SELECT u FROM User u WHERE u.refreshToken = :refreshToken AND u.status = 'ACTIVE'";
+        TypedQuery<User> query = em.createQuery(jpql, User.class);
+        query.setParameter("refreshToken", refreshToken);
+
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 }

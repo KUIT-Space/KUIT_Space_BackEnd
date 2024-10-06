@@ -42,6 +42,7 @@ public class VoiceRoomService {
     public Long createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
         Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
         Integer orderInt = voiceRoomRepository.findMaxOrderBySpace(targetSpace);
+        //Space currentSpace=voiceRoomRepository.findActiveVoiceRoomsBySpaceId(spaceId);
         int order;
         if(orderInt==null||orderInt==0){
             order=1;
@@ -66,7 +67,8 @@ public class VoiceRoomService {
         //해당 space VoiceRoom 가져오기 (VoiceRoom List)
         //Todo 가져오기에 limit 적용
         //todo 일급 객체 `voiceRoomEntityList`로 변경
-        List<VoiceRoom> voiceRoomDataList = findBySpaceId(spaceId);
+        //List<VoiceRoom> voiceRoomDataList = findBySpaceId(spaceId);
+        List<VoiceRoom> voiceRoomDataList = voiceRoomRepository.findActiveVoiceRoomsBySpaceId(spaceId);
         //todo voiceRoomEntityList 객체에 책임 위임
         //todo RoomDtoList 일급 객체 생성
         List<RoomDto> roomDtoList = RoomDto.convertRoomDtoListByVoiceRoom(voiceRoomDataList);
@@ -168,12 +170,12 @@ public class VoiceRoomService {
     private String findProfileImageByUserId(Long userSpaceId){
         return userSpaceDao.findProfileImageById(userSpaceId).orElse("");
     }
-    public List<VoiceRoom> findBySpaceId(long spaceId){
-        return findBySpace(spaceUtils.findSpaceBySpaceId(spaceId));
-    }
-    private List<VoiceRoom> findBySpace(Space space){
-        return voiceRoomRepository.findBySpace(space);
-    }
+//    public List<VoiceRoom> findBySpaceId(long spaceId){
+//        return findBySpace(spaceUtils.findSpaceBySpaceId(spaceId));
+//    }
+//    private List<VoiceRoom> findBySpace(Space space){
+//        return voiceRoomRepository.findBySpace(space);
+//    }
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
         Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
         List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));

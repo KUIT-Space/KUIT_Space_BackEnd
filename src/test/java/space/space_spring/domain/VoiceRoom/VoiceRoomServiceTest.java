@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import space.space_spring.dao.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomDao;
 import space.space_spring.dao.VoiceRoomRepository;
@@ -44,8 +43,7 @@ public class VoiceRoomServiceTest {
     @Mock
     private LiveKitUtils liveKitUtils;
 
-    @Mock
-    private UserDao userDao;
+
 
     @Mock
     private UserSpaceDao userSpaceDao;
@@ -133,7 +131,7 @@ public class VoiceRoomServiceTest {
         when(voiceRoomDao.createVoiceRoom(voiceRoomName,spaceOrder+1,testSpace)).thenReturn(1L);
 
 
-        PostVoiceRoomDto.Request request = PostVoiceRoomDto.Request.builder().name(voiceRoomName).build();
+        PostVoiceRoomDto.Request request = new PostVoiceRoomDto.Request(voiceRoomName);
         Long voiceRoomId = voiceRoomService.createVoiceRoom(testSpace.getSpaceId(),request);
 
         //then

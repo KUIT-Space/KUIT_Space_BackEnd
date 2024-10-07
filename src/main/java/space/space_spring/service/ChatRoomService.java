@@ -110,10 +110,14 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: chatRoom 생성 및 저장
-        ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest, chatRoomImgUrl));
+        ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest.getName(), chatRoomImgUrl));
 
         // TODO 4: user_chatRoom 매핑 정보 저장
-        UserChatRoom userChatRoom = userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
+        userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
+        for (Long id : createChatRoomRequest.getMemberList()) {
+            User user = userUtils.findUserByUserId(id);
+            userChatRoomDao.save(UserChatRoom.of(chatRoom, user, LocalDateTime.now()));
+        }
 
         // TODO 5: chatroom id 반환
         return CreateChatRoomResponse.of(chatRoom.getId());
@@ -152,7 +156,7 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ChatSuccessResponse updateLastReadTime(Long userId, Long spaceId, Long chatRoomId) {
+    public ChatSuccessResponse updateLastReadTime(Long userId, Long chatRoomId) {
         User userByUserId = userUtils.findUserByUserId(userId);
         ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));

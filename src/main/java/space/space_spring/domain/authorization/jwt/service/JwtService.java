@@ -26,11 +26,12 @@ public class JwtService {
     private final JwtRepository jwtRepository;
     private final JwtLoginProvider jwtLoginProvider;
     private final UserRepository userRepository;
+    private final TokenResolver tokenResolver;
 
     @Transactional
     public TokenPairDTO updateAccessToken(HttpServletRequest request) {
         // request에서 기존의 TokenPair를 찾아와서
-        TokenPairDTO oldTokenPair = TokenResolver.resolveTokenPair(request);
+        TokenPairDTO oldTokenPair = tokenResolver.resolveTokenPair(request);
 
         // 여기서 User 찾고
         User userByAccessToken = getUserByAccessToken(oldTokenPair.getAccessToken());

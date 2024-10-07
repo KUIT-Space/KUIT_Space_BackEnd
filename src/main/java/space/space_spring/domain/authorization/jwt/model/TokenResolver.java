@@ -14,7 +14,7 @@ public class TokenResolver {
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
-    public static TokenPairDTO resolveTokenPair(HttpServletRequest request) {
+    public TokenPairDTO resolveTokenPair(HttpServletRequest request) {
         // TODO 1. access token 파싱
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         validateToken(accessToken);
@@ -30,7 +30,7 @@ public class TokenResolver {
                 .build();
     }
 
-    private static void validateToken(String token) {
+    private void validateToken(String token) {
         if (token == null) {
             throw new JwtNoTokenException(TOKEN_NOT_FOUND);
         }

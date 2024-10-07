@@ -3,11 +3,13 @@ package space.space_spring.entity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import space.space_spring.entity.enumStatus.UserSignupType;
 
 @Entity
 @Table(name = "Users")
 @Getter
+@NoArgsConstructor
 public class User extends BaseEntity {
 
     @Id @GeneratedValue

@@ -20,4 +20,10 @@ public interface JwtRepository extends JpaRepository<TokenStorage, Long> {
     @Modifying
     @Query("DELETE FROM TokenStorage t WHERE t.user = :user")
     void deleteByUser(@Param("user") User user);
+
+    @Transactional
+    default void deleteAndFlushByUser(User user) {
+        deleteByUser(user);
+        flush();  // JPA가 즉시 반영하도록 강제 플러시
+    }
 }

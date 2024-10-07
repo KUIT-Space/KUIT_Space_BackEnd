@@ -1,14 +1,19 @@
 package space.space_spring.domain.authorization.jwt.model;
 
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
+import space.space_spring.entity.TokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtMalformedTokenException;
+import space.space_spring.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 
 import java.util.Date;
 
@@ -16,6 +21,7 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtLoginProvider {
     @Value("${secret.jwt.access-secret-key}")
     private String ACCESS_SECRET_KEY;
@@ -28,6 +34,8 @@ public class JwtLoginProvider {
 
     @Value("${secret.jwt.refresh-expired-in}")
     private Long REFRESH_EXPIRED_IN;
+
+    private final JwtRepository jwtRepository;
 
     public String generateToken(User user, TokenType tokenType) {
 //        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());
@@ -113,6 +121,32 @@ public class JwtLoginProvider {
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.getJwtPayloadDtoFromToken]", e);
             throw e;
+        }
+    }
+
+    public void validateRefreshToken(User user, String refreshToken) {
+        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+                .orElseThrow(() ->
+                {
+                    // db에서 row delete 하는 코드 추가
+                    jwtRepository.deleteByUser(user);
+                    throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
+                });
+
+        // TODO 1. refresh token의 만료시간 체크
+        if (isExpiredToken(refreshToken, TokenType.REFRESH)) {
+            // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
+            // db에서 row delete 하는 코드 추가
+            jwtRepository.deleteByUser(user);
+            throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
+        }
+
+        // TODO 2. refresh token이 db에 실제로 존재하는지 체크
+        if (!tokenStorage.checkTokenValue(refreshToken)) {
+            // refresh token이 db에 존재하지 않느 경우 -> 유효하지 않은 refresh token이므로 예외 발생
+            // db에서 row delete 하는 코드 추가
+            jwtRepository.deleteByUser(user);
+            throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
     }
 }

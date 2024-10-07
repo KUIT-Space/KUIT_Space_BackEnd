@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenResolverTestConfig {     // 테스트 전용 설정 클래스
 
     @Bean
-    public TokenResolver tokenResolver() {
+    TokenResolver tokenResolver() {
         return new TokenResolver();  // 직접 TokenResolver 빈 생성
     }
 }

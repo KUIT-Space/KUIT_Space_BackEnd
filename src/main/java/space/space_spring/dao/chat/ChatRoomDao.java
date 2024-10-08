@@ -7,4 +7,5 @@ import space.space_spring.entity.ChatRoom;
 
 @Repository
 public interface ChatRoomDao extends JpaRepository<ChatRoom, Long>, ChatRoomDaoCustom {
+    ChatRoom findByIdAndStatus(Long chatRoomId, String status);
 }

@@ -20,7 +20,6 @@ import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,23 +47,18 @@ public class ChatRoomService {
         // TODO 2: spaceId에 해당하는 space find
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 return
+        // TODO 3: 해당 user의 해당 space 내의 active 채팅방 리스트 return
         List<ChatRoom> chatRoomList = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
 
-        // TODO 4: chatRoom 리스트에서 active만 find
-        List<ChatRoom> activeChatRooms = chatRoomList.stream()
-                .filter(chatRoom -> "ACTIVE".equals(chatRoom.getStatus()))
-                .toList();
-
-        return ReadChatRoomResponse.of(activeChatRooms.stream()
+        return ReadChatRoomResponse.of(chatRoomList.stream()
                 .map(cr -> {
-                    // TODO 5: userChatRoom active인지 확인
-                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, cr);
+                    // TODO 4: userChatRoom active인지 확인
+                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, cr, "ACTIVE");
                     if (!userChatRoom.getStatus().equals("ACTIVE")) {
                         return null;
                     }
 
-                    // TODO 6: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
+                    // TODO 5: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
                     LocalDateTime lastUpdateTime = cr.getEncodedTime();
@@ -77,7 +71,7 @@ public class ChatRoomService {
                         log.info("마지막으로 업데이트된 시간: " + lastUpdateTime + " 마지막으로 읽은 내용 : " + lastContent);
                     }
 
-                    // TODO 7: 각 채팅방의 안읽은 메시지 개수 계산
+                    // TODO 6: 각 채팅방의 안읽은 메시지 개수 계산
                     LocalDateTime lastReadTime = userChatRoom.getEncodedTime(); // LocalDateTime으로 변환
 
                     log.info("마지막으로 읽은 시간: " + lastReadTime);
@@ -125,21 +119,16 @@ public class ChatRoomService {
         Space spaceById = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomById = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE");
+        // TODO: null일 때 CHATROOM_NOT_EXIST exception 처리
 
         // TODO 3: 해당 chatRoom의 userChatRoom 리스트 find
-        List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoom(chatRoomById);
+        List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoomAndStatus(chatRoomByChatRoomId, "ACTIVE");
 
-        // TODO 4: userChatRoom 리스트에서 active만 find
-        List<UserChatRoom> activeUserChatRooms = userChatRoomList.stream()
-                .filter(userChatRoom -> "ACTIVE".equals(userChatRoom.getStatus()))
-                .toList();
-
-        activeUserChatRooms.forEach(userChatRoom -> {
+        userChatRoomList.forEach(userChatRoom -> {
             User user = userChatRoom.getUser();
 
-            // TODO 5: 스페이스 프로필 이미지 get 위해 userSpace find
+            // TODO 4: 스페이스 프로필 이미지 get 위해 userSpace find
             UserSpace userSpace = userSpaceDao.findUserSpaceByUserAndSpace(user, spaceById)
                     .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
 
@@ -152,10 +141,9 @@ public class ChatRoomService {
     @Transactional
     public ChatSuccessResponse updateLastReadTime(Long userId, Long chatRoomId) {
         User userByUserId = userUtils.findUserByUserId(userId);
-        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE");
 
-        UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
+        UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, "ACTIVE");
         targetChatRoom.setLastReadTime(LocalDateTime.now());
         userChatRoomDao.save(targetChatRoom);
         log.info("userId: " + userId + " socket disconnect 시 마지막으로 읽은 시간: " + targetChatRoom.getLastReadTime());
@@ -166,8 +154,7 @@ public class ChatRoomService {
     @Transactional
     public ChatSuccessResponse joinChatRoom(Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
         List<Long> memberIdList = joinChatRoomRequest.getMemberList();
-        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE");
 
         for (Long memberId : Objects.requireNonNull(memberIdList)) {
             // TODO 1: 초대한 유저 조회
@@ -177,7 +164,7 @@ public class ChatRoomService {
             if (isUserInChatRoom(userByUserId, chatRoomByChatRoomId)) {
                 // TODO 3: 유저가 채팅방에 초대된 이력이 있다면 userChatRoom의 status 변경
                 if (userByUserId.getStatus().equals("INACTIVE")) {
-                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
+                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, "ACTIVE");
                     userChatRoom.setUserRejoin();
                     userChatRoomDao.save(userChatRoom);
                     return ChatSuccessResponse.of(true);
@@ -196,8 +183,7 @@ public class ChatRoomService {
 
     public ChatSuccessResponse modifyChatRoomName(Long chatRoomId, String name) {
         // TODO 1: 해당 채팅방 find
-        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE");
 
         // TODO 2: 채팅방 이름 변경
         chatRoomByChatRoomId.updateName(name);
@@ -208,11 +194,10 @@ public class ChatRoomService {
 
     public ChatSuccessResponse exitChatRoom(Long userId, Long chatRoomId) {
         User userByUserId = userUtils.findUserByUserId(userId);
-        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE");
 
         // TODO 1: 해당 userChatRoom find
-        UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
+        UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, "ACTIVE");
 
         // TODO 2: 해당 userChatRoom inactive로 변경
         userChatRoom.updateInactive();
@@ -225,8 +210,7 @@ public class ChatRoomService {
 
     public ChatSuccessResponse deleteChatRoom(Long chatRoomId) {
         // TODO 1: 해당 chatRoom find
-        ChatRoom chatRoomByChatRoomId = chatRoomDao.findById(chatRoomId)
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE");
 
         // TODO 2: 해당 chatRoom inactive로 변경
         chatRoomByChatRoomId.updateInactive();
@@ -238,7 +222,7 @@ public class ChatRoomService {
     }
 
     private boolean isUserInChatRoom(User userByUserId, ChatRoom chatRoomByChatRoomId) {
-        List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoom(chatRoomByChatRoomId);
+        List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoomAndStatus(chatRoomByChatRoomId, "ACTIVE");
         return chatRoomList.stream().anyMatch(userChatRoom -> userChatRoom.getUser().equals(userByUserId));
     }
 }

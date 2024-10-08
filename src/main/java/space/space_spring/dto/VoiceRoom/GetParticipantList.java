@@ -28,7 +28,7 @@ public class GetParticipantList {
     @Setter
     public static class ParticipantInfo{
         private String name;
-        private Long userId;
+        private Long id;
         private Long userSpaceId;
         private boolean isMute;
         private String profileImage;
@@ -39,7 +39,7 @@ public class GetParticipantList {
                     .name(participantDto.getName())
                     .isMute(participantDto.isMicMute())
                     .profileImage(participantDto.getProfileImage())
-                    .userId(participantDto.getId())
+                    .id(participantDto.getId())
                     .userSpaceId(participantDto.getUserSpaceId())
                     .build();
         }

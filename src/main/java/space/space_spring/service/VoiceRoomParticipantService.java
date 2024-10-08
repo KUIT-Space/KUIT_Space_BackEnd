@@ -37,9 +37,6 @@ public class VoiceRoomParticipantService {
         for(ParticipantDto participantDto: participantDtoList){
             //profileIamge 집어넣기
             participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
-            //userSpaceId 집어 넣기
-            User user = userDao.findUserByUserId(participantDto.getId());
-            participantDto.setUserSpaceId(userSpaceDao.findUserSpaceByUserAndSpace(user,space).get().getUserSpaceId());
         }
         return participantDtoList;
     }

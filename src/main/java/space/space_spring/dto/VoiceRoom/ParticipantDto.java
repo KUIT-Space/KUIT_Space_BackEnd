@@ -31,8 +31,11 @@ public class ParticipantDto {
 
     public static ParticipantDto convertParticipant(LivekitModels.ParticipantInfo participantInfo){
         if(participantInfo==null){return null;}
+        Long id = Long.valueOf(participantInfo.getIdentity());
+        Long userSpaceId = id;
         return ParticipantDto.builder()
-                .id(Long.valueOf(participantInfo.getIdentity()))
+                .id(id)
+                .userSpaceId(userSpaceId)
                 .name(participantInfo.getName())
                 .isMicMute(checkMicMute(participantInfo.getTracksList()))
 

@@ -297,7 +297,7 @@ public class VoiceRoomService {
 
     public String getToken(long spaceId,long userId,long userSpaceId,long voiceRoomId){
         String userName=userSpaceDao.findUserNameById(userSpaceId);
-        String userIdentity=String.valueOf(userId);
+        String userIdentity=String.valueOf(userSpaceId);
         //Metadata에 profileImage와 userName 추가
         String metadata="userProfileImage : "+userSpaceDao.findProfileImageById(userSpaceId).orElse("");
         //String roomName=findNameTagById(voiceRoomId);

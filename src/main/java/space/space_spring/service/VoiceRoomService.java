@@ -34,6 +34,7 @@ public class VoiceRoomService {
     private final UserDao userDao;
     private final UserSpaceDao userSpaceDao;
     private final TaskExecutor taskExecutor;
+    private final VoiceRoomParticipantService voiceRoomParticipantService;
 
     public Long createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
         Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
@@ -65,32 +66,34 @@ public class VoiceRoomService {
             for(RoomDto roomDto : roomDtoList){
                 roomDto.setActiveRoom(roomResponses);
             }
+
+
         //participant mapping
-        if (showParticipant) {
-            for(RoomDto roomDto : roomDtoList) {
-                if(roomDto.getNumParticipants()==0){
-                    //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
-                    System.out.print("\n[DEBUG]Participant Number : 0\n");
-                    roomDto.setParticipantDTOList(Collections.emptyList());
-                    continue;
-                }
-                //participantDto List 가져오기
-                List<ParticipantDto> participantDtoList = getParticipantDtoListById(roomDto.getId());
-                for(ParticipantDto participantDto: participantDtoList){
-                    //Todo profileIamge 집어넣기
-                    participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
-                }
-                //RoomDto에 값 집어넣기
-                    //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
-                if(participantDtoList==null||participantDtoList.isEmpty()){
-                    System.out.print("\n\n[DEBUG]participant response is empty or null"+participantDtoList.toString()+
-                            "participant number is \n\n");
-                    roomDto.setParticipantDTOList(Collections.emptyList());
-                }else {
-                    roomDto.setParticipantDTOList(participantDtoList);
-                }
-            }
-        }
+//        if (showParticipant) {
+//            for(RoomDto roomDto : roomDtoList) {
+//                if(roomDto.getNumParticipants()==0){
+//                    //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+//                    System.out.print("\n[DEBUG]Participant Number : 0\n");
+//                    roomDto.setParticipantDTOList(Collections.emptyList());
+//                    continue;
+//                }
+//                //participantDto List 가져오기
+//                List<ParticipantDto> participantDtoList = getParticipantDtoListById(roomDto.getId());
+//                for(ParticipantDto participantDto: participantDtoList){
+//                    //Todo profileIamge 집어넣기
+//                    participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
+//                }
+//                //RoomDto에 값 집어넣기
+//                    //showParticipant = ture 일때, 참가자가 없으면 빈문자열[] 출력
+//                if(participantDtoList==null||participantDtoList.isEmpty()){
+//                    System.out.print("\n\n[DEBUG]participant response is empty or null"+participantDtoList.toString()+
+//                            "participant number is \n\n");
+//                    roomDto.setParticipantDTOList(Collections.emptyList());
+//                }else {
+//                    roomDto.setParticipantDTOList(participantDtoList);
+//                }
+//            }
+//        }
         //ToDo Response로 convert
             //#1 Active/inActive 분리
 
@@ -136,7 +139,7 @@ public class VoiceRoomService {
                         //.exceptionally(ex->{throws ex;})
                 )
                 .collect(Collectors.toList());
-
+        
 
         // 모든 Future의 완료를 기다림
         CompletableFuture<Void> allOf = CompletableFuture.allOf(

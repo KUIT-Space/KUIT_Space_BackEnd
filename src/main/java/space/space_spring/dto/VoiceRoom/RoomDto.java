@@ -20,23 +20,28 @@ public class RoomDto {
     private int numParticipants;
     private long startTime; //time Stamp
     private long createdAt;
-    private List<ParticipantDto> participantDTOList;
+    //private List<ParticipantDto> participantDTOList;
+    private ParticipantListDto participantListDto;
     private int order;
     private String sid;
     private String metadata;
 
 
-    public void setParticipantDTOListByInfo(List<LivekitModels.ParticipantInfo> participantInfoList){
-        if(participantInfoList==null||participantInfoList.isEmpty()){return;}
-        this.participantDTOList =  participantInfoList.stream()
-                .map(ParticipantDto::convertParticipant)
-                .collect(Collectors.toList());
-    }
+//    public void setParticipantDTOListByInfo(List<LivekitModels.ParticipantInfo> participantInfoList){
+//        if(participantInfoList==null||participantInfoList.isEmpty()){return;}
+//        this.participantDTOList =  participantInfoList.stream()
+//                .map(ParticipantDto::convertParticipant)
+//                .collect(Collectors.toList());
+//    }
     public RoomDto setParticipantDTOList(List<ParticipantDto> participantDtoList){
-        this.participantDTOList =  participantDtoList;
+        this.participantListDto=  ParticipantListDto.from(participantDtoList);
         return this;
     }
 
+    public RoomDto setParticipantDTOList(ParticipantListDto participants){
+        this.participantListDto =  participants;
+        return this;
+    }
     public static RoomDto convertRoom(LivekitModels.Room room){
         if(room==null){return null;}
         return RoomDto.builder()
@@ -45,7 +50,7 @@ public class RoomDto {
                 .startTime(room.getCreationTime())
                 .sid(room.getSid())
                 .metadata(room.getMetadata())
-                .participantDTOList(null)
+                .participantListDto(null)
                 .build();
     }
 
@@ -75,7 +80,7 @@ public class RoomDto {
                 .sid(null)
                 .metadata(null)
                 //.startTime()
-                .participantDTOList(null)
+                .participantListDto(null)
                 .build();
     }
 

@@ -7,6 +7,7 @@ import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dto.VoiceRoom.GetParticipantList;
 import space.space_spring.dto.VoiceRoom.ParticipantDto;
+import space.space_spring.dto.VoiceRoom.ParticipantListDto;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
@@ -23,22 +24,21 @@ public class VoiceRoomParticipantService {
     final private VoiceRoomRepository voiceRoomRepository;
     final private LiveKitUtils liveKitUtils;
     public List<GetParticipantList.ParticipantInfo> getParticipantInfoListById(long voiceRoomId){
-        return GetParticipantList.ParticipantInfo.convertParticipantDtoList(
-                getParticipantDtoListById(voiceRoomId)
-                //liveKitUtils.getParticipantInfo(findNameTagById(voiceRoomId))
-        );
+        return getParticipantDtoListById(voiceRoomId).convertParticipantDtoList();
     }
-    private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
+    private ParticipantListDto getParticipantDtoListById(long voiceRoomId){
         Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
-        List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));
-        if(participantDtoList==null||participantDtoList.isEmpty()){
-            return Collections.emptyList();
+        //Todo 다른 네이밍 고려
+        List<ParticipantDto> participantDtos =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));
+        if(participantDtos==null || participantDtos.isEmpty()){
+            participantDtos =  Collections.emptyList();
         }
-        for(ParticipantDto participantDto: participantDtoList){
-            //profileIamge 집어넣기
-            participantDto.setProfileImage(findProfileImageByUserId(participantDto.getUserSpaceId()));
-        }
-        return participantDtoList;
+
+        ParticipantListDto participantListDto = ParticipantListDto.from(participantDtos);
+
+
+        participantListDto.setProfileImage(this::findProfileImageByUserId);
+        return participantListDto;
     }
     private String findProfileImageByUserId(Long userSpaceId){
         return userSpaceDao.findProfileImageById(userSpaceId).orElse("");

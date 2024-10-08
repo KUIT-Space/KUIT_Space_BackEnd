@@ -16,6 +16,7 @@ import space.space_spring.dto.VoiceRoom.*;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.LiveKitService;
+import space.space_spring.service.VoiceRoomParticipantService;
 import space.space_spring.service.VoiceRoomService;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
@@ -40,6 +41,7 @@ public class VoiceRoomController {
     private final UserSpaceDao userSpaceDao;
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
+    private final VoiceRoomParticipantService voiceRoomParticipantService;
 
     //VoiceRoom 생성/수정
     @PostMapping("")
@@ -143,10 +145,11 @@ public class VoiceRoomController {
         //해당 voiceRoom이 해당 space에 속한것이 맞는지 확인
         validateVoiceRoomInSpace(spaceId,roomId);
 
-        List<GetParticipantList.ParticipantInfo> participantInfoList = voiceRoomService.getParticipantInfoListById(roomId);
+        //List<GetParticipantList.ParticipantInfo> participantInfoList = voiceRoomService.getParticipantInfoListById(roomId);
+        List<GetParticipantList.ParticipantInfo> participantInfoList = voiceRoomParticipantService.getParticipantInfoListById(roomId);
+
         return new BaseResponse<GetParticipantList.Response>(new GetParticipantList.Response(participantInfoList));
     }
-
     @PatchMapping("")
     public BaseResponse<String> updateVoiceRoom(
             @PathVariable("spaceId") @NotNull long spaceId,

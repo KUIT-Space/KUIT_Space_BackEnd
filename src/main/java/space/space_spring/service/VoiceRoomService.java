@@ -76,8 +76,8 @@ public class VoiceRoomService {
         //불변 list로 변환
         List<LivekitModels.Room> roomResponses = Collections.unmodifiableList(roomResponsesTemp);
 
-        VoiceRoomDtoList voiceRoomDtoList=VoiceRoomDtoList.from(voiceRoomDataList);
-        voiceRoomDtoList.setActiveRoom(roomResponsesTemp);
+        VoiceRoomListDto voiceRoomListDto = VoiceRoomListDto.from(voiceRoomDataList);
+        voiceRoomListDto.setActiveRoom(roomResponsesTemp);
 
 
         //ToDo setRoomDto 함수를 RoomDtoList 객체로 이동
@@ -100,10 +100,10 @@ public class VoiceRoomService {
 
         //#2 convert
         if(limit==null||limit<=0) {
-            return voiceRoomDtoList.convertVoicRoomInfoList();
+            return voiceRoomListDto.convertVoicRoomInfoList();
             //return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList);
         }else{
-            return voiceRoomDtoList.convertVoicRoomInfoList(limit);
+            return voiceRoomListDto.convertVoicRoomInfoList(limit);
             //return GetVoiceRoomList.VoiceRoomInfo.convertRoomDtoList(roomDtoList,limit);
         }
         //return null;

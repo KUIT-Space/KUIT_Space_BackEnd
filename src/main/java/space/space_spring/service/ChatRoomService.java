@@ -67,10 +67,7 @@ public class ChatRoomService {
                     // TODO 6: 각 채팅방의 마지막으로 업데이트된 메시지 정보 find
                     ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(cr.getId());
 
-                    LocalDateTime lastUpdateTime = cr.getCreatedAt()
-                            .atZone(ZoneId.of("UTC")) // UTC로 해석
-                            .withZoneSameInstant(ZoneId.of("Asia/Seoul")) // 서울 시간대로 변환
-                            .toLocalDateTime(); // LocalDateTime으로 변환
+                    LocalDateTime lastUpdateTime = cr.getEncodedTime();
                     HashMap<String, String> lastContent = new HashMap<>();
                     lastContent.put("text", "메시지를 전송해보세요");
 
@@ -81,10 +78,7 @@ public class ChatRoomService {
                     }
 
                     // TODO 7: 각 채팅방의 안읽은 메시지 개수 계산
-                    LocalDateTime lastReadTime = userChatRoom.getLastReadTime()
-                            .atZone(ZoneId.of("UTC")) // UTC로 해석
-                            .withZoneSameInstant(ZoneId.of("Asia/Seoul")) // 서울 시간대로 변환
-                            .toLocalDateTime(); // LocalDateTime으로 변환
+                    LocalDateTime lastReadTime = userChatRoom.getEncodedTime(); // LocalDateTime으로 변환
 
                     log.info("마지막으로 읽은 시간: " + lastReadTime);
                     int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(
@@ -184,8 +178,7 @@ public class ChatRoomService {
                 // TODO 3: 유저가 채팅방에 초대된 이력이 있다면 userChatRoom의 status 변경
                 if (userByUserId.getStatus().equals("INACTIVE")) {
                     UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoom(userByUserId, chatRoomByChatRoomId);
-                    userChatRoom.setLastReadTime(LocalDateTime.now());
-                    userChatRoom.updateActive();
+                    userChatRoom.setUserRejoin();
                     userChatRoomDao.save(userChatRoom);
                     return ChatSuccessResponse.of(true);
                 } else {

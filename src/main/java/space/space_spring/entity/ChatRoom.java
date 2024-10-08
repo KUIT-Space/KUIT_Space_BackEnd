@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Entity
 @Getter
 @Builder
@@ -46,6 +49,13 @@ public class ChatRoom extends BaseEntity{
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public LocalDateTime getEncodedTime() {
+        return this.getCreatedAt()
+                .atZone(ZoneId.of("UTC")) // UTC로 해석
+                .withZoneSameInstant(ZoneId.of("Asia/Seoul")) // 서울 시간대로 변환
+                .toLocalDateTime(); // LocalDateTime으로 변환
     }
 
     //    // 양방향 매핑

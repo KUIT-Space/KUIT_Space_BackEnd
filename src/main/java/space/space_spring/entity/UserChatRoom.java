@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -49,5 +50,17 @@ public class UserChatRoom extends BaseEntity{
 
     public void setLastReadTime(LocalDateTime lastReadTime) {
         this.lastReadTime = lastReadTime;
+    }
+
+    public LocalDateTime getEncodedTime() {
+        return this.getLastReadTime()
+                .atZone(ZoneId.of("UTC")) // UTC로 해석
+                .withZoneSameInstant(ZoneId.of("Asia/Seoul")) // 서울 시간대로 변환
+                .toLocalDateTime();
+    }
+
+    public void setUserRejoin() {
+        this.setLastReadTime(LocalDateTime.now());
+        this.updateActive();
     }
 }

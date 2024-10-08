@@ -49,22 +49,14 @@ public class RoomDto {
                 .build();
     }
 
+    //Todo VoiceRoomDtoList 로 이전 예정
     public static List<RoomDto> convertRoomDtoListByVoiceRoom(List<VoiceRoom> voiceRoomList){
         if(voiceRoomList==null||voiceRoomList.isEmpty()){return null;}
         return voiceRoomList.stream()
                 .map(RoomDto::convertRoom)
                 .collect(Collectors.toList());
     }
-//    public static Room convertRoom(LiveKitSession session){
-//        return Room.builder()
-//                .name(session.)
-//                .numParticipants(room.getNumParticipants())
-//                .creationTime(room.getCreationTime())
-//                .sid(room.getSid())
-//                .metadata(room.getMetadata())
-//                .participantList(null)
-//                .build();
-//    }
+
     public static RoomDto convertRoom(VoiceRoom voiceRoom){
         if(voiceRoom==null){return null;}
         return RoomDto.builder()
@@ -99,10 +91,7 @@ public class RoomDto {
         boolean find = false;
         for(LivekitModels.Room resRoom : liveKitRoomList){
             if(String.valueOf(this.id).equals( resRoom.getName() )){
-                this.numParticipants = resRoom.getNumParticipants();
-                this.sid = resRoom.getSid();
-                this.metadata = resRoom.getMetadata();
-                this.startTime= resRoom.getCreationTime();
+                setActiveRoom(resRoom,true);
                 find = true;
                 break;
             }
@@ -110,6 +99,20 @@ public class RoomDto {
         }
         if(!find){this.numParticipants=0;}
         //return this;
+    }
+
+    public void setActiveRoom(LivekitModels.Room resRoom,boolean checkId){
+        //null에 대한 예외 처리
+        if(checkId || String.valueOf(this.id).equals( resRoom.getName() )){
+            this.numParticipants = resRoom.getNumParticipants();
+            this.sid = resRoom.getSid();
+            this.metadata = resRoom.getMetadata();
+            this.startTime= resRoom.getCreationTime();
+
+        }
+    }
+    public void setActiveRoom(LivekitModels.Room resRoom){
+        setActiveRoom(resRoom,false);
     }
     private static boolean EqualRoomIdByNameTag(String roomName,long Id){
         return roomName.endsWith("#"+String.valueOf(Id));

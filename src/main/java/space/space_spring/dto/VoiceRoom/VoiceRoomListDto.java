@@ -11,16 +11,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class VoiceRoomDtoList {
+public class VoiceRoomListDto {
     private List<RoomDto> roomDtoList;
 
-    public  VoiceRoomDtoList(List<RoomDto> roomDtos){
+    public VoiceRoomListDto(List<RoomDto> roomDtos){
         this.roomDtoList=roomDtos;
     }
 
-    public static VoiceRoomDtoList from(List<VoiceRoom> voiceRoomEntityList){
+    public static VoiceRoomListDto from(List<VoiceRoom> voiceRoomEntityList){
         List<RoomDto> roomDtos = convertRoomDtoListByVoiceRoom(voiceRoomEntityList);
-        return new VoiceRoomDtoList(roomDtos);
+        return new VoiceRoomListDto(roomDtos);
     }
 
     public static List<RoomDto> convertRoomDtoListByVoiceRoom(List<VoiceRoom> voiceRoomList){

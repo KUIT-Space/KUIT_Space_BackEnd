@@ -2,20 +2,14 @@ package space.space_spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.dto.chat.request.ChatMessageRequest;
 import space.space_spring.dto.chat.response.ChatMessageLogResponse;
 import space.space_spring.dto.chat.response.ChatMessageResponse;
 import space.space_spring.service.ChattingService;
-import space.space_spring.service.UserChatRoomService;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,7 +21,6 @@ public class ChattingController {
 
     private final ChattingService chattingService;
 
-    private final UserChatRoomService userChatRoomService;
 
     @MessageMapping("/chat/{chatRoomId}") // {chatRoomId} 채팅방으로 보낸 메세지 매핑
     @SendTo("/topic/chat/{chatRoomId}") // {chatRoomId} 채팅방을 구독한 곳들로 메세지 전송

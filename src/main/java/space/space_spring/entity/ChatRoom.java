@@ -51,13 +51,6 @@ public class ChatRoom extends BaseEntity{
         this.name = name;
     }
 
-    public LocalDateTime getEncodedTime() {
-        return this.getCreatedAt()
-                .atZone(ZoneId.of("UTC")) // UTC로 해석
-                .withZoneSameInstant(ZoneId.of("Asia/Seoul")) // 서울 시간대로 변환
-                .toLocalDateTime(); // LocalDateTime으로 변환
-    }
-
     //    // 양방향 매핑
 //    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
 //    private List<UserChatRoom> userChatRooms;

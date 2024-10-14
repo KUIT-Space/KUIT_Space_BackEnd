@@ -1,4 +1,4 @@
-package space.space_spring.util;
+package space.space_spring.global.util;
 
 import org.springframework.stereotype.Component;
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public interface UserChatRoomDao extends JpaRepository<UserChatRoom, Long> {
-    UserChatRoom findByUserAndChatRoom(User userByUserId, ChatRoom chatRoomByChatRoomId);
+    UserChatRoom findByUserAndChatRoomAndStatus(User userByUserId, ChatRoom chatRoomByChatRoomId, String status);
 
-    List<UserChatRoom> findByChatRoom(ChatRoom chatRoom);
+    List<UserChatRoom> findByChatRoomAndStatus(ChatRoom chatRoom, String status);
 }

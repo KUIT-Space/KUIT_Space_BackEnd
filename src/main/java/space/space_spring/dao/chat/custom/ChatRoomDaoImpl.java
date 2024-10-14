@@ -20,9 +20,12 @@ public class ChatRoomDaoImpl implements ChatRoomDaoCustom {
     public List<ChatRoom> findByUserAndSpace(User who, Space where) {
         return jpaQueryFactory
                 .selectFrom(chatRoom)
-                .join(userChatRoom).on(userChatRoom.chatRoom.eq(chatRoom))
-                .where(userChatRoom.user.eq(who)
-                        .and(chatRoom.space.eq(where)))
+                .join(userChatRoom).on(
+                        userChatRoom.chatRoom.eq(chatRoom)
+                        .and(userChatRoom.user.eq(who))
+                        .and(userChatRoom.status.eq("ACTIVE")))
+                .where(chatRoom.space.eq(where)
+                        .and(chatRoom.status.eq("ACTIVE")))
                 .orderBy(chatRoom.lastModifiedAt.desc())
                 .fetch();
     }

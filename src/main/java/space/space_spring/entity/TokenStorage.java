@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Token_Storage")
 @Getter
+@Builder
 public class TokenStorage {
 
     @Id @GeneratedValue

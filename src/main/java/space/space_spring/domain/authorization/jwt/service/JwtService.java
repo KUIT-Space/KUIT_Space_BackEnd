@@ -24,6 +24,8 @@ public class JwtService {
     private final JwtLoginProvider jwtLoginProvider;
     private final UserRepository userRepository;
     private final TokenResolver tokenResolver;
+    private final TokenValidator tokenValidator;
+    private final TokenUpdater tokenUpdater;
 
     @Transactional
     public TokenPairDTO updateAccessToken(HttpServletRequest request) {
@@ -31,15 +33,13 @@ public class JwtService {
         TokenPairDTO oldTokenPair = tokenResolver.resolveTokenPair(request);
 
         // 여기서 User 찾고
-        User userByAccessToken = getUserByAccessToken(oldTokenPair.getAccessToken());
+        User user = getUserByAccessToken(oldTokenPair.getAccessToken());
 
         // 이 User로 refresh token의 유효성 검사 진행하고
-        jwtLoginProvider.validateRefreshToken(userByAccessToken, oldTokenPair.getRefreshToken());
+        validateRefreshToken(user, oldTokenPair.getRefreshToken());
 
         // access, refresh 새로 발급
-        TokenPairDTO tokenPairDTO = updateTokenPair(userByAccessToken);
-
-        return tokenPairDTO;
+        return updateTokenPair(user);
     }
 
     private User getUserByAccessToken(String accessToken) {
@@ -49,22 +49,31 @@ public class JwtService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
-    private TokenPairDTO updateTokenPair(User user) {
-        // TODO 1. new access token, refresh token 발급
-        String newAccessToken = jwtLoginProvider.generateToken(user, TokenType.ACCESS);
-        String newRefreshToken = jwtLoginProvider.generateToken(user, TokenType.REFRESH);
+    private void validateRefreshToken(User user, String refreshToken) {
+        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+                .orElseThrow(() ->
+                {
+                    // db에서 row delete 하는 코드 추가
+                    jwtRepository.deleteByUser(user);
+                    throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
+                });
 
-        // TODO 2. db의 refresh token update
+        try {
+            tokenValidator.validateRefreshToken(refreshToken, tokenStorage);
+        } catch (JwtExpiredTokenException e) {
+            jwtRepository.deleteByUser(user);
+            throw e;
+        } catch (JwtUnauthorizedTokenException e) {
+            jwtRepository.deleteByUser(user);
+            throw e;
+        }
+    }
+
+    private TokenPairDTO updateTokenPair(User user) {
         TokenStorage tokenStorage = jwtRepository.findByUser(user)
                 .orElseThrow(() -> new JwtUnauthorizedTokenException(TOKEN_MISMATCH));
 
-        tokenStorage.updateTokenValue(newRefreshToken);
-
-        // TODO 3. return
-        return TokenPairDTO.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(newRefreshToken)
-                .build();
+        return tokenUpdater.updateTokenPair(user, tokenStorage);
     }
 
     public TokenPairDTO provideJwtToOAuthUser(User userByOAuthInfo) {

@@ -124,29 +124,4 @@ public class JwtLoginProvider {
         }
     }
 
-    public void validateRefreshToken(User user, String refreshToken) {
-        TokenStorage tokenStorage = jwtRepository.findByUser(user)
-                .orElseThrow(() ->
-                {
-                    // db에서 row delete 하는 코드 추가
-                    jwtRepository.deleteByUser(user);
-                    throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
-                });
-
-        // TODO 1. refresh token의 만료시간 체크
-        if (isExpiredToken(refreshToken, TokenType.REFRESH)) {
-            // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
-            // db에서 row delete 하는 코드 추가
-            jwtRepository.deleteByUser(user);
-            throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
-        }
-
-        // TODO 2. refresh token이 db에 실제로 존재하는지 체크
-        if (!tokenStorage.checkTokenValue(refreshToken)) {
-            // refresh token이 db에 존재하지 않느 경우 -> 유효하지 않은 refresh token이므로 예외 발생
-            // db에서 row delete 하는 코드 추가
-            jwtRepository.deleteByUser(user);
-            throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
-        }
-    }
 }

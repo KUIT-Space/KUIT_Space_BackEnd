@@ -13,8 +13,8 @@ public class TokenUpdater {
 
     public TokenPairDTO updateTokenPair(User user, TokenStorage tokenStorage) {
         // new access token, new refresh token 발급 받아서
-        String newAccessToken = jwtLoginProvider.generateToken(user, TokenType.ACCESS);
-        String newRefreshToken = jwtLoginProvider.generateToken(user, TokenType.REFRESH);
+        String newAccessToken = jwtLoginProvider.generateToken(user.getUserId(), TokenType.ACCESS);
+        String newRefreshToken = jwtLoginProvider.generateToken(user.getUserId(), TokenType.REFRESH);
 
         // tokenStorage update 하고
         tokenStorage.updateTokenValue(newRefreshToken);

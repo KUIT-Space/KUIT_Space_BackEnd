@@ -1,19 +1,16 @@
 package space.space_spring.domain.authorization.jwt.model;
 
 import io.jsonwebtoken.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
-import space.space_spring.entity.TokenStorage;
-import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
-import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtMalformedTokenException;
-import space.space_spring.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 
 import java.util.Date;
 
@@ -21,29 +18,25 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class JwtLoginProvider {
     @Value("${secret.jwt.access-secret-key}")
-    private String ACCESS_SECRET_KEY;
+    protected String ACCESS_SECRET_KEY;
 
     @Value("${secret.jwt.refresh-secret-key}")
-    private String REFRESH_SECRET_KEY;
+    protected String REFRESH_SECRET_KEY;
 
     @Value("${secret.jwt.access-expired-in}")
-    private Long ACCESS_EXPIRED_IN;
+    protected Long ACCESS_EXPIRED_IN;
 
     @Value("${secret.jwt.refresh-expired-in}")
-    private Long REFRESH_EXPIRED_IN;
+    protected Long REFRESH_EXPIRED_IN;
 
-    private final JwtRepository jwtRepository;
-
-    public String generateToken(User user, TokenType tokenType) {
+    public String generateToken(Long userId, TokenType tokenType) {
 //        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());
 
         Date now = new Date();
         Date expiration = setExpiration(now, tokenType);
-
-        Long userId = user.getUserId();
 
         return makeToken(tokenType, userId, now, expiration);
     }

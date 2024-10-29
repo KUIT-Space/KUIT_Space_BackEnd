@@ -26,7 +26,7 @@ public class JwtService {
     private final TokenResolver tokenResolver;
 
     @Transactional
-    public TokenPairDTO updateAccessToken(HttpServletRequest request) {
+    public TokenPairDTO updateTokenPair(HttpServletRequest request) {
         // request에서 기존의 TokenPair를 찾아와서
         TokenPairDTO oldTokenPair = tokenResolver.resolveTokenPair(request);
 

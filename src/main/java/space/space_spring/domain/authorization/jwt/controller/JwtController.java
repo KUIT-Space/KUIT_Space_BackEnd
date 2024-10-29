@@ -27,7 +27,7 @@ public class JwtController {
     @PostMapping("/new-token")
     public BaseResponse<String> updateAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        TokenPairDTO newTokenPairDTO = jwtService.updateAccessToken(request);
+        TokenPairDTO newTokenPairDTO = jwtService.updateTokenPair(request);
 
         response.setHeader("Authorization-refresh", "Bearer " + newTokenPairDTO.getRefreshToken());
         response.setHeader("Authorization", "Bearer " + newTokenPairDTO.getAccessToken());

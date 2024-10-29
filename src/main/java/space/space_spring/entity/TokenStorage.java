@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Token_Storage")
 @Getter
-@Builder
+@NoArgsConstructor
 public class TokenStorage {
 
     @Id @GeneratedValue
@@ -29,6 +29,19 @@ public class TokenStorage {
 
     public boolean checkTokenValue(String tokenValue) {
         return this.tokenValue.equals(tokenValue);
+    }
+
+    @Builder
+    private TokenStorage(User user, String tokenValue) {
+        this.user = user;
+        this.tokenValue = tokenValue;
+    }
+
+    public static TokenStorage create(User user, String tokenValue) {
+        return TokenStorage.builder()
+                .user(user)
+                .tokenValue(tokenValue)
+                .build();
     }
 
 }

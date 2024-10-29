@@ -21,29 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@TestConfiguration
-class TokenResolverTestConfig {     // 테스트 전용 설정 클래스
-
-    @Bean
-    TokenResolver tokenResolver() {
-        return new TokenResolver();  // 직접 TokenResolver 빈 생성
-    }
-}
-
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TokenResolverTestConfig.class)
 class TokenResolverTest {
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
-
-    @Autowired
-    private TokenResolver tokenResolver;
 
     @Test
     @DisplayName("request header로부터 access token, refresh token을 rosolve한다.")
     void resolveTokenPair() throws Exception {
         //given
+        TokenResolver tokenResolver = new TokenResolver();
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", JWT_TOKEN_PREFIX + "accessToken");
         request.addHeader("Authorization-refresh", JWT_TOKEN_PREFIX + "refreshToken");
@@ -60,6 +47,8 @@ class TokenResolverTest {
     @DisplayName("access token값이 null 일 경우 예외를 던진다.")
     void validateToken1() throws Exception {
         //given
+        TokenResolver tokenResolver = new TokenResolver();
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization-refresh", JWT_TOKEN_PREFIX + "refreshToken");
 
@@ -73,6 +62,8 @@ class TokenResolverTest {
     @DisplayName("refresh token값이 null 일 경우 예외를 던진다.")
     void validateToken2() throws Exception {
         //given
+        TokenResolver tokenResolver = new TokenResolver();
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", JWT_TOKEN_PREFIX + "accessToken");
 
@@ -86,6 +77,8 @@ class TokenResolverTest {
     @DisplayName("토큰값의 prefix가 잘못된 경우 예외를 던진다.")
     void validateToken3() throws Exception {
         //given
+        TokenResolver tokenResolver = new TokenResolver();
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "wrong prefix " + "accessToken");
         request.addHeader("Authorization-refresh", "wrong prefix " + "refreshToken");

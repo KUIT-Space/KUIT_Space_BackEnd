@@ -1,6 +1,8 @@
 package space.space_spring.domain.authorization.jwt.model;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
@@ -10,6 +12,7 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.TOK
 import static space.space_spring.response.status.BaseExceptionResponseStatus.UNSUPPORTED_TOKEN_TYPE;
 
 @Component
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenResolver {
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";

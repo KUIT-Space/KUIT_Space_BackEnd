@@ -2,6 +2,7 @@ package space.space_spring.entity;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.entity.enumStatus.UserSignupType;
@@ -36,6 +37,21 @@ public class User extends BaseEntity {
         initializeBaseEntityFields();
     }
 
+    @Builder
+    private User(String email, String password, String userName, UserSignupType signupType) {
+        this.email = email;
+        this.password = password;
+        this.userName = userName;
+        this.signupType = signupType.getSignupType();
+    }
 
+    public static User create(String email, String password, String userName, UserSignupType signupType) {
+        return User.builder()
+                .email(email)
+                .password(password)
+                .userName(userName)
+                .signupType(signupType)
+                .build();
+    }
 
 }

@@ -40,8 +40,8 @@ public class AuthService {
         validatePassword(userByEmail, request.getPassword());
 
         // TODO 3. JWT 발급 -> access token, refresh token 2개 발급
-        String accessToken = jwtLoginProvider.generateToken(userByEmail, TokenType.ACCESS);
-        String refreshToken = jwtLoginProvider.generateToken(userByEmail, TokenType.REFRESH);
+        String accessToken = jwtLoginProvider.generateToken(userByEmail.getUserId(), TokenType.ACCESS);
+        String refreshToken = jwtLoginProvider.generateToken(userByEmail.getUserId(), TokenType.REFRESH);
 
         // TODO 4. refresh token db에 저장
         TokenStorage tokenStorage = TokenStorage.builder()

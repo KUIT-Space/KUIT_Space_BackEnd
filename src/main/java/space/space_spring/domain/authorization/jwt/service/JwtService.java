@@ -21,8 +21,8 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 public class JwtService {
 
     private final JwtRepository jwtRepository;
-    private final JwtLoginProvider jwtLoginProvider;
     private final UserRepository userRepository;
+    private final JwtLoginProvider jwtLoginProvider;
     private final TokenResolver tokenResolver;
     private final TokenValidator tokenValidator;
     private final TokenUpdater tokenUpdater;
@@ -60,9 +60,6 @@ public class JwtService {
 
         try {
             tokenValidator.validateRefreshToken(refreshToken, tokenStorage);
-        } catch (JwtExpiredTokenException e) {
-            jwtRepository.deleteByUser(user);
-            throw e;
         } catch (JwtUnauthorizedTokenException e) {
             jwtRepository.deleteByUser(user);
             throw e;
@@ -77,8 +74,8 @@ public class JwtService {
     }
 
     public TokenPairDTO provideJwtToOAuthUser(User userByOAuthInfo) {
-        String accessToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.ACCESS);
-        String refreshToken = jwtLoginProvider.generateToken(userByOAuthInfo, TokenType.REFRESH);
+        String accessToken = jwtLoginProvider.generateToken(userByOAuthInfo.getUserId(), TokenType.ACCESS);
+        String refreshToken = jwtLoginProvider.generateToken(userByOAuthInfo.getUserId(), TokenType.REFRESH);
 
         return TokenPairDTO.builder()
                 .accessToken(accessToken)

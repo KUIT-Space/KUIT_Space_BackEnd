@@ -2,6 +2,7 @@ package space.space_spring.domain.authorization.jwt.model;
 
 import io.jsonwebtoken.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,18 +20,19 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 @Slf4j
 @Component
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class JwtLoginProvider {
     @Value("${secret.jwt.access-secret-key}")
-    protected String ACCESS_SECRET_KEY;
+    private String ACCESS_SECRET_KEY;
 
     @Value("${secret.jwt.refresh-secret-key}")
-    protected String REFRESH_SECRET_KEY;
+    private String REFRESH_SECRET_KEY;
 
     @Value("${secret.jwt.access-expired-in}")
-    protected Long ACCESS_EXPIRED_IN;
+    private Long ACCESS_EXPIRED_IN;
 
     @Value("${secret.jwt.refresh-expired-in}")
-    protected Long REFRESH_EXPIRED_IN;
+    private Long REFRESH_EXPIRED_IN;
 
     public String generateToken(Long userId, TokenType tokenType) {
 //        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());

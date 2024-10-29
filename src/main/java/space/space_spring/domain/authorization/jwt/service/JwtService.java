@@ -24,8 +24,6 @@ public class JwtService {
     private final UserRepository userRepository;
     private final JwtLoginProvider jwtLoginProvider;
     private final TokenResolver tokenResolver;
-    private final TokenValidator tokenValidator;
-    private final TokenUpdater tokenUpdater;
 
     @Transactional
     public TokenPairDTO updateAccessToken(HttpServletRequest request) {
@@ -58,11 +56,18 @@ public class JwtService {
                     throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
                 });
 
-        try {
-            tokenValidator.validateRefreshToken(refreshToken, tokenStorage);
-        } catch (JwtUnauthorizedTokenException e) {
-            jwtRepository.deleteByUser(user);
-            throw e;
+        // TODO 1. refresh token의 만료시간 체크
+        if (jwtLoginProvider.isExpiredToken(refreshToken, TokenType.REFRESH)) {
+            // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
+            // db에서 row delete 하는 코드 추가
+            throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
+        }
+
+        // TODO 2. refresh token이 db에 실제로 존재하는지 체크
+        if (!tokenStorage.checkTokenValue(refreshToken)) {
+            // refresh token이 db에 존재하지 않느 경우 -> 유효하지 않은 refresh token이므로 예외 발생
+            // db에서 row delete 하는 코드 추가
+            throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
     }
 
@@ -70,7 +75,18 @@ public class JwtService {
         TokenStorage tokenStorage = jwtRepository.findByUser(user)
                 .orElseThrow(() -> new JwtUnauthorizedTokenException(TOKEN_MISMATCH));
 
-        return tokenUpdater.updateTokenPair(user, tokenStorage);
+        // new access token, new refresh token 발급 받아서
+        String newAccessToken = jwtLoginProvider.generateToken(user.getUserId(), TokenType.ACCESS);
+        String newRefreshToken = jwtLoginProvider.generateToken(user.getUserId(), TokenType.REFRESH);
+
+        // tokenStorage update 하고
+        tokenStorage.updateTokenValue(newRefreshToken);
+
+        return TokenPairDTO.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
+
     }
 
     public TokenPairDTO provideJwtToOAuthUser(User userByOAuthInfo) {

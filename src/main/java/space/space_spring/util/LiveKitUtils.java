@@ -28,13 +28,13 @@ public class LiveKitUtils {
 
     private final RestTemplate restTemplate;
 
-    public List<LivekitModels.Room> getRoomList() {
+    public List<LivekitModels.Room> getRoomList(List<String> roomNameList) {
         String liveKitHost = hostUrl;
         System.out.print("[liveKit Url]:"+hostUrl);
         RoomServiceClient roomServiceClient = RoomServiceClient.createClient(liveKitHost, apiKey, apiSecretKey);
 
         try {
-            Response<List<LivekitModels.Room>> response = roomServiceClient.listRooms().execute();
+            Response<List<LivekitModels.Room>> response = roomServiceClient.listRooms(roomNameList).execute();
             System.out.print(response.body());
 
             //response.body().get(0).
@@ -46,6 +46,10 @@ public class LiveKitUtils {
             return null;
         }
 
+    }
+
+    public List<LivekitModels.Room> getRoomList(){
+        return getRoomList(null);
     }
 
     public List<ParticipantDto> getParticipantInfo(String roomName) {

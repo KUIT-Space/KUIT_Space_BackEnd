@@ -18,6 +18,7 @@ import space.space_spring.entity.document.ChatMessage;
 
 import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.exception.CustomException;
+import space.space_spring.global.util.TimeUtils;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 
@@ -33,6 +34,7 @@ public class ChatRoomService {
 
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
+    private final TimeUtils timeUtils;
     private final UserSpaceDao userSpaceDao;
     private final ChattingDao chattingDao;
     private final ChatRoomDao chatRoomDao;
@@ -190,7 +192,7 @@ public class ChatRoomService {
 
     private LastMessageInfoDto getLastMsgInfo(ChatRoom chatRoom) {
         ChatMessage lastMsg = chattingDao.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId());
-        LocalDateTime lastUpdateTime = lastMsg != null ? lastMsg.getCreatedAt() :chatRoom.getEncodedTime();
+        LocalDateTime lastUpdateTime = lastMsg != null ? lastMsg.getCreatedAt() :timeUtils.getEncodedTime(chatRoom.getCreatedAt());
         HashMap<String, String> lastContent = lastMsg != null ? lastMsg.getContent() : new HashMap<>(Map.of("text", "메시지를 전송해보세요"));
 
         log.info("마지막으로 업데이트된 시간: " + lastUpdateTime + " 마지막으로 읽은 내용 : " + lastContent);
@@ -200,7 +202,7 @@ public class ChatRoomService {
 
     private int calculateUnreadMsgCount(User userByUserId, ChatRoom chatRoom, LocalDateTime lastUpdateTime) {
         UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoom, BaseStatusType.ACTIVE);
-        LocalDateTime lastReadTime = userChatRoom.getEncodedTime(); // LocalDateTime으로 변환
+        LocalDateTime lastReadTime = timeUtils.getEncodedTime(userChatRoom.getLastReadTime()); // LocalDateTime으로 변환
         log.info("마지막으로 읽은 시간: " + lastReadTime);
 
         int unreadMsgCount = chattingDao.countByChatRoomIdAndCreatedAtBetween(

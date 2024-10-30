@@ -16,6 +16,7 @@ import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
 import space.space_spring.entity.document.ChatMessage;
 
+import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
@@ -94,7 +95,7 @@ public class ChatRoomService {
         Space spaceById = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE"))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 3: 해당 userChatRoom의 user들 find
@@ -109,11 +110,11 @@ public class ChatRoomService {
         User userByUserId = userUtils.findUserByUserId(userId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE"))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 3: 해당 user와 chatRoom에 대한 userChatRoom find
-        UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, "ACTIVE");
+        UserChatRoom targetChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, BaseStatusType.ACTIVE);
 
         // TODO 4: userChatRoom의 마지막으로 읽은 시간 저장
         targetChatRoom.setLastReadTime(LocalDateTime.now());
@@ -128,7 +129,7 @@ public class ChatRoomService {
         List<Long> memberIdList = joinChatRoomRequest.getMemberList();
 
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE"))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 2: 유저들의 채팅방 초대 이력에 따른 재초대
@@ -137,9 +138,10 @@ public class ChatRoomService {
         return ChatSuccessResponse.of(true);
     }
 
+    @Transactional
     public ChatSuccessResponse modifyChatRoomName(Long chatRoomId, String name) {
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE"))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 2: 채팅방 이름 변경
@@ -149,16 +151,17 @@ public class ChatRoomService {
         return ChatSuccessResponse.of(true);
     }
 
+    @Transactional
     public ChatSuccessResponse exitChatRoom(Long userId, Long chatRoomId) {
         // TODO 1: userId에 해당하는 user find
         User userByUserId = userUtils.findUserByUserId(userId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE"))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 3: 해당 user와 chatRoom에 대한 userChatRoom find
-        UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, "ACTIVE");
+        UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, BaseStatusType.ACTIVE);
 
         // TODO 4: 해당 userChatRoom inactive로 변경
         userChatRoom.updateInactive();
@@ -167,9 +170,10 @@ public class ChatRoomService {
         return ChatSuccessResponse.of(true);
     }
 
+    @Transactional
     public ChatSuccessResponse deleteChatRoom(Long chatRoomId) {
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, "ACTIVE"))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 2: 해당 chatRoom inactive로 변경
@@ -180,7 +184,7 @@ public class ChatRoomService {
     }
 
     private boolean isUserInChatRoom(User userByUserId, ChatRoom chatRoomByChatRoomId) {
-        List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoomAndStatus(chatRoomByChatRoomId, "ACTIVE");
+        List<UserChatRoom> chatRoomList = userChatRoomDao.findByChatRoomAndStatus(chatRoomByChatRoomId, BaseStatusType.ACTIVE);
         return chatRoomList.stream().anyMatch(userChatRoom -> userChatRoom.getUser().equals(userByUserId));
     }
 
@@ -195,7 +199,7 @@ public class ChatRoomService {
     }
 
     private int calculateUnreadMsgCount(User userByUserId, ChatRoom chatRoom, LocalDateTime lastUpdateTime) {
-        UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoom, "ACTIVE");
+        UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoom, BaseStatusType.ACTIVE);
         LocalDateTime lastReadTime = userChatRoom.getEncodedTime(); // LocalDateTime으로 변환
         log.info("마지막으로 읽은 시간: " + lastReadTime);
 
@@ -211,7 +215,7 @@ public class ChatRoomService {
 
     private List<UserInfoInSpace> getUserInChatRoom(Space space, ChatRoom chatRoom) {
         List<UserInfoInSpace> userList = new ArrayList<>();
-        List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoomAndStatus(chatRoom, "ACTIVE");
+        List<UserChatRoom> userChatRoomList = userChatRoomDao.findByChatRoomAndStatus(chatRoom, BaseStatusType.ACTIVE);
 
         userChatRoomList.forEach(userChatRoom -> {
             User user = userChatRoom.getUser();
@@ -234,8 +238,8 @@ public class ChatRoomService {
             // TODO 1: 유저가 채팅방에 초대된 적이 있는 경우 다시 초대
             if (isUserInChatRoom(userByUserId, chatRoomByChatRoomId)) {
                 // TODO 2: 유저가 채팅방에 초대되었다가 나간 경우 다시 초대
-                if (userByUserId.getStatus().equals("INACTIVE")) {
-                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, "ACTIVE");
+                if (userByUserId.getStatus().equals(BaseStatusType.INACTIVE)) {
+                    UserChatRoom userChatRoom = userChatRoomDao.findByUserAndChatRoomAndStatus(userByUserId, chatRoomByChatRoomId, BaseStatusType.ACTIVE);
                     userChatRoom.setUserRejoin();
                     userChatRoomDao.save(userChatRoom);
                     continue;

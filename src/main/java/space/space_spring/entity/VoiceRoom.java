@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.dto.VoiceRoom.GetVoiceRoomList;
+import space.space_spring.dto.VoiceRoom.RoomDto;
 
 @Entity
 @Table(name = "VoiceRoom")
@@ -51,5 +52,18 @@ public class VoiceRoom extends BaseEntity{
             this.order=order;
         }
         this.onUpdate();
+    }
+
+    public RoomDto convertRoomDto(){
+        return RoomDto.builder()
+                .name(this.getName())
+                //.createdAt(voiceRoom.)
+                .id(this.getVoiceRoomId())
+                .order(this.getOrder())
+                .sid(null)
+                .metadata(null)
+                //.startTime()
+                .participantDTOList(null)
+                .build();
     }
 }

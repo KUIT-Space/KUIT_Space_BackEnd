@@ -16,10 +16,16 @@ public interface VoiceRoomRepository extends JpaRepository<VoiceRoom,Long> {
     List<VoiceRoom> findBySpace(@Param("space")Space space);
     @Query("SELECT MAX(r.order) FROM VoiceRoom r WHERE r.space = :space AND r.status = 'ACTIVE'")
     Integer findMaxOrderBySpace(@Param("space") Space space);
+
+    @Query("SELECT MAX(r.order) FROM VoiceRoom r WHERE r.space.id = :spaceId AND r.status = 'ACTIVE'")
+    Integer findMaxOrderBySpaceId(@Param("spaceId") Long spaceId);
     @Query("SELECT CASE WHEN COUNT(v) > 0 THEN true ELSE false END FROM VoiceRoom v WHERE v.voiceRoomId = :id AND v.status = 'ACTIVE'")
     boolean existsByVoiceRoomId(@Param("id")long voiceRoomId);
     @Query("SELECT CASE WHEN COUNT(v) > 0 THEN true ELSE false END FROM VoiceRoom v WHERE v.name = :voiceRoomName AND v.status = 'ACTIVE'")
     boolean existsByName(@Param("voiceRoomName") String voiceRoomName);
     @Query("SELECT v FROM VoiceRoom v WHERE v.voiceRoomId = :id AND v.status = 'ACTIVE'")
     VoiceRoom findById(@Param("id") long Id);
+
+    @Query("SELECT v FROM VoiceRoom v WHERE v.space.id = :spaceId AND v.status = 'ACTIVE'")
+    List<VoiceRoom> findActiveVoiceRoomsBySpaceId(@Param("spaceId") Long spaceId);
 }

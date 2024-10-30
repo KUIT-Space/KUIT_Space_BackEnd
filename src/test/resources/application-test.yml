@@ -1,4 +1,8 @@
 spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   datasource:
     url: jdbc:h2:mem:~/space_spring
     driver-class-name: org.h2.Driver
@@ -15,3 +19,7 @@ spring:
   sql:
     init:
       mode: never   # sql initialization 을 사용하지 않겠다
+
+
+server:
+  port: 8080

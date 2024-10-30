@@ -3,6 +3,7 @@ package space.space_spring.domain.authorization.jwt.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.authorization.jwt.model.*;
 import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
@@ -60,15 +61,24 @@ public class JwtService {
         if (jwtLoginProvider.isExpiredToken(refreshToken, TokenType.REFRESH)) {
             // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
             // db에서 row delete 하는 코드 추가
+            deleteTokenStorage(user);
+
             throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
         }
 
-        // TODO 2. refresh token이 db에 실제로 존재하는지 체크
+        // TODO 2. refresh token이 db에 존재하는 token 값과 일치하는지 확인
         if (!tokenStorage.checkTokenValue(refreshToken)) {
-            // refresh token이 db에 존재하지 않느 경우 -> 유효하지 않은 refresh token이므로 예외 발생
+            // refresh token이 db에 존재하는 token 값과 일치하지 않는 경우 -> 유효하지 않은 refresh token이므로 예외 발생
             // db에서 row delete 하는 코드 추가
+            deleteTokenStorage(user);
+
             throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteTokenStorage(User user) {
+        jwtRepository.deleteByUser(user);
     }
 
     private TokenPairDTO updateTokenPair(User user) {

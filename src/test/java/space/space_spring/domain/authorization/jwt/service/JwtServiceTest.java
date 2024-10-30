@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 import space.space_spring.domain.authorization.jwt.model.TokenResolver;
@@ -30,7 +29,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import({JwtService.class, JwtLoginProvider.class, TokenResolver.class})

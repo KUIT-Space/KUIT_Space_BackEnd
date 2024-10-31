@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dao.chat.ChatRoomDao;
+import space.space_spring.dao.chat.ChatRoomRepository;
 import space.space_spring.dao.chat.ChattingDao;
 import space.space_spring.dao.chat.UserChatRoomDao;
 import space.space_spring.dto.chat.dto.LastMessageInfoDto;
@@ -37,7 +37,7 @@ public class ChatRoomService {
     private final TimeUtils timeUtils;
     private final UserSpaceDao userSpaceDao;
     private final ChattingDao chattingDao;
-    private final ChatRoomDao chatRoomDao;
+    private final ChatRoomRepository chatRoomRepository;
     private final UserChatRoomDao userChatRoomDao;
 
     @Transactional
@@ -49,7 +49,7 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 return
-        List<ChatRoom> chatRoomList = chatRoomDao.findByUserAndSpace(userByUserId, spaceBySpaceId);
+        List<ChatRoom> chatRoomList = chatRoomRepository.findByUserAndSpace(userByUserId, spaceBySpaceId);
 
         return ReadChatRoomResponse.of(chatRoomList.stream()
                 .map(cr -> {
@@ -77,7 +77,7 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: chatRoom 생성 및 저장
-        ChatRoom chatRoom = chatRoomDao.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest.getName(), chatRoomImgUrl));
+        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.of(spaceBySpaceId, createChatRoomRequest.getName(), chatRoomImgUrl));
 
         // TODO 4: userChatRoom 매핑 정보 저장
         userChatRoomDao.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
@@ -97,7 +97,8 @@ public class ChatRoomService {
         Space spaceById = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
+                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 3: 해당 userChatRoom의 user들 find
@@ -112,7 +113,8 @@ public class ChatRoomService {
         User userByUserId = userUtils.findUserByUserId(userId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
+                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 3: 해당 user와 chatRoom에 대한 userChatRoom find
@@ -131,7 +133,8 @@ public class ChatRoomService {
         List<Long> memberIdList = joinChatRoomRequest.getMemberList();
 
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
+                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 2: 유저들의 채팅방 초대 이력에 따른 재초대
@@ -143,12 +146,13 @@ public class ChatRoomService {
     @Transactional
     public ChatSuccessResponse modifyChatRoomName(Long chatRoomId, String name) {
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
+                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 2: 채팅방 이름 변경
         chatRoomByChatRoomId.updateName(name);
-        chatRoomDao.save(chatRoomByChatRoomId);
+        chatRoomRepository.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
     }
@@ -159,7 +163,8 @@ public class ChatRoomService {
         User userByUserId = userUtils.findUserByUserId(userId);
 
         // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
+                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 3: 해당 user와 chatRoom에 대한 userChatRoom find
@@ -175,12 +180,13 @@ public class ChatRoomService {
     @Transactional
     public ChatSuccessResponse deleteChatRoom(Long chatRoomId) {
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(chatRoomDao.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
+        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
+                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
 
         // TODO 2: 해당 chatRoom inactive로 변경
         chatRoomByChatRoomId.updateInactive();
-        chatRoomDao.save(chatRoomByChatRoomId);
+        chatRoomRepository.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
     }

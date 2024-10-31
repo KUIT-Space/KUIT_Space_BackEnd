@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import space.space_spring.config.QueryDslConfig;
 import space.space_spring.dao.chat.ChatRoomRepository;
-import space.space_spring.dao.chat.UserChatRoomDao;
+import space.space_spring.dao.chat.UserChatRoomRepository;
 import space.space_spring.entity.ChatRoom;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
@@ -28,7 +28,7 @@ public class ChatRoomRepositoryTest {
     private ChatRoomRepository chatRoomRepository;
 
     @Autowired
-    private UserChatRoomDao userChatRoomDao;
+    private UserChatRoomRepository userChatRoomRepository;
 
     private Space testSpace;
 
@@ -91,8 +91,8 @@ public class ChatRoomRepositoryTest {
         ChatRoom savedTestChatRoom2 = chatRoomRepository.save(testChatRoom2);
         UserChatRoom userChatRoom1 = UserChatRoom.of(savedTestChatRoom1, testUser, LocalDateTime.now());
         UserChatRoom userChatRoom2 = UserChatRoom.of(savedTestChatRoom2, testUser, LocalDateTime.now());
-        userChatRoomDao.save(userChatRoom1);
-        userChatRoomDao.save(userChatRoom2);
+        userChatRoomRepository.save(userChatRoom1);
+        userChatRoomRepository.save(userChatRoom2);
 
         // when
         List<ChatRoom> chatRoomListByUser = chatRoomRepository.findByUserAndSpace(testUser, testSpace);

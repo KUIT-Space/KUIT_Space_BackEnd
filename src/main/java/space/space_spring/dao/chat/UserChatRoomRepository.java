@@ -9,7 +9,7 @@ import space.space_spring.entity.enumStatus.BaseStatusType;
 import java.util.List;
 
 
-public interface UserChatRoomDao extends JpaRepository<UserChatRoom, Long> {
+public interface UserChatRoomRepository extends JpaRepository<UserChatRoom, Long> {
     UserChatRoom findByUserAndChatRoomAndStatus(User userByUserId, ChatRoom chatRoomByChatRoomId, BaseStatusType status);
 
     List<UserChatRoom> findByChatRoomAndStatus(ChatRoom chatRoom, BaseStatusType status);

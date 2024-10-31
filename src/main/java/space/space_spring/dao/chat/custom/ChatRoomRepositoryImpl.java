@@ -13,7 +13,7 @@ import static space.space_spring.entity.QChatRoom.chatRoom;
 import static space.space_spring.entity.QUserChatRoom.userChatRoom;
 
 @RequiredArgsConstructor
-public class ChatRoomDaoImpl implements ChatRoomDaoCustom {
+public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 

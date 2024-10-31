@@ -3,7 +3,7 @@ package space.space_spring.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import space.space_spring.dao.chat.ChattingDao;
+import space.space_spring.dao.chat.ChattingRepository;
 import space.space_spring.dto.chat.request.ChatMessageRequest;
 import space.space_spring.dto.chat.response.ChatMessageLogResponse;
 import space.space_spring.dto.chat.response.ChatMessageResponse;
@@ -14,7 +14,6 @@ import space.space_spring.exception.CustomException;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,7 @@ public class ChattingService {
 
     private final S3Uploader s3Uploader;
     private final UserSpaceUtils userSpaceUtils;
-    private final ChattingDao chattingDao;
+    private final ChattingRepository chattingRepository;
 
     @Transactional
     public ChatMessageResponse sendChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId) throws IOException {
@@ -57,7 +56,7 @@ public class ChattingService {
         }
 
         // TODO 4: DB에 메시지 저장
-        ChatMessage message = chattingDao.insert(ChatMessage.of(
+        ChatMessage message = chattingRepository.insert(ChatMessage.of(
                 chatMessageRequest.getContent(),
                 chatRoomId,
                 chatMessageRequest.getSpaceId(),
@@ -71,7 +70,7 @@ public class ChattingService {
     }
 
     public ChatMessageLogResponse readChatMessageLog(Long chatRoomId) {
-        List<ChatMessage> chatMessageList = chattingDao.findByChatRoomId(chatRoomId);
+        List<ChatMessage> chatMessageList = chattingRepository.findByChatRoomId(chatRoomId);
         return ChatMessageLogResponse.of(chatMessageList.stream()
                 .map(ChatMessageResponse::of)
                 .collect(Collectors.toList()));

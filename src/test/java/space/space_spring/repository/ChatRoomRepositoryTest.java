@@ -5,12 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import space.space_spring.config.QueryDslConfig;
-import space.space_spring.dao.chat.ChatRoomDao;
+import space.space_spring.dao.chat.ChatRoomRepository;
 import space.space_spring.dao.chat.UserChatRoomDao;
 import space.space_spring.entity.ChatRoom;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserChatRoom;
+import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.entity.enumStatus.UserSignupType;
 
 import java.time.LocalDateTime;
@@ -21,10 +22,10 @@ import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
 @Import({QueryDslConfig.class, QueryDslConfig.class})
-public class ChatRoomDaoTest {
+public class ChatRoomRepositoryTest {
 
     @Autowired
-    private ChatRoomDao chatRoomDao;
+    private ChatRoomRepository chatRoomRepository;
 
     @Autowired
     private UserChatRoomDao userChatRoomDao;
@@ -56,8 +57,8 @@ public class ChatRoomDaoTest {
         // given
 
         // when
-        ChatRoom savedTestChatRoom1 = chatRoomDao.save(testChatRoom1);
-        ChatRoom savedTestChatRoom2 = chatRoomDao.save(testChatRoom2);
+        ChatRoom savedTestChatRoom1 = chatRoomRepository.save(testChatRoom1);
+        ChatRoom savedTestChatRoom2 = chatRoomRepository.save(testChatRoom2);
 
         // then
         assertThat(savedTestChatRoom1.getId()).isEqualTo(testChatRoom1.getId());
@@ -68,12 +69,14 @@ public class ChatRoomDaoTest {
     @DisplayName("id로_채팅방_조회_테스트")
     void id로_채팅방_조회_테스트() {
         // given
-        ChatRoom savedTestChatRoom1 = chatRoomDao.save(testChatRoom1);
-        ChatRoom savedTestChatRoom2 = chatRoomDao.save(testChatRoom2);
+        ChatRoom savedTestChatRoom1 = chatRoomRepository.save(testChatRoom1);
+        ChatRoom savedTestChatRoom2 = chatRoomRepository.save(testChatRoom2);
 
         // when
-        Optional<ChatRoom> chatRoom1byId = chatRoomDao.findById(savedTestChatRoom1.getId());
-        Optional<ChatRoom> chatRoom2byId = chatRoomDao.findById(savedTestChatRoom2.getId());
+        Optional<ChatRoom> chatRoom1byId = Optional.ofNullable(
+                chatRoomRepository.findByIdAndStatus(savedTestChatRoom1.getId(), BaseStatusType.ACTIVE));
+        Optional<ChatRoom> chatRoom2byId = Optional.ofNullable(
+                chatRoomRepository.findByIdAndStatus(savedTestChatRoom2.getId(), BaseStatusType.ACTIVE));
 
         // then
         chatRoom1byId.ifPresent(chatRoom -> assertThat(chatRoom.getId()).isEqualTo(savedTestChatRoom1.getId()));
@@ -84,15 +87,15 @@ public class ChatRoomDaoTest {
     @DisplayName("유저와_스페이스로_채팅방_조회_테스트")
     void 유저와_스페이스로_채팅방_조회_테스트() {
         // given
-        ChatRoom savedTestChatRoom1 = chatRoomDao.save(testChatRoom1);
-        ChatRoom savedTestChatRoom2 = chatRoomDao.save(testChatRoom2);
+        ChatRoom savedTestChatRoom1 = chatRoomRepository.save(testChatRoom1);
+        ChatRoom savedTestChatRoom2 = chatRoomRepository.save(testChatRoom2);
         UserChatRoom userChatRoom1 = UserChatRoom.of(savedTestChatRoom1, testUser, LocalDateTime.now());
         UserChatRoom userChatRoom2 = UserChatRoom.of(savedTestChatRoom2, testUser, LocalDateTime.now());
         userChatRoomDao.save(userChatRoom1);
         userChatRoomDao.save(userChatRoom2);
 
         // when
-        List<ChatRoom> chatRoomListByUser = chatRoomDao.findByUserAndSpace(testUser, testSpace);
+        List<ChatRoom> chatRoomListByUser = chatRoomRepository.findByUserAndSpace(testUser, testSpace);
 
         // then
         assertThat(chatRoomListByUser.size()).isEqualTo(2);

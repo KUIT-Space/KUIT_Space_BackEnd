@@ -13,7 +13,7 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.UNS
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TokenResolver {
+public class JwtLoginTokenResolver {
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 

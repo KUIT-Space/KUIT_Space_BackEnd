@@ -24,7 +24,7 @@ public class JwtService {
     private final JwtRepository jwtRepository;
     private final UserRepository userRepository;
     private final JwtLoginProvider jwtLoginProvider;
-    private final TokenResolver tokenResolver;
+    private final JwtLoginTokenResolver tokenResolver;
 
     @Transactional
     public TokenPairDTO updateTokenPair(HttpServletRequest request) {

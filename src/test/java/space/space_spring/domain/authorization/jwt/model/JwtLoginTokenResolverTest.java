@@ -1,27 +1,15 @@
 package space.space_spring.domain.authorization.jwt.model;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
-class TokenResolverTest {
+class JwtLoginTokenResolverTest {
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
@@ -29,7 +17,7 @@ class TokenResolverTest {
     @DisplayName("request header로부터 access token, refresh token을 rosolve한다.")
     void resolveTokenPair() throws Exception {
         //given
-        TokenResolver tokenResolver = new TokenResolver();
+        JwtLoginTokenResolver tokenResolver = new JwtLoginTokenResolver();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", JWT_TOKEN_PREFIX + "accessToken");
@@ -47,7 +35,7 @@ class TokenResolverTest {
     @DisplayName("access token값이 null 일 경우 예외를 던진다.")
     void validateToken1() throws Exception {
         //given
-        TokenResolver tokenResolver = new TokenResolver();
+        JwtLoginTokenResolver tokenResolver = new JwtLoginTokenResolver();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization-refresh", JWT_TOKEN_PREFIX + "refreshToken");
@@ -62,7 +50,7 @@ class TokenResolverTest {
     @DisplayName("refresh token값이 null 일 경우 예외를 던진다.")
     void validateToken2() throws Exception {
         //given
-        TokenResolver tokenResolver = new TokenResolver();
+        JwtLoginTokenResolver tokenResolver = new JwtLoginTokenResolver();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", JWT_TOKEN_PREFIX + "accessToken");
@@ -77,7 +65,7 @@ class TokenResolverTest {
     @DisplayName("토큰값의 prefix가 잘못된 경우 예외를 던진다.")
     void validateToken3() throws Exception {
         //given
-        TokenResolver tokenResolver = new TokenResolver();
+        JwtLoginTokenResolver tokenResolver = new JwtLoginTokenResolver();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "wrong prefix " + "accessToken");

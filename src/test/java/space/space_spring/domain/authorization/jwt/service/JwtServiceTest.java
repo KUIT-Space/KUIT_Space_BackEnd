@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
-import space.space_spring.domain.authorization.jwt.model.TokenResolver;
+import space.space_spring.domain.authorization.jwt.model.JwtLoginTokenResolver;
 import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.repository.UserRepository;
 import space.space_spring.entity.TokenStorage;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-@Import({JwtService.class, JwtLoginProvider.class, TokenResolver.class})
+@Import({JwtService.class, JwtLoginProvider.class, JwtLoginTokenResolver.class})
 @ActiveProfiles("test")
 @TestPropertySource(properties = {
         "secret.jwt.access-secret-key=accessSecretKeyaccessSecretKeyaccessSecretKey",
@@ -56,7 +56,7 @@ class JwtServiceTest {
     private JwtLoginProvider jwtLoginProvider;
 
     @Autowired
-    private TokenResolver tokenResolver;
+    private JwtLoginTokenResolver tokenResolver;
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 

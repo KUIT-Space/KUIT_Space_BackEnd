@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.authorization.jwt.model.*;
 import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.repository.UserRepository;
-import space.space_spring.entity.TokenStorage;
+import space.space_spring.entity.RefreshTokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
@@ -49,7 +49,7 @@ public class JwtService {
     }
 
     private void validateRefreshToken(User user, String refreshToken) {
-        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+        RefreshTokenStorage tokenStorage = jwtRepository.findByUser(user)
                 .orElseThrow(() ->
                 {
                     // db에서 row delete 하는 코드 추가
@@ -61,7 +61,7 @@ public class JwtService {
         if (jwtLoginProvider.isExpiredToken(refreshToken, TokenType.REFRESH)) {
             // refresh token이 만료된 경우 -> 예외 발생 -> 유저의 재 로그인 유도
             // db에서 row delete 하는 코드 추가
-            deleteTokenStorage(user);
+            deleteRefreshTokenStorage(user);
 
             throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
         }
@@ -70,19 +70,19 @@ public class JwtService {
         if (!tokenStorage.checkTokenValue(refreshToken)) {
             // refresh token이 db에 존재하는 token 값과 일치하지 않는 경우 -> 유효하지 않은 refresh token이므로 예외 발생
             // db에서 row delete 하는 코드 추가
-            deleteTokenStorage(user);
+            deleteRefreshTokenStorage(user);
 
             throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteTokenStorage(User user) {
+    public void deleteRefreshTokenStorage(User user) {
         jwtRepository.deleteByUser(user);
     }
 
     private TokenPairDTO updateTokenPair(User user) {
-        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+        RefreshTokenStorage tokenStorage = jwtRepository.findByUser(user)
                 .orElseThrow(() -> new JwtUnauthorizedTokenException(TOKEN_MISMATCH));
 
         // new access token, new refresh token 발급 받아서
@@ -111,7 +111,7 @@ public class JwtService {
 
     @Transactional
     public void updateRefreshToken(User user, String refreshToken) {
-        TokenStorage tokenStorage = jwtRepository.findByUser(user)
+        RefreshTokenStorage tokenStorage = jwtRepository.findByUser(user)
                 .orElseThrow(() -> new JwtUnauthorizedTokenException(TOKEN_MISMATCH));
 
         tokenStorage.updateTokenValue(refreshToken);

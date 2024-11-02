@@ -6,19 +6,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.entity.TokenStorage;
+import space.space_spring.entity.RefreshTokenStorage;
 import space.space_spring.entity.User;
 
 import java.util.Optional;
 
 @Repository
-public interface JwtRepository extends JpaRepository<TokenStorage, Long> {
+public interface JwtRepository extends JpaRepository<RefreshTokenStorage, Long> {
 
-    Optional<TokenStorage> findByUser(User user);
+    Optional<RefreshTokenStorage> findByUser(User user);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM TokenStorage t WHERE t.user = :user")
+    @Query("DELETE FROM RefreshTokenStorage t WHERE t.user = :user")
     void deleteByUser(@Param("user") User user);
 
 }

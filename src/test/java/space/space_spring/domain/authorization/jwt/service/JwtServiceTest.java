@@ -18,7 +18,7 @@ import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 import space.space_spring.domain.authorization.jwt.model.JwtLoginTokenResolver;
 import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.repository.UserRepository;
-import space.space_spring.entity.TokenStorage;
+import space.space_spring.entity.RefreshTokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
         "secret.jwt.refresh-expired-in=604800000"
 })
 @EnableJpaRepositories(basePackageClasses = {UserRepository.class, JwtRepository.class})
-@EntityScan(basePackageClasses = {User.class, TokenStorage.class})
+@EntityScan(basePackageClasses = {User.class, RefreshTokenStorage.class})
 class JwtServiceTest {
 
     @Autowired
@@ -80,7 +80,7 @@ class JwtServiceTest {
                 .signWith(SignatureAlgorithm.HS256, "refreshSecretKeyrefreshSecretKeyrefreshSecretKey")
                 .compact();
 
-        TokenStorage tokenStorage = TokenStorage.create(savedUser, refreshToken);
+        RefreshTokenStorage tokenStorage = RefreshTokenStorage.create(savedUser, refreshToken);
         jwtRepository.save(tokenStorage);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -101,10 +101,10 @@ class JwtServiceTest {
 
         assertThat(accessTokenClaims.get("userId", Long.class)).isEqualTo(userId);
 
-        TokenStorage updatedTokenStorage = jwtRepository.findByUser(savedUser)
-                .orElseThrow(() -> new Exception("TokenStorage not found"));
+        RefreshTokenStorage updatedRefreshTokenStorage = jwtRepository.findByUser(savedUser)
+                .orElseThrow(() -> new Exception("RefreshTokenStorage not found"));
 
-        assertThat(updatedTokenStorage.getTokenValue()).isEqualTo(newRefreshToken);
+        assertThat(updatedRefreshTokenStorage.getTokenValue()).isEqualTo(newRefreshToken);
 
         System.out.println("old access token = " + accessToken);
         System.out.println("new access token = " + newAccessToken);
@@ -133,7 +133,7 @@ class JwtServiceTest {
                 .signWith(SignatureAlgorithm.HS256, "refreshSecretKeyrefreshSecretKeyrefreshSecretKey")
                 .compact();
 
-        TokenStorage tokenStorage = TokenStorage.create(savedUser, refreshToken);
+        RefreshTokenStorage tokenStorage = RefreshTokenStorage.create(savedUser, refreshToken);
         jwtRepository.save(tokenStorage);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -145,7 +145,7 @@ class JwtServiceTest {
                 .isInstanceOf(JwtExpiredTokenException.class)
                 .hasMessage("만료된 refresh token 입니다. 다시 로그인해야합니다.");
 
-        Optional<TokenStorage> byUser = jwtRepository.findByUser(user);
+        Optional<RefreshTokenStorage> byUser = jwtRepository.findByUser(user);
         assertThat(byUser).isEmpty();
     }
 
@@ -171,7 +171,7 @@ class JwtServiceTest {
 
         String anotherRefreshToken = "anotherRefreshToken";
 
-        TokenStorage tokenStorage = TokenStorage.create(savedUser, anotherRefreshToken);
+        RefreshTokenStorage tokenStorage = RefreshTokenStorage.create(savedUser, anotherRefreshToken);
         jwtRepository.save(tokenStorage);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -183,7 +183,7 @@ class JwtServiceTest {
                 .isInstanceOf(JwtUnauthorizedTokenException.class)
                 .hasMessage("저장된 refresh token 과 전달받은 refresh token 이 일치하지 않습니다. 다시 로그인해야합니다.");
 
-        Optional<TokenStorage> byUser = jwtRepository.findByUser(user);
+        Optional<RefreshTokenStorage> byUser = jwtRepository.findByUser(user);
         assertThat(byUser).isEmpty();
 
         System.out.println("refresh token = " + refreshToken);

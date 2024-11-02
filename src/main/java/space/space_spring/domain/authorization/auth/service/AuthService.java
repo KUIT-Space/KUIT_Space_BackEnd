@@ -9,7 +9,7 @@ import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.model.PostLoginDto;
-import space.space_spring.entity.TokenStorage;
+import space.space_spring.entity.RefreshTokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
@@ -44,7 +44,7 @@ public class AuthService {
         String refreshToken = jwtLoginProvider.generateToken(userByEmail.getUserId(), TokenType.REFRESH);
 
         // TODO 4. refresh token db에 저장
-        TokenStorage tokenStorage = TokenStorage.builder()
+        RefreshTokenStorage tokenStorage = RefreshTokenStorage.builder()
                 .user(userByEmail)
                 .tokenValue(refreshToken)
                 .build();

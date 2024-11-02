@@ -1,11 +1,13 @@
-package space.space_spring.jwt;
+package space.space_spring.domain.authorization.jwt.model;
 
 import io.jsonwebtoken.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import space.space_spring.domain.authorization.jwt.model.TokenType;
-import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
 import space.space_spring.exception.jwt.unauthorized.JwtInvalidTokenException;
@@ -17,6 +19,8 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
 @Component
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class JwtLoginProvider {
     @Value("${secret.jwt.access-secret-key}")
     private String ACCESS_SECRET_KEY;
@@ -30,13 +34,11 @@ public class JwtLoginProvider {
     @Value("${secret.jwt.refresh-expired-in}")
     private Long REFRESH_EXPIRED_IN;
 
-    public String generateToken(User user, TokenType tokenType) {
+    public String generateToken(Long userId, TokenType tokenType) {
 //        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());
 
         Date now = new Date();
         Date expiration = setExpiration(now, tokenType);
-
-        Long userId = user.getUserId();
 
         return makeToken(tokenType, userId, now, expiration);
     }
@@ -116,4 +118,5 @@ public class JwtLoginProvider {
             throw e;
         }
     }
+
 }

@@ -34,11 +34,17 @@ public class RoomDto {
 //                .collect(Collectors.toList());
 //    }
     public RoomDto setParticipantDTOList(List<ParticipantDto> participantDtoList){
-        this.participantListDto=  ParticipantListDto.from(participantDtoList);
+        if(participantDtoList==null){
+            this.participantListDto = ParticipantListDto.empty();
+        }
+        this.participantListDto =  ParticipantListDto.from(participantDtoList);
         return this;
     }
 
     public RoomDto setParticipantDTOList(ParticipantListDto participants){
+        if(participants==null){
+            this.participantListDto = ParticipantListDto.empty();
+        }
         this.participantListDto =  participants;
         return this;
     }
@@ -50,7 +56,7 @@ public class RoomDto {
                 .startTime(room.getCreationTime())
                 .sid(room.getSid())
                 .metadata(room.getMetadata())
-                .participantListDto(null)
+                .participantListDto(ParticipantListDto.nullList())
                 .build();
     }
 
@@ -72,7 +78,7 @@ public class RoomDto {
                 .sid(null)
                 .metadata(null)
                 //.startTime()
-                .participantListDto(null)
+                .participantListDto(ParticipantListDto.nullList())
                 .build();
     }
 
@@ -134,5 +140,5 @@ public class RoomDto {
     }
 
     public ParticipantListDto getParticipantListDto(){return participantListDto;}
-    public List<ParticipantDto> getParticipantDtoList(){return participantListDto.getParticipantDtoList();}
+    //public List<ParticipantDto> getParticipantDtoList(){return participantListDto.getParticipantDtoList();}
 }

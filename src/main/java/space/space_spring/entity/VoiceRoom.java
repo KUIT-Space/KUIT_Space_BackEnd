@@ -63,7 +63,7 @@ public class VoiceRoom extends BaseEntity{
                 .sid(null)
                 .metadata(null)
                 //.startTime()
-                .participantDTOList(null)
+                .participantListDto(null)
                 .build();
     }
 }

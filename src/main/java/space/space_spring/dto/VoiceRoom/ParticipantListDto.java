@@ -13,9 +13,16 @@ public class ParticipantListDto {
     private ParticipantListDto(List<ParticipantDto> participantDtoList){
         this.participantDtoList=participantDtoList;
     }
-    public static ParticipantListDto from(List<ParticipantDto> participantDtoList ){
 
+    public static ParticipantListDto from(List<ParticipantDto> participantDtoList ){
         return new ParticipantListDto(participantDtoList);
+    }
+    public static  ParticipantListDto empty(){
+        return new ParticipantListDto(Collections.emptyList());
+    }
+
+    public static ParticipantListDto nullList(){
+        return new ParticipantListDto(null);
     }
 
     public void setProfileImage(Function<Long, String> profileFinder){

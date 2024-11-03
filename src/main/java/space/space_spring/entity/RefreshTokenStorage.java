@@ -1,7 +1,6 @@
 package space.space_spring.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,16 +8,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Token_Storage")
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class TokenStorage {
+public class RefreshTokenStorage {
 
     @Id @GeneratedValue
     @Column(name = "token_storage_id")
     private Long tokenStorageId;
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
 //    @Column(name = "user_id")
     private User user;
 
@@ -31,6 +28,19 @@ public class TokenStorage {
 
     public boolean checkTokenValue(String tokenValue) {
         return this.tokenValue.equals(tokenValue);
+    }
+
+    @Builder
+    private RefreshTokenStorage(User user, String tokenValue) {
+        this.user = user;
+        this.tokenValue = tokenValue;
+    }
+
+    public static RefreshTokenStorage create(User user, String tokenValue) {
+        return RefreshTokenStorage.builder()
+                .user(user)
+                .tokenValue(tokenValue)
+                .build();
     }
 
 }

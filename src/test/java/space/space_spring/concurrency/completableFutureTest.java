@@ -81,6 +81,17 @@ public class completableFutureTest {
                 .collect(Collectors.toList());
     }
 
+    @Test
+    void supplyAsyncb() throws ExecutionException, InterruptedException {
+
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            System.out.println("Thread task start");
+            return "Thread: " + Thread.currentThread().getName();
+        });
+
+        //System.out.println(future.get());
+        System.out.println("Thread: " + Thread.currentThread().getName());
+    }
 
 
 

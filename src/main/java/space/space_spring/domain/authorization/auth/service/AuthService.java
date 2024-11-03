@@ -9,10 +9,10 @@ import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.model.PostLoginDto;
-import space.space_spring.entity.TokenStorage;
+import space.space_spring.entity.RefreshTokenStorage;
 import space.space_spring.entity.User;
 import space.space_spring.exception.CustomException;
-import space.space_spring.jwt.JwtLoginProvider;
+import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 import space.space_spring.util.user.UserUtils;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
@@ -40,11 +40,11 @@ public class AuthService {
         validatePassword(userByEmail, request.getPassword());
 
         // TODO 3. JWT 발급 -> access token, refresh token 2개 발급
-        String accessToken = jwtLoginProvider.generateToken(userByEmail, TokenType.ACCESS);
-        String refreshToken = jwtLoginProvider.generateToken(userByEmail, TokenType.REFRESH);
+        String accessToken = jwtLoginProvider.generateToken(userByEmail.getUserId(), TokenType.ACCESS);
+        String refreshToken = jwtLoginProvider.generateToken(userByEmail.getUserId(), TokenType.REFRESH);
 
         // TODO 4. refresh token db에 저장
-        TokenStorage tokenStorage = TokenStorage.builder()
+        RefreshTokenStorage tokenStorage = RefreshTokenStorage.builder()
                 .user(userByEmail)
                 .tokenValue(refreshToken)
                 .build();

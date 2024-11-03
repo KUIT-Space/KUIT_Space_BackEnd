@@ -30,7 +30,7 @@ public class UserChatRoom extends BaseEntity{
     private ChatRoom chatRoom;
 
     @Comment("사용자 ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 

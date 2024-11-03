@@ -26,19 +26,9 @@ public class JwtController {
      */
     @PostMapping("/new-token")
     public BaseResponse<String> updateAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // access token, refresh token 파싱
-        TokenPairDTO tokenPairDTO  = jwtService.resolveTokenPair(request);
 
-        // access token 로부터 user find
-        User userByAccessToken = jwtService.getUserByAccessToken(tokenPairDTO.getAccessToken());
+        TokenPairDTO newTokenPairDTO = jwtService.updateTokenPair(request);
 
-        // refresh token 유효성 검사
-        jwtService.validateRefreshToken(userByAccessToken, tokenPairDTO.getRefreshToken());
-
-        // access token, refresh token 새로 발급
-        TokenPairDTO newTokenPairDTO = jwtService.updateTokenPair(userByAccessToken);
-
-        // response header에 새로 발급한 token pair set
         response.setHeader("Authorization-refresh", "Bearer " + newTokenPairDTO.getRefreshToken());
         response.setHeader("Authorization", "Bearer " + newTokenPairDTO.getAccessToken());
 

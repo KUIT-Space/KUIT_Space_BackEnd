@@ -16,7 +16,6 @@ import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.ChatRoomService;
 import space.space_spring.service.S3Uploader;
-import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 
@@ -30,7 +29,6 @@ import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorM
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final S3Uploader s3Uploader;
-    private final UserSpaceUtils userSpaceUtils;
 
     /**
      * 모든 채팅방 정보 조회
@@ -71,7 +69,7 @@ public class ChatRoomController {
             @JwtLoginAuth Long userId,
             @PathVariable Long spaceId,
             @PathVariable Long chatRoomId) {
-        return new BaseResponse<>(chatRoomService.updateLastReadTime(userId, spaceId, chatRoomId));
+        return new BaseResponse<>(chatRoomService.updateLastReadTime(userId, chatRoomId));
     }
 
     /**

@@ -16,8 +16,10 @@ import space.space_spring.entity.VoiceRoom;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -131,22 +133,18 @@ public class VoiceRoomService {
          * 병렬 처리 적용대상 1
          */
         //#2 Room과 mapping 시키기
+        List<Long> roomIdList = new ArrayList<>();
         for(RoomDto roomDto : roomDtoList){
             roomDto.setActiveRoom(roomResponses);
+            roomIdList.add(roomDto.getId());
         }
-        List<CompletableFuture<Void>> roomDtoFutureList = roomDtoList.stream()
-                .map(r->CompletableFuture.runAsync(()->setRoomDto(r,roomResponses,req),taskExecutor)
-                        //.exceptionally(ex->{throws ex;})
-                )
-                .collect(Collectors.toList());
-        
 
-        // 모든 Future의 완료를 기다림
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(
-                roomDtoFutureList.toArray(new CompletableFuture[0]));
 
-        // 결과 수집 및 출력
-        allOf.join();
+        Map<Long,ParticipantListDto> roomIdParticipantMap=voiceRoomParticipantService.getParticipantList(roomIdList);
+        for(RoomDto roomDto : roomDtoList){
+            roomDto.setParticipantDTOList(roomIdParticipantMap.get(roomDto.getId()));
+        }
+
         //ToDo Response로 convert
         //#1 Active/inActive 분리
 

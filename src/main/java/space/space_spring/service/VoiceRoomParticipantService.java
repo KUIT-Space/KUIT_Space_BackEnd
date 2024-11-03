@@ -1,6 +1,7 @@
 package space.space_spring.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import space.space_spring.dao.UserSpaceDao;
@@ -17,11 +18,13 @@ import space.space_spring.util.LiveKitUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VoiceRoomParticipantService {
     final private UserSpaceDao userSpaceDao;
     final private UserDao userDao;
@@ -71,5 +74,40 @@ public class VoiceRoomParticipantService {
 
         // 결과 수집 및 출력
         allOf.join();
+    }
+    public Map<Long,ParticipantListDto> getParticipantList(List<Long> roomIdList){
+
+        Map<Long,CompletableFuture<ParticipantListDto>> futureMap = roomIdList.stream()
+                .collect(Collectors.toMap(
+                        roomId->roomId,
+                        roomId->CompletableFuture.supplyAsync(
+                                ()-> getParticipantDtoListById(roomId),
+                                taskExecutor
+
+                        ).exceptionally(throwable -> {
+                            log.error("failed to fetch and get participantList",throwable);
+                            return null;//empty ParticipantListDto
+                        })
+                ));
+        try {
+            // 모든 Future의 완료를 기다림
+            CompletableFuture.allOf(
+                futureMap.values().toArray(new CompletableFuture[0]))
+                .exceptionally(throwable -> {
+                    log.error("Error while waiting for all participant fetches to complete",throwable);
+                    return null;
+                })
+                .join();
+
+            return futureMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            entry -> entry.getKey(),
+                            entry->entry.getValue().getNow(ParticipantListDto.from(null))
+                    ));
+
+        }catch (Exception e){
+            log.error("Critical error while processing participant fetches", e);
+            return Collections.emptyMap();  // 심각한 오류 발생 시 빈 Map 반환
+        }
     }
 }

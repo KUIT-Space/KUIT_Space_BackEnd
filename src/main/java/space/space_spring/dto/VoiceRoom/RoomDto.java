@@ -131,5 +131,5 @@ public class RoomDto {
     }
 
     public ParticipantListDto getParticipantListDto(){return participantListDto;}
-
+    public List<ParticipantDto> getParticipantDtoList(){return participantListDto.getParticipantDtoList();}
 }

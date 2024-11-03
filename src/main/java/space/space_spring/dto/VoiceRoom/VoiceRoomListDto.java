@@ -65,7 +65,7 @@ public class VoiceRoomListDto {
         return convertVoicRoomInfoList( null);
     }
 
-    public void serParticipantListDto(Map<Long,ParticipantListDto> participantListDtoMap){
+    public void setParticipantListDto(Map<Long,ParticipantListDto> participantListDtoMap){
 
         for(RoomDto roomDto : this.roomDtoList){
             roomDto.setParticipantDTOList(participantListDtoMap.get(roomDto.getId()));

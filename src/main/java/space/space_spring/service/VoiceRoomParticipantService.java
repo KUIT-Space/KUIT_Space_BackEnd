@@ -102,7 +102,7 @@ public class VoiceRoomParticipantService {
             return futureMap.entrySet().stream()
                     .collect(Collectors.toMap(
                             entry -> entry.getKey(),
-                            entry->entry.getValue().getNow(ParticipantListDto.from(null))
+                            entry->entry.getValue().getNow(ParticipantListDto.empty())
                     ));
 
         }catch (Exception e){

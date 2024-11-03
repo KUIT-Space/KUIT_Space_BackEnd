@@ -99,9 +99,7 @@ public class VoiceRoomService {
 
 
         Map<Long,ParticipantListDto> roomIdParticipantMap=voiceRoomParticipantService.getParticipantList(roomIdList);
-        for(RoomDto roomDto : roomDtoList){
-            roomDto.setParticipantDTOList(roomIdParticipantMap.get(roomDto.getId()));
-        }
+        
 
         //ToDo Response로 convert
         //#1 Active/inActive 분리

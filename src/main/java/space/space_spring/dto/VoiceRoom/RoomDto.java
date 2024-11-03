@@ -130,6 +130,6 @@ public class RoomDto {
         }
     }
 
-
+    public ParticipantListDto getParticipantListDto(){return participantListDto;}
 
 }

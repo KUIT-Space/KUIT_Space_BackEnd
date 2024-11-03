@@ -35,4 +35,8 @@ public class ParticipantListDto {
                 .map(GetParticipantList.ParticipantInfo::convertParticipantDto)
                 .collect(Collectors.toList());
     }
+
+    public List<ParticipantDto> getParticipantDtoList() {
+        return participantDtoList;
+    }
 }

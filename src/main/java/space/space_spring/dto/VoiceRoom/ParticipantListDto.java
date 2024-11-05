@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class ParticipantListDto {
 
 
-    private List<ParticipantDto> participantDtoList;
+    final private List<ParticipantDto> participantDtoList;
 
     private ParticipantListDto(List<ParticipantDto> participantDtoList){
         this.participantDtoList=participantDtoList;

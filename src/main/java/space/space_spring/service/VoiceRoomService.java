@@ -13,6 +13,7 @@ import space.space_spring.dto.VoiceRoom.*;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.VoiceRoom;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
 
@@ -24,6 +25,8 @@ import java.util.Map;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -167,7 +170,7 @@ public class VoiceRoomService {
 
     public void deleteVoiceRoom(long voiceRoomId){
         //Todo Base Entity에 일괄적으로 soft Delete를 적용하는 방법을 다같이 정하는 것이 좋아보임
-        VoiceRoom voiceRoom = voiceRoomRepository.findById(voiceRoomId);
+        VoiceRoom voiceRoom = voiceRoomRepository.findById(voiceRoomId).orElseThrow(()->new CustomException(VOICEROOM_NOT_EXIST));
         voiceRoom.updateInactive();
         voiceRoomRepository.save(voiceRoom);
     }
@@ -182,7 +185,7 @@ public class VoiceRoomService {
 //        return voiceRoomRepository.findBySpace(space);
 //    }
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
-        Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
+        Space space = voiceRoomRepository.findById(voiceRoomId).orElseThrow(()->new CustomException(VOICEROOM_NOT_EXIST)).getSpace();
         List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));
         if(participantDtoList==null||participantDtoList.isEmpty()){
             return Collections.emptyList();

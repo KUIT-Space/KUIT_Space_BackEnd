@@ -14,6 +14,7 @@ import space.space_spring.dto.VoiceRoom.RoomDto;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
 import space.space_spring.entity.UserSpace;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
 
 import java.util.Collections;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class VoiceRoomParticipantService {
         return getParticipantDtoListById(voiceRoomId).convertParticipantDtoList();
     }
     private ParticipantListDto getParticipantDtoListById(long voiceRoomId){
-        Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
+        Space space = voiceRoomRepository.findById(voiceRoomId).orElseThrow(()->new CustomException(VOICEROOM_NOT_EXIST)).getSpace();
         //Todo 다른 네이밍 고려
         List<ParticipantDto> participantDtos =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));
         if(participantDtos==null || participantDtos.isEmpty()){

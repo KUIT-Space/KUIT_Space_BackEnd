@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 
 public class VoiceRoomEntityList {
 
-    private List<VoiceRoom> voiceRoomEntityList;
+    final private List<VoiceRoom> voiceRoomEntityList;
 
-    public void VoiceRoomList(List<VoiceRoom> voiceRoomEntityList) {
+    private VoiceRoomEntityList(List<VoiceRoom> voiceRoomEntityList) {
         this.voiceRoomEntityList = voiceRoomEntityList;
     }
-
+    public VoiceRoomEntityList from(List<VoiceRoom> voiceRoomEntityList){
+        return new VoiceRoomEntityList(voiceRoomEntityList);
+    }
     public List<RoomDto> convertRoomDto(){
         if(this.voiceRoomEntityList==null||this.voiceRoomEntityList.isEmpty()){return null;}
         return this.voiceRoomEntityList.stream()

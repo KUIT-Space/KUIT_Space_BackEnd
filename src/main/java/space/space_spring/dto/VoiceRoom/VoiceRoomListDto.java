@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class VoiceRoomListDto {
-    private List<RoomDto> roomDtoList;
+    final private List<RoomDto> roomDtoList;
 
     public VoiceRoomListDto(List<RoomDto> roomDtos){
         this.roomDtoList=roomDtos;

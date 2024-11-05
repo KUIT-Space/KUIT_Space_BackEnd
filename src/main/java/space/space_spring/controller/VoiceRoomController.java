@@ -207,7 +207,8 @@ public class VoiceRoomController {
         return true;
     }
     private boolean validateVoiceRoomInSpace(long spaceId,long voiceRoomId){
-        if(! (voiceRoomRepository.findById(voiceRoomId).getSpace().getSpaceId().equals(spaceId))){
+        if(! (voiceRoomRepository.findById(voiceRoomId).orElseThrow(()->new CustomException(VOICEROOM_NOT_EXIST))
+                .getSpace().getSpaceId().equals(spaceId))){
             throw new CustomException(VOICEROOM_NOT_IN_SPACE);
         }
         return true;

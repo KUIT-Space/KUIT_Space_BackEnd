@@ -8,6 +8,8 @@ import space.space_spring.entity.Space;
 import space.space_spring.entity.VoiceRoom;
 
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface VoiceRoomRepository extends JpaRepository<VoiceRoom,Long> {
 
@@ -24,7 +26,7 @@ public interface VoiceRoomRepository extends JpaRepository<VoiceRoom,Long> {
     @Query("SELECT CASE WHEN COUNT(v) > 0 THEN true ELSE false END FROM VoiceRoom v WHERE v.name = :voiceRoomName AND v.status = 'ACTIVE'")
     boolean existsByName(@Param("voiceRoomName") String voiceRoomName);
     @Query("SELECT v FROM VoiceRoom v WHERE v.voiceRoomId = :id AND v.status = 'ACTIVE'")
-    VoiceRoom findById(@Param("id") long Id);
+    Optional<VoiceRoom> findById(@Param("id") long Id);
 
     @Query("SELECT v FROM VoiceRoom v WHERE v.space.id = :spaceId AND v.status = 'ACTIVE'")
     List<VoiceRoom> findActiveVoiceRoomsBySpaceId(@Param("spaceId") Long spaceId);

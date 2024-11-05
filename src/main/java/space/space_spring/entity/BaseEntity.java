@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import space.space_spring.entity.enumStatus.BaseStatusType;
 
 @Getter
 @MappedSuperclass
@@ -17,14 +18,15 @@ public abstract class BaseEntity {
     @Column(name = "updated_date")
     private LocalDateTime lastModifiedAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private BaseStatusType status;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         lastModifiedAt = LocalDateTime.now();
-        status = "ACTIVE";
+        status = BaseStatusType.ACTIVE;
     }
 
     @PreUpdate
@@ -36,8 +38,8 @@ public abstract class BaseEntity {
         onCreate();
     }
 
-    public void updateActive() { this.status = "ACTIVE"; }
+    public void updateActive() { this.status = BaseStatusType.ACTIVE; }
 
 
-    public void updateInactive() { this.status = "INACTIVE"; }
+    public void updateInactive() { this.status = BaseStatusType.INACTIVE; }
 }

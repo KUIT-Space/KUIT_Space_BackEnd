@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import space.space_spring.domain.user.model.entity.User;
 
 import java.time.LocalDateTime;
 

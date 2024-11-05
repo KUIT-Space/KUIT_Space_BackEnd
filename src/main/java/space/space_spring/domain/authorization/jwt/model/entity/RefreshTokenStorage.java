@@ -1,9 +1,10 @@
-package space.space_spring.entity;
+package space.space_spring.domain.authorization.jwt.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.user.model.entity.User;
 
 @Entity
 @Table(name = "Token_Storage")

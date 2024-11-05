@@ -2,7 +2,7 @@ package space.space_spring.dao.chat;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import space.space_spring.entity.ChatRoom;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.UserChatRoom;
 import space.space_spring.entity.enumStatus.BaseStatusType;
 

@@ -3,6 +3,7 @@ package space.space_spring.entity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 
 @Entity

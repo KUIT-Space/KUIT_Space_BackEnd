@@ -1,15 +1,18 @@
-package space.space_spring.service;
+package space.space_spring.domain.pay.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.dao.PayDao;
+import space.space_spring.domain.pay.model.entity.PayRequest;
+import space.space_spring.domain.pay.model.dto.*;
+import space.space_spring.domain.pay.model.entity.PayRequestTarget;
+import space.space_spring.domain.pay.repository.PayDao;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.dto.pay.dto.*;
-import space.space_spring.dto.pay.request.PostPayCreateRequest;
-import space.space_spring.dto.pay.response.GetRecentPayRequestBankInfoResponse;
-import space.space_spring.dto.pay.response.PostPayCompleteResponse;
+import space.space_spring.domain.pay.model.request.PostPayCreateRequest;
+import space.space_spring.domain.pay.model.response.GetRecentPayRequestBankInfoResponse;
+import space.space_spring.domain.pay.model.response.PostPayCompleteResponse;
 import space.space_spring.entity.*;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.space.SpaceUtils;

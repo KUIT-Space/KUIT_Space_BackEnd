@@ -11,16 +11,13 @@ import space.space_spring.dao.VoiceRoomDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;
 import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.VoiceRoom;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
 
 import java.util.Collections;
 import java.util.List;
-
-import java.util.Map;
-import java.util.Optional;
 
 
 import java.util.concurrent.CompletableFuture;

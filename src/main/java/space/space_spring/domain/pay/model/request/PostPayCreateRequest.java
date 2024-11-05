@@ -1,4 +1,4 @@
-package space.space_spring.dto.pay.request;
+package space.space_spring.domain.pay.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

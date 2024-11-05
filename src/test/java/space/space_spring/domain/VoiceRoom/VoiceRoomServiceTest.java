@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomDao;
 import space.space_spring.dao.VoiceRoomRepository;
+import space.space_spring.domain.pay.model.entity.PayRequest;
+import space.space_spring.domain.pay.model.entity.PayRequestTarget;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.dto.VoiceRoom.PostVoiceRoomDto;
 import space.space_spring.entity.*;
 import space.space_spring.entity.enumStatus.UserSignupType;
@@ -21,8 +23,6 @@ import space.space_spring.util.space.SpaceUtils;
 
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

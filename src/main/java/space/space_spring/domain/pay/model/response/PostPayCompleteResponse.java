@@ -1,4 +1,4 @@
-package space.space_spring.dto.pay.response;
+package space.space_spring.domain.pay.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

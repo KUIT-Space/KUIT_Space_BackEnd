@@ -7,7 +7,7 @@ import space.space_spring.dao.SpaceDao;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 import space.space_spring.exception.CustomException;

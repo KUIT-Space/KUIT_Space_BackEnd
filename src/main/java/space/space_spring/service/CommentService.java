@@ -11,7 +11,7 @@ import space.space_spring.dto.comment.request.CreateCommentRequest;
 import space.space_spring.dto.comment.response.ReadCommentsResponse;
 import space.space_spring.entity.Post;
 import space.space_spring.entity.Comment;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.user.UserUtils;

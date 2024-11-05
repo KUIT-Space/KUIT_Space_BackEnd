@@ -6,6 +6,6 @@ import space.space_spring.entity.User;
 
 import java.util.List;
 
-public interface ChatRoomDaoCustom {
+public interface ChatRoomRepositoryCustom {
     List<ChatRoom> findByUserAndSpace(User user, Space space);
 }

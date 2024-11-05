@@ -13,7 +13,7 @@ import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
 import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
 import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
 import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 import space.space_spring.exception.CustomException;

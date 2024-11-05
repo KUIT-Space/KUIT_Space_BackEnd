@@ -8,6 +8,7 @@ import space.space_spring.dao.UserSpaceDao;
 import space.space_spring.dao.chat.ChatRoomRepository;
 import space.space_spring.dao.chat.ChattingRepository;
 import space.space_spring.dao.chat.UserChatRoomRepository;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.dto.chat.dto.LastMessageInfoDto;
 import space.space_spring.dto.chat.request.JoinChatRoomRequest;
 import space.space_spring.dto.chat.response.*;

@@ -14,7 +14,7 @@ import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.domain.user.repository.UserDao;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.util.user.UserUtils;
 
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
-package space.space_spring.entity;
+package space.space_spring.domain.user.model.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.entity.BaseEntity;
 import space.space_spring.entity.enumStatus.UserSignupType;
 
 @Entity

@@ -2,9 +2,8 @@ package space.space_spring.dto.space;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
-import space.space_spring.dto.pay.dto.PayRequestInfoDto;
+import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
+import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import java.util.List;
 
 public class GetSpaceHomeDto {

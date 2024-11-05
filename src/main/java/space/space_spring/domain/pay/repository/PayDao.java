@@ -1,16 +1,14 @@
-package space.space_spring.dao;
+package space.space_spring.domain.pay.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import space.space_spring.dto.pay.dto.PayRequestInfoDto;
-import space.space_spring.dto.pay.dto.RecentPayRequestBankInfoDto;
-import space.space_spring.dto.pay.dto.TotalPayInfoDto;
-import space.space_spring.entity.PayRequest;
-import space.space_spring.entity.PayRequestTarget;
+import space.space_spring.domain.pay.model.dto.RecentPayRequestBankInfoDto;
+import space.space_spring.domain.pay.model.entity.PayRequest;
+import space.space_spring.domain.pay.model.entity.PayRequestTarget;
 import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 
 import java.util.List;
 import java.util.stream.Collectors;

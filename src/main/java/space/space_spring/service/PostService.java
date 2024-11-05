@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import space.space_spring.dao.CommentDao;
 import space.space_spring.dao.PostDao;
 import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.dto.comment.response.ReadCommentsResponse;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostDetailResponse;

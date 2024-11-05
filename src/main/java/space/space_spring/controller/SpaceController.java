@@ -10,8 +10,8 @@ import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.argumentResolver.userSpace.UserSpaceId;
-import space.space_spring.dto.pay.dto.PayReceiveInfoDto;
-import space.space_spring.dto.pay.dto.PayRequestInfoDto;
+import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
+import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.dto.space.GetSpaceHomeDto;
 import space.space_spring.dto.space.GetSpaceJoinDto;
 import space.space_spring.dto.space.PostSpaceJoinDto;
@@ -23,7 +23,7 @@ import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
 import space.space_spring.entity.Space;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
-import space.space_spring.service.PayService;
+import space.space_spring.domain.pay.service.PayService;
 import space.space_spring.service.PostService;
 import space.space_spring.service.S3Uploader;
 import space.space_spring.service.SpaceService;
@@ -31,7 +31,6 @@ import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;

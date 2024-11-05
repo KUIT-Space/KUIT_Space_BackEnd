@@ -9,7 +9,7 @@ import space.space_spring.dao.chat.ChatRoomRepository;
 import space.space_spring.dao.chat.UserChatRoomRepository;
 import space.space_spring.entity.ChatRoom;
 import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.UserChatRoom;
 import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.entity.enumStatus.UserSignupType;

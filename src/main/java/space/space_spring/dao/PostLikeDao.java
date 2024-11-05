@@ -1,6 +1,7 @@
 package space.space_spring.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.*;
 
 import java.util.Optional;

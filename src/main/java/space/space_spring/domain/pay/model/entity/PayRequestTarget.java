@@ -1,7 +1,8 @@
-package space.space_spring.entity;
+package space.space_spring.domain.pay.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Getter

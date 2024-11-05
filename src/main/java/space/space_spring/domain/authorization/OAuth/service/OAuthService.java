@@ -15,7 +15,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dto.oAuth.KakaoInfo;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.util.user.UserUtils;
 
 import static space.space_spring.entity.enumStatus.UserSignupType.KAKAO;

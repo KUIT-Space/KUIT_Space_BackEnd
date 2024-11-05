@@ -9,7 +9,7 @@ import space.space_spring.domain.user.model.dto.SpaceChoiceInfo;
 import space.space_spring.domain.user.model.dto.SpaceChoiceViewDto;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 

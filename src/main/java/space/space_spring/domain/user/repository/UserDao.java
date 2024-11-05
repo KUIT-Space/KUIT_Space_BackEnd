@@ -5,7 +5,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.enumStatus.UserSignupType;
 
 import java.util.Optional;

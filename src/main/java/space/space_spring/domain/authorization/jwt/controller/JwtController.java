@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.authorization.jwt.service.JwtService;
 import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
-import space.space_spring.entity.User;
 import space.space_spring.response.BaseResponse;
 
 import java.io.IOException;

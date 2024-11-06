@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class GetPayViewResponse {
+public class PayHomeViewResponse {
 
     private List<PayRequestInfoDto> payRequestInfoDtoList = new ArrayList<>();
 

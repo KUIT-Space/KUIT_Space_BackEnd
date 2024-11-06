@@ -41,19 +41,22 @@ public class PayController {
      * 정산 홈 view
      */
     @GetMapping("/space/{spaceId}/pay")
-    public BaseResponse<GetPayViewResponse> showPayListForUser(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
-        // TODO 1. 유저가 스페이스에 속하는 지 검증
-        validateIsUserInSpace(userId, spaceId);
+    public BaseResponse<PayHomeViewResponse> showPayHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
 
-        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get
-        // 현재 진행중인 정산 -> isComplete = false
-        List<PayRequestInfoDto> payRequestInfoDtoList = payService.getPayRequestInfoForUser(userId, spaceId, false);
+        return new BaseResponse<>(payService.getPayHomeInfos(userId, spaceId));
 
-        // TODO 3. 유저가 요청받은 정산 중 현재 진행중인 정산 리스트 get
-        // 현재 진행중인 정산 -> isComplete = false
-        List<PayReceiveInfoDto> payReceiveInfoDtoList = payService.getPayReceiveInfoForUser(userId, spaceId, false);
-
-        return new BaseResponse<>(new GetPayViewResponse(payRequestInfoDtoList, payReceiveInfoDtoList));
+//        // TODO 1. 유저가 스페이스에 속하는 지 검증
+//        validateIsUserInSpace(userId, spaceId);
+//
+//        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get
+//        // 현재 진행중인 정산 -> isComplete = false
+//        List<PayRequestInfoDto> payRequestInfoDtoList = payService.getPayRequestInfoForUser(userId, spaceId, false);
+//
+//        // TODO 3. 유저가 요청받은 정산 중 현재 진행중인 정산 리스트 get
+//        // 현재 진행중인 정산 -> isComplete = false
+//        List<PayReceiveInfoDto> payReceiveInfoDtoList = payService.getPayReceiveInfoForUser(userId, spaceId, false);
+//
+//        return new BaseResponse<>(new PayHomeViewResponse(payRequestInfoDtoList, payReceiveInfoDtoList));
     }
 
     private void validateIsUserInSpace(Long userId, Long spaceId) {

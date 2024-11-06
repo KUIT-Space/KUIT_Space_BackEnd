@@ -3,10 +3,14 @@ package space.space_spring.domain.pay.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.dao.UserSpaceRepository;
 import space.space_spring.domain.pay.model.entity.PayRequest;
 import space.space_spring.domain.pay.model.dto.*;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
+import space.space_spring.domain.pay.model.response.PayHomeViewResponse;
 import space.space_spring.domain.pay.repository.PayDao;
+import space.space_spring.domain.pay.repository.PayRequestRepository;
+import space.space_spring.domain.pay.repository.PayRequestTargetRepository;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.dao.UserSpaceDao;
@@ -21,11 +25,13 @@ import space.space_spring.util.user.UserUtils;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PayService {
 
     private final PayDao payDao;
@@ -33,6 +39,43 @@ public class PayService {
     private final SpaceUtils spaceUtils;
     private final UserDao userDao;
     private final UserSpaceDao userSpaceDao;
+
+    private final UserSpaceRepository userSpaceRepository;
+    private final PayRequestRepository payRequestRepository;
+    private final PayRequestTargetRepository payRequestTargetRepository;
+
+    private final boolean INCOMPLETE_PAY = false;
+    private final boolean COMPLETE_PAY = true;
+
+    public PayHomeViewResponse getPayHomeInfos(Long userId, Long spaceId) {
+        // 유저가 스페이스에 속하는 지 검증하고,
+        UserSpace userSpace = validateUserInSpace(userId, spaceId);
+
+        // 유저가 요청한 정산 중 현재 진행중인 정산 리스트 정보와
+        List<Optional<PayRequest>> payRequests = payRequestRepository.findByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), INCOMPLETE_PAY);
+
+        List<PayRequestInfoDto> payRequestInfoDtos = new ArrayList<>();
+        for (Optional<PayRequest> payRequest : payRequests) {
+            payRequest.ifPresent(request -> payRequestInfoDtos.add(request.createPayRequestInfo()));
+        }
+
+        // 유저가 요청받은 정산 중 현재 진행중인 정산 리스트를 찾아서
+        List<Optional<PayRequestTarget>> payRequestTargets = payRequestTargetRepository.findByUserAndSpace(userSpace.getUser().getUserId(), userSpace.getSpace(), INCOMPLETE_PAY);
+
+        List<PayReceiveInfoDto> payReceiveInfoDtos = new ArrayList<>();
+        for (Optional<PayRequestTarget> payRequestTarget : payRequestTargets) {
+            payRequestTarget.ifPresent(requestTarget -> payReceiveInfoDtos.add(requestTarget.createPayReceiveInfo()));
+        }
+
+        // return
+        return new PayHomeViewResponse(payRequestInfoDtos, payReceiveInfoDtos);
+    }
+
+    private UserSpace validateUserInSpace(Long userId, Long spaceId) {
+        return userSpaceRepository.findUserSpaceByUserAndSpace(userId, spaceId).orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
+    }
+
+
 
     @Transactional
     public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId, boolean isComplete) {
@@ -52,35 +95,11 @@ public class PayService {
         List<PayRequestInfoDto> payRequestInfoDtoList = new ArrayList<>();
 
         for (PayRequest payRequest : payRequestListByUser) {
-            PayRequestInfoDto payRequestInfoDto = createPayRequestInfoDto(payRequest);
+            PayRequestInfoDto payRequestInfoDto = payRequest.createPayRequestInfo();
             payRequestInfoDtoList.add(payRequestInfoDto);
         }
 
         return payRequestInfoDtoList;
-    }
-
-    private PayRequestInfoDto createPayRequestInfoDto(PayRequest payRequest) {
-        Long payRequestId = payRequest.getPayRequestId();
-        int totalAmount = payRequest.getTotalAmount();
-        int receiveAmount = 0;
-        int totalTargetNum = 0;
-        int receiveTargetNum = 0;
-
-        List<PayRequestTarget> payRequestTargetList = payDao.findPayRequestTargetListByPayRequest(payRequest);
-
-        for (PayRequestTarget payRequestTarget : payRequestTargetList) {
-            if (payRequestTarget.isComplete()) {
-                // 해당 타겟이 돈을 낸 경우
-                receiveAmount += payRequestTarget.getRequestAmount();
-                receiveTargetNum++;
-            }
-
-            totalTargetNum++;
-        }
-
-        return new PayRequestInfoDto(
-                payRequestId, totalAmount, receiveAmount, totalTargetNum, receiveTargetNum
-        );
     }
 
     @Transactional
@@ -99,22 +118,11 @@ public class PayService {
         List<PayReceiveInfoDto> payReceiveInfoDtoList = new ArrayList<>();
 
         for (PayRequestTarget payRequestTarget : payRequestTargetListByUser) {
-            PayReceiveInfoDto payReceiveInfoDto = createPayReceiveInfoDto(payRequestTarget);
+            PayReceiveInfoDto payReceiveInfoDto = payRequestTarget.createPayReceiveInfo();
             payReceiveInfoDtoList.add(payReceiveInfoDto);
         }
 
         return payReceiveInfoDtoList;
-    }
-
-    private PayReceiveInfoDto createPayReceiveInfoDto(PayRequestTarget payRequestTarget) {
-        String payCreatorName = payRequestTarget.getPayRequest().getPayCreateUser().getUserName();          // 리펙토링 필요
-        int requestAmount = payRequestTarget.getRequestAmount();
-
-        // 정산 생성자가 요청한 은행 정보도 response에 추가
-        String bankName = payRequestTarget.getPayRequest().getBankName();
-        String bankAccountNum = payRequestTarget.getPayRequest().getBankAccountNum();
-
-        return new PayReceiveInfoDto(payRequestTarget.getPayRequestTargetId(), payCreatorName, requestAmount, bankName, bankAccountNum);
     }
 
     @Transactional
@@ -162,7 +170,7 @@ public class PayService {
         PayRequest payRequestById = payDao.findPayRequestById(payRequestId);
 
         // TODO 3. PayRequest로 해당 정산의 정보 get
-        PayRequestInfoDto payRequestInfoDto = createPayRequestInfoDto(payRequestById);
+        PayRequestInfoDto payRequestInfoDto = payRequestById.createPayRequestInfo();
 
         // TODO 4. PayRequest의 PayRequestTarget find
         List<PayRequestTarget> payRequestTargetListByPayRequest = payDao.findPayRequestTargetListByPayRequest(payRequestById);

@@ -44,7 +44,7 @@ public class JwtService {
     private User getUserByAccessToken(String accessToken) {
         Long userIdFromToken = jwtLoginProvider.getUserIdFromAccessToken(accessToken);
 
-        return userRepository.findByUserId(userIdFromToken)
+        return userRepository.findById(userIdFromToken)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 

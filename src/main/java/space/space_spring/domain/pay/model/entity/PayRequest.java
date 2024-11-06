@@ -2,9 +2,13 @@ package space.space_spring.domain.pay.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.BaseEntity;
 import space.space_spring.entity.Space;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -39,6 +43,9 @@ public class PayRequest extends BaseEntity {
     @Column(name = "is_complete")
     private boolean isComplete;
 
+    @OneToMany(mappedBy = "payRequest")
+    private List<PayRequestTarget> payRequestTargets = new ArrayList<>();
+
     public void savePayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, int unRequestedAmount, boolean isComplete) {
         this.payCreateUser = payCreateUser;
         this.space = space;
@@ -51,5 +58,26 @@ public class PayRequest extends BaseEntity {
 
     public void changeCompleteStatus(boolean isComplete) {
         this.isComplete = isComplete;
+    }
+
+    public PayRequestInfoDto createPayRequestInfo() {
+        int totalAmount = this.totalAmount;
+        int receiveAmount = 0;
+        int totalTargetNum = 0;
+        int receiveTargetNum = 0;
+
+        for (PayRequestTarget payRequestTarget : this.payRequestTargets) {
+            if (payRequestTarget.isComplete()) {
+                // 해당 타겟이 돈을 낸 경우
+                receiveAmount += payRequestTarget.getRequestAmount();
+                receiveTargetNum++;
+            }
+
+            totalTargetNum++;
+        }
+
+        return new PayRequestInfoDto(
+                this.payRequestId, totalAmount, receiveAmount, totalTargetNum, receiveTargetNum
+        );
     }
 }

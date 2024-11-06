@@ -2,6 +2,7 @@ package space.space_spring.domain.pay.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
 import space.space_spring.entity.BaseEntity;
 
 @Entity
@@ -35,5 +36,16 @@ public class PayRequestTarget extends BaseEntity {
 
     public void changeCompleteStatus(boolean isComplete) {
         this.isComplete = isComplete;
+    }
+
+    public PayReceiveInfoDto createPayReceiveInfo() {
+        String payCreatorName = payRequest.getPayCreateUser().getUserName();          // 리펙토링 필요
+        int requestAmount = this.requestAmount;
+
+        // 정산 생성자가 요청한 은행 정보도 response에 추가
+        String bankName = payRequest.getBankName();
+        String bankAccountNum = payRequest.getBankAccountNum();
+
+        return new PayReceiveInfoDto(this.payRequestTargetId, payCreatorName, requestAmount, bankName, bankAccountNum);
     }
 }

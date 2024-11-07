@@ -17,13 +17,18 @@ import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuthHandlerArgumentR
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuthHandlerArgumentResolver;
 import space.space_spring.argumentResolver.userSpace.UserSpaceIdHandlerArgumentResolver;
 import space.space_spring.config.SecurityConfig;
-import space.space_spring.dto.chat.request.CreateChatRoomRequest;
-import space.space_spring.dto.chat.request.JoinChatRoomRequest;
-import space.space_spring.dto.chat.response.*;
+import space.space_spring.domain.chat.chatroom.controller.ChatRoomController;
+import space.space_spring.domain.chat.chatroom.model.request.CreateChatRoomRequest;
+import space.space_spring.domain.chat.chatroom.model.request.JoinChatRoomRequest;
+import space.space_spring.domain.chat.chatroom.model.response.ChatRoomResponse;
+import space.space_spring.domain.chat.chatroom.model.response.ChatSuccessResponse;
+import space.space_spring.domain.chat.chatroom.model.response.CreateChatRoomResponse;
+import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomMemberResponse;
+import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomResponse;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.interceptor.UserSpaceValidationInterceptor;
 import space.space_spring.interceptor.jwtLogin.JwtLoginAuthInterceptor;
-import space.space_spring.service.ChatRoomService;
+import space.space_spring.domain.chat.chatroom.service.ChatRoomService;
 import space.space_spring.service.S3Uploader;
 
 import java.nio.charset.StandardCharsets;

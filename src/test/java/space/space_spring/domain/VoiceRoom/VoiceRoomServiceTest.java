@@ -85,8 +85,10 @@ public class VoiceRoomServiceTest {
         testSpace = new Space();
         testSpace.saveSpace("testSpace", "test_profile_img_url");
 
-        testPayRequest_user1 = new PayRequest();
-        testPayRequest_user1.savePayRequest(user1, testSpace, 30000, "우리은행", "111-111-111", 0, false);
+//        testPayRequest_user1 = new PayRequest();
+//        testPayRequest_user1.savePayRequest(user1, testSpace, 30000, "우리은행", "111-111-111", 0, false);
+
+        testPayRequest_user1 = PayRequest.create(user1, testSpace, 30000, "우리은행", "111-111-111", 0, false);
 
         testPayRequestTarget_user2 = new PayRequestTarget();
         testPayRequestTarget_user2.savePayRequestTarget(testPayRequest_user1, user2.getUserId(), 10000, false);
@@ -97,8 +99,10 @@ public class VoiceRoomServiceTest {
         testPayRequestTarget_user4 = new PayRequestTarget();
         testPayRequestTarget_user4.savePayRequestTarget(testPayRequest_user1, user4.getUserId(), 10000, true);
 
-        testPayRequest_user2 = new PayRequest();
-        testPayRequest_user2.savePayRequest(user2, testSpace, 10000, "국민은행", "111-111-111", 0, true);
+//        testPayRequest_user2 = new PayRequest();
+//        testPayRequest_user2.savePayRequest(user2, testSpace, 10000, "국민은행", "111-111-111", 0, true);
+
+        testPayRequest_user2 = PayRequest.create(user2, testSpace, 10000, "우리은행", "111-111-111", 0, true);
 
         testPayRequestTarget_user1 = new PayRequestTarget();
         testPayRequestTarget_user1.savePayRequestTarget(testPayRequest_user2, user1.getUserId(), 10000, true);

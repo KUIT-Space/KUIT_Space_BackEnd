@@ -1,7 +1,10 @@
 package space.space_spring.domain.pay.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.BaseEntity;
@@ -13,6 +16,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "Pay_Request")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayRequest extends BaseEntity {
 
     @Id
@@ -58,6 +62,29 @@ public class PayRequest extends BaseEntity {
 
     public void changeCompleteStatus(boolean isComplete) {
         this.isComplete = isComplete;
+    }
+
+    @Builder
+    private PayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, int unRequestedAmount, boolean isComplete) {
+        this.payCreateUser = payCreateUser;
+        this.space = space;
+        this.totalAmount = totalAmount;
+        this.bankName = bankName;
+        this.bankAccountNum = bankAccountNum;
+        this.unRequestedAmount = unRequestedAmount;
+        this.isComplete = isComplete;
+    }
+
+    public static PayRequest create(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, int unRequestedAmount, boolean isComplete) {
+        return PayRequest.builder()
+                .payCreateUser(payCreateUser)
+                .space(space)
+                .totalAmount(totalAmount)
+                .bankName(bankName)
+                .bankAccountNum(bankAccountNum)
+                .unRequestedAmount(unRequestedAmount)
+                .isComplete(isComplete)
+                .build();
     }
 
     public PayRequestInfoDto createPayRequestInfo() {

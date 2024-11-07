@@ -7,6 +7,7 @@ import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Getter
+@Table(name = "Pay_Request_Target")
 public class PayRequestTarget extends BaseEntity {
 
     @Id
@@ -20,6 +21,7 @@ public class PayRequestTarget extends BaseEntity {
 
     @Column(name = "target_user_id")
     private Long targetUserId;              // User 객체를 필드로 가지는 것보다 이게 더 낫나??
+                                            // -> @OneToOne 어노테이션으로 User 엔티티 가지고 있는 방향 생각해볼것
 
     @Column(name = "request_amount")
     private int requestAmount;

@@ -73,8 +73,9 @@ public class PayDao {
     }
 
     public PayRequest createPayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, int unRequestedAmount, boolean isComplete) {
-        PayRequest payRequest = new PayRequest();
-        payRequest.savePayRequest(payCreateUser, space, totalAmount, bankName, bankAccountNum, unRequestedAmount, isComplete);
+//        PayRequest payRequest = new PayRequest();
+//        payRequest.savePayRequest(payCreateUser, space, totalAmount, bankName, bankAccountNum, unRequestedAmount, isComplete);
+        PayRequest payRequest = PayRequest.create(payCreateUser, space, totalAmount, bankName, bankAccountNum, unRequestedAmount, isComplete);
 
         em.persist(payRequest);
         return payRequest;

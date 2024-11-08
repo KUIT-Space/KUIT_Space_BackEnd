@@ -1,11 +1,15 @@
 package space.space_spring.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "Spaces")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Space extends BaseEntity {
 
     @Id @GeneratedValue
@@ -22,6 +26,19 @@ public class Space extends BaseEntity {
         this.spaceName = spaceName;
         this.spaceProfileImg = spaceProfileImg;
         initializeBaseEntityFields();
+    }
+
+    @Builder
+    private Space(String spaceName, String spaceProfileImg) {
+        this.spaceName = spaceName;
+        this.spaceProfileImg = spaceProfileImg;
+    }
+
+    public static Space create(String spaceName, String spaceProfileImg) {
+        return Space.builder()
+                .spaceName(spaceName)
+                .spaceProfileImg(spaceProfileImg)
+                .build();
     }
 
 }

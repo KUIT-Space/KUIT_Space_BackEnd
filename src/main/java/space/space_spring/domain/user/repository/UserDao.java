@@ -17,8 +17,7 @@ public class UserDao {
     private EntityManager em;
 
     public User saveUser(String email, String password, String userName, UserSignupType signupType) {
-        User user = new User();
-        user.saveUser(email, password, userName, signupType);
+        User user = User.create(email, password, userName, signupType);
 
         em.persist(user);
         return user;

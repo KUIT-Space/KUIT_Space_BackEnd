@@ -10,12 +10,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
+import space.space_spring.dao.SpaceRepository;
 import space.space_spring.domain.pay.model.entity.PayRequest;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
 import space.space_spring.domain.pay.repository.PayRequestRepository;
 import space.space_spring.domain.pay.repository.PayRequestTargetRepository;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.user.repository.UserRepository;
+import space.space_spring.entity.Space;
 import space.space_spring.entity.enumStatus.UserSignupType;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Import({PayService.class})
 @ActiveProfiles("test")
-@EnableJpaRepositories(basePackageClasses = {PayRequestRepository.class, PayRequestTargetRepository.class, UserRepository.class})
-@EntityScan(basePackageClasses = {PayRequest.class, PayRequestTarget.class, User.class})
+@EnableJpaRepositories(basePackageClasses = {PayRequestRepository.class, PayRequestTargetRepository.class, UserRepository.class, SpaceRepository.class})
+@EntityScan(basePackageClasses = {PayRequest.class, PayRequestTarget.class, User.class, Space.class})
 class PayServiceTest {
 
     @Autowired
@@ -39,12 +41,18 @@ class PayServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SpaceRepository spaceRepository;
+
     @Test
     @DisplayName("유저가 요청한 정산 중, 현재 진행 중인 정산 정보들과 유저가 요청받은 정산 중, 현재 진행 중인 정산 정보들을 return 한다.")
     void getPayHomeInfos() throws Exception {
         //given
         User user = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User savedUser = userRepository.save(user);
+        Space space = Space.create("space", "profileImg");
+
+        User testUser = userRepository.save(user);
+        Space testSpace = spaceRepository.save(space);
 
 
 

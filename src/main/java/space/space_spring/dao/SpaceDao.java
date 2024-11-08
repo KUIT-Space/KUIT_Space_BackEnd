@@ -13,8 +13,7 @@ public class SpaceDao {
     private EntityManager em;
 
     public Space saveSpace(String spaceName, String spaceImgUrl) {
-        Space space = new Space();
-        space.saveSpace(spaceName, spaceImgUrl);
+        Space space = Space.create(spaceName, spaceImgUrl);
 
         em.persist(space);
         return space;

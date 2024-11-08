@@ -1,10 +1,9 @@
-package space.space_spring.dao;
+package space.space_spring.domain.space.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-import space.space_spring.dto.space.GetSpaceJoinDto;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.space.model.entity.Space;
 
 @Repository
 public class SpaceDao {

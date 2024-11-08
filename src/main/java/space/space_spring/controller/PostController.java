@@ -7,14 +7,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import org.springframework.web.multipart.MultipartFile;
 
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostDetailResponse;
 import space.space_spring.dto.post.response.ReadPostsResponse;
 
-import space.space_spring.entity.UserSpace;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PostService;

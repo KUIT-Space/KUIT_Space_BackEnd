@@ -3,12 +3,12 @@ package space.space_spring.util.userSpace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.dao.SpaceDao;
+import space.space_spring.domain.space.repository.SpaceDao;
 import space.space_spring.domain.user.repository.UserDao;
-import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.userSpace.repository.UserSpaceDao;
+import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.entity.UserSpace;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 import space.space_spring.exception.CustomException;
 

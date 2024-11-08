@@ -1,7 +1,7 @@
 package space.space_spring.dao.chat.custom;
 
 import space.space_spring.entity.ChatRoom;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 
 import java.util.List;

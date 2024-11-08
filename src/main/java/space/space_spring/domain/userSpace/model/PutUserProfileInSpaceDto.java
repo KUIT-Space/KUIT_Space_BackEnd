@@ -1,4 +1,4 @@
-package space.space_spring.dto.userSpace;
+package space.space_spring.domain.userSpace.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;

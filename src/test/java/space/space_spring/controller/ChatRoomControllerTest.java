@@ -20,7 +20,7 @@ import space.space_spring.config.SecurityConfig;
 import space.space_spring.dto.chat.request.CreateChatRoomRequest;
 import space.space_spring.dto.chat.request.JoinChatRoomRequest;
 import space.space_spring.dto.chat.response.*;
-import space.space_spring.dto.userSpace.UserInfoInSpace;
+import space.space_spring.domain.userSpace.model.UserInfoInSpace;
 import space.space_spring.interceptor.UserSpaceValidationInterceptor;
 import space.space_spring.interceptor.jwtLogin.JwtLoginAuthInterceptor;
 import space.space_spring.service.ChatRoomService;

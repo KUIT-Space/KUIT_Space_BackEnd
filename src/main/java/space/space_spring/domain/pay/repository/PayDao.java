@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import space.space_spring.domain.pay.model.dto.RecentPayRequestBankInfoDto;
 import space.space_spring.domain.pay.model.entity.PayRequest;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 
 import java.util.List;

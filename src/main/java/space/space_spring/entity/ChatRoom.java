@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import space.space_spring.domain.space.model.entity.Space;
 
 @Entity
 @Getter

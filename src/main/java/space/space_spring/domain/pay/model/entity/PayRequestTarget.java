@@ -33,12 +33,6 @@ public class PayRequestTarget extends BaseEntity {
     @Column(name = "is_complete")
     private boolean isComplete;
 
-    public void savePayRequestTarget(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {
-        this.payRequest = payRequest;
-        this.targetUserId = targetUserId;
-        this.requestAmount = requestAmount;
-        this.isComplete = isComplete;
-    }
 
     @Builder
     private PayRequestTarget(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {

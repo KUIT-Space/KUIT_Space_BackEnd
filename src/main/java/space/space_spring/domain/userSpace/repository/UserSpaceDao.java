@@ -1,4 +1,4 @@
-package space.space_spring.dao;
+package space.space_spring.domain.userSpace.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.user.model.dto.SpaceChoiceInfo;
 import space.space_spring.domain.user.model.dto.SpaceChoiceViewDto;
-import space.space_spring.dto.userSpace.UserInfoInSpace;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.userSpace.model.UserInfoInSpace;
+import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.entity.UserSpace;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 
 import java.util.*;
@@ -22,8 +22,7 @@ public class UserSpaceDao {
     private EntityManager em;
 
     public UserSpace createUserSpace(User manager, Space saveSpace, UserSpaceAuth userSpaceAuth) {
-        UserSpace userSpace = new UserSpace();
-        userSpace.createUserSpace(manager, saveSpace, userSpaceAuth);
+        UserSpace userSpace = UserSpace.create(manager, saveSpace, userSpaceAuth);
 
         em.persist(userSpace);
         return userSpace;

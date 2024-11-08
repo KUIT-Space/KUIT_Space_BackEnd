@@ -1,12 +1,10 @@
-package space.space_spring.dao;
+package space.space_spring.domain.userSpace.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import space.space_spring.entity.UserSpace;
-import space.space_spring.entity.VoiceRoom;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserSpaceRepository extends JpaRepository<UserSpace, Long> {

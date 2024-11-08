@@ -7,7 +7,7 @@
 //import org.mockito.junit.jupiter.MockitoExtension;
 //import org.springframework.mock.web.MockMultipartFile;
 //import org.springframework.test.util.ReflectionTestUtils;
-//import space.space_spring.dao.UserSpaceDao;
+//import space.space_spring.domain.userSpace.repository.UserSpaceDao;
 //import space.space_spring.dao.chat.ChatRoomDao;
 //import space.space_spring.dao.chat.ChattingDao;
 //import space.space_spring.dao.chat.UserChatRoomDao;

@@ -1,8 +1,8 @@
-package space.space_spring.dto.space.response;
+package space.space_spring.domain.space.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import space.space_spring.dto.userSpace.UserInfoInSpace;
+import space.space_spring.domain.userSpace.model.UserInfoInSpace;
 
 import java.util.ArrayList;
 import java.util.List;

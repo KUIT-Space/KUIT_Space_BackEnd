@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.BaseEntity;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.space.model.entity.Space;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class PayRequest extends BaseEntity {
     private Space space;                // 정산이 이루어지는 스페이스
 
     @Column(name = "total_amount")
-    private int totalAmount;             // 정산의 총 금액
+    private int totalAmount;            // 정산의 총 금액
 
     @Column(name = "pay_request_bank")
     private String bankName;            // 정산 받을 은행 이름

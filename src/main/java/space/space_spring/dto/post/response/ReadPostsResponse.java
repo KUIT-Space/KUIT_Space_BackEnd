@@ -3,7 +3,7 @@ package space.space_spring.dto.post.response;
 import lombok.*;
 import space.space_spring.entity.Post;
 import space.space_spring.entity.PostImage;
-import space.space_spring.entity.UserSpace;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.util.post.ConvertCreatedDate;
 
 import java.util.List;

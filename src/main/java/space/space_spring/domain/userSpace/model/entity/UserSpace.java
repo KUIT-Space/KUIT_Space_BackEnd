@@ -1,14 +1,20 @@
-package space.space_spring.entity;
+package space.space_spring.domain.userSpace.model.entity;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
+import space.space_spring.entity.BaseEntity;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
 
 @Entity
 @Getter
 @Table(name = "User_Space")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSpace extends BaseEntity {
 
     @Id @GeneratedValue
@@ -42,11 +48,21 @@ public class UserSpace extends BaseEntity {
     @Column(name = "space_order")
     private int spaceOrder;
 
-    public void createUserSpace(User user, Space space, UserSpaceAuth userSpaceAuth) {
+
+    @Builder
+    private UserSpace(User user,  Space space, UserSpaceAuth userSpaceAuth) {
         this.user = user;
         this.space = space;
         this.userName = user.getUserName();
         this.userSpaceAuth = userSpaceAuth.getAuth();
+    }
+
+    public static UserSpace create(User user, Space space, UserSpaceAuth userSpaceAuth) {
+        return UserSpace.builder()
+                .user(user)
+                .space(space)
+                .userSpaceAuth(userSpaceAuth)
+                .build();
     }
 
     public void changeUserName(String userName) {

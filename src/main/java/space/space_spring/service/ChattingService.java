@@ -7,7 +7,7 @@ import space.space_spring.dao.chat.ChattingRepository;
 import space.space_spring.dto.chat.request.ChatMessageRequest;
 import space.space_spring.dto.chat.response.ChatMessageLogResponse;
 import space.space_spring.dto.chat.response.ChatMessageResponse;
-import space.space_spring.entity.UserSpace;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.entity.document.ChatMessage;
 import space.space_spring.entity.enumStatus.ChatMessageType;
 import space.space_spring.exception.CustomException;

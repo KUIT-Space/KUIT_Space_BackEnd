@@ -1,6 +1,5 @@
-package space.space_spring.dto.userSpace;
+package space.space_spring.domain.userSpace.model;
 
-import com.amazonaws.services.ec2.model.CpuOptionsRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

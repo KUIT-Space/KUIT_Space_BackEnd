@@ -1,10 +1,11 @@
-package space.space_spring.entity;
+package space.space_spring.domain.space.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Getter
@@ -22,11 +23,6 @@ public class Space extends BaseEntity {
     @Column(name = "space_profile_img")
     private String spaceProfileImg;
 
-    public void saveSpace(String spaceName, String spaceProfileImg) {
-        this.spaceName = spaceName;
-        this.spaceProfileImg = spaceProfileImg;
-        initializeBaseEntityFields();
-    }
 
     @Builder
     private Space(String spaceName, String spaceProfileImg) {

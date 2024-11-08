@@ -1,4 +1,4 @@
-package space.space_spring.controller;
+package space.space_spring.domain.space.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,29 +8,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
-import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
-import space.space_spring.argumentResolver.userSpace.UserSpaceId;
-import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
-import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
-import space.space_spring.dto.space.GetSpaceHomeDto;
-import space.space_spring.dto.space.GetSpaceJoinDto;
-import space.space_spring.dto.space.PostSpaceJoinDto;
-import space.space_spring.dto.space.request.PostSpaceCreateDto;
-import space.space_spring.dto.space.response.GetUserInfoBySpaceResponse;
+import space.space_spring.domain.space.model.dto.GetSpaceJoinDto;
+import space.space_spring.domain.space.model.dto.PostSpaceJoinDto;
+import space.space_spring.domain.space.model.request.PostSpaceCreateDto;
+import space.space_spring.domain.space.model.response.GetUserInfoBySpaceResponse;
 
-import space.space_spring.dto.userSpace.GetUserProfileInSpaceDto;
-import space.space_spring.dto.userSpace.PutUserProfileInSpaceDto;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.userSpace.model.GetUserProfileInSpaceDto;
+import space.space_spring.domain.userSpace.model.PutUserProfileInSpaceDto;
+import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.domain.pay.service.PayService;
 import space.space_spring.service.PostService;
 import space.space_spring.service.S3Uploader;
-import space.space_spring.service.SpaceService;
+import space.space_spring.domain.space.service.SpaceService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
-import java.util.List;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
@@ -197,35 +191,35 @@ public class SpaceController {
         return new BaseResponse<>("유저의 스페이스 가입 처리 성공");
     }
 
-    /**
-     * 스페이스 홈 화면
-     */
-    @GetMapping("/{spaceId}")
-    public BaseResponse<GetSpaceHomeDto.Response> showSpaceHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @UserSpaceId Long userSpaceId, @UserSpaceAuth String userAuth) {
-        log.info("userId = {}, spaceId = {}, userSpaceID = {}, userAuth = {}", userId, spaceId, userSpaceId, userAuth);
-
-        // TODO 1. 스페이스 정보 get
-        GetSpaceHomeDto.SpaceInfoForHome spaceInfoForHome = spaceService.getSpaceInfoForHome(spaceId);
-
-        // TODO 2. 해당 스페이스에서의 유저 정산 정보 get
-        // 유저가 요청한 정산 중 현재 진행중인 정산 리스트
-        // AND
-        // 유저가 요청받은 정산 중 현재 진행중인 정산 리스트
-        List<PayRequestInfoDto> payRequestInfoForUser = payService.getPayRequestInfoForUser(userId, spaceId, false);
-        List<PayReceiveInfoDto> payReceiveInfoForUser = payService.getPayReceiveInfoForUser(userId, spaceId, false);
-
-        // TODO 3. 해당 스페이스의 공지사항 get
-        List<GetSpaceHomeDto.SpaceHomeNotice> noticeInfoForHome = postService.getNoticeInfoForHome(spaceId);
-
-        // TODO 4. return
-        return new BaseResponse<>(new GetSpaceHomeDto.Response(
-                spaceInfoForHome.getSpaceName(),
-                spaceInfoForHome.getSpaceProfileImg(),
-                payRequestInfoForUser,
-                payReceiveInfoForUser,
-                noticeInfoForHome,
-                spaceInfoForHome.getMemberNum(),
-                userAuth
-        ));
-    }
+//    /**
+//     * 스페이스 홈 화면
+//     */
+//    @GetMapping("/{spaceId}")
+//    public BaseResponse<GetSpaceHomeDto.Response> showSpaceHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @UserSpaceId Long userSpaceId, @UserSpaceAuth String userAuth) {
+//        log.info("userId = {}, spaceId = {}, userSpaceID = {}, userAuth = {}", userId, spaceId, userSpaceId, userAuth);
+//
+//        // TODO 1. 스페이스 정보 get
+//        GetSpaceHomeDto.SpaceInfoForHome spaceInfoForHome = spaceService.getSpaceInfoForHome(spaceId);
+//
+//        // TODO 2. 해당 스페이스에서의 유저 정산 정보 get
+//        // 유저가 요청한 정산 중 현재 진행중인 정산 리스트
+//        // AND
+//        // 유저가 요청받은 정산 중 현재 진행중인 정산 리스트
+//        List<PayRequestInfoDto> payRequestInfoForUser = payService.getPayRequestInfoForUser(userId, spaceId, false);
+//        List<PayReceiveInfoDto> payReceiveInfoForUser = payService.getPayReceiveInfoForUser(userId, spaceId, false);
+//
+//        // TODO 3. 해당 스페이스의 공지사항 get
+//        List<GetSpaceHomeDto.SpaceHomeNotice> noticeInfoForHome = postService.getNoticeInfoForHome(spaceId);
+//
+//        // TODO 4. return
+//        return new BaseResponse<>(new GetSpaceHomeDto.Response(
+//                spaceInfoForHome.getSpaceName(),
+//                spaceInfoForHome.getSpaceProfileImg(),
+//                payRequestInfoForUser,
+//                payReceiveInfoForUser,
+//                noticeInfoForHome,
+//                spaceInfoForHome.getMemberNum(),
+//                userAuth
+//        ));
+//    }
 }

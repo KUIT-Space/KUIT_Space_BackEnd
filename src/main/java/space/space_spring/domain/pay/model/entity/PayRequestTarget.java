@@ -1,13 +1,17 @@
 package space.space_spring.domain.pay.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
 import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Getter
 @Table(name = "Pay_Request_Target")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayRequestTarget extends BaseEntity {
 
     @Id
@@ -34,6 +38,23 @@ public class PayRequestTarget extends BaseEntity {
         this.targetUserId = targetUserId;
         this.requestAmount = requestAmount;
         this.isComplete = isComplete;
+    }
+
+    @Builder
+    private PayRequestTarget(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {
+        this.payRequest = payRequest;
+        this.targetUserId = targetUserId;
+        this.requestAmount = requestAmount;
+        this.isComplete = isComplete;
+    }
+
+    public static PayRequestTarget create(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {
+        return PayRequestTarget.builder()
+                .payRequest(payRequest)
+                .targetUserId(targetUserId)
+                .requestAmount(requestAmount)
+                .isComplete(isComplete)
+                .build();
     }
 
     public void changeCompleteStatus(boolean isComplete) {

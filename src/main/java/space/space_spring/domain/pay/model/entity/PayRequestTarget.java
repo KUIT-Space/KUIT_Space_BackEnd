@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
+import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
 import space.space_spring.entity.BaseEntity;
 
 @Entity
@@ -54,7 +54,7 @@ public class PayRequestTarget extends BaseEntity {
         this.isComplete = isComplete;
     }
 
-    public PayReceiveInfoDto createPayReceiveInfo() {
+    public PayTargetInfoDto createPayReceiveInfo() {
         String payCreatorName = payRequest.getPayCreateUser().getUserName();            // 이정도는 괜찮지 않나?
         int requestedAmount = this.requestedAmount;
 
@@ -63,6 +63,6 @@ public class PayRequestTarget extends BaseEntity {
         String bankAccountNum = payRequest.getBankAccountNum();
 
         // 빌더패턴으로 변경
-        return new PayReceiveInfoDto(payRequestTargetId, payCreatorName, requestedAmount, bankName, bankAccountNum);
+        return new PayTargetInfoDto(payRequestTargetId, payCreatorName, requestedAmount, bankName, bankAccountNum);
     }
 }

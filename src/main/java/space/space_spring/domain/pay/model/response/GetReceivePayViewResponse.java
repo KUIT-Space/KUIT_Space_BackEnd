@@ -2,7 +2,7 @@ package space.space_spring.domain.pay.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
+import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GetReceivePayViewResponse {
 
-    private List<PayReceiveInfoDto> payReceiveInfoDtoListIncomplete = new ArrayList<>();
+    private List<PayTargetInfoDto> payReceiveInfoDtoListIncomplete = new ArrayList<>();
 
-    private List<PayReceiveInfoDto> payReceiveInfoDtoListComplete = new ArrayList<>();
+    private List<PayTargetInfoDto> payReceiveInfoDtoListComplete = new ArrayList<>();
 }

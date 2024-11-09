@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
-import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
+import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.domain.pay.model.dto.TotalPayInfoDto;
 import space.space_spring.domain.pay.model.request.PostPayCompleteRequest;
@@ -44,19 +44,6 @@ public class PayController {
     public BaseResponse<PayHomeViewResponse> showPayHome(@JwtLoginAuth Long userId, @PathVariable Long spaceId) {
 
         return new BaseResponse<>(payService.getPayHomeInfos(userId, spaceId));
-
-//        // TODO 1. 유저가 스페이스에 속하는 지 검증
-//        validateIsUserInSpace(userId, spaceId);
-//
-//        // TODO 2. 유저가 요청한 정산 중 현재 진행중인 정산 리스트 get
-//        // 현재 진행중인 정산 -> isComplete = false
-//        List<PayRequestInfoDto> payRequestInfoDtoList = payService.getPayRequestInfoForUser(userId, spaceId, false);
-//
-//        // TODO 3. 유저가 요청받은 정산 중 현재 진행중인 정산 리스트 get
-//        // 현재 진행중인 정산 -> isComplete = false
-//        List<PayReceiveInfoDto> payReceiveInfoDtoList = payService.getPayReceiveInfoForUser(userId, spaceId, false);
-//
-//        return new BaseResponse<>(new PayHomeViewResponse(payRequestInfoDtoList, payReceiveInfoDtoList));
     }
 
 //    private void validateIsUserInSpace(Long userId, Long spaceId) {
@@ -91,10 +78,10 @@ public class PayController {
 //        validateIsUserInSpace(userId, spaceId);
 //
 //        // TODO 2. 유저가 요청받은 정산 중 현재 진행중인 정산 리스트 get -> 정산 타겟 유저가 정산 안했을 경우 : isComplete = false
-//        List<PayReceiveInfoDto> payReceiveInfoDtoListInComplete = payService.getPayReceiveInfoForUser(userId, spaceId, false);
+//        List<PayTargetInfoDto> payReceiveInfoDtoListInComplete = payService.getPayReceiveInfoForUser(userId, spaceId, false);
 //
 //        // TODO 3. 유저가 요청받은 정산 중 완료한 정산 리스트 get -> 정산 타겟 유저가 정산 했을 경우 : isComplete = true
-//        List<PayReceiveInfoDto> payReceiveInfoDtoListComplete = payService.getPayReceiveInfoForUser(userId, spaceId, true);
+//        List<PayTargetInfoDto> payReceiveInfoDtoListComplete = payService.getPayReceiveInfoForUser(userId, spaceId, true);
 //
 //        return new BaseResponse<>(new GetReceivePayViewResponse(payReceiveInfoDtoListInComplete, payReceiveInfoDtoListComplete));
 //    }

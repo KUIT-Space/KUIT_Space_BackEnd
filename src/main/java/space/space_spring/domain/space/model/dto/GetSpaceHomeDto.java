@@ -2,7 +2,7 @@ package space.space_spring.domain.space.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import space.space_spring.domain.pay.model.dto.PayReceiveInfoDto;
+import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class GetSpaceHomeDto {
 
         private List<PayRequestInfoDto> payRequestInfoDtoList;
 
-        private List<PayReceiveInfoDto> payReceiveInfoDtoList;
+        private List<PayTargetInfoDto> payReceiveInfoDtoList;
 
         private List<SpaceHomeNotice> noticeList;
 

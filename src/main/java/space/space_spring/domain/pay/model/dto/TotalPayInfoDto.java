@@ -23,7 +23,7 @@ public class TotalPayInfoDto {
 
     private int totalTargetNum;
 
-    private int receiveTargetNum;
+    private int paySendTargetNum;
 
     private List<PayTargetInfoDto> payTargetInfoDtoList = new ArrayList<>();
 

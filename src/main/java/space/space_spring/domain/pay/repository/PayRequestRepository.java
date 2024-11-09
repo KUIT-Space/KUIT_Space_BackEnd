@@ -14,6 +14,6 @@ import java.util.Optional;
 public interface PayRequestRepository extends JpaRepository<PayRequest, Long> {
 
     @Query("select pr from PayRequest pr where pr.payCreateUser = :user and pr.space = :space and pr.isComplete = :isComplete and pr.status = 'ACTIVE'")
-    List<Optional<PayRequest>> findByUserAndSpace(User user, Space space, boolean isComplete);
+    List<PayRequest> findAllByUserAndSpace(User user, Space space, boolean isComplete);
 
 }

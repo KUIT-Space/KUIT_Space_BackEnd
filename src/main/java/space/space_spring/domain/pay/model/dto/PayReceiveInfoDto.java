@@ -11,7 +11,7 @@ public class PayReceiveInfoDto {
 
     private String payCreatorName;
 
-    private int requestAmount;
+    private int requestedAmount;
 
     private String bankName;
 

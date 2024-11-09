@@ -1,10 +1,11 @@
 package space.space_spring.domain.pay.model.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@Builder
 public class PayRequestInfoDto {
 
     private Long payRequestId;

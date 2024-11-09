@@ -41,8 +41,8 @@ public class PayRequest extends BaseEntity {
     @Column(name = "bank_account_num")
     private String bankAccountNum;      // 정산 받을 은행 계좌번호
 
-    @Column(name = "received_amount")
-    private int receivedAmount;         // 정산 받은 금액
+    @Column(name = "receive_amount")
+    private int receiveAmount;         // 정산 받은 금액
 
     @Column(name = "is_complete")
     private boolean isComplete;
@@ -52,6 +52,10 @@ public class PayRequest extends BaseEntity {
         this.isComplete = isComplete;
     }
 
+    public void changeReceiveAmount(int receiveAmount) {
+        this.receiveAmount = receiveAmount;
+    }
+
     @Builder
     private PayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum) {
         this.payCreateUser = payCreateUser;
@@ -59,7 +63,7 @@ public class PayRequest extends BaseEntity {
         this.totalAmount = totalAmount;
         this.bankName = bankName;
         this.bankAccountNum = bankAccountNum;
-        this.receivedAmount = 0;
+        this.receiveAmount = 0;
         this.isComplete = false;
     }
 
@@ -82,13 +86,15 @@ public class PayRequest extends BaseEntity {
                 // 해당 타겟이 돈을 낸 경우
                 paySendTargetNum++;
             }
-
             totalTargetNum++;
         }
 
-        // 빌더 패턴으로 변경
-        return new PayRequestInfoDto(
-                payRequestId, totalAmount, receivedAmount, totalTargetNum, paySendTargetNum
-        );
+        return PayRequestInfoDto.builder()
+                .payRequestId(payRequestId)
+                .totalAmount(totalAmount)
+                .receiveAmount(receiveAmount)
+                .totalTargetNum(totalTargetNum)
+                .paySendTargetNum(paySendTargetNum)
+                .build();
     }
 }

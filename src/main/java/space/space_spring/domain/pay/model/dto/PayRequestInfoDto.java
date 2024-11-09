@@ -15,5 +15,5 @@ public class PayRequestInfoDto {
 
     private int totalTargetNum;         // 정산 요청한 사람 수
 
-    private int receiveTargetNum;       // 그 중, 돈 보낸 사람 수
+    private int paySendTargetNum;       // 그 중, 돈 보낸 사람 수
 }

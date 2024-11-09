@@ -28,26 +28,25 @@ public class PayRequestTarget extends BaseEntity {
                                             // -> @OneToOne 어노테이션으로 User 엔티티 가지고 있는 방향 생각해볼것
 
     @Column(name = "request_amount")
-    private int requestAmount;
+    private int requestedAmount;              // 정산 요청받은 금액
 
     @Column(name = "is_complete")
     private boolean isComplete;
 
 
     @Builder
-    private PayRequestTarget(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {
+    private PayRequestTarget(PayRequest payRequest, Long targetUserId, int requestedAmount) {
         this.payRequest = payRequest;
         this.targetUserId = targetUserId;
-        this.requestAmount = requestAmount;
-        this.isComplete = isComplete;
+        this.requestedAmount = requestedAmount;
+        this.isComplete = false;
     }
 
-    public static PayRequestTarget create(PayRequest payRequest, Long targetUserId, int requestAmount, boolean isComplete) {
+    public static PayRequestTarget create(PayRequest payRequest, Long targetUserId, int requestedAmount) {
         return PayRequestTarget.builder()
                 .payRequest(payRequest)
                 .targetUserId(targetUserId)
-                .requestAmount(requestAmount)
-                .isComplete(isComplete)
+                .requestedAmount(requestedAmount)
                 .build();
     }
 
@@ -56,13 +55,14 @@ public class PayRequestTarget extends BaseEntity {
     }
 
     public PayReceiveInfoDto createPayReceiveInfo() {
-        String payCreatorName = payRequest.getPayCreateUser().getUserName();          // 리펙토링 필요
-        int requestAmount = this.requestAmount;
+        String payCreatorName = payRequest.getPayCreateUser().getUserName();            // 이정도는 괜찮지 않나?
+        int requestedAmount = this.requestedAmount;
 
         // 정산 생성자가 요청한 은행 정보도 response에 추가
         String bankName = payRequest.getBankName();
         String bankAccountNum = payRequest.getBankAccountNum();
 
-        return new PayReceiveInfoDto(this.payRequestTargetId, payCreatorName, requestAmount, bankName, bankAccountNum);
+        // 빌더패턴으로 변경
+        return new PayReceiveInfoDto(payRequestTargetId, payCreatorName, requestedAmount, bankName, bankAccountNum);
     }
 }

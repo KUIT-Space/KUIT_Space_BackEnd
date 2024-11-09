@@ -13,7 +13,7 @@ public class PayTargetInfoDto {
 
     private String targetUserProfileImg;
 
-    private int requestAmount;
+    private int requestedAmount;
 
     private boolean isComplete;
 }

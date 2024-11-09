@@ -28,7 +28,7 @@ public class PostPayCreateRequest {
 
     /**
      * PayRequestTarget 엔티티 생성 시 필요한 정보
-     * <targetUserId requestAmount> 쌍
+     * <targetUserId requestedAmount> 쌍
      */
     private List<TargetInfo> targetInfoList = new ArrayList<>();
 
@@ -41,6 +41,6 @@ public class PostPayCreateRequest {
         private Long targetUserId;
 
         @NotBlank(message = "정산 요청 금액은 공백일 수 없습니다.")
-        private int requestAmount;
+        private int requestedAmount;
     }
 }

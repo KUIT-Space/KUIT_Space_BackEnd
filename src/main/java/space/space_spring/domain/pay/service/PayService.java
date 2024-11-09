@@ -41,20 +41,23 @@ public class PayService {
         // 유저가 스페이스에 속하는 지 검증하고,
         UserSpace userSpace = validateUserInSpace(userId, spaceId);
 
-        // 유저가 요청한 정산 중 현재 진행중인 정산 리스트 정보와
-        List<Optional<PayRequest>> payRequests = payRequestRepository.findByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), INCOMPLETE_PAY);
+        // 유저가 요청한 정산들 중, 완료되지 않은 정산 리스트 정보와
+        List<PayRequest> payRequests = payRequestRepository.findAllByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), INCOMPLETE_PAY);
 
         List<PayRequestInfoDto> payRequestInfoDtos = new ArrayList<>();
-        for (Optional<PayRequest> payRequest : payRequests) {
-            payRequest.ifPresent(request -> payRequestInfoDtos.add(request.createPayRequestInfo()));
+        for (PayRequest payRequest : payRequests) {
+            List<PayRequestTarget> findTargets = payRequestTargetRepository.findAllByPayRequest(payRequest);
+            PayRequestInfoDto payRequestInfo = payRequest.createPayRequestInfo(findTargets);
+            payRequestInfoDtos.add(payRequestInfo);
         }
 
-        // 유저가 요청받은 정산 중 현재 진행중인 정산 리스트를 찾아서
-        List<Optional<PayRequestTarget>> payRequestTargets = payRequestTargetRepository.findByUserAndSpace(userSpace.getUser().getUserId(), userSpace.getSpace(), INCOMPLETE_PAY);
+        // 유저가 요청받은 정산들 중, 완료되지 않은 정산 리스트를 찾아서
+        List<PayRequestTarget> payRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(userSpace.getUser().getUserId(), userSpace.getSpace(), INCOMPLETE_PAY);
 
         List<PayReceiveInfoDto> payReceiveInfoDtos = new ArrayList<>();
-        for (Optional<PayRequestTarget> payRequestTarget : payRequestTargets) {
-            payRequestTarget.ifPresent(requestTarget -> payReceiveInfoDtos.add(requestTarget.createPayReceiveInfo()));
+        for (PayRequestTarget payRequestTarget : payRequestTargets) {
+            PayReceiveInfoDto payReceiveInfo = payRequestTarget.createPayReceiveInfo();
+            payReceiveInfoDtos.add(payReceiveInfo);
         }
 
         // return

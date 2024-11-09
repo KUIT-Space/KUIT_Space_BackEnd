@@ -206,7 +206,7 @@ public class SpaceController {
 //        // AND
 //        // 유저가 요청받은 정산 중 현재 진행중인 정산 리스트
 //        List<PayRequestInfoDto> payRequestInfoForUser = payService.getPayRequestInfoForUser(userId, spaceId, false);
-//        List<PayReceiveInfoDto> payReceiveInfoForUser = payService.getPayReceiveInfoForUser(userId, spaceId, false);
+//        List<PayTargetInfoDto> payReceiveInfoForUser = payService.getPayReceiveInfoForUser(userId, spaceId, false);
 //
 //        // TODO 3. 해당 스페이스의 공지사항 get
 //        List<GetSpaceHomeDto.SpaceHomeNotice> noticeInfoForHome = postService.getNoticeInfoForHome(spaceId);

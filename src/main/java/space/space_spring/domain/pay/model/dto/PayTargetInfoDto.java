@@ -7,13 +7,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PayTargetInfoDto {
 
-    private Long targetUserId;
+    private Long payRequestTargetId;
 
-    private String targetUserName;
-
-    private String targetUserProfileImg;
+    private String payCreatorName;
 
     private int requestedAmount;
 
-    private boolean isComplete;
+    private String bankName;
+
+    private String bankAccountNum;
 }

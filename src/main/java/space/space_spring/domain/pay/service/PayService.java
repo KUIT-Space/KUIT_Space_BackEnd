@@ -49,18 +49,10 @@ public class PayService {
         List<PayTargetInfoDto> payTargetInfoDtos = getPayTargetInfos(userSpace);
 
         // return
-        return new PayHomeViewResponse(payRequestInfoDtos, payTargetInfoDtos);
-    }
-
-    private List<PayTargetInfoDto> getPayTargetInfos(UserSpace userSpace) {
-        List<PayRequestTarget> payRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(userSpace.getUser().getUserId(), userSpace.getSpace(), INCOMPLETE_PAY);
-
-        List<PayTargetInfoDto> payTargetInfoDtos = new ArrayList<>();
-        for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            PayTargetInfoDto payReceiveInfo = payRequestTarget.createPayReceiveInfo();
-            payTargetInfoDtos.add(payReceiveInfo);
-        }
-        return payTargetInfoDtos;
+        return PayHomeViewResponse.builder()
+                .payRequestInfoDtos(payRequestInfoDtos)
+                .payTargetInfoDtos(payTargetInfoDtos)
+                .build();
     }
 
     private List<PayRequestInfoDto> getPayRequestInfos(UserSpace userSpace) {
@@ -73,6 +65,17 @@ public class PayService {
             payRequestInfoDtos.add(payRequestInfo);
         }
         return payRequestInfoDtos;
+    }
+
+    private List<PayTargetInfoDto> getPayTargetInfos(UserSpace userSpace) {
+        List<PayRequestTarget> payRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(userSpace.getUser().getUserId(), userSpace.getSpace(), INCOMPLETE_PAY);
+
+        List<PayTargetInfoDto> payTargetInfoDtos = new ArrayList<>();
+        for (PayRequestTarget payRequestTarget : payRequestTargets) {
+            PayTargetInfoDto payReceiveInfo = payRequestTarget.createPayTargetInfo();
+            payTargetInfoDtos.add(payReceiveInfo);
+        }
+        return payTargetInfoDtos;
     }
 
     private UserSpace validateUserInSpace(Long userId, Long spaceId) {

@@ -54,15 +54,13 @@ public class PayRequestTarget extends BaseEntity {
         this.isComplete = isComplete;
     }
 
-    public PayTargetInfoDto createPayReceiveInfo() {
-        String payCreatorName = payRequest.getPayCreateUser().getUserName();            // 이정도는 괜찮지 않나?
-        int requestedAmount = this.requestedAmount;
-
-        // 정산 생성자가 요청한 은행 정보도 response에 추가
-        String bankName = payRequest.getBankName();
-        String bankAccountNum = payRequest.getBankAccountNum();
-
-        // 빌더패턴으로 변경
-        return new PayTargetInfoDto(payRequestTargetId, payCreatorName, requestedAmount, bankName, bankAccountNum);
+    public PayTargetInfoDto createPayTargetInfo() {
+        return PayTargetInfoDto.builder()
+                .payRequestTargetId(payRequestTargetId)
+                .payCreatorName(payRequest.getPayCreateUser().getUserName())
+                .requestedAmount(requestedAmount)
+                .bankName(payRequest.getBankName())
+                .bankAccountNum(payRequest.getBankAccountNum())
+                .build();
     }
 }

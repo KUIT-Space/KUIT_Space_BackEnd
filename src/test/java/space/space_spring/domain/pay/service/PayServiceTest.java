@@ -55,43 +55,52 @@ class PayServiceTest {
     private UserSpaceRepository userSpaceRepository;
 
     @Test
-    @DisplayName("유저가 요청한 정산들 중, 완료되지 않은 정산 정보들을 return 한다.")
+    @DisplayName("유저가 요청한 정산들 중 완료되지 않은 정산 정보들과, 요청받은 정산들 중 완료되지 않은 정산 정보들을 return 한다.")
     void getPayHomeInfos1() throws Exception {
         //given
-        User user1 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user3 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user4 = User.create("email", "password", "name", UserSignupType.LOCAL);
+        User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
+        User user2 = User.create("email", "password", "김상준", UserSignupType.LOCAL);
+        User user3 = User.create("email", "password", "정서현", UserSignupType.LOCAL);
+        User user4 = User.create("email", "password", "김경민", UserSignupType.LOCAL);
         Space space = Space.create("space", "profileImg");
 
-        User payCreator = userRepository.save(user1);
-        User payTarget1 = userRepository.save(user2);
-        User payTarget2 = userRepository.save(user3);
-        User payTarget3 = userRepository.save(user4);
+        User seongjun = userRepository.save(user1);
+        User sangjun = userRepository.save(user2);
+        User seohyun = userRepository.save(user3);
+        User kyeongmin = userRepository.save(user4);
         Space testSpace = spaceRepository.save(space);
 
-        UserSpace userSpace = UserSpace.create(payCreator, testSpace, UserSpaceAuth.NORMAL);
+        UserSpace userSpace = UserSpace.create(seongjun, testSpace, UserSpaceAuth.NORMAL);
         userSpaceRepository.save(userSpace);
 
-        PayRequest inCompletePay1 = PayRequest.create(payCreator, testSpace, 20000, "bank", "accountNum");
-        PayRequest inCompletePay2 = PayRequest.create(payCreator, testSpace, 40000, "bank", "accountNum");
-        PayRequest completePay = PayRequest.create(payCreator, testSpace, 20000, "bank", "accountNum");
-        completePay.changeCompleteStatus(true);
+        // seongjun 이 testSpace 에서 생성한 3개의 정산 요청
+        PayRequest inCompletePay1_seongjun = PayRequest.create(seongjun, testSpace, 20000, "bank", "accountNum");
+        PayRequest inCompletePay2_seongjun = PayRequest.create(seongjun, testSpace, 40000, "bank", "accountNum");
+        PayRequest completePay_seongjun = PayRequest.create(seongjun, testSpace, 20000, "bank", "accountNum");
+        completePay_seongjun.changeCompleteStatus(true);
 
-        PayRequestTarget inCompleteTarget1 = PayRequestTarget.create(inCompletePay1, payTarget1.getUserId(), 10000);
-        PayRequestTarget inCompleteTarget2 = PayRequestTarget.create(inCompletePay1, payTarget2.getUserId(), 10000);
+        // seohyun 이 testSpace 에서 생성한 1개의 정산 요청
+        PayRequest inCompletePay_seohyun = PayRequest.create(seohyun, testSpace, 40000, "국민은행", "111-111");
 
-        PayRequestTarget inCompleteTarget3 = PayRequestTarget.create(inCompletePay2, payTarget2.getUserId(), 20000);
-        PayRequestTarget inCompleteTarget4 = PayRequestTarget.create(inCompletePay2, payTarget3.getUserId(), 20000);
+        // 각 정산 요청의 타겟들
+        PayRequestTarget inCompleteTarget1 = PayRequestTarget.create(inCompletePay1_seongjun, sangjun.getUserId(), 10000);
+        PayRequestTarget inCompleteTarget2 = PayRequestTarget.create(inCompletePay1_seongjun, kyeongmin.getUserId(), 10000);
 
-        PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, payTarget1.getUserId(), 10000);
-        PayRequestTarget completeTarget2 = PayRequestTarget.create(completePay, payTarget2.getUserId(), 10000);
+        PayRequestTarget inCompleteTarget3 = PayRequestTarget.create(inCompletePay2_seongjun, seohyun.getUserId(), 20000);
+        PayRequestTarget inCompleteTarget4 = PayRequestTarget.create(inCompletePay2_seongjun, kyeongmin.getUserId(), 20000);
+
+        PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay_seongjun, sangjun.getUserId(), 10000);
+        PayRequestTarget completeTarget2 = PayRequestTarget.create(completePay_seongjun, seohyun.getUserId(), 10000);
         completeTarget1.changeCompleteStatus(true);
         completeTarget2.changeCompleteStatus(true);
 
-        payRequestRepository.save(inCompletePay1);
-        payRequestRepository.save(inCompletePay2);
-        payRequestRepository.save(completePay);
+        PayRequestTarget inCompleteTarget5 = PayRequestTarget.create(inCompletePay_seohyun, seongjun.getUserId(), 20000);
+        PayRequestTarget inCompleteTarget6 = PayRequestTarget.create(inCompletePay_seohyun, sangjun.getUserId(), 20000);
+
+        payRequestRepository.save(inCompletePay1_seongjun);
+        payRequestRepository.save(inCompletePay2_seongjun);
+        payRequestRepository.save(completePay_seongjun);
+        payRequestRepository.save(inCompletePay_seohyun);
 
         payRequestTargetRepository.save(inCompleteTarget1);
         payRequestTargetRepository.save(inCompleteTarget2);
@@ -99,82 +108,33 @@ class PayServiceTest {
         payRequestTargetRepository.save(inCompleteTarget4);
         payRequestTargetRepository.save(completeTarget1);
         payRequestTargetRepository.save(completeTarget2);
+        payRequestTargetRepository.save(inCompleteTarget5);
+        payRequestTargetRepository.save(inCompleteTarget6);
 
         //when
-        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(payCreator.getUserId(), testSpace.getSpaceId());
+        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(seongjun.getUserId(), testSpace.getSpaceId());
         List<PayRequestInfoDto> payRequestInfos = payHomeInfos.getPayRequestInfoDtos();
+        List<PayTargetInfoDto> payTargetInfoDtos = payHomeInfos.getPayTargetInfoDtos();
 
         //then
         assertThat(payRequestInfos).hasSize(2)
                 .extracting("payRequestId", "totalAmount", "receiveAmount", "totalTargetNum", "paySendTargetNum")
                 .containsExactlyInAnyOrder(
-                        tuple(inCompletePay1.getPayRequestId(), 20000, 0, 2, 0),
-                        tuple(inCompletePay2.getPayRequestId(), 40000, 0, 2, 0)
+                        tuple(inCompletePay1_seongjun.getPayRequestId(), 20000, 0, 2, 0),
+                        tuple(inCompletePay2_seongjun.getPayRequestId(), 40000, 0, 2, 0)
                 );
-    }
 
-    @Test
-    @DisplayName("유저가 요청받은 정산들 중, 완료되지 않은 정산 정보들을 return 한다.")
-    void getPayHomeInfos2() throws Exception {
-        //given
-        User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
-        User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user3 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user4 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        Space space = Space.create("space", "profileImg");
-
-        User payCreator = userRepository.save(user1);
-        User payTarget1 = userRepository.save(user2);
-        User payTarget2 = userRepository.save(user3);
-        User payTarget3 = userRepository.save(user4);
-        Space testSpace = spaceRepository.save(space);
-
-        UserSpace userSpace = UserSpace.create(payTarget2, testSpace, UserSpaceAuth.NORMAL);
-        userSpaceRepository.save(userSpace);
-
-        PayRequest inCompletePay1 = PayRequest.create(payCreator, testSpace, 20000, "우리은행", "111-111");
-        PayRequest inCompletePay2 = PayRequest.create(payCreator, testSpace, 40000, "국민은행", "222-222");
-        PayRequest completePay = PayRequest.create(payCreator, testSpace, 20000, "bank", "accountNum");
-        completePay.changeCompleteStatus(true);
-
-        PayRequestTarget inCompleteTarget1 = PayRequestTarget.create(inCompletePay1, payTarget1.getUserId(), 10000);
-        PayRequestTarget inCompleteTarget2 = PayRequestTarget.create(inCompletePay1, payTarget2.getUserId(), 10000);
-
-        PayRequestTarget inCompleteTarget3 = PayRequestTarget.create(inCompletePay2, payTarget2.getUserId(), 20000);
-        PayRequestTarget inCompleteTarget4 = PayRequestTarget.create(inCompletePay2, payTarget3.getUserId(), 20000);
-
-        PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, payTarget1.getUserId(), 10000);
-        PayRequestTarget completeTarget2 = PayRequestTarget.create(completePay, payTarget2.getUserId(), 10000);
-        completeTarget1.changeCompleteStatus(true);
-        completeTarget2.changeCompleteStatus(true);
-
-        payRequestRepository.save(inCompletePay1);
-        payRequestRepository.save(inCompletePay2);
-        payRequestRepository.save(completePay);
-
-        payRequestTargetRepository.save(inCompleteTarget1);
-        payRequestTargetRepository.save(inCompleteTarget2);
-        payRequestTargetRepository.save(inCompleteTarget3);
-        payRequestTargetRepository.save(inCompleteTarget4);
-        payRequestTargetRepository.save(completeTarget1);
-        payRequestTargetRepository.save(completeTarget2);
-
-        //when
-        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(payTarget2.getUserId(), testSpace.getSpaceId());
-        List<PayTargetInfoDto> payReceiveInfoDtoList = payHomeInfos.getPayTargetInfoDtos();
-
-        //then
-        assertThat(payReceiveInfoDtoList).hasSize(2)
+        assertThat(payTargetInfoDtos).hasSize(1)
                 .extracting("payRequestTargetId", "payCreatorName", "requestedAmount", "bankName", "bankAccountNum")
                 .containsExactlyInAnyOrder(
-                        tuple(inCompleteTarget2.getPayRequestTargetId(), "노성준", 10000, "우리은행", "111-111"),
-                        tuple(inCompleteTarget3.getPayRequestTargetId(), "노성준", 20000, "국민은행", "222-222")
+                        tuple(inCompleteTarget5.getPayRequestTargetId(), "정서현", 20000, "국민은행", "111-111")
                 );
     }
+
 
     @Test
     @DisplayName("유저가 요청한 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList 를 return 한다.")
-    void getPayHomeInfos3() throws Exception {
+    void getPayHomeInfos2() throws Exception {
         //given
         User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
         User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);
@@ -212,7 +172,7 @@ class PayServiceTest {
 
     @Test
     @DisplayName("유저가 요청받은 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList를 return 한다.")
-    void test() throws Exception {
+    void getPayHomeInfos3() throws Exception {
         //given
         User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
         User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);

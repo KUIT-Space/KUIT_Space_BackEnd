@@ -82,6 +82,10 @@ class PayServiceTest {
         // seohyun 이 testSpace 에서 생성한 1개의 정산 요청
         PayRequest inCompletePay_seohyun = PayRequest.create(seohyun, testSpace, 40000, "국민은행", "111-111");
 
+        // Kyeongmin 이 testSpace에서 생성한 1개의 정산 요청
+        PayRequest completePay_kyeongmin = PayRequest.create(kyeongmin, testSpace, 20000, "우리은행", "222-222");
+        completePay_kyeongmin.changeCompleteStatus(true);
+
         // 각 정산 요청의 타겟들
         PayRequestTarget inCompleteTarget1 = PayRequestTarget.create(inCompletePay1_seongjun, sangjun.getUserId(), 10000);
         PayRequestTarget inCompleteTarget2 = PayRequestTarget.create(inCompletePay1_seongjun, kyeongmin.getUserId(), 10000);
@@ -97,10 +101,14 @@ class PayServiceTest {
         PayRequestTarget inCompleteTarget5 = PayRequestTarget.create(inCompletePay_seohyun, seongjun.getUserId(), 20000);
         PayRequestTarget inCompleteTarget6 = PayRequestTarget.create(inCompletePay_seohyun, sangjun.getUserId(), 20000);
 
+        PayRequestTarget completeTarget3 = PayRequestTarget.create(completePay_kyeongmin, seongjun.getUserId(), 20000);
+        completeTarget3.changeCompleteStatus(true);
+
         payRequestRepository.save(inCompletePay1_seongjun);
         payRequestRepository.save(inCompletePay2_seongjun);
         payRequestRepository.save(completePay_seongjun);
         payRequestRepository.save(inCompletePay_seohyun);
+        payRequestRepository.save(completePay_kyeongmin);
 
         payRequestTargetRepository.save(inCompleteTarget1);
         payRequestTargetRepository.save(inCompleteTarget2);
@@ -110,6 +118,7 @@ class PayServiceTest {
         payRequestTargetRepository.save(completeTarget2);
         payRequestTargetRepository.save(inCompleteTarget5);
         payRequestTargetRepository.save(inCompleteTarget6);
+        payRequestTargetRepository.save(completeTarget3);
 
         //when
         PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(seongjun.getUserId(), testSpace.getSpaceId());

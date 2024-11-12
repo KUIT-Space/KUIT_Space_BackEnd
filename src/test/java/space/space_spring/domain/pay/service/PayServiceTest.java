@@ -23,11 +23,12 @@ import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.entity.enumStatus.UserSpaceAuth;
+import space.space_spring.exception.CustomException;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 @DataJpaTest
 @Import({PayService.class})
@@ -216,6 +217,42 @@ class PayServiceTest {
         //then
         assertThat(payTargetInfoDtos).hasSize(0);
     }
+
+    @Test
+    @DisplayName("user는 자신이 속한 space의 정산 홈 view만을 볼 수 있다.")
+    void getPayHomeInfos4() throws Exception {
+        //given
+        User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
+        User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);
+        User user3 = User.create("email", "password", "name", UserSignupType.LOCAL);
+        Space space1 = Space.create("space", "profileImg");
+        Space space2 = Space.create("space", "profileImg");
+
+        User payCreator = userRepository.save(user1);
+        User payTarget1 = userRepository.save(user2);
+        User payTarget2 = userRepository.save(user3);
+        Space KUIT = spaceRepository.save(space1);
+        Space ALKON = spaceRepository.save(space2);
+
+        UserSpace userSpace = UserSpace.create(payCreator, KUIT, UserSpaceAuth.NORMAL);
+        userSpaceRepository.save(userSpace);
+
+        PayRequest payRequest = PayRequest.create(payCreator, KUIT, 20000, "bank", "accountNum");
+
+        PayRequestTarget target1 = PayRequestTarget.create(payRequest, payTarget1.getUserId(), 10000);
+        PayRequestTarget target2 = PayRequestTarget.create(payRequest, payTarget2.getUserId(), 10000);
+
+        payRequestRepository.save(payRequest);
+
+        payRequestTargetRepository.save(target1);
+        payRequestTargetRepository.save(target2);
+
+        //when // then
+        assertThatThrownBy(() -> payService.getPayHomeInfos(payCreator.getUserId(), ALKON.getSpaceId()))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(USER_IS_NOT_IN_SPACE.getMessage());
+    }
+
 
 
 

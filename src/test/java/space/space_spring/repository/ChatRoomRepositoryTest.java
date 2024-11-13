@@ -10,7 +10,7 @@ import space.space_spring.domain.chat.chatroom.repository.UserChatRoomRepository
 import space.space_spring.domain.chat.chatroom.model.ChatRoom;
 import space.space_spring.entity.Space;
 import space.space_spring.entity.User;
-import space.space_spring.domain.chat.chatting.model.UserChatRoom;
+import space.space_spring.domain.chat.chatroom.model.UserChatRoom;
 import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.entity.enumStatus.UserSignupType;
 

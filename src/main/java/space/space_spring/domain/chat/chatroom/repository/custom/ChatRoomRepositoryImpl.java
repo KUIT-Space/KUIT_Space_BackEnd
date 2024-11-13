@@ -1,7 +1,7 @@
 package space.space_spring.domain.chat.chatroom.repository.custom;
 
 import static space.space_spring.domain.chat.chatroom.model.QChatRoom.chatRoom;
-import static space.space_spring.domain.chat.chatting.model.QUserChatRoom.userChatRoom;
+import static space.space_spring.domain.chat.chatroom.model.QUserChatRoom.userChatRoom;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package space.space_spring.domain.chat.chatting.model;
+package space.space_spring.domain.chat.chatroom.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
-import space.space_spring.domain.chat.chatroom.model.ChatRoom;
 import space.space_spring.entity.BaseEntity;
 import space.space_spring.entity.User;
 

@@ -2,7 +2,7 @@ package space.space_spring.domain.chat.chatting.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import space.space_spring.entity.document.ChatMessage;
+import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 
 import java.time.LocalDateTime;
 import java.util.List;

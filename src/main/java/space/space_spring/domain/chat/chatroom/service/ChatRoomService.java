@@ -12,7 +12,7 @@ import space.space_spring.domain.chat.chatroom.model.response.CreateChatRoomResp
 import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomMemberResponse;
 import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomResponse;
 import space.space_spring.domain.chat.chatroom.repository.ChatRoomRepository;
-import space.space_spring.domain.chat.chatting.model.UserChatRoom;
+import space.space_spring.domain.chat.chatroom.model.UserChatRoom;
 import space.space_spring.domain.chat.chatting.repository.ChattingRepository;
 import space.space_spring.domain.chat.chatroom.repository.UserChatRoomRepository;
 import space.space_spring.domain.chat.chatroom.model.dto.LastMessageInfoDto;
@@ -20,7 +20,7 @@ import space.space_spring.domain.chat.chatroom.model.request.JoinChatRoomRequest
 import space.space_spring.domain.chat.chatroom.model.request.CreateChatRoomRequest;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
-import space.space_spring.entity.document.ChatMessage;
+import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 
 import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.exception.CustomException;

@@ -1,4 +1,4 @@
-package space.space_spring.entity.document;
+package space.space_spring.domain.chat.chatting.model.document;
 
 import lombok.Builder;
 import lombok.Getter;

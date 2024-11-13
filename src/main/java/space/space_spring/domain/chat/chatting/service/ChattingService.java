@@ -8,7 +8,7 @@ import space.space_spring.domain.chat.chatting.model.request.ChatMessageRequest;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageLogResponse;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageResponse;
 import space.space_spring.entity.UserSpace;
-import space.space_spring.entity.document.ChatMessage;
+import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 import space.space_spring.entity.enumStatus.ChatMessageType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.service.S3Uploader;

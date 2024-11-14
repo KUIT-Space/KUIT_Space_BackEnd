@@ -2,7 +2,7 @@ package space.space_spring.domain.chat.chatroom.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +13,7 @@ import space.space_spring.entity.Space;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Comment("채팅방")
 @Table(name = "Chat_Room")
 public class ChatRoom extends BaseEntity {
@@ -39,6 +37,14 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "chat_room_img")
     private String img;
 
+    @Builder
+    private ChatRoom(Long id, Space space, String name, @Nullable String img) {
+        this.id = id;
+        this.space = space;
+        this.name = name;
+        this.img = img;
+    }
+
     public static ChatRoom of(Space space, String chatRoomName, String chatRoomImgUrl) {
         return ChatRoom.builder()
                 .space(space)
@@ -51,7 +57,4 @@ public class ChatRoom extends BaseEntity {
         this.name = name;
     }
 
-    //    // 양방향 매핑
-//    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
-//    private List<UserChatRoom> userChatRooms;
 }

@@ -4,16 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Getter
-@Setter
-@Builder
 public class CreateChatRoomRequest {
 
     @Size(min = 2, max = 15, message = "채팅방 이름은 2자 이상, 15자 이내의 문자열이어야 합니다.")

@@ -13,7 +13,6 @@ import java.util.HashMap;
 
 @Document(collection = "chat_message")
 @Getter
-@Builder
 @TypeAlias("ChatMessage")
 public class ChatMessage {
     @Id
@@ -35,7 +34,21 @@ public class ChatMessage {
 
     private LocalDateTime createdAt;
 
-    public static ChatMessage of(HashMap<String, String> content, Long chatRoomId, Long spaceId, Long senderId, String senderName, String senderImg, ChatMessageType messageType) {
+    @Builder
+    private ChatMessage(String id, HashMap<String, String> content, Long chatRoomId, Long spaceId, Long senderId,
+                       String senderName, String senderImg, ChatMessageType messageType, LocalDateTime createdAt) {
+        this.id = id;
+        this.content = content;
+        this.chatRoomId = chatRoomId;
+        this.spaceId = spaceId;
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.senderImg = senderImg;
+        this.messageType = messageType;
+        this.createdAt = createdAt;
+    }
+
+    public static ChatMessage create(HashMap<String, String> content, Long chatRoomId, Long spaceId, Long senderId, String senderName, String senderImg, ChatMessageType messageType) {
         return ChatMessage.builder()
                 .content(content)
                 .chatRoomId(chatRoomId)

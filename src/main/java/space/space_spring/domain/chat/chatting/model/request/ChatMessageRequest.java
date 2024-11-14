@@ -4,13 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import space.space_spring.entity.enumStatus.ChatMessageType;
 
 import java.util.HashMap;
 
 @Getter
-@NoArgsConstructor
 public class ChatMessageRequest {
 
     @Size(min=1, message = "메시지 내용은 공백일 수 없습니다.")

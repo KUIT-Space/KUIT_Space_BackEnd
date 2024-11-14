@@ -4,9 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class ChatSuccessResponse {
     private boolean isSuccess;
+
+    @Builder
+    private ChatSuccessResponse(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
 
     public static ChatSuccessResponse of(boolean isSuccess) {
         return ChatSuccessResponse.builder()

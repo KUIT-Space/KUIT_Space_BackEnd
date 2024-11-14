@@ -57,7 +57,7 @@ public class ChattingService {
         }
 
         // TODO 4: DB에 메시지 저장
-        ChatMessage message = chattingRepository.insert(ChatMessage.of(
+        ChatMessage message = chattingRepository.insert(ChatMessage.create(
                 chatMessageRequest.getContent(),
                 chatRoomId,
                 chatMessageRequest.getSpaceId(),
@@ -67,13 +67,13 @@ public class ChattingService {
                 chatMessageRequest.getMessageType()
         ));
 
-        return ChatMessageResponse.of(message);
+        return ChatMessageResponse.create(message);
     }
 
     public ChatMessageLogResponse readChatMessageLog(Long chatRoomId) {
         List<ChatMessage> chatMessageList = chattingRepository.findByChatRoomId(chatRoomId);
         return ChatMessageLogResponse.of(chatMessageList.stream()
-                .map(ChatMessageResponse::of)
+                .map(ChatMessageResponse::create)
                 .collect(Collectors.toList()));
     }
 }

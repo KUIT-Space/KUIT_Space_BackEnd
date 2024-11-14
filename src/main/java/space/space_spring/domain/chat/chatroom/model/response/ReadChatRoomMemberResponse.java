@@ -8,10 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
 public class ReadChatRoomMemberResponse {
 
     private List<UserInfoInSpace> userList = new ArrayList<>();
+
+    @Builder
+    private ReadChatRoomMemberResponse(List<UserInfoInSpace> userList) {
+        this.userList = userList;
+    }
 
     public static ReadChatRoomMemberResponse of(List<UserInfoInSpace> userList) {
         return ReadChatRoomMemberResponse.builder()

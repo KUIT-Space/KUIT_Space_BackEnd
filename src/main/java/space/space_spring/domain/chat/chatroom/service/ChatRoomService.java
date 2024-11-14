@@ -67,7 +67,7 @@ public class ChatRoomService {
                     // TODO 5: userChatRoom의 안읽은 메시지 개수 계산
                     int unreadMsgCount = calculateUnreadMsgCount(userByUserId, cr, lastUpdateTime);
 
-                    return ChatRoomResponse.of(cr, lastContent, String.valueOf(lastUpdateTime), unreadMsgCount);
+                    return ChatRoomResponse.create(cr, lastContent, String.valueOf(lastUpdateTime), unreadMsgCount);
                 })
                 .filter(Objects::nonNull) // null 값을 제거
                 .toList()

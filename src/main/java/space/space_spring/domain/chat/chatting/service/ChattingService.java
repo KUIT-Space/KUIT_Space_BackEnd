@@ -1,7 +1,9 @@
 package space.space_spring.domain.chat.chatting.service;
 
 import jakarta.transaction.Transactional;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import space.space_spring.domain.chat.chatting.repository.ChattingRepository;
 import space.space_spring.domain.chat.chatting.model.request.ChatMessageRequest;
@@ -30,42 +32,16 @@ public class ChattingService {
     private final ChattingRepository chattingRepository;
 
     @Transactional
-    public ChatMessageResponse sendChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId) throws IOException {
-
-        // TODO 1: 메시지 메타데이터 저장 위해 전송자 찾기
+    public ChatMessageResponse sendChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId)
+            throws IOException {
         UserSpace senderInSpace = userSpaceUtils.isUserInSpace(senderId, chatMessageRequest.getSpaceId())
                 .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
-
-        // TODO 2: validation 후 전송자 이름 및 프로필 사진 get
         String senderName = senderInSpace.getUserName();
         String senderProfileImg = senderInSpace.getUserProfileImg();
 
-        // TODO 3: 이미지 및 파일 포함하는 경우 S3 업로드
-        String s3Url = switch (chatMessageRequest.getMessageType()) {
-            case IMG -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("image") , "chattingImg", "img");
-            case FILE -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("file") , "chattingFile", chatMessageRequest.getContent().get("fileName"));
-            default -> "";
-        };
+        setFileUrl(chatMessageRequest);
 
-        // TODO 4: DB에 S3 url 저장 위한 content 처리
-        if (!s3Url.isEmpty()) {
-            if (chatMessageRequest.getMessageType().equals(ChatMessageType.IMG)) {
-                chatMessageRequest.getContent().put("image", s3Url);
-            } else {
-                chatMessageRequest.getContent().put("file", s3Url);
-            }
-        }
-
-        // TODO 4: DB에 메시지 저장
-        ChatMessage message = chattingRepository.insert(ChatMessage.create(
-                chatMessageRequest.getContent(),
-                chatRoomId,
-                chatMessageRequest.getSpaceId(),
-                senderId,
-                senderName,
-                senderProfileImg,
-                chatMessageRequest.getMessageType()
-        ));
+        ChatMessage message = createChatMessage(senderId, chatMessageRequest, chatRoomId, senderName, senderProfileImg);
 
         return ChatMessageResponse.create(message);
     }
@@ -75,5 +51,44 @@ public class ChattingService {
         return ChatMessageLogResponse.of(chatMessageList.stream()
                 .map(ChatMessageResponse::create)
                 .collect(Collectors.toList()));
+    }
+
+    private void setFileUrl(ChatMessageRequest chatMessageRequest) throws IOException {
+        String fileUrl = createFileUrl(chatMessageRequest);
+        saveFileUrl(chatMessageRequest, fileUrl);
+    }
+
+    private String createFileUrl(ChatMessageRequest chatMessageRequest) throws IOException {
+        String fileUrl = switch (chatMessageRequest.getMessageType()) {
+            case IMG -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("image"), "chattingImg", "img");
+            case FILE -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("file"), "chattingFile",
+                    chatMessageRequest.getContent().get("fileName"));
+            default -> "";
+        };
+        return fileUrl;
+    }
+
+    private static void saveFileUrl(ChatMessageRequest chatMessageRequest, String s3Url) {
+        if (!Objects.equals(s3Url, "")) {
+            if (chatMessageRequest.getMessageType().equals(ChatMessageType.IMG)) {
+                chatMessageRequest.getContent().put("image", s3Url);
+                return;
+            }
+            chatMessageRequest.getContent().put("file", s3Url);
+        }
+    }
+
+    @NotNull
+    private ChatMessage createChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId,
+                                          String senderName, String senderProfileImg) {
+        return chattingRepository.insert(ChatMessage.create(
+                chatMessageRequest.getContent(),
+                chatRoomId,
+                chatMessageRequest.getSpaceId(),
+                senderId,
+                senderName,
+                senderProfileImg,
+                chatMessageRequest.getMessageType()
+        ));
     }
 }

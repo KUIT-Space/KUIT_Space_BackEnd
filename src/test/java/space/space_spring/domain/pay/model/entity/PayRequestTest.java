@@ -10,7 +10,6 @@ import space.space_spring.entity.enumStatus.UserSignupType;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 class PayRequestTest {
 
@@ -31,12 +30,13 @@ class PayRequestTest {
         // target1 : 미정산, target2, target3 : 정산 완료
         target2.changeCompleteStatus(true);
         target3.changeCompleteStatus(true);
+        payRequest.setPayRequestTargets(List.of(target1, target2, target3));
         payRequest.changeReceiveAmount(20000);
 
-        List<PayRequestTarget> targets = List.of(target1, target2, target3);
-
         //when
-        PayRequestInfoDto payRequestInfo = payRequest.createPayRequestInfo(targets);
+        PayRequestInfoDto payRequestInfo = payRequest.getPayRequestInfo();
+        // -> 테스트 어떻게 ??
+
 
         //then
         assertThat(payRequestInfo)

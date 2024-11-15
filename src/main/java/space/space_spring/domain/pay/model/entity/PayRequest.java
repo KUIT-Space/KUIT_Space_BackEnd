@@ -6,11 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
+import space.space_spring.domain.pay.model.firstCollection.PayRequestTargets;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.BaseEntity;
 import space.space_spring.domain.space.model.entity.Space;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -42,10 +42,19 @@ public class PayRequest extends BaseEntity {
     private String bankAccountNum;      // 정산 받을 은행 계좌번호
 
     @Column(name = "receive_amount")
-    private int receiveAmount;         // 정산 받은 금액
+    private int receiveAmount;          // 정산 받은 금액
 
     @Column(name = "is_complete")
     private boolean isComplete;
+
+    @OneToMany(mappedBy = "payRequest")
+    private List<PayRequestTarget> payRequestTargets;
+    // PayRequestTarget list를 양방향 매핑으로 참조하는것이 더 좋을까?
+
+
+    public PayRequestTargets toPayRequestTargets() {
+        return PayRequestTargets.create(payRequestTargets);
+    }
 
 
     public void changeCompleteStatus(boolean isComplete) {
@@ -54,6 +63,10 @@ public class PayRequest extends BaseEntity {
 
     public void changeReceiveAmount(int receiveAmount) {
         this.receiveAmount = receiveAmount;
+    }
+
+    public void setPayRequestTargets(List<PayRequestTarget> payRequestTargets) {
+        this.payRequestTargets = payRequestTargets;
     }
 
     @Builder
@@ -77,7 +90,7 @@ public class PayRequest extends BaseEntity {
                 .build();
     }
 
-    public PayRequestInfoDto createPayRequestInfo(List<PayRequestTarget> payRequestTargets) {
+    public PayRequestInfoDto getPayRequestInfo() {
         int totalTargetNum = 0;
         int paySendTargetNum = 0;
 

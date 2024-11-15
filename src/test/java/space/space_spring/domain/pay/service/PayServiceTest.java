@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
+import space.space_spring.domain.pay.model.mapper.PayMapper;
 import space.space_spring.domain.space.repository.SpaceRepository;
 import space.space_spring.domain.userSpace.repository.UserSpaceRepository;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
@@ -31,7 +32,7 @@ import static org.assertj.core.api.Assertions.*;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 @DataJpaTest
-@Import({PayService.class})
+@Import({PayService.class, PayMapper.class})
 @ActiveProfiles("test")
 @EnableJpaRepositories(basePackageClasses = {PayRequestRepository.class, PayRequestTargetRepository.class, UserRepository.class, SpaceRepository.class, UserSpaceRepository.class})
 @EntityScan(basePackageClasses = {PayRequest.class, PayRequestTarget.class, User.class, Space.class, UserSpace.class})
@@ -54,6 +55,9 @@ class PayServiceTest {
 
     @Autowired
     private UserSpaceRepository userSpaceRepository;
+
+    @Autowired
+    private PayMapper payMapper;
 
     @Test
     @DisplayName("유저가 요청한 정산들 중 완료되지 않은 정산 정보들과, 요청받은 정산들 중 완료되지 않은 정산 정보들을 return 한다.")
@@ -105,12 +109,6 @@ class PayServiceTest {
         PayRequestTarget completeTarget3 = PayRequestTarget.create(completePay_kyeongmin, seongjun.getUserId(), 20000);
         completeTarget3.changeCompleteStatus(true);
 
-        payRequestRepository.save(inCompletePay1_seongjun);
-        payRequestRepository.save(inCompletePay2_seongjun);
-        payRequestRepository.save(completePay_seongjun);
-        payRequestRepository.save(inCompletePay_seohyun);
-        payRequestRepository.save(completePay_kyeongmin);
-
         payRequestTargetRepository.save(inCompleteTarget1);
         payRequestTargetRepository.save(inCompleteTarget2);
         payRequestTargetRepository.save(inCompleteTarget3);
@@ -120,6 +118,14 @@ class PayServiceTest {
         payRequestTargetRepository.save(inCompleteTarget5);
         payRequestTargetRepository.save(inCompleteTarget6);
         payRequestTargetRepository.save(completeTarget3);
+
+
+        payRequestRepository.save(inCompletePay1_seongjun);
+        payRequestRepository.save(inCompletePay2_seongjun);
+        payRequestRepository.save(completePay_seongjun);
+        payRequestRepository.save(inCompletePay_seohyun);
+        payRequestRepository.save(completePay_kyeongmin);
+
 
         //when
         PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(seongjun.getUserId(), testSpace.getSpaceId());

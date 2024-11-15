@@ -1,9 +1,13 @@
 package space.space_spring.domain.pay.service;
 
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.pay.model.firstCollection.PayRequestInfos;
+import space.space_spring.domain.pay.model.firstCollection.PayRequestTargets;
+import space.space_spring.domain.pay.model.firstCollection.PayRequests;
+import space.space_spring.domain.pay.model.firstCollection.PayTargetInfos;
+import space.space_spring.domain.pay.model.mapper.PayMapper;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.domain.userSpace.repository.UserSpaceRepository;
 import space.space_spring.domain.pay.model.entity.PayRequest;
@@ -16,7 +20,6 @@ import space.space_spring.exception.CustomException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
@@ -34,25 +37,33 @@ public class PayService {
     private final UserSpaceRepository userSpaceRepository;
     private final PayRequestRepository payRequestRepository;
     private final PayRequestTargetRepository payRequestTargetRepository;
+    private final PayMapper payMapper;
 
     private final boolean INCOMPLETE_PAY = false;
     private final boolean COMPLETE_PAY = true;
 
+    @Transactional      // 지연로딩을 이용하기 위한 Transaction 설정
+    // 이래도 test 에서 PayRequest의 PayRequestTarget list 못 찾아 오는데 ??
     public PayHomeViewResponse getPayHomeInfos(Long userId, Long spaceId) {
         // 유저가 스페이스에 속하는 지 검증하고,
         UserSpace userSpace = validateUserInSpace(userId, spaceId);
 
-        // 유저가 요청한 정산들 중, 완료되지 않은 정산 리스트 정보와
-        List<PayRequestInfoDto> payRequestInfoDtos = getPayRequestInfos(userSpace);
+        List<PayRequest> allPayRequests = payRequestRepository.findAllByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), INCOMPLETE_PAY);
+        PayRequests payRequests = PayRequests.create(allPayRequests);
+        PayRequestInfos payRequestInfos = payRequests.getPayRequestInfos();
 
-        // 유저가 요청받은 정산들 중, 완료되지 않은 정산 리스트를 찾아서
-        List<PayTargetInfoDto> payTargetInfoDtos = getPayTargetInfos(userSpace);
+        List<PayRequestTarget> allPayRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(userId, userSpace.getSpace(), INCOMPLETE_PAY);
+        PayRequestTargets payRequestTargets = PayRequestTargets.create(allPayRequestTargets);
+        PayTargetInfos payTargetInfos = payRequestTargets.getPayTargetInfos();
+
+//        // 유저가 요청한 정산들 중, 완료되지 않은 정산 리스트 정보와
+//        List<PayRequestInfoDto> payRequestInfoDtos = getPayRequestInfos(userSpace);
+//
+//        // 유저가 요청받은 정산들 중, 완료되지 않은 정산 리스트를 찾아서
+//        List<PayTargetInfoDto> payTargetInfoDtos = getPayTargetInfos(userSpace);
 
         // return
-        return PayHomeViewResponse.builder()
-                .payRequestInfoDtos(payRequestInfoDtos)
-                .payTargetInfoDtos(payTargetInfoDtos)
-                .build();
+        return payMapper.createPayHomeViewResponse(payRequestInfos, payTargetInfos);
     }
 
     private List<PayRequestInfoDto> getPayRequestInfos(UserSpace userSpace) {
@@ -60,8 +71,7 @@ public class PayService {
 
         List<PayRequestInfoDto> payRequestInfoDtos = new ArrayList<>();
         for (PayRequest payRequest : payRequests) {
-            List<PayRequestTarget> findTargets = payRequestTargetRepository.findAllByPayRequest(payRequest);
-            PayRequestInfoDto payRequestInfo = payRequest.createPayRequestInfo(findTargets);
+            PayRequestInfoDto payRequestInfo = payRequest.getPayRequestInfo();
             payRequestInfoDtos.add(payRequestInfo);
         }
         return payRequestInfoDtos;

@@ -31,6 +31,11 @@ public class ChattingService {
     private final UserSpaceUtils userSpaceUtils;
     private final ChattingRepository chattingRepository;
 
+    private final static String IMAGE_KEY = "image";
+    private final static String FILE_KEY = "file";
+    private final static String IMAGE_DIR_NAME = "chattingImg";
+    private final static String FILE_DIR_NAME = "chattingFile";
+
     @Transactional
     public ChatMessageResponse sendChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId)
             throws IOException {
@@ -39,9 +44,9 @@ public class ChattingService {
         String senderName = senderInSpace.getUserName();
         String senderProfileImg = senderInSpace.getUserProfileImg();
 
-        setFileUrl(chatMessageRequest);
+        saveFileUrl(chatMessageRequest);
 
-        ChatMessage message = createChatMessage(senderId, chatMessageRequest, chatRoomId, senderName, senderProfileImg);
+        ChatMessage message = saveChatMessage(senderId, chatMessageRequest, chatRoomId, senderName, senderProfileImg);
 
         return ChatMessageResponse.create(message);
     }
@@ -53,34 +58,35 @@ public class ChattingService {
                 .collect(Collectors.toList()));
     }
 
-    private void setFileUrl(ChatMessageRequest chatMessageRequest) throws IOException {
+    private void saveFileUrl(ChatMessageRequest chatMessageRequest) throws IOException {
         String fileUrl = createFileUrl(chatMessageRequest);
-        saveFileUrl(chatMessageRequest, fileUrl);
+        setFileUrl(chatMessageRequest, fileUrl);
     }
 
     private String createFileUrl(ChatMessageRequest chatMessageRequest) throws IOException {
         String fileUrl = switch (chatMessageRequest.getMessageType()) {
-            case IMG -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("image"), "chattingImg", "img");
-            case FILE -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get("file"), "chattingFile",
+            case IMG ->
+                    s3Uploader.uploadBase64File(chatMessageRequest.getContent().get(IMAGE_KEY), IMAGE_DIR_NAME, "img");
+            case FILE -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get(FILE_KEY), FILE_DIR_NAME,
                     chatMessageRequest.getContent().get("fileName"));
             default -> "";
         };
         return fileUrl;
     }
 
-    private static void saveFileUrl(ChatMessageRequest chatMessageRequest, String s3Url) {
+    private static void setFileUrl(ChatMessageRequest chatMessageRequest, String s3Url) {
         if (!Objects.equals(s3Url, "")) {
             if (chatMessageRequest.getMessageType().equals(ChatMessageType.IMG)) {
-                chatMessageRequest.getContent().put("image", s3Url);
+                chatMessageRequest.getContent().put(IMAGE_KEY, s3Url);
                 return;
             }
-            chatMessageRequest.getContent().put("file", s3Url);
+            chatMessageRequest.getContent().put(FILE_KEY, s3Url);
         }
     }
 
     @NotNull
-    private ChatMessage createChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId,
-                                          String senderName, String senderProfileImg) {
+    private ChatMessage saveChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId,
+                                        String senderName, String senderProfileImg) {
         return chattingRepository.insert(ChatMessage.create(
                 chatMessageRequest.getContent(),
                 chatRoomId,

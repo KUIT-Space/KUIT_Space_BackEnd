@@ -1,5 +1,6 @@
 package space.space_spring.domain.pay.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
-import space.space_spring.domain.pay.model.mapper.PayMapper;
 import space.space_spring.domain.space.repository.SpaceRepository;
 import space.space_spring.domain.userSpace.repository.UserSpaceRepository;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
@@ -52,36 +52,43 @@ class PayServiceTest {
     @Autowired
     private UserSpaceRepository userSpaceRepository;
 
+    private User seongjun;
+    private User sangjun;
+    private User seohyun;
+    private User kyeongmin;
+    private Space kuit;
+
+    @BeforeEach
+    void setUp() {
+        // kuit 에 성준, 상준, 서현, 경민 이 가입되어 있음
+        seongjun = userRepository.save(User.create("email1", "password", "노성준", UserSignupType.LOCAL));
+        sangjun = userRepository.save(User.create("email2", "password", "김상준", UserSignupType.LOCAL));
+        seohyun = userRepository.save(User.create("email3", "password", "정서현", UserSignupType.LOCAL));
+        kyeongmin = userRepository.save(User.create("email4", "password", "김경민", UserSignupType.LOCAL));
+
+        kuit = spaceRepository.save(Space.create("space", "profileImg"));
+
+        userSpaceRepository.save(UserSpace.create(seongjun, kuit, UserSpaceAuth.NORMAL));
+        userSpaceRepository.save(UserSpace.create(sangjun, kuit, UserSpaceAuth.NORMAL));
+        userSpaceRepository.save(UserSpace.create(seohyun, kuit, UserSpaceAuth.NORMAL));
+        userSpaceRepository.save(UserSpace.create(kyeongmin, kuit, UserSpaceAuth.NORMAL));
+    }
+
     @Test
     @DisplayName("유저가 요청한 정산들 중 완료되지 않은 정산 정보들과, 요청받은 정산들 중 완료되지 않은 정산 정보들을 return 한다.")
     void getPayHomeInfos1() throws Exception {
         //given
-        User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
-        User user2 = User.create("email", "password", "김상준", UserSignupType.LOCAL);
-        User user3 = User.create("email", "password", "정서현", UserSignupType.LOCAL);
-        User user4 = User.create("email", "password", "김경민", UserSignupType.LOCAL);
-        Space space = Space.create("space", "profileImg");
-
-        User seongjun = userRepository.save(user1);
-        User sangjun = userRepository.save(user2);
-        User seohyun = userRepository.save(user3);
-        User kyeongmin = userRepository.save(user4);
-        Space testSpace = spaceRepository.save(space);
-
-        UserSpace userSpace = UserSpace.create(seongjun, testSpace, UserSpaceAuth.NORMAL);
-        userSpaceRepository.save(userSpace);
-
-        // seongjun 이 testSpace 에서 생성한 3개의 정산 요청
-        PayRequest inCompletePay1_seongjun = PayRequest.create(seongjun, testSpace, 20000, "bank", "accountNum");
-        PayRequest inCompletePay2_seongjun = PayRequest.create(seongjun, testSpace, 40000, "bank", "accountNum");
-        PayRequest completePay_seongjun = PayRequest.create(seongjun, testSpace, 20000, "bank", "accountNum");
+        // seongjun 이 kuit 에서 생성한 3개의 정산 요청
+        PayRequest inCompletePay1_seongjun = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
+        PayRequest inCompletePay2_seongjun = PayRequest.create(seongjun, kuit, 40000, "bank", "accountNum");
+        PayRequest completePay_seongjun = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
         completePay_seongjun.changeCompleteStatus(true);
 
-        // seohyun 이 testSpace 에서 생성한 1개의 정산 요청
-        PayRequest inCompletePay_seohyun = PayRequest.create(seohyun, testSpace, 40000, "국민은행", "111-111");
+        // seohyun 이 kuit 에서 생성한 1개의 정산 요청
+        PayRequest inCompletePay_seohyun = PayRequest.create(seohyun, kuit, 40000, "국민은행", "111-111");
 
-        // Kyeongmin 이 testSpace에서 생성한 1개의 정산 요청
-        PayRequest completePay_kyeongmin = PayRequest.create(kyeongmin, testSpace, 20000, "우리은행", "222-222");
+        // Kyeongmin 이 kuit 에서 생성한 1개의 정산 요청
+        PayRequest completePay_kyeongmin = PayRequest.create(kyeongmin, kuit, 20000, "우리은행", "222-222");
         completePay_kyeongmin.changeCompleteStatus(true);
 
         // 각 정산 요청의 타겟들
@@ -112,16 +119,14 @@ class PayServiceTest {
         payRequestTargetRepository.save(inCompleteTarget6);
         payRequestTargetRepository.save(completeTarget3);
 
-
         payRequestRepository.save(inCompletePay1_seongjun);
         payRequestRepository.save(inCompletePay2_seongjun);
         payRequestRepository.save(completePay_seongjun);
         payRequestRepository.save(inCompletePay_seohyun);
         payRequestRepository.save(completePay_kyeongmin);
 
-
         //when
-        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(seongjun.getUserId(), testSpace.getSpaceId());
+        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(seongjun.getUserId(), kuit.getSpaceId());
         List<PayRequestInfoDto> payRequestInfos = payHomeInfos.getPayRequestInfoDtos();
         List<PayTargetInfoDto> payTargetInfoDtos = payHomeInfos.getPayTargetInfoDtos();
 
@@ -145,24 +150,11 @@ class PayServiceTest {
     @DisplayName("유저가 요청한 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList 를 return 한다.")
     void getPayHomeInfos2() throws Exception {
         //given
-        User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
-        User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user3 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        Space space = Space.create("space", "profileImg");
-
-        User payCreator = userRepository.save(user1);
-        User payTarget1 = userRepository.save(user2);
-        User payTarget2 = userRepository.save(user3);
-        Space testSpace = spaceRepository.save(space);
-
-        UserSpace userSpace = UserSpace.create(payCreator, testSpace, UserSpaceAuth.NORMAL);
-        userSpaceRepository.save(userSpace);
-
-        PayRequest completePay = PayRequest.create(payCreator, testSpace, 20000, "bank", "accountNum");
+        PayRequest completePay = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
         completePay.changeCompleteStatus(true);
 
-        PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, payTarget1.getUserId(), 10000);
-        PayRequestTarget completeTarget2 = PayRequestTarget.create(completePay, payTarget2.getUserId(), 10000);
+        PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, sangjun.getUserId(), 10000);
+        PayRequestTarget completeTarget2 = PayRequestTarget.create(completePay, seohyun.getUserId(), 10000);
         completeTarget1.changeCompleteStatus(true);
         completeTarget2.changeCompleteStatus(true);
 
@@ -172,35 +164,23 @@ class PayServiceTest {
         payRequestTargetRepository.save(completeTarget2);
 
         //when
-        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(payCreator.getUserId(), testSpace.getSpaceId());
+        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(seongjun.getUserId(), kuit.getSpaceId());
         List<PayRequestInfoDto> payRequestInfoDtoList = payHomeInfos.getPayRequestInfoDtos();
 
         //then
-        assertThat(payRequestInfoDtoList).hasSize(0);
+        assertThat(payRequestInfoDtoList).isNotNull()
+                .hasSize(0);
     }
 
     @Test
     @DisplayName("유저가 요청받은 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList를 return 한다.")
     void getPayHomeInfos3() throws Exception {
         //given
-        User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
-        User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user3 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        Space space = Space.create("space", "profileImg");
-
-        User payCreator = userRepository.save(user1);
-        User payTarget1 = userRepository.save(user2);
-        User payTarget2 = userRepository.save(user3);
-        Space testSpace = spaceRepository.save(space);
-
-        UserSpace userSpace = UserSpace.create(payTarget2, testSpace, UserSpaceAuth.NORMAL);
-        userSpaceRepository.save(userSpace);
-
-        PayRequest completePay = PayRequest.create(payCreator, testSpace, 20000, "bank", "accountNum");
+        PayRequest completePay = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
         completePay.changeCompleteStatus(true);
 
-        PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, payTarget1.getUserId(), 10000);
-        PayRequestTarget completeTarget2 = PayRequestTarget.create(completePay, payTarget2.getUserId(), 10000);
+        PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, seohyun.getUserId(), 10000);
+        PayRequestTarget completeTarget2 = PayRequestTarget.create(completePay, kyeongmin.getUserId(), 10000);
         completeTarget1.changeCompleteStatus(true);
         completeTarget2.changeCompleteStatus(true);
 
@@ -210,36 +190,24 @@ class PayServiceTest {
         payRequestTargetRepository.save(completeTarget2);
 
         //when
-        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(payTarget2.getUserId(), testSpace.getSpaceId());
+        PayHomeViewResponse payHomeInfos = payService.getPayHomeInfos(kyeongmin.getUserId(), kuit.getSpaceId());
         List<PayTargetInfoDto> payTargetInfoDtos = payHomeInfos.getPayTargetInfoDtos();
 
         //then
-        assertThat(payTargetInfoDtos).hasSize(0);
+        assertThat(payTargetInfoDtos).isNotNull()
+                .hasSize(0);
     }
 
     @Test
     @DisplayName("user는 자신이 속한 space의 정산 홈 view만을 볼 수 있다.")
     void getPayHomeInfos4() throws Exception {
         //given
-        User user1 = User.create("email", "password", "노성준", UserSignupType.LOCAL);
-        User user2 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        User user3 = User.create("email", "password", "name", UserSignupType.LOCAL);
-        Space space1 = Space.create("space", "profileImg");
-        Space space2 = Space.create("space", "profileImg");
+        Space alcon = spaceRepository.save(Space.create("space", "profileImg"));
 
-        User payCreator = userRepository.save(user1);
-        User payTarget1 = userRepository.save(user2);
-        User payTarget2 = userRepository.save(user3);
-        Space KUIT = spaceRepository.save(space1);
-        Space ALKON = spaceRepository.save(space2);
+        PayRequest payRequest = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
 
-        UserSpace userSpace = UserSpace.create(payCreator, KUIT, UserSpaceAuth.NORMAL);
-        userSpaceRepository.save(userSpace);
-
-        PayRequest payRequest = PayRequest.create(payCreator, KUIT, 20000, "bank", "accountNum");
-
-        PayRequestTarget target1 = PayRequestTarget.create(payRequest, payTarget1.getUserId(), 10000);
-        PayRequestTarget target2 = PayRequestTarget.create(payRequest, payTarget2.getUserId(), 10000);
+        PayRequestTarget target1 = PayRequestTarget.create(payRequest, sangjun.getUserId(), 10000);
+        PayRequestTarget target2 = PayRequestTarget.create(payRequest, seohyun.getUserId(), 10000);
 
         payRequestRepository.save(payRequest);
 
@@ -247,7 +215,7 @@ class PayServiceTest {
         payRequestTargetRepository.save(target2);
 
         //when // then
-        assertThatThrownBy(() -> payService.getPayHomeInfos(payCreator.getUserId(), ALKON.getSpaceId()))
+        assertThatThrownBy(() -> payService.getPayHomeInfos(seongjun.getUserId(), alcon.getSpaceId()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(USER_IS_NOT_IN_SPACE.getMessage());
     }

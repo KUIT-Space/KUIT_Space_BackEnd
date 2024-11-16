@@ -47,15 +47,11 @@ public class PayService {
         // 유저가 스페이스에 속하는 지 검증하고,
         UserSpace userSpace = validateUserInSpace(userId, spaceId);
 
-        // 유저가 요청한 정산들 중, 현재 진행중인 정산 찾고
-        List<PayRequest> allPayRequests = payRequestRepository.findAllByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), INCOMPLETE_PAY);
-        PayRequests payRequests = PayRequests.create(allPayRequests);
-        PayRequestInfos payRequestInfos = payRequests.getPayRequestInfos();
+        // 유저가 요청한 정산들 중, 완료되지 않은 정산 찾고
+        PayRequestInfos payRequestInfos = getPayRequestInfos(userSpace, INCOMPLETE_PAY);
 
-        // 유저가 요청받은 정산들 중, 현재 진행중인 정산 찾아서
-        List<PayRequestTarget> allPayRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(userId, userSpace.getSpace(), INCOMPLETE_PAY);
-        PayRequestTargets payRequestTargets = PayRequestTargets.create(allPayRequestTargets);
-        PayTargetInfos payTargetInfos = payRequestTargets.getPayTargetInfos();
+        // 유저가 요청받은 정산들 중, 완료되지 않은 정산 찾아서
+        PayTargetInfos payTargetInfos = getPayTargetInfos(userSpace, INCOMPLETE_PAY);
 
         // return
         return payMapper.createPayHomeViewResponse(payRequestInfos, payTargetInfos);
@@ -65,6 +61,20 @@ public class PayService {
         return userSpaceRepository.findUserSpaceByUserAndSpace(userId, spaceId).orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
     }
 
+    private PayRequestInfos getPayRequestInfos(UserSpace userSpace, boolean payRequestStatus) {
+        List<PayRequest> allPayRequests = payRequestRepository.findAllByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), payRequestStatus);
+        PayRequests payRequests = PayRequests.create(allPayRequests);
+
+        return payRequests.getPayRequestInfos();
+    }
+
+    private PayTargetInfos getPayTargetInfos(UserSpace userSpace, boolean payRequestTargetStatus) {
+        Long targetUserId = userSpace.getUser().getUserId();
+        List<PayRequestTarget> allPayRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(targetUserId, userSpace.getSpace(), payRequestTargetStatus);
+        PayRequestTargets payRequestTargets = PayRequestTargets.create(allPayRequestTargets);
+
+        return payRequestTargets.getPayTargetInfos();
+    }
 
 
 //    @Transactional

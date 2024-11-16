@@ -43,11 +43,15 @@ public class PayRequestTarget extends BaseEntity {
     }
 
     public static PayRequestTarget create(PayRequest payRequest, Long targetUserId, int requestedAmount) {
-        return PayRequestTarget.builder()
+        PayRequestTarget build = PayRequestTarget.builder()
                 .payRequest(payRequest)
                 .targetUserId(targetUserId)
                 .requestedAmount(requestedAmount)
                 .build();
+
+        payRequest.getPayRequestTargets().add(build);
+
+        return build;
     }
 
     public void changeCompleteStatus(boolean isComplete) {

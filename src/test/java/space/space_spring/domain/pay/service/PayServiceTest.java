@@ -3,11 +3,9 @@ package space.space_spring.domain.pay.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
 import space.space_spring.domain.pay.model.mapper.PayMapper;
 import space.space_spring.domain.space.repository.SpaceRepository;
@@ -31,11 +29,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
-@DataJpaTest
-@Import({PayService.class, PayMapper.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 @ActiveProfiles("test")
-@EnableJpaRepositories(basePackageClasses = {PayRequestRepository.class, PayRequestTargetRepository.class, UserRepository.class, SpaceRepository.class, UserSpaceRepository.class})
-@EntityScan(basePackageClasses = {PayRequest.class, PayRequestTarget.class, User.class, Space.class, UserSpace.class})
 class PayServiceTest {
 
     @Autowired
@@ -55,9 +51,6 @@ class PayServiceTest {
 
     @Autowired
     private UserSpaceRepository userSpaceRepository;
-
-    @Autowired
-    private PayMapper payMapper;
 
     @Test
     @DisplayName("유저가 요청한 정산들 중 완료되지 않은 정산 정보들과, 요청받은 정산들 중 완료되지 않은 정산 정보들을 return 한다.")

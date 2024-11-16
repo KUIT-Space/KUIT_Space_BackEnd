@@ -12,7 +12,6 @@ import java.util.List;
 @Component
 public class PayMapper {
 
-
     public PayHomeViewResponse createPayHomeViewResponse(PayRequestInfos payRequestInfos, PayTargetInfos payTargetInfos) {
         return PayHomeViewResponse.builder()
                 .payRequestInfoDtos(payRequestInfos.getAll())

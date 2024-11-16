@@ -50,12 +50,6 @@ public class PayRequest extends BaseEntity {
 
     @OneToMany(mappedBy = "payRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PayRequestTarget> payRequestTargets = new ArrayList<>();
-    // PayRequestTarget list를 양방향 매핑으로 참조하는것이 더 좋을까?
-
-
-    public PayRequestTargets toPayRequestTargets() {
-        return PayRequestTargets.create(payRequestTargets);
-    }
 
 
     public void changeCompleteStatus(boolean isComplete) {
@@ -66,8 +60,8 @@ public class PayRequest extends BaseEntity {
         this.receiveAmount = receiveAmount;
     }
 
-    public void setPayRequestTargets(List<PayRequestTarget> payRequestTargets) {
-        this.payRequestTargets = payRequestTargets;
+    public void addPayRequestTarget(PayRequestTarget payRequestTarget) {
+        payRequestTargets.add(payRequestTarget);
     }
 
     @Builder

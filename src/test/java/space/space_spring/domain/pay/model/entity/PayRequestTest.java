@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PayRequestTest {
 
     @Test
-    @DisplayName("해당 PayRequest의 target list를 인자로 받으면, PayRequestInfoDto를 return 한다.")
-    void createPayRequestInfo() throws Exception {
+    @DisplayName("해당 정산 요청에 대해 [총 정산 요청 사람 수, 그 중 돈을 낸 사람 수, 총 정산 요청 금액, 그 중 받은 금액] 의 정보를 알려준다.")
+    void getPayRequestInfo() throws Exception {
         //given
         User payCreator = User.create("email", "password", "노성준", UserSignupType.LOCAL);
 
@@ -30,13 +30,10 @@ class PayRequestTest {
         // target1 : 미정산, target2, target3 : 정산 완료
         target2.changeCompleteStatus(true);
         target3.changeCompleteStatus(true);
-        payRequest.setPayRequestTargets(List.of(target1, target2, target3));
         payRequest.changeReceiveAmount(20000);
 
         //when
         PayRequestInfoDto payRequestInfo = payRequest.getPayRequestInfo();
-        // -> 테스트 어떻게 ??
-
 
         //then
         assertThat(payRequestInfo)

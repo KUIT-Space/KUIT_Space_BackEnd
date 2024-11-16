@@ -1,25 +1,77 @@
-spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  datasource:
-    url: jdbc:h2:mem:~/space_spring
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-  sql:
-    init:
-      mode: never   # sql initialization 을 사용하지 않겠다
-
-
+# 서버 포트 설정
 server:
   port: 8080
+
+# H2 인메모리 데이터베이스 설정
+datasource:
+  url: jdbc:h2:mem:space_testdb
+  driver-class-name: org.h2.Driver
+  username: sa
+  password:
+
+# JPA 설정
+jpa:
+  hibernate:
+    ddl-auto: create-drop  # 테스트 시작 시 테이블 생성, 종료 시 삭제
+  show-sql: true
+  properties:
+    hibernate:
+      format_sql: true
+      use_sql_comments: true
+
+# MongoDB 설정 (embedded MongoDB 사용 또는 목 처리)
+data:
+  mongodb:
+    uri: mongodb://localhost:27017/test_db  # 테스트용 로컬 MongoDB
+
+# AWS S3 설정 (로컬 스토리지로 대체하거나 목 처리)
+cloud:
+  aws:
+    credentials:
+      access-key: test-access-key
+      secret-key: test-secret-key
+    s3:
+      bucket: test-bucket
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+
+# JWT 시크릿 키 설정
+secret:
+  jwt:
+    access-secret-key: test-access-secret-key
+    refresh-secret-key: test-refresh-secret-key
+    access-expired-in: 30000
+    refresh-expired-in: 60000
+
+# OAuth 설정 (테스트용으로 대체)
+oauth:
+  kakao:
+    client:
+      id: test-client-id
+      secret: test-client-secret
+    redirect:
+      uri: http://localhost:8080/oauth/callback/kakao
+
+# LiveKit 설정 (테스트용으로 대체)
+livekit:
+  project:
+    host: https://test-livekit-host
+    id: test-project-id
+  api:
+    key: test-api-key
+    secretKey: test-api-secret
+
+# 멀티파트 설정
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+# 기타 설정
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace

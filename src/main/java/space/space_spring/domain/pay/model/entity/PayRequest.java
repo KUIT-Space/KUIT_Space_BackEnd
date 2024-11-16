@@ -11,6 +11,7 @@ import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.BaseEntity;
 import space.space_spring.domain.space.model.entity.Space;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -47,8 +48,8 @@ public class PayRequest extends BaseEntity {
     @Column(name = "is_complete")
     private boolean isComplete;
 
-    @OneToMany(mappedBy = "payRequest")
-    private List<PayRequestTarget> payRequestTargets;
+    @OneToMany(mappedBy = "payRequest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PayRequestTarget> payRequestTargets = new ArrayList<>();
     // PayRequestTarget list를 양방향 매핑으로 참조하는것이 더 좋을까?
 
 

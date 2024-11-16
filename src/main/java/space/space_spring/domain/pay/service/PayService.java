@@ -42,50 +42,23 @@ public class PayService {
     private final boolean INCOMPLETE_PAY = false;
     private final boolean COMPLETE_PAY = true;
 
-    @Transactional      // 지연로딩을 이용하기 위한 Transaction 설정
-    // 이래도 test 에서 PayRequest의 PayRequestTarget list 못 찾아 오는데 ??
+    @Transactional          // 지연로딩을 이용하기 위한 Transaction 설정
     public PayHomeViewResponse getPayHomeInfos(Long userId, Long spaceId) {
         // 유저가 스페이스에 속하는 지 검증하고,
         UserSpace userSpace = validateUserInSpace(userId, spaceId);
 
+        // 유저가 요청한 정산들 중, 현재 진행중인 정산 찾고
         List<PayRequest> allPayRequests = payRequestRepository.findAllByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), INCOMPLETE_PAY);
         PayRequests payRequests = PayRequests.create(allPayRequests);
         PayRequestInfos payRequestInfos = payRequests.getPayRequestInfos();
 
+        // 유저가 요청받은 정산들 중, 현재 진행중인 정산 찾아서
         List<PayRequestTarget> allPayRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(userId, userSpace.getSpace(), INCOMPLETE_PAY);
         PayRequestTargets payRequestTargets = PayRequestTargets.create(allPayRequestTargets);
         PayTargetInfos payTargetInfos = payRequestTargets.getPayTargetInfos();
 
-//        // 유저가 요청한 정산들 중, 완료되지 않은 정산 리스트 정보와
-//        List<PayRequestInfoDto> payRequestInfoDtos = getPayRequestInfos(userSpace);
-//
-//        // 유저가 요청받은 정산들 중, 완료되지 않은 정산 리스트를 찾아서
-//        List<PayTargetInfoDto> payTargetInfoDtos = getPayTargetInfos(userSpace);
-
         // return
         return payMapper.createPayHomeViewResponse(payRequestInfos, payTargetInfos);
-    }
-
-    private List<PayRequestInfoDto> getPayRequestInfos(UserSpace userSpace) {
-        List<PayRequest> payRequests = payRequestRepository.findAllByUserAndSpace(userSpace.getUser(), userSpace.getSpace(), INCOMPLETE_PAY);
-
-        List<PayRequestInfoDto> payRequestInfoDtos = new ArrayList<>();
-        for (PayRequest payRequest : payRequests) {
-            PayRequestInfoDto payRequestInfo = payRequest.getPayRequestInfo();
-            payRequestInfoDtos.add(payRequestInfo);
-        }
-        return payRequestInfoDtos;
-    }
-
-    private List<PayTargetInfoDto> getPayTargetInfos(UserSpace userSpace) {
-        List<PayRequestTarget> payRequestTargets = payRequestTargetRepository.findAllByUserAndSpace(userSpace.getUser().getUserId(), userSpace.getSpace(), INCOMPLETE_PAY);
-
-        List<PayTargetInfoDto> payTargetInfoDtos = new ArrayList<>();
-        for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            PayTargetInfoDto payReceiveInfo = payRequestTarget.createPayTargetInfo();
-            payTargetInfoDtos.add(payReceiveInfo);
-        }
-        return payTargetInfoDtos;
     }
 
     private UserSpace validateUserInSpace(Long userId, Long spaceId) {

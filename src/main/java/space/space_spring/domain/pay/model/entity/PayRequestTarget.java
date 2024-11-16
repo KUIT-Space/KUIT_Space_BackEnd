@@ -49,7 +49,7 @@ public class PayRequestTarget extends BaseEntity {
                 .requestedAmount(requestedAmount)
                 .build();
 
-        payRequest.getPayRequestTargets().add(build);
+        payRequest.addPayRequestTarget(build);       // 연관관계 편의 메서드
 
         return build;
     }

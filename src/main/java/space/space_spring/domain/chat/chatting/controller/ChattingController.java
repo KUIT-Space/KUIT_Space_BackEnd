@@ -22,35 +22,21 @@ public class ChattingController {
     private final ChattingService chattingService;
 
 
-    @MessageMapping("/chat/{chatRoomId}") // {chatRoomId} 채팅방으로 보낸 메세지 매핑
-    @SendTo("/topic/chat/{chatRoomId}") // {chatRoomId} 채팅방을 구독한 곳들로 메세지 전송
+    @MessageMapping("/chat/{chatRoomId}")
+    @SendTo("/topic/chat/{chatRoomId}")
     @CheckUserSpace(required = false)
     public ChatMessageResponse sendChatMessage (@Payload ChatMessageRequest chatMessageRequest, @DestinationVariable Long chatRoomId,
                                                 @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) throws IOException {
         Long senderId = (Long) sessionAttributes.get("userId");
-//        log.info(senderId + " 님이 " + chatRoomId + " 채팅방으로 " + chatMessageRequest.getContent() + " 전송");
 
         return chattingService.sendChatMessage(senderId, chatMessageRequest, chatRoomId);
     }
 
-    @SubscribeMapping("/chat/{chatRoomId}") // {chatRoomId} 채팅방을 구독
+    @SubscribeMapping("/chat/{chatRoomId}")
     @CheckUserSpace(required = false)
     public ChatMessageLogResponse subscribeChatRoom (@DestinationVariable Long chatRoomId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
-//        log.info(chatRoomId + " 채팅방 구독");
         sessionAttributes.put("chatRoomId", chatRoomId);
         return chattingService.readChatMessageLog(chatRoomId);
     }
 
-    // socket disconnect 시 호출
-//    @EventListener
-//    @CheckUserSpace(required = false)
-//    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-//        Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-//
-//        Long userId = (Long) sessionAttributes.get("userId");
-//        Long chatRoomId = (Long) sessionAttributes.get("chatRoomId");
-//        log.info("userId: " + userId + " chatRoomid: " + chatRoomId);
-//        userChatRoomService.saveLastReadTime(userId, chatRoomId);
-//    }
 }

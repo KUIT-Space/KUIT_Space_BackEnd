@@ -6,12 +6,13 @@ import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import space.space_spring.entity.enumStatus.BaseStatusType;
 
 @Repository
 public interface ChattingRepository extends MongoRepository<ChatMessage, String> {
-    List<ChatMessage> findByChatRoomId(Long chatRoomId);
+    List<ChatMessage> findByChatRoomIdAndStatus(Long chatRoomId, BaseStatusType status);
 
-    ChatMessage findTopByChatRoomIdOrderByCreatedAtDesc(Long chatRoomId);
+    ChatMessage findTopByChatRoomIdAndStatusOrderByCreatedAtDesc(Long chatRoomId, BaseStatusType status);
 
-    int countByChatRoomIdAndCreatedAtBetween(Long chatRoomId, LocalDateTime lastReadTime, LocalDateTime lastUpdateTime);
+    int countByChatRoomIdAndStatusAndCreatedAtBetween(Long chatRoomId, BaseStatusType status, LocalDateTime lastReadTime, LocalDateTime lastUpdateTime);
 }

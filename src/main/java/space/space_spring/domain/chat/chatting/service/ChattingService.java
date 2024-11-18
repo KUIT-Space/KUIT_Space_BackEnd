@@ -11,6 +11,7 @@ import space.space_spring.domain.chat.chatting.model.response.ChatMessageLogResp
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageResponse;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
+import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.entity.enumStatus.ChatMessageType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.service.S3Uploader;
@@ -52,7 +53,8 @@ public class ChattingService {
     }
 
     public ChatMessageLogResponse readChatMessageLog(Long chatRoomId) {
-        List<ChatMessage> chatMessageList = chattingRepository.findByChatRoomId(chatRoomId);
+        List<ChatMessage> chatMessageList = chattingRepository.findByChatRoomIdAndStatus(chatRoomId,
+                BaseStatusType.ACTIVE);
         return ChatMessageLogResponse.of(chatMessageList.stream()
                 .map(ChatMessageResponse::create)
                 .collect(Collectors.toList()));

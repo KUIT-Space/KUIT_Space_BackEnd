@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
+import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.entity.enumStatus.ChatMessageType;
 
 import java.time.LocalDateTime;
@@ -34,9 +35,11 @@ public class ChatMessage {
 
     private LocalDateTime createdAt;
 
+    private BaseStatusType status;
+
     @Builder
     private ChatMessage(String id, HashMap<String, String> content, Long chatRoomId, Long spaceId, Long senderId,
-                       String senderName, String senderImg, ChatMessageType messageType, LocalDateTime createdAt) {
+                        String senderName, String senderImg, ChatMessageType messageType, LocalDateTime createdAt) {
         this.id = id;
         this.content = content;
         this.chatRoomId = chatRoomId;
@@ -46,9 +49,11 @@ public class ChatMessage {
         this.senderImg = senderImg;
         this.messageType = messageType;
         this.createdAt = createdAt;
+        this.status = BaseStatusType.ACTIVE;
     }
 
-    public static ChatMessage create(HashMap<String, String> content, Long chatRoomId, Long spaceId, Long senderId, String senderName, String senderImg, ChatMessageType messageType) {
+    public static ChatMessage create(HashMap<String, String> content, Long chatRoomId, Long spaceId, Long senderId,
+                                     String senderName, String senderImg, ChatMessageType messageType) {
         return ChatMessage.builder()
                 .content(content)
                 .chatRoomId(chatRoomId)

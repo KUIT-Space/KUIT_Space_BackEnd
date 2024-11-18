@@ -1,7 +1,7 @@
 package space.space_spring.domain.chat.chatting.service;
 
 import jakarta.transaction.Transactional;
-import java.util.Objects;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -32,8 +32,8 @@ public class ChattingService {
     private final UserSpaceUtils userSpaceUtils;
     private final ChattingRepository chattingRepository;
 
-    private final static String IMAGE_KEY = "image";
-    private final static String FILE_KEY = "file";
+    private final static String TYPE_IMAGE = "image";
+    private final static String TYPE_FILE = "file";
     private final static String IMAGE_DIR_NAME = "chattingImg";
     private final static String FILE_DIR_NAME = "chattingFile";
 
@@ -66,23 +66,34 @@ public class ChattingService {
     }
 
     private String createFileUrl(ChatMessageRequest chatMessageRequest) throws IOException {
-        String fileUrl = switch (chatMessageRequest.getMessageType()) {
-            case IMG ->
-                    s3Uploader.uploadBase64File(chatMessageRequest.getContent().get(IMAGE_KEY), IMAGE_DIR_NAME, "img");
-            case FILE -> s3Uploader.uploadBase64File(chatMessageRequest.getContent().get(FILE_KEY), FILE_DIR_NAME,
-                    chatMessageRequest.getContent().get("fileName"));
-            default -> "";
-        };
-        return fileUrl;
+        HashMap<String, String> chatMessageContent = chatMessageRequest.getContent();
+
+        String base64File = "", dirName = "", fileName = "";
+        switch (chatMessageRequest.getMessageType()) {
+            case IMG -> {
+                base64File = chatMessageContent.get(TYPE_IMAGE);
+                dirName = IMAGE_DIR_NAME;
+                fileName = "img";
+            }
+            case FILE -> {
+                base64File = chatMessageContent.get(TYPE_FILE);
+                dirName = FILE_DIR_NAME;
+                fileName = chatMessageContent.get("fileName");
+            }
+            default -> {
+            }
+        }
+
+        return s3Uploader.uploadBase64File(base64File, dirName, fileName);
     }
 
     private static void setFileUrl(ChatMessageRequest chatMessageRequest, String s3Url) {
-        if (!Objects.equals(s3Url, "")) {
+        if (!s3Url.isEmpty()) {
             if (chatMessageRequest.getMessageType().equals(ChatMessageType.IMG)) {
-                chatMessageRequest.getContent().put(IMAGE_KEY, s3Url);
+                chatMessageRequest.getContent().put(TYPE_IMAGE, s3Url);
                 return;
             }
-            chatMessageRequest.getContent().put(FILE_KEY, s3Url);
+            chatMessageRequest.getContent().put(TYPE_FILE, s3Url);
         }
     }
 

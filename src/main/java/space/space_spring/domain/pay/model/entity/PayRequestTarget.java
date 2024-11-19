@@ -58,7 +58,7 @@ public class PayRequestTarget extends BaseEntity {
         this.isComplete = isComplete;
     }
 
-    public PayTargetInfoDto createPayTargetInfo() {
+    public PayTargetInfoDto getPayTargetInfo() {
         return PayTargetInfoDto.builder()
                 .payRequestTargetId(payRequestTargetId)
                 .payCreatorName(payRequest.getPayCreateUser().getUserName())

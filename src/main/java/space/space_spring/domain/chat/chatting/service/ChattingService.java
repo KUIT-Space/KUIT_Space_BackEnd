@@ -5,6 +5,7 @@ import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import space.space_spring.domain.chat.chatting.model.ChatMessages;
 import space.space_spring.domain.chat.chatting.repository.ChattingRepository;
 import space.space_spring.domain.chat.chatting.model.request.ChatMessageRequest;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageLogResponse;
@@ -18,8 +19,6 @@ import space.space_spring.service.S3Uploader;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
@@ -53,11 +52,9 @@ public class ChattingService {
     }
 
     public ChatMessageLogResponse readChatMessageLog(Long chatRoomId) {
-        List<ChatMessage> chatMessageList = chattingRepository.findByChatRoomIdAndStatus(chatRoomId,
-                BaseStatusType.ACTIVE);
-        return ChatMessageLogResponse.of(chatMessageList.stream()
-                .map(ChatMessageResponse::create)
-                .collect(Collectors.toList()));
+        ChatMessages chatMessages = ChatMessages.of(chattingRepository.findByChatRoomIdAndStatus(chatRoomId,
+                BaseStatusType.ACTIVE));
+        return ChatMessageLogResponse.of(chatMessages.toChatMessageResponses());
     }
 
     private void saveFileUrl(ChatMessageRequest chatMessageRequest) throws IOException {

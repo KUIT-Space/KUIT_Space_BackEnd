@@ -12,7 +12,6 @@ import space.space_spring.entity.BaseEntity;
 import space.space_spring.domain.space.model.entity.Space;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -48,8 +47,8 @@ public class PayRequest extends BaseEntity {
     @Column(name = "is_complete")
     private boolean isComplete;
 
-    @OneToMany(mappedBy = "payRequest", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PayRequestTarget> payRequestTargets = new ArrayList<>();
+    @Embedded
+    private PayRequestTargets payRequestTargets;        // PayRequest의 target 들
 
 
     public void changeCompleteStatus(boolean isComplete) {
@@ -61,7 +60,7 @@ public class PayRequest extends BaseEntity {
     }
 
     public void addPayRequestTarget(PayRequestTarget payRequestTarget) {
-        payRequestTargets.add(payRequestTarget);
+        payRequestTargets.addPayRequestTarget(payRequestTarget);
     }
 
     @Builder
@@ -76,26 +75,22 @@ public class PayRequest extends BaseEntity {
     }
 
     public static PayRequest create(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum) {
-        return PayRequest.builder()
+        PayRequest build = PayRequest.builder()
                 .payCreateUser(payCreateUser)
                 .space(space)
                 .totalAmount(totalAmount)
                 .bankName(bankName)
                 .bankAccountNum(bankAccountNum)
                 .build();
+
+        build.payRequestTargets = PayRequestTargets.create(new ArrayList<>());          //
+
+        return build;
     }
 
     public PayRequestInfoDto getPayRequestInfo() {
-        int totalTargetNum = 0;
-        int paySendTargetNum = 0;
-
-        for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            if (payRequestTarget.isComplete()) {
-                // 해당 타겟이 돈을 낸 경우
-                paySendTargetNum++;
-            }
-            totalTargetNum++;
-        }
+        int totalTargetNum = payRequestTargets.countTotalTargets();
+        int paySendTargetNum = payRequestTargets.countCompleteTargets();
 
         return PayRequestInfoDto.builder()
                 .payRequestId(payRequestId)

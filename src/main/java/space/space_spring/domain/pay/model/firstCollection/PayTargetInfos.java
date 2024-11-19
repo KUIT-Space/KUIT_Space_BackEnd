@@ -3,6 +3,7 @@ package space.space_spring.domain.pay.model.firstCollection;
 import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PayTargetInfos {
@@ -14,6 +15,7 @@ public class PayTargetInfos {
     }
 
     public List<PayTargetInfoDto> getAll() {
-        return payTargetInfoDtos;
+        // getAll 메서드가 반환하는 리스트는 '읽기 전용'
+        return Collections.unmodifiableList(payTargetInfoDtos);
     }
 }

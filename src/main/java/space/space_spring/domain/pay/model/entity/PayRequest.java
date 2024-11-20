@@ -55,8 +55,8 @@ public class PayRequest extends BaseEntity {
         this.isComplete = isComplete;
     }
 
-    public void changeReceiveAmount(int receiveAmount) {
-        this.receiveAmount = receiveAmount;
+    public void receiveMoneyFromTarget(int money) {
+        receiveAmount += money;
     }
 
     public void addPayRequestTarget(PayRequestTarget payRequestTarget) {

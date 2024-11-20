@@ -1,6 +1,5 @@
 package space.space_spring.domain.pay.model.firstCollection;
 
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PayRequestsTest {
 
@@ -47,10 +45,10 @@ class PayRequestsTest {
         PayRequestTarget target4 = PayRequestTarget.create(payRequest2, 4L, 30000);
 
         target1.changeCompleteStatus(true);         // payRequest1 에 대해서 target1은 정산 완료
-        payRequest1.changeReceiveAmount(20000);
+        payRequest1.receiveMoneyFromTarget(20000);
 
         target3.changeCompleteStatus(true);         // payRequest2 에 대해서 target3은 정산 완료
-        payRequest2.changeReceiveAmount(10000);
+        payRequest2.receiveMoneyFromTarget(10000);
 
         PayRequests payCreatorIsSeongjun = PayRequests.create(List.of(payRequest1, payRequest2));
 

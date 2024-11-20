@@ -7,8 +7,6 @@ import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.enumStatus.UserSignupType;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PayRequestTest {
@@ -30,7 +28,7 @@ class PayRequestTest {
         // target1 : 미정산, target2, target3 : 정산 완료
         target2.changeCompleteStatus(true);
         target3.changeCompleteStatus(true);
-        payRequest.changeReceiveAmount(20000);
+        payRequest.receiveMoneyFromTarget(20000);
 
         //when
         PayRequestInfoDto payRequestInfo = payRequest.getPayRequestInfo();

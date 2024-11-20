@@ -83,7 +83,7 @@ public class PayRequest extends BaseEntity {
                 .bankAccountNum(bankAccountNum)
                 .build();
 
-        build.payRequestTargets = PayRequestTargets.create(new ArrayList<>());          //
+        build.payRequestTargets = PayRequestTargets.create(new ArrayList<>());
 
         return build;
     }

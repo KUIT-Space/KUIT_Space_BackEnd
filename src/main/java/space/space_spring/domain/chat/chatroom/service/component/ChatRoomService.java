@@ -1,4 +1,4 @@
-package space.space_spring.domain.chat.chatroom.service;
+package space.space_spring.domain.chat.chatroom.service.component;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +13,13 @@ import space.space_spring.domain.chat.chatroom.model.response.ChatSuccessRespons
 import space.space_spring.domain.chat.chatroom.model.response.CreateChatRoomResponse;
 import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomMemberResponse;
 import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomResponse;
-import space.space_spring.domain.chat.chatroom.repository.ChatRoomRepository;
 import space.space_spring.domain.chat.chatroom.model.UserChatRoom;
-import space.space_spring.domain.chat.chatting.repository.ChattingRepository;
-import space.space_spring.domain.chat.chatroom.repository.UserChatRoomRepository;
 import space.space_spring.domain.chat.chatroom.model.dto.LastMessageInfoDto;
 import space.space_spring.domain.chat.chatroom.model.request.JoinChatRoomRequest;
 import space.space_spring.domain.chat.chatroom.model.request.CreateChatRoomRequest;
+import space.space_spring.domain.chat.chatroom.service.module.ChatRoomModuleService;
+import space.space_spring.domain.chat.chatroom.service.module.UserChatRoomModuleService;
+import space.space_spring.domain.chat.chatting.service.module.ChattingModuleService;
 import space.space_spring.dto.userSpace.UserInfoInSpace;
 import space.space_spring.entity.*;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
@@ -40,30 +40,27 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    // TODO: util 삭제
     private final UserUtils userUtils;
+    // findUserByUserId -> common module service
     private final SpaceUtils spaceUtils;
-    private final TimeUtils timeUtils;
+    // findSpaceBySpaceId -> common module service
     private final UserSpaceDao userSpaceDao;
-    private final ChattingRepository chattingRepository;
-    private final ChatRoomRepository chatRoomRepository;
-    private final UserChatRoomRepository userChatRoomRepository;
+    // findUserSpaceByUserAndSpace -> common module service
+
+    private final ChatRoomModuleService chatRoomModuleService;
+    private final ChattingModuleService chattingModuleService;
+    private final UserChatRoomModuleService userChatRoomModuleService;
+    private final TimeUtils timeUtils;
 
     @Transactional
     public ReadChatRoomResponse readChatRooms(Long userId, Long spaceId) {
-        // TODO 1: userId에 해당하는 user find
-        User userByUserId = userUtils.findUserByUserId(userId);
-
-        // TODO 2: spaceId에 해당하는 space find
-        Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
-
         // TODO 3: 해당 user의 해당 space 내의 채팅방 리스트 return
-        ChatRooms chatRooms = ChatRooms.of(chatRoomRepository.findByUserAndSpace(userByUserId, spaceBySpaceId));
+        ChatRooms chatRooms = ChatRooms.of(chatRoomModuleService.findChatRooms(userId, spaceId));
 
         List<ChatRoomResponse> chatRoomResponses = chatRooms.toChatRoomResponses(
-                userByUserId,
+                userId,
                 this::getLastMsgInfo,
-                (user, chatRoom) -> calculateUnreadMsgCount(user, chatRoom,
+                (user, chatRoom) -> calculateUnreadMsgCount(user, chatRoom.getId(),
                         getLastMsgInfo(chatRoom).getLastUpdateTime())
         );
 
@@ -81,14 +78,14 @@ public class ChatRoomService {
         Space spaceBySpaceId = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 3: chatRoom 생성 및 저장
-        ChatRoom chatRoom = chatRoomRepository.save(
+        ChatRoom chatRoom = chatRoomModuleService.save(
                 ChatRoom.of(spaceBySpaceId, createChatRoomRequest.getName(), chatRoomImgUrl));
 
         // TODO 4: userChatRoom 매핑 정보 저장
-        userChatRoomRepository.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
+        userChatRoomModuleService.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
         for (Long id : createChatRoomRequest.getMemberList()) {
             User user = userUtils.findUserByUserId(id);
-            userChatRoomRepository.save(UserChatRoom.of(chatRoom, user, LocalDateTime.now()));
+            userChatRoomModuleService.save(UserChatRoom.of(chatRoom, user, LocalDateTime.now()));
         }
 
         // TODO 5: chatroom id 반환
@@ -101,34 +98,20 @@ public class ChatRoomService {
         // TODO 1: spaceId에 해당하는 space find
         Space spaceById = spaceUtils.findSpaceBySpaceId(spaceId);
 
-        // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
-                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
-
         // TODO 3: 해당 userChatRoom의 user들 find
-        List<UserInfoInSpace> userList = getUserInChatRoom(spaceById, chatRoomByChatRoomId);
+        List<UserInfoInSpace> userList = getUserInChatRoom(spaceById, chatRoomId);
 
         return ReadChatRoomMemberResponse.of(userList);
     }
 
     @Transactional
     public ChatSuccessResponse updateLastReadTime(Long userId, Long chatRoomId) {
-        // TODO 1: userId에 해당하는 user find
-        User userByUserId = userUtils.findUserByUserId(userId);
-
-        // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
-                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
-
         // TODO 3: 해당 user와 chatRoom에 대한 userChatRoom find
-        UserChatRoom targetChatRoom = userChatRoomRepository.findByUserAndChatRoomAndStatus(userByUserId,
-                chatRoomByChatRoomId, BaseStatusType.ACTIVE);
+        UserChatRoom targetChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoomId);
 
         // TODO 4: userChatRoom의 마지막으로 읽은 시간 저장
         targetChatRoom.setLastReadTime(LocalDateTime.now());
-        userChatRoomRepository.save(targetChatRoom);
+        userChatRoomModuleService.save(targetChatRoom);
         log.info("userId: " + userId + " socket disconnect 시 마지막으로 읽은 시간: " + targetChatRoom.getLastReadTime());
 
         return ChatSuccessResponse.of(true);
@@ -136,14 +119,11 @@ public class ChatRoomService {
 
     @Transactional
     public ChatSuccessResponse joinChatRoom(Long chatRoomId, JoinChatRoomRequest joinChatRoomRequest) {
-        List<Long> memberIdList = joinChatRoomRequest.getMemberList();
-
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
-                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomModuleService.findChatRoom(chatRoomId);
 
         // TODO 2: 유저들의 채팅방 초대 이력에 따른 재초대
+        List<Long> memberIdList = joinChatRoomRequest.getMemberList();
         handleJoinChatRoom(memberIdList, chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
@@ -152,34 +132,23 @@ public class ChatRoomService {
     @Transactional
     public ChatSuccessResponse modifyChatRoomName(Long chatRoomId, String name) {
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
-                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomModuleService.findChatRoom(chatRoomId);
 
         // TODO 2: 채팅방 이름 변경
         chatRoomByChatRoomId.updateName(name);
-        chatRoomRepository.save(chatRoomByChatRoomId);
+        chatRoomModuleService.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
     }
 
     @Transactional
     public ChatSuccessResponse exitChatRoom(Long userId, Long chatRoomId) {
-        // TODO 1: userId에 해당하는 user find
-        User userByUserId = userUtils.findUserByUserId(userId);
-
-        // TODO 2: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
-                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
-
         // TODO 3: 해당 user와 chatRoom에 대한 userChatRoom find
-        UserChatRoom userChatRoom = userChatRoomRepository.findByUserAndChatRoomAndStatus(userByUserId,
-                chatRoomByChatRoomId, BaseStatusType.ACTIVE);
+        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoomId);
 
         // TODO 4: 해당 userChatRoom inactive로 변경
         userChatRoom.updateInactive();
-        userChatRoomRepository.save(userChatRoom);
+        userChatRoomModuleService.save(userChatRoom);
 
         return ChatSuccessResponse.of(true);
     }
@@ -187,39 +156,32 @@ public class ChatRoomService {
     @Transactional
     public ChatSuccessResponse deleteChatRoom(Long chatRoomId) {
         // TODO 1: chatRoomId에 해당하는 chatRoom find
-        ChatRoom chatRoomByChatRoomId = Optional.ofNullable(
-                        chatRoomRepository.findByIdAndStatus(chatRoomId, BaseStatusType.ACTIVE))
-                .orElseThrow(() -> new CustomException(CHATROOM_NOT_EXIST));
+        ChatRoom chatRoomByChatRoomId = chatRoomModuleService.findChatRoom(chatRoomId);
 
         // TODO 2: 해당 chatRoom inactive로 변경
         chatRoomByChatRoomId.updateInactive();
-        chatRoomRepository.save(chatRoomByChatRoomId);
+        chatRoomModuleService.save(chatRoomByChatRoomId);
 
         return ChatSuccessResponse.of(true);
     }
 
     private LastMessageInfoDto getLastMsgInfo(ChatRoom chatRoom) {
-        ChatMessage lastMsg = chattingRepository.findTopByChatRoomIdAndStatusOrderByCreatedAtDesc(chatRoom.getId(),
-                BaseStatusType.ACTIVE);
-        LocalDateTime lastUpdateTime =
-                lastMsg != null ? lastMsg.getCreatedAt() : timeUtils.getEncodedTime(chatRoom.getCreatedAt());
-        HashMap<String, String> lastContent =
-                lastMsg != null ? lastMsg.getContent() : new HashMap<>(Map.of("text", "메시지를 전송해보세요"));
+        ChatMessage lastMsg = chattingModuleService.findMostRecentMessage(chatRoom);
+        LocalDateTime lastUpdateTime = lastMsg.getCreatedAt();
+        HashMap<String, String> lastContent = lastMsg.getContent();
 
         log.info("마지막으로 업데이트된 시간: " + lastUpdateTime + " 마지막으로 읽은 내용 : " + lastContent);
 
         return LastMessageInfoDto.builder().lastUpdateTime(lastUpdateTime).lastContent(lastContent).build();
     }
 
-    private int calculateUnreadMsgCount(User userByUserId, ChatRoom chatRoom, LocalDateTime lastUpdateTime) {
-        UserChatRoom userChatRoom = userChatRoomRepository.findByUserAndChatRoomAndStatus(userByUserId, chatRoom,
-                BaseStatusType.ACTIVE);
+    private int calculateUnreadMsgCount(Long userId, Long chatRoomId, LocalDateTime lastUpdateTime) {
+        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoomId);
         LocalDateTime lastReadTime = timeUtils.getEncodedTime(userChatRoom.getLastReadTime()); // LocalDateTime으로 변환
         log.info("마지막으로 읽은 시간: " + lastReadTime);
 
-        int unreadMsgCount = chattingRepository.countByChatRoomIdAndStatusAndCreatedAtBetween(
-                chatRoom.getId(),
-                BaseStatusType.ACTIVE,
+        int unreadMsgCount = chattingModuleService.countUnreadMessages(
+                chatRoomId,
                 lastReadTime,
                 lastUpdateTime
         );
@@ -228,9 +190,9 @@ public class ChatRoomService {
         return unreadMsgCount;
     }
 
-    private List<UserInfoInSpace> getUserInChatRoom(Space space, ChatRoom chatRoom) {
+    private List<UserInfoInSpace> getUserInChatRoom(Space space, Long chatRoomId) {
         UserChatRooms userChatRooms = UserChatRooms.of(
-                userChatRoomRepository.findByChatRoomAndStatus(chatRoom, BaseStatusType.ACTIVE));
+                userChatRoomModuleService.findUserChatRooms(chatRoomId));
 
         return userChatRooms.getUsers().stream()
                 .map(user -> {
@@ -246,32 +208,30 @@ public class ChatRoomService {
                 .toList();
     }
 
-    private void handleJoinChatRoom(List<Long> memberIdList, ChatRoom chatRoomByChatRoomId) {
-        for (Long memberId : Objects.requireNonNull(memberIdList)) {
-            User userByUserId = userUtils.findUserByUserId(memberId);
+    private void handleJoinChatRoom(List<Long> memberIdList, ChatRoom chatRoom) {
+        for (Long userId : Objects.requireNonNull(memberIdList)) {
+            User userByUserId = userUtils.findUserByUserId(userId);
 
             // TODO 1: 유저가 채팅방에 초대된 적이 있는 경우 다시 초대
-            if (isUserInChatRoom(memberId, chatRoomByChatRoomId)) {
+            if (isUserInChatRoom(userId, chatRoom.getId())) {
                 // TODO 2: 유저가 채팅방에 초대되었다가 나간 경우 다시 초대
                 if (userByUserId.getStatus().equals(BaseStatusType.INACTIVE)) {
-                    UserChatRoom userChatRoom = userChatRoomRepository.findByUserAndChatRoomAndStatus(userByUserId,
-                            chatRoomByChatRoomId, BaseStatusType.ACTIVE);
+                    UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoom.getId());
                     userChatRoom.setUserRejoin();
-                    userChatRoomRepository.save(userChatRoom);
+                    userChatRoomModuleService.save(userChatRoom);
                     continue;
                 }
                 // TODO 3: 유저가 채팅방에 초대되어서 참가하고 있는 경우 예외 발생
-                throw new CustomException(USER_IS_ALREADY_IN_CHAT_ROOM);
+                throw new CustomException(USER_IS_ALREADY_IN_CHATROOM);
             }
 
             // TODO 4: 채팅방에 초대된 적이 없는 유저에 대한 userChatRoom 테이블 생성
-            userChatRoomRepository.save(UserChatRoom.of(chatRoomByChatRoomId, userByUserId, LocalDateTime.now()));
+            userChatRoomModuleService.save(UserChatRoom.of(chatRoom, userByUserId, LocalDateTime.now()));
         }
     }
 
-    private boolean isUserInChatRoom(Long userId, ChatRoom chatRoomByChatRoomId) {
-        UserChatRooms userChatRooms = UserChatRooms.of(
-                userChatRoomRepository.findByChatRoomAndStatus(chatRoomByChatRoomId, BaseStatusType.ACTIVE));
+    private boolean isUserInChatRoom(Long userId, Long chatRoomId) {
+        UserChatRooms userChatRooms = UserChatRooms.of(userChatRoomModuleService.findUserChatRooms(chatRoomId));
         return userChatRooms.isUserJoined(userId);
     }
 }

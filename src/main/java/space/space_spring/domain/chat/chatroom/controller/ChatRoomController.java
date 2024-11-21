@@ -14,7 +14,7 @@ import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomMember
 import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomResponse;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
-import space.space_spring.domain.chat.chatroom.service.ChatRoomService;
+import space.space_spring.domain.chat.chatroom.service.component.ChatRoomService;
 import space.space_spring.service.S3Uploader;
 
 import java.io.IOException;

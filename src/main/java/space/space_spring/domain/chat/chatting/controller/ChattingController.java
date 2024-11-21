@@ -9,7 +9,7 @@ import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.domain.chat.chatting.model.request.ChatMessageRequest;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageLogResponse;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageResponse;
-import space.space_spring.domain.chat.chatting.service.ChattingService;
+import space.space_spring.domain.chat.chatting.service.component.ChattingService;
 
 import java.io.IOException;
 import java.util.Map;

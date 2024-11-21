@@ -12,7 +12,6 @@ import space.space_spring.domain.chat.chatting.model.response.ChatMessageRespons
 import space.space_spring.domain.chat.chatting.service.module.ChattingModuleService;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
-import space.space_spring.entity.enumStatus.ChatMessageType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.service.S3Uploader;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -42,19 +41,16 @@ public class ChattingService {
             throws IOException {
         UserSpace senderInSpace = userSpaceUtils.isUserInSpace(senderId, chatMessageRequest.getSpaceId())
                 .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_SPACE));
-        String senderName = senderInSpace.getUserName();
-        String senderProfileImg = senderInSpace.getUserProfileImg();
 
         saveFileUrl(chatMessageRequest);
 
-        ChatMessage message = saveChatMessage(senderId, chatMessageRequest, chatRoomId, senderName, senderProfileImg);
+        ChatMessage message = saveChatMessage(chatMessageRequest, chatRoomId, senderInSpace);
 
         return ChatMessageResponse.create(message);
     }
 
     public ChatMessageLogResponse readChatMessageLog(Long chatRoomId) {
-        ChatMessages chatMessages = ChatMessages.of(
-                chattingModuleService.findChatRooms(chatRoomId));
+        ChatMessages chatMessages = ChatMessages.of(chattingModuleService.findChatRooms(chatRoomId));
         return ChatMessageLogResponse.of(chatMessages.toChatMessageResponses());
     }
 
@@ -87,24 +83,22 @@ public class ChattingService {
 
     private static void setFileUrl(ChatMessageRequest chatMessageRequest, String s3Url) {
         if (!s3Url.isEmpty()) {
-            if (chatMessageRequest.getMessageType().equals(ChatMessageType.IMG)) {
-                chatMessageRequest.getContent().put(TYPE_IMAGE, s3Url);
-                return;
+            switch (chatMessageRequest.getMessageType()) {
+                case IMG -> chatMessageRequest.getContent().put(TYPE_IMAGE, s3Url);
+                case FILE -> chatMessageRequest.getContent().put(TYPE_FILE, s3Url);
             }
-            chatMessageRequest.getContent().put(TYPE_FILE, s3Url);
         }
     }
 
     @NotNull
-    private ChatMessage saveChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId,
-                                        String senderName, String senderProfileImg) {
+    private ChatMessage saveChatMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId, UserSpace sender) {
         return chattingModuleService.save(ChatMessage.create(
                 chatMessageRequest.getContent(),
                 chatRoomId,
                 chatMessageRequest.getSpaceId(),
-                senderId,
-                senderName,
-                senderProfileImg,
+                sender.getUser().getUserId(),
+                sender.getUserName(),
+                sender.getUserProfileImg(),
                 chatMessageRequest.getMessageType()
         ));
     }

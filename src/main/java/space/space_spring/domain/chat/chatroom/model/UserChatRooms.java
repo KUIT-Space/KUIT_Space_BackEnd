@@ -1,9 +1,8 @@
-package space.space_spring.domain.chat.chatroom.model.dto;
+package space.space_spring.domain.chat.chatroom.model;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import space.space_spring.domain.chat.chatroom.model.UserChatRoom;
 import space.space_spring.entity.User;
 
 public class UserChatRooms {

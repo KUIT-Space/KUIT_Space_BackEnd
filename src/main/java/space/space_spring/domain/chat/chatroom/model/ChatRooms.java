@@ -1,4 +1,4 @@
-package space.space_spring.domain.chat.chatroom.model.dto;
+package space.space_spring.domain.chat.chatroom.model;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import space.space_spring.domain.chat.chatroom.model.ChatRoom;
+import space.space_spring.domain.chat.chatroom.model.dto.LastMessageInfoDto;
 import space.space_spring.domain.chat.chatroom.model.response.ChatRoomResponse;
 
 public class ChatRooms {

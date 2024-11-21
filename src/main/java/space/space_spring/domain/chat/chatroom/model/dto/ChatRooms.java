@@ -21,7 +21,6 @@ public class ChatRooms {
         return new ChatRooms(chatRooms);
     }
 
-
     public List<ChatRoomResponse> toChatRoomResponses(
             Long userId,
             Function<ChatRoom, LastMessageInfoDto> lastMessageFinder,

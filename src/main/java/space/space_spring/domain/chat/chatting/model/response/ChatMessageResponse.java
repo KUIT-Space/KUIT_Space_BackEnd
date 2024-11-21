@@ -1,5 +1,6 @@
 package space.space_spring.domain.chat.chatting.model.response;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
@@ -23,7 +24,7 @@ public class ChatMessageResponse {
 
     private String senderImg;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private ChatMessageResponse(HashMap<String, String> content, String createdAt, ChatMessageType messageType,
                                Long senderId, String senderName, String senderImg) {
         this.content = content;

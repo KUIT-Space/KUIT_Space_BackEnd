@@ -37,7 +37,7 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "chat_room_img")
     private String img;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private ChatRoom(Long id, Space space, String name, @Nullable String img) {
         this.id = id;
         this.space = space;

@@ -1,5 +1,6 @@
 package space.space_spring.domain.chat.chatroom.model.dto;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ public class LastMessageInfoDto {
 
     private HashMap<String, String> lastContent;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private LastMessageInfoDto(LocalDateTime lastUpdateTime, HashMap<String, String> lastContent) {
         this.lastUpdateTime = lastUpdateTime;
         this.lastContent = lastContent;

@@ -1,5 +1,6 @@
 package space.space_spring.domain.chat.chatroom.model.response;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,7 +8,7 @@ import lombok.Getter;
 public class ChatSuccessResponse {
     private boolean isSuccess;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private ChatSuccessResponse(boolean isSuccess) {
         this.isSuccess = isSuccess;
     }

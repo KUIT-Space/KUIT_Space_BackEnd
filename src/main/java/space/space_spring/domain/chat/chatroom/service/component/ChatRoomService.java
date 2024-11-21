@@ -143,7 +143,7 @@ public class ChatRoomService {
 
         log.info("마지막으로 업데이트된 시간: " + lastUpdateTime + " 마지막으로 읽은 내용 : " + lastContent);
 
-        return LastMessageInfoDto.builder().lastUpdateTime(lastUpdateTime).lastContent(lastContent).build();
+        return LastMessageInfoDto.of(lastUpdateTime, lastContent);
     }
 
     private int calculateUnreadMsgCount(Long userId, Long chatRoomId, LocalDateTime lastUpdateTime) {

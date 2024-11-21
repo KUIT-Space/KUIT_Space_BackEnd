@@ -39,7 +39,7 @@ public class UserChatRoom extends BaseEntity {
     @Column(name = "last_read_time")
     private LocalDateTime lastReadTime;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private UserChatRoom(Long id, ChatRoom chatRoom, User user, @Nullable LocalDateTime lastReadTime) {
         this.id = id;
         this.chatRoom = chatRoom;

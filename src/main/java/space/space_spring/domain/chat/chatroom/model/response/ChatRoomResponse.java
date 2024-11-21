@@ -1,5 +1,6 @@
 package space.space_spring.domain.chat.chatroom.model.response;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.domain.chat.chatroom.model.ChatRoom;
@@ -20,7 +21,7 @@ public class ChatRoomResponse {
 
     private int unreadMsgCount;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private ChatRoomResponse(Long id, String name, String imgUrl, HashMap<String, String> lastMsg, String lastTime,
                             int unreadMsgCount) {
         this.id = id;

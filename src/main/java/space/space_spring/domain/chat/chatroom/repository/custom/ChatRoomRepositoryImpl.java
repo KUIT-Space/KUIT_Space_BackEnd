@@ -6,8 +6,6 @@ import static space.space_spring.domain.chat.chatroom.model.QUserChatRoom.userCh
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import space.space_spring.domain.chat.chatroom.model.ChatRoom;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
 
 import java.util.List;
 import space.space_spring.entity.enumStatus.BaseStatusType;
@@ -19,14 +17,14 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ChatRoom> findByUserAndSpace(User who, Space where) {
+    public List<ChatRoom> findByUserIdAndSpaceId(Long userId, Long spaceId) {
         return jpaQueryFactory
                 .selectFrom(chatRoom)
                 .join(userChatRoom).on(
                         userChatRoom.chatRoom.eq(chatRoom)
-                        .and(userChatRoom.user.eq(who))
+                        .and(userChatRoom.user.userId.eq(userId))
                         .and(userChatRoom.status.eq(BaseStatusType.ACTIVE)))
-                .where(chatRoom.space.eq(where)
+                .where(chatRoom.space.spaceId.eq(spaceId)
                         .and(chatRoom.status.eq(BaseStatusType.ACTIVE)))
                 .orderBy(chatRoom.lastModifiedAt.desc())
                 .fetch();

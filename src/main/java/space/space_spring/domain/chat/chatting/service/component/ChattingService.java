@@ -1,4 +1,4 @@
-package space.space_spring.domain.chat.chatting.service;
+package space.space_spring.domain.chat.chatting.service.component;
 
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
@@ -6,13 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import space.space_spring.domain.chat.chatting.model.ChatMessages;
-import space.space_spring.domain.chat.chatting.repository.ChattingRepository;
 import space.space_spring.domain.chat.chatting.model.request.ChatMessageRequest;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageLogResponse;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageResponse;
+import space.space_spring.domain.chat.chatting.service.module.ChattingModuleService;
 import space.space_spring.entity.UserSpace;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
-import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.entity.enumStatus.ChatMessageType;
 import space.space_spring.exception.CustomException;
 import space.space_spring.service.S3Uploader;
@@ -29,7 +28,9 @@ public class ChattingService {
 
     private final S3Uploader s3Uploader;
     private final UserSpaceUtils userSpaceUtils;
-    private final ChattingRepository chattingRepository;
+    // isUserInSpace -> common module service
+
+    private final ChattingModuleService chattingModuleService;
 
     private final static String TYPE_IMAGE = "image";
     private final static String TYPE_FILE = "file";
@@ -52,8 +53,8 @@ public class ChattingService {
     }
 
     public ChatMessageLogResponse readChatMessageLog(Long chatRoomId) {
-        ChatMessages chatMessages = ChatMessages.of(chattingRepository.findByChatRoomIdAndStatus(chatRoomId,
-                BaseStatusType.ACTIVE));
+        ChatMessages chatMessages = ChatMessages.of(
+                chattingModuleService.findChatRooms(chatRoomId));
         return ChatMessageLogResponse.of(chatMessages.toChatMessageResponses());
     }
 
@@ -97,7 +98,7 @@ public class ChattingService {
     @NotNull
     private ChatMessage saveChatMessage(Long senderId, ChatMessageRequest chatMessageRequest, Long chatRoomId,
                                         String senderName, String senderProfileImg) {
-        return chattingRepository.insert(ChatMessage.create(
+        return chattingModuleService.save(ChatMessage.create(
                 chatMessageRequest.getContent(),
                 chatRoomId,
                 chatMessageRequest.getSpaceId(),

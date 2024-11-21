@@ -8,7 +8,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import space.space_spring.domain.chat.chatroom.model.ChatRoom;
 import space.space_spring.domain.chat.chatroom.model.response.ChatRoomResponse;
-import space.space_spring.entity.User;
 
 public class ChatRooms {
 
@@ -24,17 +23,16 @@ public class ChatRooms {
 
 
     public List<ChatRoomResponse> toChatRoomResponses(
-            User user,
+            Long userId,
             Function<ChatRoom, LastMessageInfoDto> lastMessageFinder,
-            BiFunction<User, ChatRoom, Integer> unreadMessageCounter) {
-
+            BiFunction<Long, ChatRoom, Integer> unreadMessageCounter) {
         return chatRooms.stream()
                 .map(chatRoom -> {
                     LastMessageInfoDto lastMessageInfo = lastMessageFinder.apply(chatRoom);
                     LocalDateTime lastUpdateTime = lastMessageInfo.getLastUpdateTime();
                     HashMap<String, String> lastContent = lastMessageInfo.getLastContent();
 
-                    int unreadMsgCount = unreadMessageCounter.apply(user, chatRoom);
+                    int unreadMsgCount = unreadMessageCounter.apply(userId, chatRoom);
 
                     return ChatRoomResponse.create(chatRoom, lastContent, String.valueOf(lastUpdateTime),
                             unreadMsgCount);

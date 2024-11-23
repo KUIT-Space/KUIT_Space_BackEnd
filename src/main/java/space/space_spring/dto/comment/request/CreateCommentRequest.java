@@ -1,11 +1,10 @@
 package space.space_spring.dto.comment.request;
 
-import com.mongodb.lang.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import space.space_spring.entity.Comment;
 import space.space_spring.entity.Post;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 
 
 public class CreateCommentRequest {

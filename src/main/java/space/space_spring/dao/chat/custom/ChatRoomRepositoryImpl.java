@@ -3,8 +3,8 @@ package space.space_spring.dao.chat.custom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import space.space_spring.entity.ChatRoom;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.space.model.entity.Space;
+import space.space_spring.domain.user.model.entity.User;
 
 import java.util.List;
 import space.space_spring.entity.enumStatus.BaseStatusType;

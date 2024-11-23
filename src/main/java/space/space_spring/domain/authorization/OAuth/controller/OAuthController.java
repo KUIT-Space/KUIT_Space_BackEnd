@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import space.space_spring.domain.authorization.jwt.service.JwtService;
 import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
 import space.space_spring.dto.oAuth.KakaoInfo;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.authorization.OAuth.service.OAuthService;
 
 import java.io.IOException;

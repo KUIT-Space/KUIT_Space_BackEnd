@@ -1,11 +1,10 @@
 package space.space_spring.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.dto.VoiceRoom.GetVoiceRoomList;
+import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.dto.VoiceRoom.RoomDto;
 
 @Entity
@@ -35,7 +34,7 @@ public class VoiceRoom extends BaseEntity{
         this.order = order;
         this.space = space;
     }
-    public static VoiceRoom createVoiceRoom(String name,int order,Space space){
+    public static VoiceRoom createVoiceRoom(String name, int order, Space space){
         VoiceRoom voiceRoom= VoiceRoom.builder()
                 .name(name)
                 .order(order)

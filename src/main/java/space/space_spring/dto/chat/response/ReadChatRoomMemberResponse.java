@@ -2,7 +2,7 @@ package space.space_spring.dto.chat.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import space.space_spring.dto.userSpace.UserInfoInSpace;
+import space.space_spring.domain.userSpace.model.UserInfoInSpace;
 
 import java.util.ArrayList;
 import java.util.List;

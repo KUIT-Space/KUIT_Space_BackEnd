@@ -8,12 +8,12 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
-import space.space_spring.dao.SpaceDao;
+import space.space_spring.domain.space.repository.SpaceDao;
 import space.space_spring.domain.user.repository.UserDao;
-import space.space_spring.dao.UserSpaceDao;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
-import space.space_spring.entity.UserSpace;
+import space.space_spring.domain.userSpace.repository.UserSpaceDao;
+import space.space_spring.domain.space.model.entity.Space;
+import space.space_spring.domain.user.model.entity.User;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.exception.CustomException;
 
 import java.util.Map;

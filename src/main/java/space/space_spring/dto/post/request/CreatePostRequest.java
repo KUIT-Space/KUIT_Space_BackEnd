@@ -4,8 +4,8 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.entity.Post;
 import space.space_spring.entity.PostImage;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.space.model.entity.Space;
+import space.space_spring.domain.user.model.entity.User;
 
 import java.util.List;
 

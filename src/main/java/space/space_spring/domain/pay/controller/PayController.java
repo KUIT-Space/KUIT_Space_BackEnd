@@ -6,23 +6,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
-import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
-import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
-import space.space_spring.domain.pay.model.dto.TotalPayInfoDto;
-import space.space_spring.domain.pay.model.request.PostPayCompleteRequest;
-import space.space_spring.domain.pay.model.request.PostPayCreateRequest;
+import space.space_spring.domain.pay.model.request.PayCreateRequest;
 import space.space_spring.domain.pay.model.response.*;
-import space.space_spring.domain.pay.model.entity.PayRequestTarget;
-import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.domain.pay.service.PayService;
 import space.space_spring.util.pay.PayUtils;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
-
-import java.util.List;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
@@ -98,12 +89,27 @@ public class PayController {
 //        return new BaseResponse<>(payService.getRecentPayRequestBankInfoForUser(userId));
 //    }
 //
-//    /**
-//     * 정산 생성
-//     * response 추가 협의 필요 -> 굳이 PayRequestId를 response 안해도 될꺼같음
-//     */
+
+    /**
+     * 정산 생성
+     * response 추가 협의 필요 -> 굳이 PayRequestId를 response 안해도 될꺼같음
+     */
+    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PayCreateRequest payCreateRequest, BindingResult bindingResult) {
+        // request 입력 모델 유효성 검증
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
+        }
+
+        payService.createPay(userId, spaceId, payCreateRequest.toServiceRequest());
+
+    }
+
+
+
+
+
 //    @PostMapping("/space/{spaceId}/pay")
-//    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PostPayCreateRequest postPayCreateRequest, BindingResult bindingResult) {
+//    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PayCreateRequest payCreateRequest, BindingResult bindingResult) {
 //
 //        // TODO 1. request dto validation
 //        if (bindingResult.hasErrors()) {
@@ -117,7 +123,7 @@ public class PayController {
 //        // 현재 검증 시 에러가 발생하면 그냥 "스페이스에 속하는 유저가 아닙니다" 라는 에러메시지만 나오고,
 //        // 어떤 유저가 스페이스에 속하지 않는지에 대한 정보가 없음
 //        // => 추후 에러메시지의 수정이 필요할듯??
-//        for (PostPayCreateRequest.TargetInfo targetInfo : postPayCreateRequest.getTargetInfoList()) {
+//        for (PayCreateRequest.TargetInfo targetInfo : payCreateRequest.getTargetInfoList()) {
 //            validateIsUserInSpace(targetInfo.getTargetUserId(), spaceId);
 //        }
 //
@@ -126,10 +132,10 @@ public class PayController {
 //
 //        // TODO 5. 정산 요청 금액의 유효성 검사
 //        // return 값 : 미정산 금액
-//        int unRequestedAmount = validatePayAmount(postPayCreateRequest);
+//        int unRequestedAmount = validatePayAmount(payCreateRequest);
 //
 //        // TODO 6. 정산 생성
-//        payService.createPay(userId, spaceId, postPayCreateRequest, unRequestedAmount);
+//        payService.createPay(userId, spaceId, payCreateRequest, unRequestedAmount);
 //
 //        return new BaseResponse<>("정산 생성 성공");
 //    }

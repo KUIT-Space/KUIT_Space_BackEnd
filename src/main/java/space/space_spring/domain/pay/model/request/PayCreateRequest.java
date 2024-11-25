@@ -1,7 +1,6 @@
 package space.space_spring.domain.pay.model.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +10,12 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-public class PostPayCreateRequest {
+public class PayCreateRequest {
 
     /**
      * PayRequest 엔티티 생성 시 필요한 정보
      */
-    @NotNull(message = "총 정산 요청 금액은 공백일 수 없습니다.")
+    @NotBlank(message = "총 정산 요청 금액은 공백일 수 없습니다.")
     private int totalAmount;
 
     @NotBlank(message = "은행 이름은 공백일 수 없습니다.")
@@ -30,17 +28,34 @@ public class PostPayCreateRequest {
      * PayRequestTarget 엔티티 생성 시 필요한 정보
      * <targetUserId requestedAmount> 쌍
      */
-    private List<TargetInfo> targetInfoList = new ArrayList<>();
+    private List<TargetInfoRequest> targetInfoRequests;
 
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TargetInfo {
+    private static class TargetInfoRequest {
 
         @NotBlank(message = "정산 요청 타겟 유저의 id값은 공백일 수 없습니다.")
         private Long targetUserId;
 
         @NotBlank(message = "정산 요청 금액은 공백일 수 없습니다.")
         private int requestedAmount;
+
+        public PayCreateServiceRequest.TargetInfo toTargetInfo() {
+            return PayCreateServiceRequest.TargetInfo.builder()
+                    .targetUserId(targetUserId)
+                    .requestedAmount(requestedAmount)
+                    .build();
+        }
+    }
+
+    public PayCreateServiceRequest toServiceRequest() {
+        return PayCreateServiceRequest.builder()
+                .totalAmount(totalAmount)
+                .bankName(bankName)
+                .bankAccountNum(bankAccountNum)
+                .targetInfos(targetInfoRequests.stream()
+                        .map(TargetInfoRequest::toTargetInfo)
+                        .toList())
+                .build();
     }
 }

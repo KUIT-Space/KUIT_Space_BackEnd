@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.user.repository.UserDao;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.enumStatus.UserSignupType;
 import space.space_spring.exception.CustomException;
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import space.space_spring.entity.BaseEntity;
-import space.space_spring.entity.Space;
+import space.space_spring.domain.space.model.entity.Space;
 
 @Entity
 @Getter

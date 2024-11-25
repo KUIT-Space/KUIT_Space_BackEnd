@@ -1,25 +1,11 @@
 package space.space_spring.concurrency;
 
-import livekit.LivekitModels;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import space.space_spring.dao.VoiceRoomRepository;
-import space.space_spring.dto.VoiceRoom.RoomDto;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.VoiceRoom;
-import org.mockito.Mock;
-import org.mockito.InjectMocks;
-import space.space_spring.util.LiveKitUtils;
-import space.space_spring.util.space.SpaceUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
-import static org.mockito.Mockito.when;
 
 
 public class completableFutureTest {

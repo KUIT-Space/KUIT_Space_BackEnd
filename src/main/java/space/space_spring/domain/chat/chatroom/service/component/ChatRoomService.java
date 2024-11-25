@@ -19,8 +19,10 @@ import space.space_spring.domain.chat.chatroom.model.request.CreateChatRoomReque
 import space.space_spring.domain.chat.chatroom.service.module.ChatRoomModuleService;
 import space.space_spring.domain.chat.chatroom.service.module.UserChatRoomModuleService;
 import space.space_spring.domain.chat.chatting.service.module.ChattingModuleService;
-import space.space_spring.dto.userSpace.UserInfoInSpace;
-import space.space_spring.entity.*;
+import space.space_spring.domain.space.model.entity.Space;
+import space.space_spring.domain.user.model.entity.User;
+import space.space_spring.domain.userSpace.model.UserInfoInSpace;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 
 import space.space_spring.entity.enumStatus.BaseStatusType;

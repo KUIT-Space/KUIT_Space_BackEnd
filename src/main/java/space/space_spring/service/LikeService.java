@@ -8,6 +8,7 @@ import space.space_spring.dao.CommentDao;
 import space.space_spring.dao.CommentLikeDao;
 import space.space_spring.dao.PostLikeDao;
 import space.space_spring.dao.PostDao;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.*;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.user.UserUtils;

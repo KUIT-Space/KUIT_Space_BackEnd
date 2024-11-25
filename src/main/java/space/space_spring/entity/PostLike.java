@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import space.space_spring.domain.user.model.entity.User;
 
 @Entity
 @Table(name = "Post_Like")

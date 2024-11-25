@@ -3,7 +3,7 @@ package space.space_spring.domain.chat.chatroom.model.response;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import space.space_spring.dto.userSpace.UserInfoInSpace;
+import space.space_spring.domain.userSpace.model.UserInfoInSpace;
 
 import java.util.List;
 

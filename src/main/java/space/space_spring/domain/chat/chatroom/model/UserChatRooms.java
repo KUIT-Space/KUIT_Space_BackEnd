@@ -3,7 +3,7 @@ package space.space_spring.domain.chat.chatroom.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import space.space_spring.entity.User;
+import space.space_spring.domain.user.model.entity.User;
 
 public class UserChatRooms {
 

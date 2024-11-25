@@ -11,7 +11,6 @@ import space.space_spring.domain.user.model.entity.User;
 
 import java.time.LocalDateTime;
 import space.space_spring.entity.BaseEntity;
-import space.space_spring.entity.User;
 
 @Entity
 @Getter

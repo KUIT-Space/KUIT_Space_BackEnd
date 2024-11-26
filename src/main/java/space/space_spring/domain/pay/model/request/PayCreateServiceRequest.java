@@ -4,6 +4,7 @@ import com.amazonaws.services.ec2.model.UpdateSecurityGroupRuleDescriptionsIngre
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.pay.model.PayType;
 
 import java.util.List;
 
@@ -17,28 +18,17 @@ public class PayCreateServiceRequest {
 
     private String bankAccountNum;
 
-    private List<TargetInfo> targetInfos;
+    private List<PayCreateTargetInfo> payCreateTargetInfos;
 
-    @Getter
-    @NoArgsConstructor
-    public static class TargetInfo {
-        private Long targetUserId;
-
-        private int requestedAmount;
-
-        @Builder
-        private TargetInfo(Long targetUserId, Integer requestedAmount) {
-            this.targetUserId = targetUserId;
-            this.requestedAmount = requestedAmount;
-        }
-    }
+    private PayType payType;
 
     @Builder
-    private PayCreateServiceRequest(int totalAmount, String bankName, String bankAccountNum, List<TargetInfo> targetInfos) {
+    private PayCreateServiceRequest(int totalAmount, String bankName, String bankAccountNum, List<PayCreateTargetInfo> payCreateTargetInfos, PayType payType) {
         this.totalAmount = totalAmount;
         this.bankName = bankName;
         this.bankAccountNum = bankAccountNum;
-        this.targetInfos = targetInfos;
+        this.payCreateTargetInfos = payCreateTargetInfos;
+        this.payType = payType;
     }
 
 }

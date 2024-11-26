@@ -44,6 +44,8 @@ public class PayRequest extends BaseEntity {
     @Column(name = "receive_amount")
     private int receiveAmount;          // 정산 받은 금액
 
+    // 미정산 금액 field 추가 ??
+
     @Column(name = "is_complete")
     private boolean isComplete;
 

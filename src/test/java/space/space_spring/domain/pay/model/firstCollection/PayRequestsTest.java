@@ -3,6 +3,7 @@ package space.space_spring.domain.pay.model.firstCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.entity.PayRequest;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
 import space.space_spring.domain.space.model.entity.Space;
@@ -36,11 +37,11 @@ class PayRequestsTest {
     @DisplayName("멤버 변수인 PayRequest list 로부터 [payRequestId, 정산 총 금액, 현재까지 받은 금액, 정산 요청한 총 사람 수, 그 중 돈을 보낸 사람 수] 정보를 찾아준다.")
     void getPayRequestInfos() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(seongjun, kuit, 40000, "우리은행", "111-111");
+        PayRequest payRequest1 = PayRequest.create(seongjun, kuit, 40000, "우리은행", "111-111", PayType.INDIVIDUAL);
         PayRequestTarget target1 = PayRequestTarget.create(payRequest1, 2L, 20000);
         PayRequestTarget target2 = PayRequestTarget.create(payRequest1, 3L, 20000);
 
-        PayRequest payRequest2 = PayRequest.create(seongjun, kuit, 40000, "신한은행", "222-222");
+        PayRequest payRequest2 = PayRequest.create(seongjun, kuit, 40000, "신한은행", "222-222", PayType.INDIVIDUAL);
         PayRequestTarget target3 = PayRequestTarget.create(payRequest2, 3L, 10000);
         PayRequestTarget target4 = PayRequestTarget.create(payRequest2, 4L, 30000);
 

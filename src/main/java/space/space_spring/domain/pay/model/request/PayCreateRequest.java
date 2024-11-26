@@ -1,11 +1,11 @@
 package space.space_spring.domain.pay.model.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.pay.model.PayType;
+import space.space_spring.global.common.EnumValidator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,11 +28,14 @@ public class PayCreateRequest {
      * PayRequestTarget 엔티티 생성 시 필요한 정보
      * <targetUserId requestedAmount> 쌍
      */
-    private List<TargetInfoRequest> targetInfoRequests;
+    private List<PayCreateTargetRequest> targetInfoRequests;
+
+    @EnumValidator(enumClass = PayType.class, message = "payType은 INDIVIDUAL 또는 EQUAL_SPLIT 이어야 합니다.")
+    private String payType;
 
     @Getter
     @NoArgsConstructor
-    private static class TargetInfoRequest {
+    private static class PayCreateTargetRequest {
 
         @NotBlank(message = "정산 요청 타겟 유저의 id값은 공백일 수 없습니다.")
         private Long targetUserId;
@@ -40,8 +43,8 @@ public class PayCreateRequest {
         @NotBlank(message = "정산 요청 금액은 공백일 수 없습니다.")
         private int requestedAmount;
 
-        public PayCreateServiceRequest.TargetInfo toTargetInfo() {
-            return PayCreateServiceRequest.TargetInfo.builder()
+        public PayCreateTargetInfo toPayCreateTargetInfo() {
+            return PayCreateTargetInfo.builder()
                     .targetUserId(targetUserId)
                     .requestedAmount(requestedAmount)
                     .build();
@@ -53,9 +56,10 @@ public class PayCreateRequest {
                 .totalAmount(totalAmount)
                 .bankName(bankName)
                 .bankAccountNum(bankAccountNum)
-                .targetInfos(targetInfoRequests.stream()
-                        .map(TargetInfoRequest::toTargetInfo)
+                .payCreateTargetInfos(targetInfoRequests.stream()
+                        .map(PayCreateTargetRequest::toPayCreateTargetInfo)
                         .toList())
+                .payType(PayType.valueOf(payType))
                 .build();
     }
 }

@@ -94,18 +94,14 @@ public class PayController {
      * 정산 생성
      * response 추가 협의 필요 -> 굳이 PayRequestId를 response 안해도 될꺼같음
      */
-    public BaseResponse<String> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PayCreateRequest payCreateRequest, BindingResult bindingResult) {
+    public BaseResponse<Long> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PayCreateRequest payCreateRequest, BindingResult bindingResult) {
         // request 입력 모델 유효성 검증
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
         }
 
-        payService.createPay(userId, spaceId, payCreateRequest.toServiceRequest());
-
+        return new BaseResponse<>(payService.createPay(userId, spaceId, payCreateRequest.toServiceRequest()));
     }
-
-
-
 
 
 //    @PostMapping("/space/{spaceId}/pay")

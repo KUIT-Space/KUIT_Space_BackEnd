@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
 import space.space_spring.domain.space.repository.SpaceRepository;
 import space.space_spring.domain.userSpace.repository.UserSpaceRepository;
@@ -79,16 +80,16 @@ class PayServiceTest {
     void getPayHomeInfos1() throws Exception {
         //given
         // seongjun 이 kuit 에서 생성한 3개의 정산 요청
-        PayRequest inCompletePay1_seongjun = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
-        PayRequest inCompletePay2_seongjun = PayRequest.create(seongjun, kuit, 40000, "bank", "accountNum");
-        PayRequest completePay_seongjun = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
+        PayRequest inCompletePay1_seongjun = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum", PayType.INDIVIDUAL);
+        PayRequest inCompletePay2_seongjun = PayRequest.create(seongjun, kuit, 40000, "bank", "accountNum", PayType.INDIVIDUAL);
+        PayRequest completePay_seongjun = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum", PayType.INDIVIDUAL);
         completePay_seongjun.changeCompleteStatus(true);
 
         // seohyun 이 kuit 에서 생성한 1개의 정산 요청
-        PayRequest inCompletePay_seohyun = PayRequest.create(seohyun, kuit, 40000, "국민은행", "111-111");
+        PayRequest inCompletePay_seohyun = PayRequest.create(seohyun, kuit, 40000, "국민은행", "111-111", PayType.INDIVIDUAL);
 
         // Kyeongmin 이 kuit 에서 생성한 1개의 정산 요청
-        PayRequest completePay_kyeongmin = PayRequest.create(kyeongmin, kuit, 20000, "우리은행", "222-222");
+        PayRequest completePay_kyeongmin = PayRequest.create(kyeongmin, kuit, 20000, "우리은행", "222-222", PayType.INDIVIDUAL);
         completePay_kyeongmin.changeCompleteStatus(true);
 
         // 각 정산 요청의 타겟들
@@ -150,7 +151,7 @@ class PayServiceTest {
     @DisplayName("유저가 요청한 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList 를 return 한다.")
     void getPayHomeInfos2() throws Exception {
         //given
-        PayRequest completePay = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
+        PayRequest completePay = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum", PayType.INDIVIDUAL);
         completePay.changeCompleteStatus(true);
 
         PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, sangjun.getUserId(), 10000);
@@ -176,7 +177,7 @@ class PayServiceTest {
     @DisplayName("유저가 요청받은 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList를 return 한다.")
     void getPayHomeInfos3() throws Exception {
         //given
-        PayRequest completePay = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
+        PayRequest completePay = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum", PayType.INDIVIDUAL);
         completePay.changeCompleteStatus(true);
 
         PayRequestTarget completeTarget1 = PayRequestTarget.create(completePay, seohyun.getUserId(), 10000);
@@ -204,7 +205,7 @@ class PayServiceTest {
         //given
         Space alcon = spaceRepository.save(Space.create("space", "profileImg"));
 
-        PayRequest payRequest = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum");
+        PayRequest payRequest = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum", PayType.INDIVIDUAL);
 
         PayRequestTarget target1 = PayRequestTarget.create(payRequest, sangjun.getUserId(), 10000);
         PayRequestTarget target2 = PayRequestTarget.create(payRequest, seohyun.getUserId(), 10000);

@@ -2,6 +2,7 @@ package space.space_spring.domain.pay.model.entity;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
@@ -19,7 +20,7 @@ class PayRequestTest {
 
         Space space = Space.create("space", "img");
 
-        PayRequest payRequest = PayRequest.create(payCreator, space, 30000, "우리은행", "111-111");
+        PayRequest payRequest = PayRequest.create(payCreator, space, 30000, "우리은행", "111-111", PayType.INDIVIDUAL);
 
         PayRequestTarget target1 = PayRequestTarget.create(payRequest, 1L, 10000);
         PayRequestTarget target2 = PayRequestTarget.create(payRequest, 2L, 10000);

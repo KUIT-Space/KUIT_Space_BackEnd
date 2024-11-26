@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.dto.RecentPayRequestBankInfoDto;
 import space.space_spring.domain.pay.model.entity.PayRequest;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
@@ -73,7 +74,7 @@ public class PayDao {
     }
 
     public PayRequest createPayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum) {
-        PayRequest payRequest = PayRequest.create(payCreateUser, space, totalAmount, bankName, bankAccountNum);
+        PayRequest payRequest = PayRequest.create(payCreateUser, space, totalAmount, bankName, bankAccountNum, PayType.INDIVIDUAL);
 
         em.persist(payRequest);
         return payRequest;

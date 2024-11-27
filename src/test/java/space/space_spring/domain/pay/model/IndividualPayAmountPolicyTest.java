@@ -30,7 +30,7 @@ class IndividualPayAmountPolicyTest {
     }
 
     @Test
-    @DisplayName("전체 정산 금액과 정산 타겟들이 요청받은 금액들의 합이 일치하지 않을 경우, 예외를 발생시킨다")
+    @DisplayName("전체 정산 금액과 정산 타겟들이 요청받은 금액들의 합이 일치하지 않을 경우, 예외를 발생시킨다.")
     void validatePayAmount2() throws Exception {
         //given
         int totalAmount = 40000;

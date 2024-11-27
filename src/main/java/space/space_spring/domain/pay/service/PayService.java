@@ -92,8 +92,15 @@ public class PayService {
         payCreateValidator.validatePayAmount(serviceRequest.getPayType(), serviceRequest.getTotalAmount(), serviceRequest.getPayCreateTargetInfos());
 
         // 정산 관련 엔티티들을 생성 & 저장
+        PayRequest payRequest = PayRequest.create(userSpace.getUser(), userSpace.getSpace(), serviceRequest.getTotalAmount(), serviceRequest.getBankName(), serviceRequest.getBankAccountNum(), serviceRequest.getPayType());
+        PayRequest save = payRequestRepository.save(payRequest);
 
+        for (PayCreateTargetInfo targetInfo : serviceRequest.getPayCreateTargetInfos()) {
+            PayRequestTarget payRequestTarget = PayRequestTarget.create(save, targetInfo.getTargetUserId(), targetInfo.getRequestedAmount());
+            payRequestTargetRepository.save(payRequestTarget);
+        }
 
+        return save.getPayRequestId();
     }
 
 

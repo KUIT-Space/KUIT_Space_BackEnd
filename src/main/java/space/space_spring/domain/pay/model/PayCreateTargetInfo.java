@@ -1,4 +1,4 @@
-package space.space_spring.domain.pay.model.request;
+package space.space_spring.domain.pay.model;
 
 import lombok.Builder;
 import lombok.Getter;

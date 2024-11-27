@@ -3,6 +3,7 @@ package space.space_spring.domain.pay.model.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.pay.model.PayCreateTargetInfo;
 import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.global.common.EnumValidator;
 

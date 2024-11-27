@@ -123,10 +123,11 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 12000 : Pay 오류
      */
     INVALID_PAY_CREATE(12000, HttpStatus.BAD_REQUEST, "정산 생성 요청에서 잘못된 값이 존재합니다."),
-    INVALID_PAY_AMOUNT(12001, HttpStatus.BAD_REQUEST, "정산 요청 금액들의 합과 정산 요청 총 금액이 일치하지 않습니다."),
-    PAY_REQUEST_NOT_FOUND(12002, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
-    PAY_REQUEST_TARGET_NOT_FOUND(12003, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
-    INVALID_PAY_REQUEST_TARGET_ID(12004, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다.");
+    INVALID_INDIVIDUAL_AMOUNT(12001, HttpStatus.BAD_REQUEST, "정산 요청 금액들의 합과 정산 요청 총 금액이 일치하지 않습니다."),
+    INVALID_EQUAL_SPLIT_AMOUNT(12002, HttpStatus.BAD_REQUEST, "정산 요청 금액들 중 1/N 정산 정책에 위배되는 값이 있습니다."),
+    PAY_REQUEST_NOT_FOUND(12003, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
+    PAY_REQUEST_TARGET_NOT_FOUND(12004, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
+    INVALID_PAY_REQUEST_TARGET_ID(12005, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다.");
   
     private final int code;
     private final HttpStatus status;

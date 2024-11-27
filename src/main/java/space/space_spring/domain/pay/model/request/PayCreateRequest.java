@@ -1,5 +1,6 @@
 package space.space_spring.domain.pay.model.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class PayCreateRequest {
      * PayRequestTarget 엔티티 생성 시 필요한 정보
      * <targetUserId requestedAmount> 쌍
      */
+    @Valid
     private List<PayCreateTargetRequest> targetInfoRequests;
 
     @EnumValidator(enumClass = PayType.class, message = "payType은 INDIVIDUAL 또는 EQUAL_SPLIT 이어야 합니다.")

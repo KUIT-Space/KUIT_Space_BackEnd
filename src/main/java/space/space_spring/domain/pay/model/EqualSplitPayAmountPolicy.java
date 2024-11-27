@@ -4,7 +4,7 @@ import space.space_spring.exception.CustomException;
 
 import java.util.List;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_PAY_AMOUNT;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_EQUAL_SPLIT_AMOUNT;
 
 public class EqualSplitPayAmountPolicy implements PayAmountPolicy {
 
@@ -15,7 +15,7 @@ public class EqualSplitPayAmountPolicy implements PayAmountPolicy {
 
         for (Integer targetAmount : targetAmounts) {
             if (targetAmount != expectedAmountPerTarget) {
-                throw new CustomException(INVALID_PAY_AMOUNT);
+                throw new CustomException(INVALID_EQUAL_SPLIT_AMOUNT);
             }
         }
     }

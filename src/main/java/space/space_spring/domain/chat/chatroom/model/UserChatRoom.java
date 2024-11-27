@@ -2,6 +2,7 @@ package space.space_spring.domain.chat.chatroom.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,12 +36,12 @@ public class UserChatRoom extends BaseEntity {
     private User user;
 
     @Comment("마지막으로 읽은 시간")
-    @Nullable
+    @NotNull
     @Column(name = "last_read_time")
     private LocalDateTime lastReadTime;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private UserChatRoom(Long id, ChatRoom chatRoom, User user, @Nullable LocalDateTime lastReadTime) {
+    private UserChatRoom(Long id, ChatRoom chatRoom, User user, LocalDateTime lastReadTime) {
         this.id = id;
         this.chatRoom = chatRoom;
         this.user = user;

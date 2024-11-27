@@ -2,6 +2,7 @@ package space.space_spring.domain.chat.chatroom.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,12 +34,12 @@ public class ChatRoom extends BaseEntity {
     private String name;
 
     @Comment("채팅방 이미지")
-    @Nullable
+    @NotNull
     @Column(name = "chat_room_img")
     private String img;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private ChatRoom(Long id, Space space, String name, @Nullable String img) {
+    private ChatRoom(Long id, Space space, String name, String img) {
         this.id = id;
         this.space = space;
         this.name = name;

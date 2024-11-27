@@ -10,7 +10,7 @@ import space.space_spring.domain.pay.model.firstCollection.PayRequests;
 import space.space_spring.domain.pay.model.firstCollection.PayTargetInfos;
 import space.space_spring.domain.pay.model.mapper.PayMapper;
 import space.space_spring.domain.pay.model.request.PayCreateServiceRequest;
-import space.space_spring.domain.pay.model.request.PayCreateTargetInfo;
+import space.space_spring.domain.pay.model.PayCreateTargetInfo;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.domain.userSpace.repository.UserSpaceRepository;
 import space.space_spring.domain.pay.model.entity.PayRequest;
@@ -78,23 +78,23 @@ public class PayService {
         return payRequestTargets.getPayTargetInfos();
     }
 
-//    @Transactional
-//    public Long createPay(Long userId, Long spaceId, PayCreateServiceRequest serviceRequest) {
-//        // 유저(= 정산 생성자)가 스페이스에 속하는 지 검증하고,
-//        UserSpace userSpace = validateUserInSpace(userId, spaceId);
-//
-//        // 정산 타겟 유저들이 모두 스페이스에 속하는 지 검증하고,
-//        for (PayCreateTargetInfo targetInfo : serviceRequest.getPayCreateTargetInfos()) {
-//            validateUserInSpace(targetInfo.getTargetUserId(), spaceId);
-//        }
-//
-//        // 정산 요청 금액의 유효성을 검사하고,
-//        payCreateValidator.validatePayAmount(serviceRequest.getTotalAmount(), serviceRequest.getPayCreateTargetInfos());
-//
-//        // 정산 관련 엔티티들을 생성 & 저장
-//
-//
-//    }
+    @Transactional
+    public Long createPay(Long userId, Long spaceId, PayCreateServiceRequest serviceRequest) {
+        // 유저(= 정산 생성자)가 스페이스에 속하는 지 검증하고,
+        UserSpace userSpace = validateUserInSpace(userId, spaceId);
+
+        // 정산 타겟 유저들이 모두 스페이스에 속하는 지 검증하고,
+        for (PayCreateTargetInfo targetInfo : serviceRequest.getPayCreateTargetInfos()) {
+            validateUserInSpace(targetInfo.getTargetUserId(), spaceId);
+        }
+
+        // 정산 요청 금액의 유효성을 검사하고,
+        payCreateValidator.validatePayAmount(serviceRequest.getPayType(), serviceRequest.getTotalAmount(), serviceRequest.getPayCreateTargetInfos());
+
+        // 정산 관련 엔티티들을 생성 & 저장
+
+
+    }
 
 
 //    @Transactional

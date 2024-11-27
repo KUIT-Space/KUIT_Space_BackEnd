@@ -1,26 +1,19 @@
 package space.space_spring.domain.pay.model;
 
 import org.springframework.stereotype.Component;
-import space.space_spring.domain.pay.model.request.PayCreateTargetInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class PayCreateValidator {
 
-    public void validatePayAmount(int totalAmount, List<PayCreateTargetInfo> payCreateTargetInfos) {
-
-        int sumOfRequestedAmount = 0;
+    public void validatePayAmount(PayType payType, int totalAmount, List<PayCreateTargetInfo> payCreateTargetInfos) {
+        List<Integer> targetAmounts = new ArrayList<>();
         for (PayCreateTargetInfo payCreateTargetInfo : payCreateTargetInfos) {
-            sumOfRequestedAmount += payCreateTargetInfo.getRequestedAmount();
+            targetAmounts.add(payCreateTargetInfo.getRequestedAmount());
         }
 
-        if (sumOfRequestedAmount != totalAmount) {
-            int targetSize = payCreateTargetInfos.size();
-            if ((totalAmount - sumOfRequestedAmount) <= targetSize - 1) {
-
-            }
-        }
-
+        payType.getPayAmountPolicy().validatePayAmount(totalAmount, targetAmounts);
     }
 }

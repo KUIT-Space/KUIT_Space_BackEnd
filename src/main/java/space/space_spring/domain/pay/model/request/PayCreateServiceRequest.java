@@ -1,9 +1,9 @@
 package space.space_spring.domain.pay.model.request;
 
-import com.amazonaws.services.ec2.model.UpdateSecurityGroupRuleDescriptionsIngressRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.pay.model.PayCreateTargetInfo;
 import space.space_spring.domain.pay.model.PayType;
 
 import java.util.List;

@@ -30,7 +30,7 @@ import space.space_spring.exception.CustomException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
+import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
@@ -292,41 +292,79 @@ class PayServiceTest {
     @DisplayName("유저는 본인이 속한 스페이스에서만 정산을 생성할 수 있다.")
     void createPay3() throws Exception {
         //given
+        PayCreateTargetInfo targetIsSeohyun = createPayCreateTargetInfo(seohyun, 8000);
+        PayCreateTargetInfo targetIsKyeongmin = createPayCreateTargetInfo(kyeongmin, 5000);
+        List<PayCreateTargetInfo> targetInfos = List.of(targetIsSeohyun, targetIsKyeongmin);
 
+        // alcon 동아리에 속해있는 양석준씨
+        User seokjun = userRepository.save(User.create("email1", "password", "양석준", UserSignupType.LOCAL));
+        Space alcon = spaceRepository.save(Space.create("space", "profileImg"));
+        userSpaceRepository.save(UserSpace.create(seokjun, alcon, UserSpaceAuth.NORMAL));
 
-        //when
+        PayCreateServiceRequest serviceRequest = createServiceRequest(13000, targetInfos, PayType.INDIVIDUAL);
 
-        //then
+        //when //then
+        assertThatThrownBy(() -> payService.createPay(seokjun.getUserId(), kuit.getSpaceId(), serviceRequest))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(PAY_CREATOR_IS_NOT_IN_SPACE.getMessage());
     }
 
     @Test
-    @DisplayName("유저는 자신과 다른 스페이스에 속한 유저에게는 정산을 생성할 수 없다.")
+    @DisplayName("자신과 다른 스페이스에 속한 유저에게는 정산을 생성할 수 없다.")
     void createPay4() throws Exception {
         //given
+        // alcon 동아리에 속해있는 양석준씨
+        User seokjun = userRepository.save(User.create("email1", "password", "양석준", UserSignupType.LOCAL));
+        Space alcon = spaceRepository.save(Space.create("space", "profileImg"));
+        userSpaceRepository.save(UserSpace.create(seokjun, alcon, UserSpaceAuth.NORMAL));
 
-        //when
+        PayCreateTargetInfo targetIsSeokjun = createPayCreateTargetInfo(seokjun, 12000);
+        PayCreateTargetInfo targetIsKyeongmin = createPayCreateTargetInfo(kyeongmin, 5000);
+        List<PayCreateTargetInfo> targetInfos = List.of(targetIsSeokjun, targetIsKyeongmin);
 
-        //then
+        PayCreateServiceRequest serviceRequest = createServiceRequest(17000, targetInfos, PayType.INDIVIDUAL);
+
+        //when //then
+        assertThatThrownBy(() -> payService.createPay(seongjun.getUserId(), kuit.getSpaceId(), serviceRequest))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(PAY_TARGET_IS_NOT_IN_SPACE.getMessage());
     }
 
     @Test
-    @DisplayName("[금액 직접 입력] 정책을 따르는 정산은 정산 타겟들이 요청받은 금액이 해당 정책을 따라야 정산을 생성할 수 있다.")
+    @DisplayName("[금액 직접 입력] 정책을 따르는 정산에서 정산 타겟들에게 요청한 금액들의 합이 totalAmount 와 다를 경우, 예외가 발생한다.")
     void createPay5() throws Exception {
         //given
+        // 타겟들에게 요청한 금액들의 합은 40000원
+        PayCreateTargetInfo targetIsSeongjun = createPayCreateTargetInfo(seongjun, 12000);
+        PayCreateTargetInfo targetIsSangjun = createPayCreateTargetInfo(sangjun, 15000);
+        PayCreateTargetInfo targetIsSeohyun = createPayCreateTargetInfo(seohyun, 8000);
+        PayCreateTargetInfo targetIsKyeongmin = createPayCreateTargetInfo(kyeongmin, 5000);
+        List<PayCreateTargetInfo> targetInfos = List.of(targetIsSeongjun, targetIsSangjun, targetIsSeohyun, targetIsKyeongmin);
 
-        //when
+        PayCreateServiceRequest serviceRequest = createServiceRequest(30000, targetInfos, PayType.INDIVIDUAL);
 
-        //then
+        //when //then
+        assertThatThrownBy(() -> payService.createPay(seongjun.getUserId(), kuit.getSpaceId(), serviceRequest))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(INVALID_INDIVIDUAL_AMOUNT.getMessage());
     }
 
     @Test
-    @DisplayName("[1/N 정산하기] 정책을 따르는 정산은 정산 타겟들이 요청받은 금액이 해당 정책을 따라야 정산을 생성할 수 있다.")
+    @DisplayName("[1/N 정산하기] 정책을 따르는 정산에서 정산 타겟들에게 요청한 금액이 totalAmount/N 과 다를 경우, 예외가 발생한다.")
     void createPay6() throws Exception {
         //given
+        // 타겟들에게 요청한 금액들은 3333원 이어야 함
+        PayCreateTargetInfo targetIsSeongjun = createPayCreateTargetInfo(seongjun, 3333);
+        PayCreateTargetInfo targetIsSangjun = createPayCreateTargetInfo(sangjun, 3333);
+        PayCreateTargetInfo targetIsSeohyun = createPayCreateTargetInfo(seohyun, 3334);     // != 3333
+        List<PayCreateTargetInfo> targetInfos = List.of(targetIsSeongjun, targetIsSangjun, targetIsSeohyun);
 
-        //when
+        PayCreateServiceRequest serviceRequest = createServiceRequest(10000, targetInfos, PayType.EQUAL_SPLIT);
 
-        //then
+        //when //then
+        assertThatThrownBy(() -> payService.createPay(seongjun.getUserId(), kuit.getSpaceId(), serviceRequest))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(INVALID_EQUAL_SPLIT_AMOUNT.getMessage());
     }
 
     private PayCreateTargetInfo createPayCreateTargetInfo(User user, int requestedAmount) {

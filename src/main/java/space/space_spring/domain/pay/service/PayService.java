@@ -20,6 +20,7 @@ import space.space_spring.domain.pay.repository.PayRequestRepository;
 import space.space_spring.domain.pay.repository.PayRequestTargetRepository;
 import space.space_spring.exception.CustomException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
@@ -89,7 +90,12 @@ public class PayService {
         }
 
         // 정산 요청 금액의 유효성을 검사하고,
-        payCreateValidator.validatePayAmount(serviceRequest.getPayType(), serviceRequest.getTotalAmount(), serviceRequest.getPayCreateTargetInfos());
+        List<Integer> targetAmounts = new ArrayList<>();
+        for (PayCreateTargetInfo payCreateTargetInfo : serviceRequest.getPayCreateTargetInfos()) {
+            targetAmounts.add(payCreateTargetInfo.getRequestedAmount());
+        }
+
+        payCreateValidator.validatePayAmount(serviceRequest.getPayType(), serviceRequest.getTotalAmount(), targetAmounts);
 
         // 정산 관련 엔티티들을 생성 & 저장
         PayRequest payRequest = PayRequest.create(userSpace.getUser(), userSpace.getSpace(), serviceRequest.getTotalAmount(), serviceRequest.getBankName(), serviceRequest.getBankAccountNum(), serviceRequest.getPayType());

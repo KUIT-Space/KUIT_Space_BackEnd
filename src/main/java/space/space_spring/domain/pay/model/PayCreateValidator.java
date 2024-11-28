@@ -8,12 +8,9 @@ import java.util.List;
 @Component
 public class PayCreateValidator {
 
-    public void validatePayAmount(PayType payType, int totalAmount, List<PayCreateTargetInfo> payCreateTargetInfos) {
-        List<Integer> targetAmounts = new ArrayList<>();
-        for (PayCreateTargetInfo payCreateTargetInfo : payCreateTargetInfos) {
-            targetAmounts.add(payCreateTargetInfo.getRequestedAmount());
-        }
-
+    public void validatePayAmount(PayType payType, int totalAmount, List<Integer> targetAmounts) {
         payType.getPayAmountPolicy().validatePayAmount(totalAmount, targetAmounts);
     }
+
+
 }

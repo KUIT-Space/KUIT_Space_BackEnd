@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.pay.model.PayCreateTargetInfo;
 import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.dto.PayTargetInfoDto;
+import space.space_spring.domain.pay.model.request.PayCreateServiceRequest;
 import space.space_spring.domain.space.repository.SpaceRepository;
 import space.space_spring.domain.userSpace.repository.UserSpaceRepository;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
@@ -174,7 +176,7 @@ class PayServiceTest {
     }
 
     @Test
-    @DisplayName("유저가 요청받은 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList를 return 한다.")
+    @DisplayName("유저가 요청받은 정산들 중, 완료되지 않은 정산이 없으면 빈 ArrayList 를 return 한다.")
     void getPayHomeInfos3() throws Exception {
         //given
         PayRequest completePay = PayRequest.create(seongjun, kuit, 20000, "bank", "accountNum", PayType.INDIVIDUAL);
@@ -200,7 +202,7 @@ class PayServiceTest {
     }
 
     @Test
-    @DisplayName("user는 자신이 속한 space의 정산 홈 view만을 볼 수 있다.")
+    @DisplayName("유저는 자신이 속한 스페이스의 정산 홈 view 만을 볼 수 있다.")
     void getPayHomeInfos4() throws Exception {
         //given
         Space alcon = spaceRepository.save(Space.create("space", "profileImg"));
@@ -221,7 +223,126 @@ class PayServiceTest {
                 .hasMessage(USER_IS_NOT_IN_SPACE.getMessage());
     }
 
+    @Test
+    @DisplayName("유저는 자신과 동일한 스페이스에 속한 유저들에게 [금액 직접 입력] 정책으로 정산을 생성할 수 있다.")
+    void createPay1() throws Exception {
+        //given
+        PayCreateTargetInfo targetIsSeongjun = createPayCreateTargetInfo(seongjun, 12000);
+        PayCreateTargetInfo targetIsSangjun = createPayCreateTargetInfo(sangjun, 15000);
+        PayCreateTargetInfo targetIsSeohyun = createPayCreateTargetInfo(seohyun, 8000);
+        PayCreateTargetInfo targetIsKyeongmin = createPayCreateTargetInfo(kyeongmin, 5000);
+        List<PayCreateTargetInfo> targetInfos = List.of(targetIsSeongjun, targetIsSangjun, targetIsSeohyun, targetIsKyeongmin);
+
+        PayCreateServiceRequest serviceRequest = createServiceRequest(40000, targetInfos, PayType.INDIVIDUAL);
+
+        //when
+        Long savedPayRequestId = payService.createPay(seongjun.getUserId(), kuit.getSpaceId(), serviceRequest);
+
+        //then
+        PayRequest savedPayRequest = payRequestRepository.findById(savedPayRequestId)
+                .orElseThrow(() -> new AssertionError("PayRequest 가 제대로 생성되지 않았습니다."));
+
+        assertThat(savedPayRequest).extracting("payCreateUser", "space", "totalAmount", "bankName", "bankAccountNum", "payType")
+                .contains(seongjun, kuit, 40000, "우리은행", "111-111", PayType.INDIVIDUAL);
+
+        List<PayRequestTarget> allByPayRequest = payRequestTargetRepository.findAllByPayRequest(savedPayRequest);
+
+        assertThat(allByPayRequest).hasSize(4)
+                .extracting("targetUserId", "requestedAmount")
+                .containsExactlyInAnyOrder(
+                        tuple(seongjun.getUserId(), 12000),
+                        tuple(sangjun.getUserId(), 15000),
+                        tuple(seohyun.getUserId(), 8000),
+                        tuple(kyeongmin.getUserId(), 5000)
+                );
+    }
+
+    @Test
+    @DisplayName("유저는 자신과 동일한 스페이스에 속한 유저들에게 [1/N 정산하기] 정책으로 정산을 생성할 수 있다.")
+    void createPay2() throws Exception {
+        PayCreateTargetInfo targetIsSeongjun = createPayCreateTargetInfo(seongjun, 3333);
+        PayCreateTargetInfo targetIsSangjun = createPayCreateTargetInfo(sangjun, 3333);
+        PayCreateTargetInfo targetIsSeohyun = createPayCreateTargetInfo(seohyun, 3333);
+        List<PayCreateTargetInfo> targetInfos = List.of(targetIsSeongjun, targetIsSangjun, targetIsSeohyun);
+
+        PayCreateServiceRequest serviceRequest = createServiceRequest(10000, targetInfos, PayType.EQUAL_SPLIT);
+
+        //when
+        Long savedPayRequestId = payService.createPay(seongjun.getUserId(), kuit.getSpaceId(), serviceRequest);
+
+        //then
+        PayRequest savedPayRequest = payRequestRepository.findById(savedPayRequestId)
+                .orElseThrow(() -> new AssertionError("PayRequest 가 제대로 생성되지 않았습니다."));
+
+        assertThat(savedPayRequest).extracting("payCreateUser", "space", "totalAmount", "bankName", "bankAccountNum", "payType")
+                .contains(seongjun, kuit, 10000, "우리은행", "111-111", PayType.EQUAL_SPLIT);
+
+        List<PayRequestTarget> allByPayRequest = payRequestTargetRepository.findAllByPayRequest(savedPayRequest);
+
+        assertThat(allByPayRequest).hasSize(3)
+                .extracting("targetUserId", "requestedAmount")
+                .containsExactlyInAnyOrder(
+                        tuple(seongjun.getUserId(), 3333),
+                        tuple(sangjun.getUserId(), 3333),
+                        tuple(seohyun.getUserId(), 3333)
+                );
+    }
+
+    @Test
+    @DisplayName("유저는 본인이 속한 스페이스에서만 정산을 생성할 수 있다.")
+    void createPay3() throws Exception {
+        //given
 
 
+        //when
 
+        //then
+    }
+
+    @Test
+    @DisplayName("유저는 자신과 다른 스페이스에 속한 유저에게는 정산을 생성할 수 없다.")
+    void createPay4() throws Exception {
+        //given
+
+        //when
+
+        //then
+    }
+
+    @Test
+    @DisplayName("[금액 직접 입력] 정책을 따르는 정산은 정산 타겟들이 요청받은 금액이 해당 정책을 따라야 정산을 생성할 수 있다.")
+    void createPay5() throws Exception {
+        //given
+
+        //when
+
+        //then
+    }
+
+    @Test
+    @DisplayName("[1/N 정산하기] 정책을 따르는 정산은 정산 타겟들이 요청받은 금액이 해당 정책을 따라야 정산을 생성할 수 있다.")
+    void createPay6() throws Exception {
+        //given
+
+        //when
+
+        //then
+    }
+
+    private PayCreateTargetInfo createPayCreateTargetInfo(User user, int requestedAmount) {
+        return PayCreateTargetInfo.builder()
+                .targetUserId(user.getUserId())
+                .requestedAmount(requestedAmount)
+                .build();
+    }
+
+    private PayCreateServiceRequest createServiceRequest(int totalAmount, List<PayCreateTargetInfo> targetInfos, PayType payType) {
+        return PayCreateServiceRequest.builder()
+                .totalAmount(totalAmount)
+                .bankName("우리은행")
+                .bankAccountNum("111-111")
+                .payCreateTargetInfos(targetInfos)
+                .payType(payType)
+                .build();
+    }
 }

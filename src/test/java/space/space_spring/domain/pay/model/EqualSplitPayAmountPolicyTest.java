@@ -9,7 +9,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_EQUAL_SPLIT_AMOUNT;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_INDIVIDUAL_AMOUNT;
 
 class EqualSplitPayAmountPolicyTest {
 

@@ -109,7 +109,6 @@ public class PayService {
         return save.getPayRequestId();
     }
 
-
     private UserSpace validatePayCreatorInSpace(Long payCreatorUserId, Long spaceId) {
         return userSpaceRepository.findUserSpaceByUserAndSpace(payCreatorUserId, spaceId).orElseThrow(() -> new CustomException(PAY_CREATOR_IS_NOT_IN_SPACE));
 
@@ -119,6 +118,8 @@ public class PayService {
         return userSpaceRepository.findUserSpaceByUserAndSpace(targetUserId, spaceId).orElseThrow(() -> new CustomException(PAY_TARGET_IS_NOT_IN_SPACE));
 
     }
+
+
 
 //    @Transactional
 //    public List<PayRequestInfoDto> getPayRequestInfoForUser(Long userId, Long spaceId, boolean isComplete) {

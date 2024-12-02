@@ -24,9 +24,9 @@ import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorM
 public class PayController {
 
     private final PayService payService;
-    private final UserSpaceUtils userSpaceUtils;
-    private final UserUtils userUtils;
-    private final PayUtils payUtils;
+//    private final UserSpaceUtils userSpaceUtils;
+//    private final UserUtils userUtils;
+//    private final PayUtils payUtils;
 
     /**
      * 정산 홈 view
@@ -94,6 +94,7 @@ public class PayController {
      * 정산 생성
      * response 추가 협의 필요 -> 굳이 PayRequestId를 response 안해도 될꺼같음
      */
+    @PostMapping("/space/{spaceId}/pay")
     public BaseResponse<Long> createPay(@JwtLoginAuth Long userId, @PathVariable Long spaceId, @Validated @RequestBody PayCreateRequest payCreateRequest, BindingResult bindingResult) {
         // request 입력 모델 유효성 검증
         if (bindingResult.hasErrors()) {

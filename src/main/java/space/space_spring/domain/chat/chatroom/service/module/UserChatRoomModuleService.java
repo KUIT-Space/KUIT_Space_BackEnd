@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.chat.chatroom.model.ChatRoom;
 import space.space_spring.domain.chat.chatroom.model.UserChatRoom;
 import space.space_spring.domain.chat.chatroom.repository.UserChatRoomRepository;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.enumStatus.BaseStatusType;
 import space.space_spring.exception.CustomException;
 
@@ -19,15 +21,15 @@ public class UserChatRoomModuleService {
     private final UserChatRoomRepository userChatRoomRepository;
 
     @Transactional
-    public UserChatRoom findUserChatRoom(Long userId, Long chatRoomId) {
-        return Optional.ofNullable(this.userChatRoomRepository.findByUserIdAndChatRoomIdAndStatus(userId, chatRoomId,
-                        BaseStatusType.ACTIVE))
+    public UserChatRoom findUserChatRoom(User user, ChatRoom chatRoom) {
+        return Optional.ofNullable(
+                        this.userChatRoomRepository.findByUserAndChatRoomAndStatus(user, chatRoom, BaseStatusType.ACTIVE))
                 .orElseThrow(() -> new CustomException(USER_IS_NOT_IN_CHATROOM));
     }
 
     @Transactional
-    public List<UserChatRoom> findUserChatRooms(Long chatRoomId) {
-        return this.userChatRoomRepository.findByChatRoomIdAndStatus(chatRoomId, BaseStatusType.ACTIVE);
+    public List<UserChatRoom> findUserChatRooms(ChatRoom chatRoom) {
+        return this.userChatRoomRepository.findByChatRoomAndStatus(chatRoom, BaseStatusType.ACTIVE);
     }
 
     @Transactional

@@ -89,7 +89,9 @@ public class ChatRoomService {
 
     @Transactional
     public ChatSuccessResponse updateLastReadTime(Long userId, Long chatRoomId) {
-        UserChatRoom targetChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoomId);
+        User user = userUtils.findUserByUserId(userId);
+        ChatRoom chatRoom = chatRoomModuleService.findChatRoom(chatRoomId);
+        UserChatRoom targetChatRoom = userChatRoomModuleService.findUserChatRoom(user, chatRoom);
 
         targetChatRoom.setLastReadTime(LocalDateTime.now());
         userChatRoomModuleService.save(targetChatRoom);
@@ -120,7 +122,9 @@ public class ChatRoomService {
 
     @Transactional
     public ChatSuccessResponse exitChatRoom(Long userId, Long chatRoomId) {
-        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoomId);
+        User user = userUtils.findUserByUserId(userId);
+        ChatRoom chatRoom = chatRoomModuleService.findChatRoom(chatRoomId);
+        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(user, chatRoom);
 
         userChatRoom.updateInactive();
         userChatRoomModuleService.save(userChatRoom);
@@ -149,11 +153,14 @@ public class ChatRoomService {
     }
 
     private int calculateUnreadMsgCount(Long userId, Long chatRoomId, LocalDateTime lastUpdateTime) {
-        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoomId);
+        User user = userUtils.findUserByUserId(userId);
+        ChatRoom chatRoom = chatRoomModuleService.findChatRoom(chatRoomId);
+        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(user, chatRoom);
+
         LocalDateTime lastReadTime = timeUtils.getEncodedTime(Objects.requireNonNull(userChatRoom.getLastReadTime()));
         log.info("마지막으로 읽은 시간: " + lastReadTime);
 
-        int unreadMsgCount = chattingModuleService.countUnreadMessages(chatRoomId, lastReadTime, lastUpdateTime);
+        int unreadMsgCount = chattingModuleService.countUnreadMessages(chatRoom.getId(), lastReadTime, lastUpdateTime);
         log.info("안읽은 메시지 개수: " + unreadMsgCount);
 
         return unreadMsgCount;
@@ -168,8 +175,9 @@ public class ChatRoomService {
     }
 
     private List<UserInfoInSpace> getUserInChatRoom(Long spaceId, Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomModuleService.findChatRoom(chatRoomId);
         UserChatRooms userChatRooms = UserChatRooms.of(
-                userChatRoomModuleService.findUserChatRooms(chatRoomId));
+                userChatRoomModuleService.findUserChatRooms(chatRoom));
 
         return userChatRooms.getUsers().stream()
                 .map(user -> {
@@ -188,7 +196,7 @@ public class ChatRoomService {
 
             if (isUserInChatRoom(userId, chatRoom.getId())) {
                 if (userByUserId.getStatus().equals(BaseStatusType.INACTIVE)) {
-                    updateAsActive(chatRoom, userId);
+                    updateAsActive(chatRoom, userByUserId);
                     continue;
                 }
                 throw new CustomException(USER_IS_ALREADY_IN_CHATROOM);
@@ -199,12 +207,13 @@ public class ChatRoomService {
     }
 
     private boolean isUserInChatRoom(Long userId, Long chatRoomId) {
-        UserChatRooms userChatRooms = UserChatRooms.of(userChatRoomModuleService.findUserChatRooms(chatRoomId));
+        ChatRoom chatRoom = chatRoomModuleService.findChatRoom(chatRoomId);
+        UserChatRooms userChatRooms = UserChatRooms.of(userChatRoomModuleService.findUserChatRooms(chatRoom));
         return userChatRooms.isUserJoined(userId);
     }
 
-    private void updateAsActive(ChatRoom chatRoom, Long userId) {
-        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(userId, chatRoom.getId());
+    private void updateAsActive(ChatRoom chatRoom, User user) {
+        UserChatRoom userChatRoom = userChatRoomModuleService.findUserChatRoom(user, chatRoom);
         userChatRoom.setUserRejoin();
         userChatRoomModuleService.save(userChatRoom);
     }

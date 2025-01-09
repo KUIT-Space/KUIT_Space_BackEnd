@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.entity.RefreshTokenStorage;
-import space.space_spring.entity.User;
+import space.space_spring.domain.authorization.jwt.model.entity.RefreshTokenStorage;
+import space.space_spring.domain.user.model.entity.User;
 
 import java.util.Optional;
 

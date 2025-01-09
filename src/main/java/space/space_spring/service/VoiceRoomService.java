@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import space.space_spring.domain.user.repository.UserDao;
-import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.domain.userSpace.repository.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;
-import space.space_spring.entity.Space;
-import space.space_spring.entity.User;
+import space.space_spring.domain.space.model.entity.Space;
+import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.VoiceRoom;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
@@ -20,6 +20,7 @@ import space.space_spring.util.space.SpaceUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 import java.util.Map;
 

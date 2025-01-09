@@ -7,14 +7,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import org.springframework.web.multipart.MultipartFile;
 
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.dto.post.request.CreatePostRequest;
 import space.space_spring.dto.post.response.ReadPostDetailResponse;
 import space.space_spring.dto.post.response.ReadPostsResponse;
 
-import space.space_spring.entity.UserSpace;
+import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.service.PostService;
@@ -87,5 +86,46 @@ public class PostController {
         ReadPostDetailResponse readPostDetailResponse = postService.getPostDetail(userId, spaceId, postId);
 
         return new BaseResponse<>(readPostDetailResponse);
+    }
+
+    // 게시글 수정
+    @PostMapping("/board/post/{postId}")
+    @CheckUserSpace(required = false)
+    public BaseResponse<String> updatePost(
+        @JwtLoginAuth Long userId,
+        @PathVariable Long spaceId,
+        @PathVariable Long postId,
+        @ModelAttribute @Validated CreatePostRequest updatePostRequest,
+        BindingResult bindingResult) {
+        // TODO 1: 예외처리
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(INVALID_POST_CREATE);
+        }
+        // TODO 2: 유저가 스페이스에 속하는 지 검증
+        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
+        log.info("UserName = {}, UserSpaceAuth = {}", userInSpace.get().getUserName(), userInSpace.get().getUserSpaceAuth());
+
+        // TODO 3: 게시글 수정 작업 수행
+        postService.updatePost(userId, spaceId, postId, updatePostRequest);
+
+        return new BaseResponse<>("게시글이 수정되었습니다.");
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/board/post/{postId}")
+    @CheckUserSpace(required = false)
+    public BaseResponse<String> deletePost(
+            @JwtLoginAuth Long userId,
+            @PathVariable Long spaceId,
+            @PathVariable Long postId) {
+
+        // TODO 1: 유저가 스페이스에 속하는지 검증
+        Optional<UserSpace> userInSpace = userSpaceUtils.isUserInSpace(userId, spaceId);
+        log.info("UserName = {}, UserSpaceAuth = {}", userInSpace.get().getUserName(), userInSpace.get().getUserSpaceAuth());
+
+        // TODO 2: 게시글 삭제 작업 수행
+        postService.deletePost(userId, spaceId, postId);
+
+        return new BaseResponse<>("게시글이 삭제되었습니다.");
     }
 }

@@ -8,8 +8,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.domain.userSpace.repository.UserSpaceDao;
 
 @Component
 @RequiredArgsConstructor

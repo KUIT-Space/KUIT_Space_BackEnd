@@ -86,7 +86,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     CHATROOM_NOT_EXIST(8001, HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
     INVALID_CHATROOM_JOIN(8001, HttpStatus.BAD_REQUEST, "채팅방 멤버 초대 요청에서 잘못된 값이 존재합니다."),
     BASE64_CONVERT_FAIL_IN_MEMORY(8002, HttpStatus.INTERNAL_SERVER_ERROR, "base64 파일 변환 과정에서 문제가 생겼습니다."),
-    USER_IS_ALREADY_IN_CHAT_ROOM(8003, HttpStatus.BAD_REQUEST, "해당 채팅방에 이미 초대된 멤버가 포함되어 있습니다."),
+    USER_IS_ALREADY_IN_CHATROOM(8003, HttpStatus.BAD_REQUEST, "해당 채팅방에 이미 초대된 멤버가 포함되어 있습니다."),
+    USER_IS_NOT_IN_CHATROOM(8004, HttpStatus.NOT_FOUND, "해당 유저는 해당 채팅방에 참여하고 있지 않습니다."),
 
     /**
      * 9000 : MultipartFile 오류
@@ -123,10 +124,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 12000 : Pay 오류
      */
     INVALID_PAY_CREATE(12000, HttpStatus.BAD_REQUEST, "정산 생성 요청에서 잘못된 값이 존재합니다."),
-    INVALID_PAY_AMOUNT(12001, HttpStatus.BAD_REQUEST, "정산 요청 금액들의 합과 정산 요청 총 금액이 일치하지 않습니다."),
-    PAY_REQUEST_NOT_FOUND(12002, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
-    PAY_REQUEST_TARGET_NOT_FOUND(12003, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
-    INVALID_PAY_REQUEST_TARGET_ID(12004, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다.");
+    PAY_CREATOR_IS_NOT_IN_SPACE(12001, HttpStatus.BAD_REQUEST, "정산 생성자가 해당 스페이스에 속하지 않는 유저입니다. 정산 생성은 본인이 속한 스페이스 내에서만 가능합니다."),
+    PAY_TARGET_IS_NOT_IN_SPACE(12002, HttpStatus.BAD_REQUEST, "정산 요청 타겟들 중, 해당 스페이스에 속하지 않는 유저가 존재합니다."),
+    INVALID_INDIVIDUAL_AMOUNT(12003, HttpStatus.BAD_REQUEST, "정산 요청 금액들의 합과 정산 요청 총 금액이 일치하지 않습니다."),
+    INVALID_EQUAL_SPLIT_AMOUNT(12004, HttpStatus.BAD_REQUEST, "정산 요청 금액들 중 1/N 정산 정책에 위배되는 값이 있습니다."),
+    PAY_REQUEST_NOT_FOUND(12005, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
+    PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
+    INVALID_PAY_REQUEST_TARGET_ID(12007, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다.");
   
     private final int code;
     private final HttpStatus status;

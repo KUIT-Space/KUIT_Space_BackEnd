@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.argumentResolver.userSpace.UserSpaceId;
-import space.space_spring.dao.UserSpaceDao;
+import space.space_spring.domain.userSpace.repository.UserSpaceDao;
 import space.space_spring.dao.VoiceRoomRepository;
 import space.space_spring.dto.VoiceRoom.*;
 
@@ -22,9 +22,7 @@ import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 
-import javax.print.DocFlavor;
 import java.util.List;
-import java.util.Optional;
 
 import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
 import static space.space_spring.response.status.BaseExceptionResponseStatus.*;

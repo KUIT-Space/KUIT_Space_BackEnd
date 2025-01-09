@@ -13,15 +13,21 @@ import space.space_spring.dto.VoiceRoom.*;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.entity.VoiceRoom;
+import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
+import java.util.Map;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +41,7 @@ public class VoiceRoomService {
     private final UserDao userDao;
     private final UserSpaceDao userSpaceDao;
     private final TaskExecutor taskExecutor;
+    private final VoiceRoomParticipantService voiceRoomParticipantService;
 
     public Long createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
         Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
@@ -54,7 +61,7 @@ public class VoiceRoomService {
 
 
     /**
-     // room 정보 가져오기 병렬적용 Ver - 2
+     // room 정보 가져오기 병렬적용
      */
     public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoListConcurrency(long spaceId,GetVoiceRoomList.Request req){
         Integer limit = req.getLimit();
@@ -77,25 +84,30 @@ public class VoiceRoomService {
         //불변 list로 변환
         List<LivekitModels.Room> roomResponses = Collections.unmodifiableList(roomResponsesTemp);
 
+        /**
+         * 병렬 처리 적용대상 1
+         */
+        //#2 Room과 mapping 시키기
+        List<Long> roomIdList = new ArrayList<>();
+        for(RoomDto roomDto : roomDtoList){
+            roomDto.setActiveRoom(roomResponses);
+            roomIdList.add(roomDto.getId());
+        }
+
+
         VoiceRoomListDto voiceRoomListDto = VoiceRoomListDto.from(voiceRoomDataList);
         voiceRoomListDto.setActiveRoom(roomResponsesTemp);
 
 
-        //ToDo setRoomDto 함수를 RoomDtoList 객체로 이동
-            //todo 책임을 위임해도 이 병렬처리 코드가 잘 동작할까?
-        List<CompletableFuture<Void>> roomDtoFutureList = roomDtoList.stream()
-                .map(r->CompletableFuture.runAsync(()->setRoomDto(r,roomResponses,req),taskExecutor)
-                        //.exceptionally(ex->{throws ex;})
-                )
-                .collect(Collectors.toList());
 
 
-        // 모든 Future의 완료를 기다림
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(
-                roomDtoFutureList.toArray(new CompletableFuture[0]));
 
-        // 결과 수집 및 출력
-        allOf.join();
+        Map<Long,ParticipantListDto> roomIdParticipantMap=voiceRoomParticipantService.getParticipantList(roomIdList);
+
+        if(showParticipant){
+            voiceRoomListDto.setParticipantListDto(roomIdParticipantMap);
+        }
+
         //ToDo Response로 convert
         //#1 Active/inActive 분리
 
@@ -159,7 +171,7 @@ public class VoiceRoomService {
 
     public void deleteVoiceRoom(long voiceRoomId){
         //Todo Base Entity에 일괄적으로 soft Delete를 적용하는 방법을 다같이 정하는 것이 좋아보임
-        VoiceRoom voiceRoom = voiceRoomRepository.findById(voiceRoomId);
+        VoiceRoom voiceRoom = voiceRoomRepository.findById(voiceRoomId).orElseThrow(()->new CustomException(VOICEROOM_NOT_EXIST));
         voiceRoom.updateInactive();
         voiceRoomRepository.save(voiceRoom);
     }
@@ -174,7 +186,7 @@ public class VoiceRoomService {
 //        return voiceRoomRepository.findBySpace(space);
 //    }
     private List<ParticipantDto> getParticipantDtoListById(long voiceRoomId){
-        Space space = voiceRoomRepository.findById(voiceRoomId).getSpace();
+        Space space = voiceRoomRepository.findById(voiceRoomId).orElseThrow(()->new CustomException(VOICEROOM_NOT_EXIST)).getSpace();
         List<ParticipantDto> participantDtoList =  liveKitUtils.getParticipantInfo(String.valueOf(voiceRoomId));
         if(participantDtoList==null||participantDtoList.isEmpty()){
             return Collections.emptyList();
@@ -199,7 +211,7 @@ public class VoiceRoomService {
 
     public String getToken(long spaceId,long userId,long userSpaceId,long voiceRoomId){
         String userName=userSpaceDao.findUserNameById(userSpaceId);
-        String userIdentity=String.valueOf(userId);
+        String userIdentity=String.valueOf(userSpaceId);
         //Metadata에 profileImage와 userName 추가
         String metadata="userProfileImage : "+userSpaceDao.findProfileImageById(userSpaceId).orElse("");
         //String roomName=findNameTagById(voiceRoomId);

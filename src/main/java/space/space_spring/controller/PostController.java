@@ -89,7 +89,7 @@ public class PostController {
     }
 
     // 게시글 수정
-    @PostMapping("/board/post/postId}")
+    @PostMapping("/board/post/{postId}")
     @CheckUserSpace(required = false)
     public BaseResponse<String> updatePost(
         @JwtLoginAuth Long userId,

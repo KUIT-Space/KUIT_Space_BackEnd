@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.domain.pay.model.firstCollection.PayRequestTargets;
 import space.space_spring.domain.user.model.entity.User;
@@ -44,6 +45,9 @@ public class PayRequest extends BaseEntity {
     @Column(name = "receive_amount")
     private int receiveAmount;          // 정산 받은 금액
 
+    @Enumerated(EnumType.STRING)
+    private PayType payType;
+
     @Column(name = "is_complete")
     private boolean isComplete;
 
@@ -64,7 +68,7 @@ public class PayRequest extends BaseEntity {
     }
 
     @Builder
-    private PayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum) {
+    private PayRequest(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
         this.payCreateUser = payCreateUser;
         this.space = space;
         this.totalAmount = totalAmount;
@@ -72,15 +76,17 @@ public class PayRequest extends BaseEntity {
         this.bankAccountNum = bankAccountNum;
         this.receiveAmount = 0;
         this.isComplete = false;
+        this.payType = payType;
     }
 
-    public static PayRequest create(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum) {
+    public static PayRequest create(User payCreateUser, Space space, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
         PayRequest build = PayRequest.builder()
                 .payCreateUser(payCreateUser)
                 .space(space)
                 .totalAmount(totalAmount)
                 .bankName(bankName)
                 .bankAccountNum(bankAccountNum)
+                .payType(payType)
                 .build();
 
         build.payRequestTargets = PayRequestTargets.create(new ArrayList<>());

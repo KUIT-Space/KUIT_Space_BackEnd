@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import space.space_spring.domain.user.model.entity.User;
 
 @Entity
-@Table(name = "Comment_Like")
+@Table(name = "Comment_Like",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "post_comment_id"})})
 @Getter
 @NoArgsConstructor
 public class CommentLike extends BaseEntity{

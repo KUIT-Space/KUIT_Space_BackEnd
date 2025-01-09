@@ -3,15 +3,17 @@ package space.space_spring.domain.pay.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.pay.model.PayCreateValidator;
 import space.space_spring.domain.pay.model.firstCollection.PayRequestInfos;
 import space.space_spring.domain.pay.model.firstCollection.PayRequestTargets;
 import space.space_spring.domain.pay.model.firstCollection.PayRequests;
 import space.space_spring.domain.pay.model.firstCollection.PayTargetInfos;
 import space.space_spring.domain.pay.model.mapper.PayMapper;
+import space.space_spring.domain.pay.model.request.PayCreateServiceRequest;
+import space.space_spring.domain.pay.model.PayCreateTargetInfo;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.domain.userSpace.repository.UserSpaceRepository;
 import space.space_spring.domain.pay.model.entity.PayRequest;
-import space.space_spring.domain.pay.model.dto.*;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
 import space.space_spring.domain.pay.model.response.PayHomeViewResponse;
 import space.space_spring.domain.pay.repository.PayRequestRepository;
@@ -38,6 +40,7 @@ public class PayService {
     private final PayRequestRepository payRequestRepository;
     private final PayRequestTargetRepository payRequestTargetRepository;
     private final PayMapper payMapper;
+    private final PayCreateValidator payCreateValidator;
 
     private final boolean INCOMPLETE_PAY = false;
     private final boolean COMPLETE_PAY = true;
@@ -75,6 +78,47 @@ public class PayService {
 
         return payRequestTargets.getPayTargetInfos();
     }
+
+    @Transactional
+    public Long createPay(Long userId, Long spaceId, PayCreateServiceRequest serviceRequest) {
+        // 유저(= 정산 생성자)가 스페이스에 속하는 지 검증하고,
+        UserSpace userSpace = validatePayCreatorInSpace(userId, spaceId);
+
+        // 정산 타겟 유저들이 모두 스페이스에 속하는 지 검증하고,
+        for (PayCreateTargetInfo targetInfo : serviceRequest.getPayCreateTargetInfos()) {
+            validatePayTargetInSpace(targetInfo.getTargetUserId(), spaceId);
+        }
+
+        // 정산 요청 금액의 유효성을 검사하고,
+        List<Integer> targetAmounts = new ArrayList<>();
+        for (PayCreateTargetInfo payCreateTargetInfo : serviceRequest.getPayCreateTargetInfos()) {
+            targetAmounts.add(payCreateTargetInfo.getRequestedAmount());
+        }
+
+        payCreateValidator.validatePayAmount(serviceRequest.getPayType(), serviceRequest.getTotalAmount(), targetAmounts);
+
+        // 정산 관련 엔티티들을 생성 & 저장
+        PayRequest payRequest = PayRequest.create(userSpace.getUser(), userSpace.getSpace(), serviceRequest.getTotalAmount(), serviceRequest.getBankName(), serviceRequest.getBankAccountNum(), serviceRequest.getPayType());
+        PayRequest save = payRequestRepository.save(payRequest);
+
+        for (PayCreateTargetInfo targetInfo : serviceRequest.getPayCreateTargetInfos()) {
+            PayRequestTarget payRequestTarget = PayRequestTarget.create(save, targetInfo.getTargetUserId(), targetInfo.getRequestedAmount());
+            payRequestTargetRepository.save(payRequestTarget);
+        }
+
+        return save.getPayRequestId();
+    }
+
+    private UserSpace validatePayCreatorInSpace(Long payCreatorUserId, Long spaceId) {
+        return userSpaceRepository.findUserSpaceByUserAndSpace(payCreatorUserId, spaceId).orElseThrow(() -> new CustomException(PAY_CREATOR_IS_NOT_IN_SPACE));
+
+    }
+
+    private UserSpace validatePayTargetInSpace(Long targetUserId, Long spaceId) {
+        return userSpaceRepository.findUserSpaceByUserAndSpace(targetUserId, spaceId).orElseThrow(() -> new CustomException(PAY_TARGET_IS_NOT_IN_SPACE));
+
+    }
+
 
 
 //    @Transactional

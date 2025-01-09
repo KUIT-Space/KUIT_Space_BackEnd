@@ -4,6 +4,7 @@ import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.entity.PayRequest;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
 import space.space_spring.domain.space.model.entity.Space;
@@ -36,11 +37,11 @@ class PayRequestTargetsTest {
     @DisplayName("멤버 변수인 PayRequestTarget list 로부터 [payRequestTargetId, 정산 생성자 이름, 요청받은 정산 금액, 송금해야할 은행 이름, 계좌번호] 정보를 찾아준다.")
     void getPayTargetInfos() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(sangjun, kuit, 40000, "우리은행", "111-111");
+        PayRequest payRequest1 = PayRequest.create(sangjun, kuit, 40000, "우리은행", "111-111", PayType.INDIVIDUAL);
         PayRequestTarget target1 = PayRequestTarget.create(payRequest1, 1L, 20000);
         PayRequestTarget target2 = PayRequestTarget.create(payRequest1, 2L, 20000);
 
-        PayRequest payRequest2 = PayRequest.create(seohyun, kuit, 40000, "신한은행", "222-222");
+        PayRequest payRequest2 = PayRequest.create(seohyun, kuit, 40000, "신한은행", "222-222", PayType.INDIVIDUAL);
         PayRequestTarget target3 = PayRequestTarget.create(payRequest2, 1L, 10000);
         PayRequestTarget target4 = PayRequestTarget.create(payRequest2, 4L, 30000);
 
@@ -62,11 +63,11 @@ class PayRequestTargetsTest {
     @DisplayName("멤버 변수인 PayRequestTarget list 의 전체 크기를 알려준다.")
     void countTotalTargets() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(sangjun, kuit, 40000, "우리은행", "111-111");
+        PayRequest payRequest1 = PayRequest.create(sangjun, kuit, 40000, "우리은행", "111-111", PayType.INDIVIDUAL);
         PayRequestTarget target1 = PayRequestTarget.create(payRequest1, 1L, 20000);
         PayRequestTarget target2 = PayRequestTarget.create(payRequest1, 2L, 20000);
 
-        PayRequest payRequest2 = PayRequest.create(seohyun, kuit, 40000, "신한은행", "222-222");
+        PayRequest payRequest2 = PayRequest.create(seohyun, kuit, 40000, "신한은행", "222-222", PayType.INDIVIDUAL);
         PayRequestTarget target3 = PayRequestTarget.create(payRequest2, 1L, 10000);
         PayRequestTarget target4 = PayRequestTarget.create(payRequest2, 4L, 30000);
 
@@ -83,11 +84,11 @@ class PayRequestTargetsTest {
     @DisplayName("멤버 변수인 PayRequestTarget list 중 정산을 완료한 타겟이 몇 명인지 알려준다.")
     void countCompleteTargets() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(sangjun, kuit, 40000, "우리은행", "111-111");
+        PayRequest payRequest1 = PayRequest.create(sangjun, kuit, 40000, "우리은행", "111-111", PayType.INDIVIDUAL);
         PayRequestTarget target1 = PayRequestTarget.create(payRequest1, 1L, 20000);
         PayRequestTarget target2 = PayRequestTarget.create(payRequest1, 2L, 20000);
 
-        PayRequest payRequest2 = PayRequest.create(seohyun, kuit, 40000, "신한은행", "222-222");
+        PayRequest payRequest2 = PayRequest.create(seohyun, kuit, 40000, "신한은행", "222-222", PayType.INDIVIDUAL);
         PayRequestTarget target3 = PayRequestTarget.create(payRequest2, 1L, 10000);
         PayRequestTarget target4 = PayRequestTarget.create(payRequest2, 4L, 30000);
 

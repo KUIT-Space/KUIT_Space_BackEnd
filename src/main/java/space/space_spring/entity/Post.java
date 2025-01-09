@@ -54,11 +54,21 @@ public class Post extends BaseEntity {
         this.postImages = postImages;
     }
 
+    // 좋아요 개수 증가
     public void increaseLikeCount() {
         this.likeCount++;
     }
 
+    // 좋아요 개수 감소
     public void decreaseLikeCount() {
         this.likeCount--;
+    }
+
+    // 게시글 수정
+    public void updatePost(String title, String content, List<PostImage> postImages) {
+        this.title = title;
+        this.content = content;
+        this.postImages.clear();
+        this.postImages.addAll(postImages);
     }
 }

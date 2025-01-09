@@ -48,7 +48,7 @@ public class GetVoiceRoomList {
                     .order(roomDto.getOrder())
                     .metadate(roomDto.getMetadata())
                     .participantInfoList(
-                            GetParticipantList.ParticipantInfo.convertParticipantDtoList(roomDto.getParticipantDTOList())
+                            GetParticipantList.ParticipantInfo.convertParticipantDtoList(roomDto.getParticipantListDto().getParticipantDtoList())
                     )
                     .build();
         }

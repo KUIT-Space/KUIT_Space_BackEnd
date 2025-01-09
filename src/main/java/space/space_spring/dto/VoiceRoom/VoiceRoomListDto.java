@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class VoiceRoomListDto {
-    private List<RoomDto> roomDtoList;
+    final private List<RoomDto> roomDtoList;
 
     public VoiceRoomListDto(List<RoomDto> roomDtos){
         this.roomDtoList=roomDtos;
@@ -65,5 +65,11 @@ public class VoiceRoomListDto {
         return convertVoicRoomInfoList( null);
     }
 
+    public void setParticipantListDto(Map<Long,ParticipantListDto> participantListDtoMap){
+
+        for(RoomDto roomDto : this.roomDtoList){
+            roomDto.setParticipantDTOList(participantListDtoMap.get(roomDto.getId()));
+        }
+    }
 
 }

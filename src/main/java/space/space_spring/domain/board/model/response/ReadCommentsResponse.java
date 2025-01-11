@@ -1,7 +1,7 @@
-package space.space_spring.dto.comment.response;
+package space.space_spring.domain.board.model.response;
 
 import lombok.*;
-import space.space_spring.entity.Comment;
+import space.space_spring.domain.board.model.entity.Comment;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.util.post.ConvertCreatedDate;
 

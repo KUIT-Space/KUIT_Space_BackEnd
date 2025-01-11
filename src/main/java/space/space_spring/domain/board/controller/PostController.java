@@ -1,4 +1,4 @@
-package space.space_spring.controller;
+package space.space_spring.domain.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
 
 import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
-import space.space_spring.dto.post.request.CreatePostRequest;
-import space.space_spring.dto.post.response.ReadPostDetailResponse;
-import space.space_spring.dto.post.response.ReadPostsResponse;
+import space.space_spring.domain.board.model.request.CreatePostRequest;
+import space.space_spring.domain.board.model.response.ReadPostDetailResponse;
+import space.space_spring.domain.board.model.response.ReadPostsResponse;
 
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
-import space.space_spring.service.PostService;
+import space.space_spring.domain.board.service.PostService;
 import space.space_spring.util.userSpace.UserSpaceUtils;
 import java.util.List;
 import java.util.Optional;

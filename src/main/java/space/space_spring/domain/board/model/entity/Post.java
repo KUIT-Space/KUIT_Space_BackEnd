@@ -1,4 +1,4 @@
-package space.space_spring.entity;
+package space.space_spring.domain.board.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -8,6 +8,7 @@ import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 
 import java.util.List;
+import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Table(name = "Posts")

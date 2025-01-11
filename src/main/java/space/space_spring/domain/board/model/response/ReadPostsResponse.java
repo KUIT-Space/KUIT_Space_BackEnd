@@ -1,9 +1,8 @@
-package space.space_spring.dto.post.response;
+package space.space_spring.domain.board.model.response;
 
 import lombok.*;
-import space.space_spring.dto.comment.response.ReadCommentsResponse;
-import space.space_spring.entity.Post;
-import space.space_spring.entity.PostImage;
+import space.space_spring.domain.board.model.entity.Post;
+import space.space_spring.domain.board.model.entity.PostImage;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.util.post.ConvertCreatedDate;
 
@@ -14,7 +13,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReadPostDetailResponse {
+public class ReadPostsResponse {
+
     // 스페이스 관련
     private Long spaceId;
 
@@ -30,19 +30,19 @@ public class ReadPostDetailResponse {
     private List<String> postImage;
     private String time;
     private String type;
+    private int postCount;
 
     // 댓글 및 좋아요
     private int commentCount;
-    private List<ReadCommentsResponse> Comments;
     private int likeCount;
     private boolean isLike;
 
-    public static ReadPostDetailResponse of(Post post, UserSpace userSpace, boolean isLike, List<ReadCommentsResponse> comments) {
+    public static ReadPostsResponse of(Post post, int postCount, UserSpace userSpace, boolean isLike) {
         List<String> postImageUrls = post.getPostImages().stream()
                 .map(PostImage::getPostImgUrl)
                 .toList();
 
-        return ReadPostDetailResponse.builder()
+        return ReadPostsResponse.builder()
                 .postId(post.getPostId())
                 .spaceId(post.getSpace().getSpaceId())
                 .userId(post.getUser().getUserId())
@@ -52,12 +52,11 @@ public class ReadPostDetailResponse {
                 .content(post.getContent())
                 .time(ConvertCreatedDate.setCreatedDate(post.getCreatedAt()))
                 .type(post.getType())
+                .postCount(postCount)
                 .commentCount(post.getComments().size())
-                .Comments(comments)
                 .likeCount(post.getLikeCount())
                 .isLike(isLike)
                 .postImage(postImageUrls)
                 .build();
     }
-
 }

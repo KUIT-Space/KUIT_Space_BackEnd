@@ -1,4 +1,4 @@
-package space.space_spring.dto.oAuth;
+package space.space_spring.domain.authorization.OAuth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

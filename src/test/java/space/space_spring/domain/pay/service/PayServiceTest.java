@@ -30,6 +30,7 @@ import space.space_spring.global.exception.CustomException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional

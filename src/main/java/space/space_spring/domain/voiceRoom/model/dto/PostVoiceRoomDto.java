@@ -1,8 +1,7 @@
-package space.space_spring.dto.VoiceRoom;
+package space.space_spring.domain.voiceRoom.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

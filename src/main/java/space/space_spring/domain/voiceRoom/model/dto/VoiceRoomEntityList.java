@@ -1,6 +1,6 @@
-package space.space_spring.dto.VoiceRoom;
+package space.space_spring.domain.voiceRoom.model.dto;
 
-import space.space_spring.entity.VoiceRoom;
+import space.space_spring.domain.voiceRoom.model.entity.VoiceRoom;
 
 import java.util.List;
 import java.util.stream.Collectors;

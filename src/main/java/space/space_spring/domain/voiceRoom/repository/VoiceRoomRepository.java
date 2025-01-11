@@ -1,11 +1,11 @@
-package space.space_spring.dao;
+package space.space_spring.domain.voiceRoom.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.space.model.entity.Space;
-import space.space_spring.entity.VoiceRoom;
+import space.space_spring.domain.voiceRoom.model.entity.VoiceRoom;
 
 import java.util.List;
 import java.util.Optional;

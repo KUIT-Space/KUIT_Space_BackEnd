@@ -1,8 +1,5 @@
-package space.space_spring.dto.VoiceRoom;
+package space.space_spring.domain.voiceRoom.model.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class GetToken {

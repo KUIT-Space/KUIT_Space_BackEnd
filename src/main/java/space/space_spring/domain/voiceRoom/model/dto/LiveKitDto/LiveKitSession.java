@@ -1,4 +1,4 @@
-package space.space_spring.dto.VoiceRoom.LiveKitDto;
+package space.space_spring.domain.voiceRoom.model.dto.LiveKitDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

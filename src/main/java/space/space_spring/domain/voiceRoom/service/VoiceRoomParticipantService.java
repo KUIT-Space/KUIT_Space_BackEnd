@@ -1,18 +1,18 @@
-package space.space_spring.service;
+package space.space_spring.domain.voiceRoom.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
-import space.space_spring.dao.VoiceRoomRepository;
+import space.space_spring.domain.voiceRoom.repository.VoiceRoomRepository;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.domain.userSpace.repository.UserSpaceDao;
-import space.space_spring.dto.VoiceRoom.GetParticipantList;
-import space.space_spring.dto.VoiceRoom.ParticipantDto;
-import space.space_spring.dto.VoiceRoom.ParticipantListDto;
-import space.space_spring.dto.VoiceRoom.RoomDto;
+import space.space_spring.domain.voiceRoom.model.dto.GetParticipantList;
+import space.space_spring.domain.voiceRoom.model.dto.ParticipantDto;
+import space.space_spring.domain.voiceRoom.model.dto.ParticipantListDto;
+import space.space_spring.domain.voiceRoom.model.dto.RoomDto;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
 

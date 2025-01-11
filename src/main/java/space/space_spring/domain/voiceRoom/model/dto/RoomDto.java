@@ -1,12 +1,11 @@
-package space.space_spring.dto.VoiceRoom;
+package space.space_spring.domain.voiceRoom.model.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import livekit.LivekitModels;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import space.space_spring.entity.VoiceRoom;
+import space.space_spring.domain.voiceRoom.model.entity.VoiceRoom;
 
 import java.util.List;
 import java.util.stream.Collectors;

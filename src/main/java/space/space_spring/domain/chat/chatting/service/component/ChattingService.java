@@ -12,13 +12,13 @@ import space.space_spring.domain.chat.chatting.model.response.ChatMessageRespons
 import space.space_spring.domain.chat.chatting.service.module.ChattingModuleService;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
-import space.space_spring.exception.CustomException;
-import space.space_spring.service.S3Uploader;
-import space.space_spring.util.userSpace.UserSpaceUtils;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.S3Uploader;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 
 @Service

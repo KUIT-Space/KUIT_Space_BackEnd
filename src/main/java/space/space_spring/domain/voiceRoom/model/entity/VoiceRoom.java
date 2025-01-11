@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.voiceRoom.model.dto.RoomDto;
-import space.space_spring.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
 @Table(name = "VoiceRoom")

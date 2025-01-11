@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import space.space_spring.entity.enumStatus.ChatMessageType;
+import space.space_spring.global.common.enumStatus.ChatMessageType;
 
 import java.util.HashMap;
 

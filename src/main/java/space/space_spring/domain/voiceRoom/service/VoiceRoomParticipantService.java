@@ -13,8 +13,8 @@ import space.space_spring.domain.voiceRoom.model.dto.GetParticipantList;
 import space.space_spring.domain.voiceRoom.model.dto.ParticipantDto;
 import space.space_spring.domain.voiceRoom.model.dto.ParticipantListDto;
 import space.space_spring.domain.voiceRoom.model.dto.RoomDto;
-import space.space_spring.exception.CustomException;
-import space.space_spring.util.LiveKitUtils;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.LiveKitUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor

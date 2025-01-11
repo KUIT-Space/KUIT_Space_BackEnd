@@ -6,22 +6,22 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 
-import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
+import space.space_spring.global.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.domain.board.model.request.CreatePostRequest;
 import space.space_spring.domain.board.model.response.ReadPostDetailResponse;
 import space.space_spring.domain.board.model.response.ReadPostsResponse;
 
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
-import space.space_spring.exception.CustomException;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.domain.board.service.PostService;
-import space.space_spring.util.userSpace.UserSpaceUtils;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
 import java.util.List;
 import java.util.Optional;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_POST_CREATE;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_POST_CREATE;
 
 @RestController
 @RequiredArgsConstructor

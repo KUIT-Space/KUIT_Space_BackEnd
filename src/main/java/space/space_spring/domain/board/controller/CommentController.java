@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.domain.board.model.request.CreateCommentRequest;
 import space.space_spring.domain.board.model.response.ReadCommentsResponse;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.domain.board.service.CommentService;
 
 import java.util.List;

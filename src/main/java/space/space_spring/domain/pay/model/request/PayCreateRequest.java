@@ -7,9 +7,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.domain.pay.model.PayCreateTargetInfo;
 import space.space_spring.domain.pay.model.PayType;
-import space.space_spring.global.common.EnumValidator;
+import space.space_spring.global.validator.EnumValidator;
 
 import java.util.List;
 

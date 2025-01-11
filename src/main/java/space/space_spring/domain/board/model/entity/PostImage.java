@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import space.space_spring.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
 @Table(name = "Post_Image")

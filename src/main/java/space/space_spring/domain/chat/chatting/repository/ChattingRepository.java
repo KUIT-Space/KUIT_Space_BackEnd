@@ -6,7 +6,7 @@ import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import space.space_spring.entity.enumStatus.BaseStatusType;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 @Repository
 public interface ChattingRepository extends MongoRepository<ChatMessage, String> {

@@ -1,16 +1,15 @@
 package space.space_spring.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 
-import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
-import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
-import space.space_spring.argumentResolver.userSpace.UserSpaceId;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.argumentResolver.userSpace.CheckUserSpace;
+import space.space_spring.global.argumentResolver.userSpace.UserSpaceAuth;
+import space.space_spring.global.argumentResolver.userSpace.UserSpaceId;
+import space.space_spring.global.common.response.BaseResponse;
 
 @RestController
 @Slf4j

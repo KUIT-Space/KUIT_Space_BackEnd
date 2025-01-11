@@ -18,12 +18,11 @@ import space.space_spring.domain.pay.model.entity.PayRequestTarget;
 import space.space_spring.domain.pay.model.response.PayHomeViewResponse;
 import space.space_spring.domain.pay.repository.PayRequestRepository;
 import space.space_spring.domain.pay.repository.PayRequestTargetRepository;
-import space.space_spring.exception.CustomException;
+import space.space_spring.global.exception.CustomException;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor

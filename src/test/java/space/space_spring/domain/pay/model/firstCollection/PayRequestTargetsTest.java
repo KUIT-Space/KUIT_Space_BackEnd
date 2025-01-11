@@ -1,6 +1,5 @@
 package space.space_spring.domain.pay.model.firstCollection;
 
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,7 @@ import space.space_spring.domain.pay.model.entity.PayRequest;
 import space.space_spring.domain.pay.model.entity.PayRequestTarget;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.entity.enumStatus.UserSignupType;
+import space.space_spring.global.common.enumStatus.UserSignupType;
 
 import java.util.List;
 

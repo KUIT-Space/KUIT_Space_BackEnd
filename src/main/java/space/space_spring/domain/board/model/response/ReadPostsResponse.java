@@ -4,7 +4,7 @@ import lombok.*;
 import space.space_spring.domain.board.model.entity.Post;
 import space.space_spring.domain.board.model.entity.PostImage;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
-import space.space_spring.util.post.ConvertCreatedDate;
+import space.space_spring.global.util.post.ConvertCreatedDate;
 
 import java.util.List;
 

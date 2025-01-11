@@ -13,15 +13,14 @@ import space.space_spring.domain.board.model.entity.Post;
 import space.space_spring.domain.board.model.entity.Comment;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
-import space.space_spring.exception.CustomException;
-import space.space_spring.util.user.UserUtils;
-import space.space_spring.util.userSpace.UserSpaceUtils;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.user.UserUtils;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @Slf4j

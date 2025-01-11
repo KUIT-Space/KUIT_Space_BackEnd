@@ -1,6 +1,5 @@
 package space.space_spring.domain.chat.chatroom.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -9,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
-import space.space_spring.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseEntity;
 import space.space_spring.domain.space.model.entity.Space;
 
 @Entity

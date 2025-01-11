@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
-import space.space_spring.entity.enumStatus.ChatMessageType;
+import space.space_spring.global.common.enumStatus.ChatMessageType;
 
 import java.util.HashMap;
 

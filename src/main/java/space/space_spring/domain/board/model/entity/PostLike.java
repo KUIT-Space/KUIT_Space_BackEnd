@@ -1,16 +1,17 @@
-package space.space_spring.entity;
+package space.space_spring.domain.board.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.user.model.entity.User;
+import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Table(name = "Post_Like")
 @Getter
 @NoArgsConstructor
-public class PostLike extends BaseEntity{
+public class PostLike extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "post_like_id")

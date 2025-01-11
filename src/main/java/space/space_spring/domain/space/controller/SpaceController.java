@@ -19,7 +19,7 @@ import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.exception.CustomException;
 import space.space_spring.response.BaseResponse;
 import space.space_spring.domain.pay.service.PayService;
-import space.space_spring.service.PostService;
+import space.space_spring.domain.board.service.PostService;
 import space.space_spring.service.S3Uploader;
 import space.space_spring.domain.space.service.SpaceService;
 import space.space_spring.util.userSpace.UserSpaceUtils;

@@ -1,17 +1,18 @@
-package space.space_spring.entity;
+package space.space_spring.domain.board.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.user.model.entity.User;
+import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Table(name = "Comment_Like",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "post_comment_id"})})
 @Getter
 @NoArgsConstructor
-public class CommentLike extends BaseEntity{
+public class CommentLike extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "comment_like_id")

@@ -1,23 +1,25 @@
-package space.space_spring.service;
+package space.space_spring.domain.board.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import space.space_spring.dao.CommentDao;
-import space.space_spring.dao.PostDao;
+import space.space_spring.domain.board.model.entity.Post;
+import space.space_spring.domain.board.model.entity.PostImage;
+import space.space_spring.domain.board.repository.CommentRepository;
+import space.space_spring.domain.board.repository.PostRepository;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.domain.userSpace.repository.UserSpaceDao;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.dto.comment.response.ReadCommentsResponse;
-import space.space_spring.dto.post.request.CreatePostRequest;
-import space.space_spring.dto.post.response.ReadPostDetailResponse;
-import space.space_spring.dto.post.response.ReadPostsResponse;
+import space.space_spring.domain.board.model.response.ReadCommentsResponse;
+import space.space_spring.domain.board.model.request.CreatePostRequest;
+import space.space_spring.domain.board.model.response.ReadPostDetailResponse;
+import space.space_spring.domain.board.model.response.ReadPostsResponse;
 import space.space_spring.domain.space.model.dto.GetSpaceHomeDto;
-import space.space_spring.entity.*;
 import space.space_spring.exception.CustomException;
+import space.space_spring.service.S3Uploader;
 import space.space_spring.util.space.SpaceUtils;
 import space.space_spring.util.user.UserUtils;
 import space.space_spring.util.userSpace.UserSpaceUtils;
@@ -40,9 +42,9 @@ public class PostService {
     private final UserUtils userUtils;
     private final SpaceUtils spaceUtils;
     private final UserSpaceUtils userSpaceUtils;
-    private final PostDao postDao;
+    private final PostRepository postRepository;
     private final UserSpaceDao userSpaceDao;
-    private final CommentDao commentDao;
+    private final CommentRepository commentRepository;
     private final S3Uploader s3Uploader;
 
     @Transactional
@@ -54,12 +56,12 @@ public class PostService {
         // TODO 2: 필터에 따라 해당 user의 해당 space 내의 게시판 게시글 리스트 return
         List<Post> posts;
         if("notice".equalsIgnoreCase(filter)) {
-            posts = postDao.findBySpaceAndType(spaceBySpaceId, "notice");
+            posts = postRepository.findBySpaceAndType(spaceBySpaceId, "notice");
         } else if ("general".equalsIgnoreCase(filter)){
-            posts = postDao.findBySpaceAndType(spaceBySpaceId, "general");
+            posts = postRepository.findBySpaceAndType(spaceBySpaceId, "general");
         } else {
             // filter = "all" 일 경우 전체 게시글 조회
-            posts = postDao.findBySpace(spaceBySpaceId);
+            posts = postRepository.findBySpace(spaceBySpaceId);
         }
 
         int postCount = posts.size();
@@ -67,7 +69,7 @@ public class PostService {
         return posts.stream()
                 .map(post ->{
                     Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(post.getUser(), post.getSpace());
-                    boolean isLike = postDao.isUserLikedPost(post.getPostId(), userId);
+                    boolean isLike = postRepository.isUserLikedPost(post.getPostId(), userId);
                     return ReadPostsResponse.of(post, postCount, userSpace.orElse(null), isLike);
                 })
                 .collect(Collectors.toList());
@@ -103,7 +105,7 @@ public class PostService {
         // TODO 5: 각 PostImage에 해당 Post를 설정
         postImages.forEach(postImage -> postImage.setPost(post));
 
-        return postDao.save(post).getPostId();
+        return postRepository.save(post).getPostId();
     }
 
     @Transactional
@@ -112,7 +114,7 @@ public class PostService {
         Space space = spaceUtils.findSpaceBySpaceId(spaceId);
 
         // TODO 2: postId에 해당하는 post find
-        Post post = postDao.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
         // TODO 3: 게시글이 해당 스페이스에 속하는지 검증
         if (!post.getSpace().getSpaceId().equals(spaceId)) {
@@ -123,13 +125,13 @@ public class PostService {
         Optional<UserSpace> userSpace = userSpaceUtils.isUserInSpace(post.getUser().getUserId(), spaceId);
 
         // TODO 5: 유저가 해당 게시글에 좋아요를 눌렀는지 여부 확인
-        boolean isLike = postDao.isUserLikedPost(post.getPostId(), userId);
+        boolean isLike = postRepository.isUserLikedPost(post.getPostId(), userId);
 
         // TODO 6: 댓글 리스트를 ReadCommentsResponse로 변환
         List<ReadCommentsResponse> comments = post.getComments().stream()
                 .map(comment -> {
-                    int commentCount = commentDao.countByTargetId(comment.getCommentId());
-                    boolean isCommentLiked = commentDao.isUserLikedComment(comment.getCommentId(), userId);
+                    int commentCount = commentRepository.countByTargetId(comment.getCommentId());
+                    boolean isCommentLiked = commentRepository.isUserLikedComment(comment.getCommentId(), userId);
                     Optional<UserSpace> userSpaceOpt = userSpaceDao.findUserSpaceByUserAndSpace(comment.getUser(), post.getSpace());
 
                     return ReadCommentsResponse.of(comment, userSpaceOpt.orElse(null), isCommentLiked, commentCount);
@@ -147,7 +149,7 @@ public class PostService {
 
         // TODO 2. Space에 해당하는 notice 게시글 get
         // 공지사항 중 3개만 return
-        List<Post> noticeList = postDao.findBySpaceAndTypeSortedByNewest(spaceBySpaceId, "notice", Pageable.ofSize(3));
+        List<Post> noticeList = postRepository.findBySpaceAndTypeSortedByNewest(spaceBySpaceId, "notice", Pageable.ofSize(3));
 
         // TODO 3. return
         List<GetSpaceHomeDto.SpaceHomeNotice> spaceHomeNoticeList = new ArrayList<>();
@@ -162,7 +164,7 @@ public class PostService {
     @Transactional
     public void updatePost(Long userId, Long spaceId, Long postId, CreatePostRequest updatePostReqeust) {
         // TODO 1: postId에 해당하는 post find
-        Post post = postDao.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
         // TODO 2: 게시글이 해당 스페이스에 속하는 지 검증
         if(!post.getSpace().getSpaceId().equals(spaceId)) {
@@ -185,13 +187,13 @@ public class PostService {
         post.updatePost(updatePostReqeust.getTitle(), updatePostReqeust.getContent(), updateImages);
 
         updateImages.forEach(image -> image.setPost(post));
-        postDao.save(post);
+        postRepository.save(post);
     }
 
     @Transactional
     public void deletePost(Long userId, Long spaceId, Long postId) {
         // TODO 1: postId에 해당하는 post find
-        Post post = postDao.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
         // TODO 2: 게시글이 해당 스페이스에 속하는 지 검증
         if(!post.getSpace().getSpaceId().equals(spaceId)) {
@@ -200,7 +202,7 @@ public class PostService {
 
         // TODO 3: 게시글 삭제
         post.updateInactive();
-        postDao.save(post);
+        postRepository.save(post);
 
     }
 

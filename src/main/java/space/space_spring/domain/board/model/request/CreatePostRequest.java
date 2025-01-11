@@ -1,10 +1,10 @@
-package space.space_spring.dto.post.request;
+package space.space_spring.domain.board.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.entity.Post;
-import space.space_spring.entity.PostImage;
+import space.space_spring.domain.board.model.entity.Post;
+import space.space_spring.domain.board.model.entity.PostImage;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 

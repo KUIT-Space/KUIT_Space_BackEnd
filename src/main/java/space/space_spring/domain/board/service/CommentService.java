@@ -1,16 +1,16 @@
-package space.space_spring.service;
+package space.space_spring.domain.board.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import space.space_spring.dao.CommentDao;
-import space.space_spring.dao.PostDao;
+import space.space_spring.domain.board.repository.CommentRepository;
+import space.space_spring.domain.board.repository.PostRepository;
 import space.space_spring.domain.userSpace.repository.UserSpaceDao;
-import space.space_spring.dto.comment.request.CreateCommentRequest;
-import space.space_spring.dto.comment.response.ReadCommentsResponse;
-import space.space_spring.entity.Post;
-import space.space_spring.entity.Comment;
+import space.space_spring.domain.board.model.request.CreateCommentRequest;
+import space.space_spring.domain.board.model.response.ReadCommentsResponse;
+import space.space_spring.domain.board.model.entity.Post;
+import space.space_spring.domain.board.model.entity.Comment;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.exception.CustomException;
@@ -27,8 +27,8 @@ import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
 @Slf4j
 @RequiredArgsConstructor
 public class CommentService {
-    private final PostDao postDao;
-    private final CommentDao commentDao;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final UserSpaceDao userSpaceDao;
     private final UserUtils userUtils;
     private final UserSpaceUtils userSpaceUtils;
@@ -36,7 +36,7 @@ public class CommentService {
     // TODO 1: 댓글 유효성 검사
     public void validateCommentRequest(CreateCommentRequest.Request request, Long postId) {
         if (request.getTargetId() != null) {
-            Comment targetComment = commentDao.findById(request.getTargetId())
+            Comment targetComment = commentRepository.findById(request.getTargetId())
                     .orElseThrow(() -> new CustomException(COMMENT_NOT_EXIST));
 
             if(!targetComment.getPost().getPostId().equals(postId)) {
@@ -48,17 +48,17 @@ public class CommentService {
     @Transactional
     public List<ReadCommentsResponse> getCommentsByPost(Long postId, Long userId) {
         // TODO 1: postId에 해당하는 post find
-        Post post = postDao.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
         // TODO 2: 해당 게시글의 모든 댓글 조회
-        List<Comment> comments = commentDao.findByPost(post);
+        List<Comment> comments = commentRepository.findByPost(post);
 
         // TODO 3: CommentResponse 리스트로 변환
         return comments.stream()
                 .map(comment -> {
-                    int commentCount = commentDao.countByTargetId(comment.getCommentId());
-                    boolean isLike = commentDao.isUserLikedComment(comment.getCommentId(), userId);
+                    int commentCount = commentRepository.countByTargetId(comment.getCommentId());
+                    boolean isLike = commentRepository.isUserLikedComment(comment.getCommentId(), userId);
                     Optional<UserSpace> userSpace = userSpaceDao.findUserSpaceByUserAndSpace(comment.getUser(), post.getSpace());
 
                     return ReadCommentsResponse.of(comment, userSpace.orElse(null), isLike, commentCount);
@@ -75,12 +75,12 @@ public class CommentService {
         User user = userUtils.findUserByUserId(userId);
 
         // TODO 2: postId에 해당하는 post find
-        Post post = postDao.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_EXIST));
 
         // TODO 3: 댓글 또는 대댓글 생성
         Comment comment = createCommentRequest.toEntity(user, post);
-        commentDao.save(comment);
+        commentRepository.save(comment);
 
         return comment.getCommentId();
     }

@@ -1,17 +1,17 @@
-package space.space_spring.dao;
+package space.space_spring.domain.board.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import space.space_spring.entity.Post;
+import space.space_spring.domain.board.model.entity.Post;
 import space.space_spring.domain.space.model.entity.Space;
 
 import java.util.List;
 
 @Repository
-public interface PostDao extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE p.space = :space AND p.status = 'ACTIVE' ORDER BY p.createdAt DESC")
     List<Post> findBySpace(Space space);

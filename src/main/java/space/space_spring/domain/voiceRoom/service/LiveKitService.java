@@ -1,4 +1,4 @@
-package space.space_spring.service;
+package space.space_spring.domain.voiceRoom.service;
 
 import io.livekit.server.*;
 import livekit.LivekitModels;
@@ -8,10 +8,11 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import retrofit2.Response;
-import space.space_spring.dto.VoiceRoom.*;
-import space.space_spring.dto.VoiceRoom.LiveKitDto.GetTokenRequest;
-import space.space_spring.dto.VoiceRoom.LiveKitDto.LiveKitSession;
-import space.space_spring.dto.VoiceRoom.LiveKitDto.LiveKitSessionResponse;
+import space.space_spring.domain.voiceRoom.model.dto.ParticipantDto;
+import space.space_spring.domain.voiceRoom.model.dto.RoomDto;
+import space.space_spring.domain.voiceRoom.model.dto.LiveKitDto.GetTokenRequest;
+import space.space_spring.domain.voiceRoom.model.dto.LiveKitDto.LiveKitSession;
+import space.space_spring.domain.voiceRoom.model.dto.LiveKitDto.LiveKitSessionResponse;
 
 import java.security.SecureRandom;
 import java.util.List;

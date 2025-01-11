@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import retrofit2.Response;
-import space.space_spring.dto.VoiceRoom.ParticipantDto;
-import space.space_spring.dto.VoiceRoom.RoomDto;
+import space.space_spring.domain.voiceRoom.model.dto.ParticipantDto;
 
 import java.util.List;
 @Component

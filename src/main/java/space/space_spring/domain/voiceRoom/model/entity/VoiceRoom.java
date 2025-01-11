@@ -1,17 +1,18 @@
-package space.space_spring.entity;
+package space.space_spring.domain.voiceRoom.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.space.model.entity.Space;
-import space.space_spring.dto.VoiceRoom.RoomDto;
+import space.space_spring.domain.voiceRoom.model.dto.RoomDto;
+import space.space_spring.entity.BaseEntity;
 
 @Entity
 @Table(name = "VoiceRoom")
 @Getter
 @NoArgsConstructor
-public class VoiceRoom extends BaseEntity{
+public class VoiceRoom extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name="voice_room_id")

@@ -1,4 +1,4 @@
-package space.space_spring.service;
+package space.space_spring.domain.voiceRoom.service;
 
 import livekit.LivekitModels;
 import lombok.RequiredArgsConstructor;
@@ -7,12 +7,19 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.domain.userSpace.repository.UserSpaceDao;
-import space.space_spring.dao.VoiceRoomDao;
-import space.space_spring.dao.VoiceRoomRepository;
-import space.space_spring.dto.VoiceRoom.*;
+import space.space_spring.domain.voiceRoom.repository.VoiceRoomDao;
+import space.space_spring.domain.voiceRoom.repository.VoiceRoomRepository;
+import space.space_spring.domain.voiceRoom.model.dto.GetParticipantList;
+import space.space_spring.domain.voiceRoom.model.dto.GetVoiceRoomList;
+import space.space_spring.domain.voiceRoom.model.dto.ParticipantDto;
+import space.space_spring.domain.voiceRoom.model.dto.ParticipantListDto;
+import space.space_spring.domain.voiceRoom.model.dto.PatchVoiceRoom;
+import space.space_spring.domain.voiceRoom.model.dto.PostVoiceRoomDto;
+import space.space_spring.domain.voiceRoom.model.dto.RoomDto;
+import space.space_spring.domain.voiceRoom.model.dto.VoiceRoomListDto;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.entity.VoiceRoom;
+import space.space_spring.domain.voiceRoom.model.entity.VoiceRoom;
 import space.space_spring.exception.CustomException;
 import space.space_spring.util.LiveKitUtils;
 import space.space_spring.util.space.SpaceUtils;
@@ -23,9 +30,6 @@ import java.util.List;
 
 
 import java.util.Map;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
 
@@ -43,7 +47,7 @@ public class VoiceRoomService {
     private final TaskExecutor taskExecutor;
     private final VoiceRoomParticipantService voiceRoomParticipantService;
 
-    public Long createVoiceRoom(long spaceId,PostVoiceRoomDto.Request req){
+    public Long createVoiceRoom(long spaceId, PostVoiceRoomDto.Request req){
         Space targetSpace = spaceUtils.findSpaceBySpaceId(spaceId);
         Integer orderInt = voiceRoomRepository.findMaxOrderBySpace(targetSpace);
         //Space currentSpace=voiceRoomRepository.findActiveVoiceRoomsBySpaceId(spaceId);
@@ -63,7 +67,7 @@ public class VoiceRoomService {
     /**
      // room 정보 가져오기 병렬적용
      */
-    public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoListConcurrency(long spaceId,GetVoiceRoomList.Request req){
+    public List<GetVoiceRoomList.VoiceRoomInfo> getVoiceRoomInfoListConcurrency(long spaceId, GetVoiceRoomList.Request req){
         Integer limit = req.getLimit();
         boolean showParticipant =req.isShowParticipant();
 
@@ -102,7 +106,7 @@ public class VoiceRoomService {
 
 
 
-        Map<Long,ParticipantListDto> roomIdParticipantMap=voiceRoomParticipantService.getParticipantList(roomIdList);
+        Map<Long, ParticipantListDto> roomIdParticipantMap=voiceRoomParticipantService.getParticipantList(roomIdList);
 
         if(showParticipant){
             voiceRoomListDto.setParticipantListDto(roomIdParticipantMap);

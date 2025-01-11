@@ -1,4 +1,4 @@
-package space.space_spring.controller;
+package space.space_spring.domain.voiceRoom.controller;
 
 import io.livekit.server.AccessToken;
 import jakarta.annotation.Nullable;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import space.space_spring.dto.VoiceRoom.LiveKitDto.LiveKitSession;
-import space.space_spring.dto.VoiceRoom.ParticipantDto;
-import space.space_spring.dto.VoiceRoom.RoomDto;
-import space.space_spring.dto.VoiceRoom.LiveKitDto.GetTokenRequest;
-import space.space_spring.service.LiveKitService;
+import space.space_spring.domain.voiceRoom.model.dto.LiveKitDto.LiveKitSession;
+import space.space_spring.domain.voiceRoom.model.dto.ParticipantDto;
+import space.space_spring.domain.voiceRoom.model.dto.RoomDto;
+import space.space_spring.domain.voiceRoom.model.dto.LiveKitDto.GetTokenRequest;
+import space.space_spring.domain.voiceRoom.service.LiveKitService;
 
 import java.util.List;
 

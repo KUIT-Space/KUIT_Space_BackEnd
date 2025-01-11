@@ -1,4 +1,4 @@
-package space.space_spring.dto.VoiceRoom;
+package space.space_spring.domain.voiceRoom.model.dto;
 
 import java.util.Collections;
 import java.util.List;

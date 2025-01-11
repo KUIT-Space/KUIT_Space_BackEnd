@@ -1,11 +1,11 @@
-package space.space_spring.dao;
+package space.space_spring.domain.voiceRoom.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.space.model.entity.Space;
-import space.space_spring.entity.VoiceRoom;
+import space.space_spring.domain.voiceRoom.model.entity.VoiceRoom;
 
 @Repository
 public class VoiceRoomDao  {

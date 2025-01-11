@@ -18,11 +18,11 @@ import space.space_spring.domain.board.model.request.CreatePostRequest;
 import space.space_spring.domain.board.model.response.ReadPostDetailResponse;
 import space.space_spring.domain.board.model.response.ReadPostsResponse;
 import space.space_spring.domain.space.model.dto.GetSpaceHomeDto;
-import space.space_spring.exception.CustomException;
-import space.space_spring.service.S3Uploader;
-import space.space_spring.util.space.SpaceUtils;
-import space.space_spring.util.user.UserUtils;
-import space.space_spring.util.userSpace.UserSpaceUtils;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.S3Uploader;
+import space.space_spring.global.util.space.SpaceUtils;
+import space.space_spring.global.util.user.UserUtils;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.POST_IS_NOT_IN_SPACE;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.POST_NOT_EXIST;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.POST_IS_NOT_IN_SPACE;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.POST_NOT_EXIST;
 
 @Service
 @Slf4j

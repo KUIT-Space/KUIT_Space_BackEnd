@@ -1,6 +1,6 @@
 package space.space_spring.domain.chat.chatroom.service.module;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_EXIST;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_EXIST;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.chat.chatroom.model.ChatRoom;
 import space.space_spring.domain.chat.chatroom.repository.ChatRoomRepository;
-import space.space_spring.entity.enumStatus.BaseStatusType;
-import space.space_spring.exception.CustomException;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
+import space.space_spring.global.exception.CustomException;
 
 @Component
 @RequiredArgsConstructor

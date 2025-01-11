@@ -20,9 +20,9 @@ import space.space_spring.domain.voiceRoom.model.dto.VoiceRoomListDto;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.voiceRoom.model.entity.VoiceRoom;
-import space.space_spring.exception.CustomException;
-import space.space_spring.util.LiveKitUtils;
-import space.space_spring.util.space.SpaceUtils;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.LiveKitUtils;
+import space.space_spring.global.util.space.SpaceUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +31,7 @@ import java.util.List;
 
 import java.util.Map;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.VOICEROOM_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor

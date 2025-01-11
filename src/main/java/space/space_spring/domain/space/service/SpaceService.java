@@ -15,16 +15,16 @@ import space.space_spring.domain.userSpace.model.PutUserProfileInSpaceDto;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
-import space.space_spring.entity.enumStatus.UserSpaceAuth;
-import space.space_spring.exception.CustomException;
-import space.space_spring.util.space.SpaceUtils;
-import space.space_spring.util.user.UserUtils;
-import space.space_spring.util.userSpace.UserSpaceUtils;
+import space.space_spring.global.common.enumStatus.UserSpaceAuth;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.space.SpaceUtils;
+import space.space_spring.global.util.user.UserUtils;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
 
 import java.time.ZoneId;
 import java.util.Optional;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.USER_IS_NOT_IN_SPACE;
 
 
 @Service

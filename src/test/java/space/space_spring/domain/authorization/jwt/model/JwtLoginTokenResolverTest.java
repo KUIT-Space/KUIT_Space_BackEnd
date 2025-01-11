@@ -3,8 +3,8 @@ package space.space_spring.domain.authorization.jwt.model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
-import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
-import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import space.space_spring.global.exception.jwt.bad_request.JwtNoTokenException;
+import space.space_spring.global.exception.jwt.bad_request.JwtUnsupportedTokenException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

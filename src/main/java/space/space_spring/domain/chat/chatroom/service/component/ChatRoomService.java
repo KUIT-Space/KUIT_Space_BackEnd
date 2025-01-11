@@ -1,5 +1,7 @@
 package space.space_spring.domain.chat.chatroom.service.component;
 
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +27,15 @@ import space.space_spring.domain.userSpace.model.UserInfoInSpace;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 
-import space.space_spring.entity.enumStatus.BaseStatusType;
-import space.space_spring.exception.CustomException;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
+import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.TimeUtils;
-import space.space_spring.util.space.SpaceUtils;
-import space.space_spring.util.user.UserUtils;
+import space.space_spring.global.util.space.SpaceUtils;
+import space.space_spring.global.util.user.UserUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import space.space_spring.util.userSpace.UserSpaceUtils;
-
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
 
 @Service
 @Slf4j

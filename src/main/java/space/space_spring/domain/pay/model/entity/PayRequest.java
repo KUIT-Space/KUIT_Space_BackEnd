@@ -9,7 +9,7 @@ import space.space_spring.domain.pay.model.PayType;
 import space.space_spring.domain.pay.model.dto.PayRequestInfoDto;
 import space.space_spring.domain.pay.model.firstCollection.PayRequestTargets;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseEntity;
 import space.space_spring.domain.space.model.entity.Space;
 
 import java.util.ArrayList;

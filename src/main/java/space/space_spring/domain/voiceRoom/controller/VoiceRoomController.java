@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
-import space.space_spring.argumentResolver.userSpace.UserSpaceId;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.userSpace.UserSpaceAuth;
+import space.space_spring.global.argumentResolver.userSpace.UserSpaceId;
 import space.space_spring.domain.userSpace.repository.UserSpaceDao;
 import space.space_spring.domain.voiceRoom.repository.VoiceRoomRepository;
 import space.space_spring.domain.voiceRoom.model.dto.GetParticipantList;
@@ -16,20 +16,20 @@ import space.space_spring.domain.voiceRoom.model.dto.GetVoiceRoomList;
 import space.space_spring.domain.voiceRoom.model.dto.PatchVoiceRoom;
 import space.space_spring.domain.voiceRoom.model.dto.PostVoiceRoomDto;
 
-import space.space_spring.exception.CustomException;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.domain.voiceRoom.service.LiveKitService;
 import space.space_spring.domain.voiceRoom.service.VoiceRoomParticipantService;
 import space.space_spring.domain.voiceRoom.service.VoiceRoomService;
-import space.space_spring.util.space.SpaceUtils;
-import space.space_spring.util.user.UserUtils;
-import space.space_spring.util.userSpace.UserSpaceUtils;
+import space.space_spring.global.util.space.SpaceUtils;
+import space.space_spring.global.util.user.UserUtils;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 import java.util.List;
 
-import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
-import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
+import static space.space_spring.global.common.enumStatus.UserSpaceAuth.MANAGER;
+import static space.space_spring.global.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
 @RequiredArgsConstructor

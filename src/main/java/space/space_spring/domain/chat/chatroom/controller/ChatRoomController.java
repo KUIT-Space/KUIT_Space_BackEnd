@@ -4,24 +4,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.argumentResolver.userSpace.UserSpaceAuth;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.userSpace.UserSpaceAuth;
 import space.space_spring.domain.chat.chatroom.model.request.CreateChatRoomRequest;
 import space.space_spring.domain.chat.chatroom.model.request.JoinChatRoomRequest;
 import space.space_spring.domain.chat.chatroom.model.response.ChatSuccessResponse;
 import space.space_spring.domain.chat.chatroom.model.response.CreateChatRoomResponse;
 import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomMemberResponse;
 import space.space_spring.domain.chat.chatroom.model.response.ReadChatRoomResponse;
-import space.space_spring.exception.CustomException;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.domain.chat.chatroom.service.component.ChatRoomService;
-import space.space_spring.service.S3Uploader;
+import space.space_spring.global.util.S3Uploader;
 
 import java.io.IOException;
 
-import static space.space_spring.entity.enumStatus.UserSpaceAuth.MANAGER;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
-import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
+import static space.space_spring.global.common.enumStatus.UserSpaceAuth.MANAGER;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
+import static space.space_spring.global.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
 @RequiredArgsConstructor

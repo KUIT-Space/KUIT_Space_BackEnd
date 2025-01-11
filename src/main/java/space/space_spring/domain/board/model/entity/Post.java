@@ -8,7 +8,7 @@ import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 
 import java.util.List;
-import space.space_spring.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
 @Table(name = "Posts")

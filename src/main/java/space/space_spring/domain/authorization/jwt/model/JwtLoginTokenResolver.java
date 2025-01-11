@@ -5,11 +5,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import space.space_spring.exception.jwt.bad_request.JwtNoTokenException;
-import space.space_spring.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import space.space_spring.global.exception.jwt.bad_request.JwtNoTokenException;
+import space.space_spring.global.exception.jwt.bad_request.JwtUnsupportedTokenException;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.TOKEN_NOT_FOUND;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.UNSUPPORTED_TOKEN_TYPE;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TOKEN_NOT_FOUND;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.UNSUPPORTED_TOKEN_TYPE;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

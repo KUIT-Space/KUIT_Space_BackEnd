@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import space.space_spring.domain.chat.chatroom.model.ChatRoom;
 
 import java.util.List;
-import space.space_spring.entity.enumStatus.BaseStatusType;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 
 @RequiredArgsConstructor

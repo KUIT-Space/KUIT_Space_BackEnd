@@ -6,8 +6,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.domain.space.model.dto.GetSpaceJoinDto;
 import space.space_spring.domain.space.model.dto.PostSpaceJoinDto;
 import space.space_spring.domain.space.model.request.PostSpaceCreateDto;
@@ -16,18 +16,18 @@ import space.space_spring.domain.space.model.response.GetUserInfoBySpaceResponse
 import space.space_spring.domain.userSpace.model.GetUserProfileInSpaceDto;
 import space.space_spring.domain.userSpace.model.PutUserProfileInSpaceDto;
 import space.space_spring.domain.space.model.entity.Space;
-import space.space_spring.exception.CustomException;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.domain.pay.service.PayService;
 import space.space_spring.domain.board.service.PostService;
-import space.space_spring.service.S3Uploader;
+import space.space_spring.global.util.S3Uploader;
 import space.space_spring.domain.space.service.SpaceService;
-import space.space_spring.util.userSpace.UserSpaceUtils;
+import space.space_spring.global.util.userSpace.UserSpaceUtils;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 import java.io.IOException;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
-import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
+import static space.space_spring.global.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
 @RequiredArgsConstructor

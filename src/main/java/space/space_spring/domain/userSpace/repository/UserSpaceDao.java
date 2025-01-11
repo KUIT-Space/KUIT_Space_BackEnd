@@ -11,7 +11,7 @@ import space.space_spring.domain.userSpace.model.UserInfoInSpace;
 import space.space_spring.domain.space.model.entity.Space;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
-import space.space_spring.entity.enumStatus.UserSpaceAuth;
+import space.space_spring.global.common.enumStatus.UserSpaceAuth;
 
 import java.util.*;
 

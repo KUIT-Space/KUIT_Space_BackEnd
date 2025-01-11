@@ -14,7 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import space.space_spring.domain.user.repository.UserDao;
-import space.space_spring.dto.oAuth.KakaoInfo;
+import space.space_spring.domain.authorization.OAuth.dto.KakaoInfo;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.global.util.user.UserUtils;
 

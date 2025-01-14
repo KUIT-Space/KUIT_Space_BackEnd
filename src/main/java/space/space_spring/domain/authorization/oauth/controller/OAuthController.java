@@ -1,4 +1,4 @@
-package space.space_spring.domain.authorization.OAuth.controller;
+package space.space_spring.domain.authorization.oauth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import space.space_spring.domain.authorization.jwt.service.JwtService;
 import space.space_spring.domain.authorization.jwt.model.TokenPairDTO;
-import space.space_spring.domain.authorization.OAuth.dto.KakaoInfo;
+import space.space_spring.domain.authorization.oauth.dto.KakaoInfo;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.domain.authorization.OAuth.service.OAuthService;
+import space.space_spring.domain.authorization.oauth.service.OAuthService;
 
 import java.io.IOException;
 

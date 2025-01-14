@@ -1,4 +1,4 @@
-package space.space_spring.domain.authorization.OAuth.service;
+package space.space_spring.domain.authorization.oauth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,7 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import space.space_spring.domain.user.repository.UserDao;
-import space.space_spring.domain.authorization.OAuth.dto.KakaoInfo;
+import space.space_spring.domain.authorization.oauth.dto.KakaoInfo;
 import space.space_spring.domain.user.model.entity.User;
 import space.space_spring.global.util.user.UserUtils;
 

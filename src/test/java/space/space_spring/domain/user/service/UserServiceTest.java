@@ -1,4 +1,4 @@
-package space.space_spring.service;
+package space.space_spring.domain.user.service;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

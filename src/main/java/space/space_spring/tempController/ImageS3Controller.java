@@ -1,4 +1,4 @@
-package space.space_spring.controller;
+package space.space_spring.tempController;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

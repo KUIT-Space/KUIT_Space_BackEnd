@@ -41,3 +41,7 @@ src/main/resource/application-local.yml
 /**/application-local.yml
 src/main/resource/application-dev.yml
 /**/application-dev.yml
+
+### test yml file ###
+src/test/resources/application-test.yml
+.DS_Store

@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import space.space_spring.global.exception.CustomException;
-import space.space_spring.global.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import space.space_spring.global.exception.jwt.badRequest.JwtUnsupportedTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtMalformedTokenException;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;

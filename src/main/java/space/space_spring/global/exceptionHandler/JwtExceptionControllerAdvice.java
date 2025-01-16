@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import space.space_spring.global.exception.jwt.bad_request.JwtBadRequestException;
+import space.space_spring.global.exception.jwt.badRequest.JwtBadRequestException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 import space.space_spring.global.common.response.BaseErrorResponse;
 

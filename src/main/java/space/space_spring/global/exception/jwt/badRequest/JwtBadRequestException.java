@@ -1,4 +1,4 @@
-package space.space_spring.global.exception.jwt.bad_request;
+package space.space_spring.global.exception.jwt.badRequest;
 
 import lombok.Getter;
 import space.space_spring.global.common.response.status.ResponseStatus;

@@ -79,15 +79,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     F(7005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
     G(7006, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
 
-    /**
-     * 8000: Chat 오류
-     */
-    INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST, "채팅방 생성 요청에서 잘못된 값이 존재합니다."),
-    CHATROOM_NOT_EXIST(8001, HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
-    INVALID_CHATROOM_JOIN(8001, HttpStatus.BAD_REQUEST, "채팅방 멤버 초대 요청에서 잘못된 값이 존재합니다."),
     BASE64_CONVERT_FAIL_IN_MEMORY(8002, HttpStatus.INTERNAL_SERVER_ERROR, "base64 파일 변환 과정에서 문제가 생겼습니다."),
-    USER_IS_ALREADY_IN_CHATROOM(8003, HttpStatus.BAD_REQUEST, "해당 채팅방에 이미 초대된 멤버가 포함되어 있습니다."),
-    USER_IS_NOT_IN_CHATROOM(8004, HttpStatus.NOT_FOUND, "해당 유저는 해당 채팅방에 참여하고 있지 않습니다."),
 
     /**
      * 9000 : MultipartFile 오류
@@ -95,15 +87,6 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     IS_NOT_IMAGE_FILE(9000, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 이미지 파일의 형식이 아닙니다."),
     MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
-
-    /**
-     * 10000: voice room 오류
-     */
-    VOICEROOM_NOT_EXIST(10001, HttpStatus.NOT_FOUND,"존재하지 않는 보이스룸 id입니다."),
-    INVALID_VOICEROOM_REQUEST(10002, HttpStatus.BAD_REQUEST,"잘못된 요청 인자 입니다."),
-
-    VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
-    VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST,"해당 스페이스에 없는 보이스 룸입니다."),
 
     /**
      * 11000: Post 오류

@@ -44,3 +44,4 @@ src/main/resource/application-dev.yml
 
 ### test yml file ###
 src/test/resources/application-test.yml
+.DS_Store

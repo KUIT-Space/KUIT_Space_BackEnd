@@ -11,17 +11,17 @@ import space.space_spring.domain.user.model.dto.SpaceChoiceViewDto;
 import space.space_spring.domain.user.model.request.PostUserSignupRequest;
 import space.space_spring.domain.user.model.response.GetSpaceInfoForUserResponse;
 import space.space_spring.domain.userSpace.model.entity.UserSpace;
-import space.space_spring.entity.enumStatus.UserSignupType;
-import space.space_spring.exception.CustomException;
+import space.space_spring.global.common.enumStatus.UserSignupType;
+import space.space_spring.global.exception.CustomException;
 import space.space_spring.domain.user.repository.UserDao;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.util.user.UserUtils;
+import space.space_spring.global.util.user.UserUtils;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static space.space_spring.entity.enumStatus.UserSignupType.LOCAL;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
+import static space.space_spring.global.common.enumStatus.UserSignupType.LOCAL;
 
 @Service
 @RequiredArgsConstructor

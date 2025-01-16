@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import space.space_spring.domain.chat.chatroom.model.ChatRoom;
 import space.space_spring.domain.chat.chatting.model.document.ChatMessage;
 import space.space_spring.domain.chat.chatting.repository.ChattingRepository;
-import space.space_spring.entity.enumStatus.BaseStatusType;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.util.TimeUtils;
 
 @Component

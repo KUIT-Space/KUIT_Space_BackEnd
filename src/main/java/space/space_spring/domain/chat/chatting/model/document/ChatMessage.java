@@ -5,8 +5,8 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
-import space.space_spring.entity.enumStatus.BaseStatusType;
-import space.space_spring.entity.enumStatus.ChatMessageType;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
+import space.space_spring.global.common.enumStatus.ChatMessageType;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

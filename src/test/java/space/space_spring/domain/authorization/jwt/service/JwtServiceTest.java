@@ -20,9 +20,9 @@ import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.repository.UserRepository;
 import space.space_spring.domain.authorization.jwt.model.entity.RefreshTokenStorage;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.entity.enumStatus.UserSignupType;
-import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
-import space.space_spring.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
+import space.space_spring.global.common.enumStatus.UserSignupType;
+import space.space_spring.global.exception.jwt.unauthorized.JwtExpiredTokenException;
+import space.space_spring.global.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
 
 import java.util.Date;
 import java.util.Optional;

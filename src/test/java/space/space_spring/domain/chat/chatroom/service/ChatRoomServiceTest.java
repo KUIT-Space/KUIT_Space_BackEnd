@@ -20,8 +20,8 @@
 //import space.space_spring.entity.*;
 //import space.space_spring.entity.enumStatus.UserSignupType;
 //import space.space_spring.entity.enumStatus.UserSpaceAuth;
-//import space.space_spring.util.space.SpaceUtils;
-//import space.space_spring.util.user.UserUtils;
+//import space.space_spring.global.util.space.SpaceUtils;
+//import space.space_spring.global.util.user.UserUtils;
 //
 //import java.nio.charset.StandardCharsets;
 //import java.time.LocalDateTime;

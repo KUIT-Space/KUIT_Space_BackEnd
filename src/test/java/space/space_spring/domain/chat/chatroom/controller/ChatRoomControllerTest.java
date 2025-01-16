@@ -16,7 +16,7 @@
 //import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuthHandlerArgumentResolver;
 //import space.space_spring.argumentResolver.userSpace.UserSpaceAuthHandlerArgumentResolver;
 //import space.space_spring.argumentResolver.userSpace.UserSpaceIdHandlerArgumentResolver;
-//import space.space_spring.config.SecurityConfig;
+//import space.space_spring.global.config.SecurityConfig;
 //import space.space_spring.domain.chat.chatroom.controller.ChatRoomController;
 //import space.space_spring.domain.chat.chatroom.model.request.CreateChatRoomRequest;
 //import space.space_spring.domain.chat.chatroom.model.request.JoinChatRoomRequest;
@@ -29,7 +29,7 @@
 //import space.space_spring.interceptor.UserSpaceValidationInterceptor;
 //import space.space_spring.interceptor.jwtLogin.JwtLoginAuthInterceptor;
 //import space.space_spring.domain.chat.chatroom.service.component.ChatRoomService;
-//import space.space_spring.service.S3Uploader;
+//import space.space_spring.global.util.S3Uploader;
 //
 //import java.nio.charset.StandardCharsets;
 //import java.util.List;

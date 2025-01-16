@@ -2,13 +2,13 @@ package space.space_spring.domain.pay.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import space.space_spring.exception.CustomException;
+import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_EQUAL_SPLIT_AMOUNT;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_EQUAL_SPLIT_AMOUNT;
 
 class EqualSplitPayAmountPolicyTest {
 

@@ -1,0 +1,38 @@
+package space.space_spring.domain.board.model.request;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+import space.space_spring.domain.board.model.entity.Post;
+import space.space_spring.domain.board.model.entity.PostImage;
+import space.space_spring.domain.space.model.entity.Space;
+import space.space_spring.domain.user.model.entity.User;
+
+import java.util.List;
+
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreatePostRequest {
+    @NotBlank
+    private String title;
+    @NotBlank
+    private String content;
+    private String type; // "notice" or "general"
+    private List<MultipartFile> postImages;
+
+    public Post toEntity(User user, Space space, List<PostImage> postImages){
+        return Post.builder()
+                .user(user)
+                .space(space)
+                .title(title)
+                .content(content)
+                .type(type)
+                .postImages(postImages)
+                .build();
+    }
+}
+
+

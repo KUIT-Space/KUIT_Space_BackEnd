@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.authorization.auth.service.AuthService;
 import space.space_spring.domain.user.model.PostLoginDto;
-import space.space_spring.exception.CustomException;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.common.response.BaseResponse;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_USER_LOGIN;
-import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_USER_LOGIN;
+import static space.space_spring.global.util.bindingResult.BindingResultUtils.getErrorMessage;
 
 @RestController
 @RequiredArgsConstructor

@@ -10,11 +10,10 @@ import space.space_spring.domain.authorization.jwt.repository.JwtRepository;
 import space.space_spring.domain.user.repository.UserRepository;
 import space.space_spring.domain.authorization.jwt.model.entity.RefreshTokenStorage;
 import space.space_spring.domain.user.model.entity.User;
-import space.space_spring.exception.CustomException;
-import space.space_spring.exception.jwt.unauthorized.JwtExpiredTokenException;
-import space.space_spring.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
-
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.exception.jwt.unauthorized.JwtExpiredTokenException;
+import space.space_spring.global.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor

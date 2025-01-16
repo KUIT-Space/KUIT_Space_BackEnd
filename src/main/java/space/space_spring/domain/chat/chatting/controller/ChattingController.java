@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.argumentResolver.userSpace.CheckUserSpace;
+import space.space_spring.global.argumentResolver.userSpace.CheckUserSpace;
 import space.space_spring.domain.chat.chatting.model.request.ChatMessageRequest;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageLogResponse;
 import space.space_spring.domain.chat.chatting.model.response.ChatMessageResponse;

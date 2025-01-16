@@ -2,11 +2,11 @@ package space.space_spring.domain.pay.model;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import space.space_spring.exception.CustomException;
+import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.INVALID_EQUAL_SPLIT_AMOUNT;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_EQUAL_SPLIT_AMOUNT;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EqualSplitPayAmountPolicy implements PayAmountPolicy {

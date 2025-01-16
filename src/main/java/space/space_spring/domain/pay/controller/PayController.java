@@ -5,18 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.space_spring.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.domain.pay.model.request.PayCreateRequest;
 import space.space_spring.domain.pay.model.response.*;
-import space.space_spring.exception.CustomException;
-import space.space_spring.response.BaseResponse;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.domain.pay.service.PayService;
-import space.space_spring.util.pay.PayUtils;
-import space.space_spring.util.user.UserUtils;
-import space.space_spring.util.userSpace.UserSpaceUtils;
 
-import static space.space_spring.response.status.BaseExceptionResponseStatus.*;
-import static space.space_spring.util.bindingResult.BindingResultUtils.getErrorMessage;
+import static space.space_spring.global.util.bindingResult.BindingResultUtils.getErrorMessage;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @RestController
 @RequiredArgsConstructor

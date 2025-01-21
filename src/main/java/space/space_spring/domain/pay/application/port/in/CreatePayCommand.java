@@ -1,12 +1,14 @@
 package space.space_spring.domain.pay.application.port.in;
 
+import lombok.Getter;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayType;
-import space.space_spring.domain.pay.adapter.in.web.dto.TargetOfPayRequest;
+import space.space_spring.domain.pay.adapter.in.web.TargetOfPayRequest;
 
 import java.util.List;
 
+@Getter
 public class CreatePayCommand {
 
     /**
@@ -17,9 +19,9 @@ public class CreatePayCommand {
 
     private Money totalAmount;
 
-    private Bank bank;          // bank 관련 정보 (은행 이름, 계좌 번호, 관리)
+    private Bank bank;          // bank 관련 정보 (은행 이름, 계좌 번호 등등을 관리)
 
-    private List<TargetOfPayRequest> targets;
+    private List<TargetOfCreatePayDto> targets;
 
     private PayType payType;
 

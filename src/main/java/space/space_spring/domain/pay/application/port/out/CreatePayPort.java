@@ -1,6 +1,6 @@
 package space.space_spring.domain.pay.application.port.out;
 
-public interface SavePayPort {
+public interface CreatePayPort {
 
-    void savePay();
+    void createPay();
 }

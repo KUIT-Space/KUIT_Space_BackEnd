@@ -9,9 +9,9 @@ public class SpaceMember {
 
     private Long id;
 
-    private Space space;            // 소속된 Space -> 이거도 도메인 엔티티로 ??
+    private Space space;
 
-    private User user;              // spaceMember의 본캐 유저 -> 이거도 도메인 엔티티로 ??
+    private User user;
 
     private Long discordId;
 

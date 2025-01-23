@@ -1,6 +1,6 @@
 # Konkuk University Developer Community "KUIT" 3rd project :: Space
 
-![main image](https://github.com/user-attachments/assets/188ff3c1-bdf0-47f2-84a2-336b6b501473)
+![main image](https://github.com/userJpaEntity-attachments/assets/188ff3c1-bdf0-47f2-84a2-336b6b501473)
 
 ## Tech Stack
 

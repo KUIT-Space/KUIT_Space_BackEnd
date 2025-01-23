@@ -1,15 +1,20 @@
 package space.space_spring.domain.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import space.space_spring.global.common.entity.BaseEntity;
+import lombok.Getter;
 
-@Entity
-public class User extends BaseEntity {
+@Getter
+public class User {
 
-    @Id @GeneratedValue
     private Long id;
 
     private Long discordId;
+
+    private User(Long id, Long discordId) {
+        this.id = id;
+        this.discordId = discordId;
+    }
+
+    public static User create(Long id, Long discordId) {
+        return new User(id, discordId);
+    }
 }

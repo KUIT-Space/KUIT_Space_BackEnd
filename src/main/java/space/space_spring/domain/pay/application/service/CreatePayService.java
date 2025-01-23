@@ -12,9 +12,7 @@ import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayAmountPolicy;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.space.Space;
 import space.space_spring.domain.spaceMember.SpaceMember;
-import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +49,10 @@ public class CreatePayService implements CreatePayUseCase {
             spaceMembers.add(payRequestTarget.getTargetMember());
         }
 
-        Long spaceId = spaceMembers.get(0).getSpace().getId();          // 일단 현재 Space 도 도메인 엔티티와 JPA 분리 안되어 있어서 일단 이렇게 구현
+        Long spaceId = spaceMembers.get(0).getSpace().getId();          // 일단 현재 Space 도메인 엔티티와 JPA 분리 안되어 있어서 일단 이렇게 구현
         for (SpaceMember spaceMember : spaceMembers) {
             if (!Objects.equals(spaceMember.getSpace().getId(), spaceId)) {
-                throw new IllegalArgumentException("에러, 정산 생성자와 정산 대상이 같은 스페이스에 속하지 않습니다");
+                throw new IllegalArgumentException("에러, 정산 생성자와 정산 대상이 같은 스페이스에 속하지 않습니다");         // 에러메시지 수정 필요
             }
         }
 

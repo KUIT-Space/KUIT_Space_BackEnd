@@ -17,7 +17,9 @@ public class CreatePayController {
     @PostMapping("/pay/create")
     public String createPay(@JwtLoginAuth Long id, @RequestBody RequestOfCreatePay request) {
 
-        CreatePayCommand createPayCommand = CreatePayCommand.create(id, request);
+        CreatePayCommand createPayCommand = CreatePayCommand.create(id, request.getTotalAmount(), request.getBankName(), request.getBankAccountNum(), request.getTargets(), request.getValueOfPayType());
         createPayUseCase.createPay(createPayCommand);
+
+        return "OK";
     }
 }

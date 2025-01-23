@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.pay.application.port.in.CreatePayCommand;
 import space.space_spring.domain.pay.application.port.in.CreatePayUseCase;
-import space.space_spring.domain.pay.application.port.in.TargetOfCreatePayDto;
+import space.space_spring.domain.pay.application.port.in.TargetOfCreatePayCommand;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
 import space.space_spring.domain.pay.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.pay.domain.Money;
@@ -35,7 +35,7 @@ public class CreatePayService implements CreatePayUseCase {
         PayRequest payRequest = PayRequest.create(payCreator, command.getTotalAmount(), command.getBank(), command.getPayType());
 
         List<PayRequestTarget> payRequestTargets = new ArrayList<>();
-        for (TargetOfCreatePayDto target : command.getTargets()) {
+        for (TargetOfCreatePayCommand target : command.getTargets()) {
             SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMember(target.getTargetMemberId());
             PayRequestTarget payRequestTarget = PayRequestTarget.create(targetMember, payRequest, target.getRequestedAmount());
             payRequestTargets.add(payRequestTarget);
@@ -58,7 +58,7 @@ public class CreatePayService implements CreatePayUseCase {
 
         // 정산 요청 금액의 유효성을 검증하고,
         List<Money> targetAmounts = new ArrayList<>();
-        for (TargetOfCreatePayDto target : command.getTargets()) {
+        for (TargetOfCreatePayCommand target : command.getTargets()) {
             targetAmounts.add(target.getRequestedAmount());
         }
 

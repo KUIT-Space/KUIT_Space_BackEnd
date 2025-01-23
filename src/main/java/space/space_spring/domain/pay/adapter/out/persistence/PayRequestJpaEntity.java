@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.pay.domain.PayType;
-import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
@@ -17,7 +17,7 @@ public class PayRequestJpaEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    private SpaceMember payCreator;
+    private SpaceMemberJpaEntity payCreator;
 
     private int totalAmount;
 
@@ -33,7 +33,7 @@ public class PayRequestJpaEntity extends BaseEntity {
     private PayType payType;
 
     @Builder
-    private PayRequestJpaEntity(SpaceMember payCreator, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
+    private PayRequestJpaEntity(SpaceMemberJpaEntity payCreator, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
         this.payCreator = payCreator;
         this.totalAmount = totalAmount;
         this.bankName = bankName;
@@ -43,7 +43,7 @@ public class PayRequestJpaEntity extends BaseEntity {
         this.payType = payType;
     }
 
-    public static PayRequestJpaEntity create(SpaceMember payCreator, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
+    public static PayRequestJpaEntity create(SpaceMemberJpaEntity payCreator, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
         return PayRequestJpaEntity.builder()
                 .payCreator(payCreator)
                 .totalAmount(totalAmount)

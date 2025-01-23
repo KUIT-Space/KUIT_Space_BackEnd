@@ -19,7 +19,7 @@ public class CreatePayCommand {
 
     private Money totalAmount;
 
-    private Bank bank;          // bank 관련 정보 (은행 이름, 계좌 번호 등등을 관리)
+    private Bank bank;
 
     private List<TargetOfCreatePayDto> targets;
 

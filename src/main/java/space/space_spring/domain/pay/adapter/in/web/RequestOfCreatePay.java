@@ -22,5 +22,5 @@ public class RequestOfCreatePay {
 
     private List<TargetOfPayRequest> targets;
 
-    private String payType;
+    private String valueOfPayType;
 }

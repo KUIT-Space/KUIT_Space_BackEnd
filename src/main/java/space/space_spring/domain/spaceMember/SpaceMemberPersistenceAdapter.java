@@ -16,11 +16,9 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort {
 
     @Override
     public SpaceMember loadSpaceMember(Long id) {
-        // 이거도 QueryDSL 적용하는 걸로 바꿔야 할 듯
         SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(id).orElseThrow(() ->
                 new CustomException(PAY_CREATOR_IS_NOT_IN_SPACE));
 
-        return spaceMemberMapper.mapToDomainEntity(
-        )
+        return spaceMemberMapper.mapToDomainEntity(spaceMemberJpaEntity);
     }
 }

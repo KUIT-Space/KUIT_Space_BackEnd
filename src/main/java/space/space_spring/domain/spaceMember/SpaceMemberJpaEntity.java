@@ -4,11 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 import space.space_spring.domain.space.Space;
 import space.space_spring.domain.user.User;
 import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
+@Getter
 public class SpaceMemberJpaEntity extends BaseEntity {
 
     @Id @GeneratedValue

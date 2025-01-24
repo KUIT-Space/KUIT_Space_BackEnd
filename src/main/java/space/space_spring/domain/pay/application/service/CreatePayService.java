@@ -18,7 +18,6 @@ import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE;
 

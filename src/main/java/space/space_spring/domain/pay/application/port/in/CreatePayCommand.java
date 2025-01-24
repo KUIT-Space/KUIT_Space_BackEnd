@@ -47,7 +47,7 @@ public class CreatePayCommand {
     private static List<TargetOfCreatePayCommand> mapToInputModel(List<TargetOfPayRequest> targets) {
         List<TargetOfCreatePayCommand> result = new ArrayList<>();
         for (TargetOfPayRequest target : targets) {
-            result.add(TargetOfCreatePayCommand.create(target.getTargetMemberId(), Money.of(target.getRequestedAmount())));
+            result.add(TargetOfCreatePayCommand.create(target.getTargetMemberId(), target.getRequestedAmount()));
         }
         return result;
     }

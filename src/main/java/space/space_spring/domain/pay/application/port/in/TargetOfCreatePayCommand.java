@@ -10,12 +10,12 @@ public class TargetOfCreatePayCommand {
 
     private Money requestedAmount;
 
-    private TargetOfCreatePayCommand(Long targetMemberId, Money requestedAmount) {
+    private TargetOfCreatePayCommand(Long targetMemberId, int requestedAmount) {
         this.targetMemberId = targetMemberId;
-        this.requestedAmount = requestedAmount;
+        this.requestedAmount = Money.of(requestedAmount);
     }
 
-    public static TargetOfCreatePayCommand create(Long targetMemberId, Money requestedAmount) {
+    public static TargetOfCreatePayCommand create(Long targetMemberId, int requestedAmount) {
         return new TargetOfCreatePayCommand(targetMemberId, requestedAmount);
     }
 

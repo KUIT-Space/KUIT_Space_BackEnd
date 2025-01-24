@@ -24,12 +24,12 @@ public class PayPersistenceAdapter implements CreatePayPort {
      * 예외처리 enum 메시지 다시 작성
      */
     @Override
-    public void savePay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets) {
+    public Long savePay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets) {
         SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payRequest.getPayCreator().getId()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 spaceMemberId : " + payRequest.getPayCreator().getId())
         );
         PayRequestJpaEntity payRequestJpaEntity = payRequestMapper.toJpaEntity(payCreatorJpaEntity, payRequest);
-        payRequestRepository.save(payRequestJpaEntity);
+        PayRequestJpaEntity savedPayRequestJpaEntity = payRequestRepository.save(payRequestJpaEntity);
 
         for (PayRequestTarget payRequestTarget : payRequestTargets) {
             SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(payRequestTarget.getTargetMember().getId()).orElseThrow(
@@ -37,5 +37,7 @@ public class PayPersistenceAdapter implements CreatePayPort {
             );
             payRequestTargetRepository.save(payRequestTargetMapper.toJpaEntity(targetMemberJpaEntity, payRequestJpaEntity, payRequestTarget));
         }
+
+        return savedPayRequestJpaEntity.getId();
     }
 }

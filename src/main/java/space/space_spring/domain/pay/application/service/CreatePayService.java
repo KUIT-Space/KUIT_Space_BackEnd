@@ -28,7 +28,7 @@ public class CreatePayService implements CreatePayUseCase {
 
     @Override
     @Transactional
-    public void createPay(CreatePayCommand command) {
+    public Long createPay(CreatePayCommand command) {
 
         // 정산 생성자, 정산 타겟 멤버들을 모두 찾고, (& 찾은 사람들로 도메인 엔티티 생성)
         SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMember(command.getPayCreatorId());
@@ -66,6 +66,6 @@ public class CreatePayService implements CreatePayUseCase {
         payAmountPolicy.validatePayAmount(command.getTotalAmount(), targetAmounts);
 
         // 모두 문제없으면 정산, 정산 타겟 모델 생성 & 저장
-        createPayPort.savePay(payRequest, payRequestTargets);
+        return createPayPort.savePay(payRequest, payRequestTargets);
     }
 }

@@ -13,10 +13,14 @@ import space.space_spring.domain.pay.domain.PayAmountPolicy;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.spaceMember.SpaceMembers;
+import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE;
 
 @Service
 @RequiredArgsConstructor
@@ -29,43 +33,61 @@ public class CreatePayService implements CreatePayUseCase {
     @Override
     @Transactional
     public Long createPay(CreatePayCommand command) {
-
-        // 정산 생성자, 정산 타겟 멤버들을 모두 찾고, (& 찾은 사람들로 도메인 엔티티 생성)
+        // 정산 생성자 로드 & PayRequest 도메인 엔티티 생성
         SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMember(command.getPayCreatorId());
-        PayRequest payRequest = PayRequest.create(payCreator, command.getTotalAmount(), command.getBank(), command.getPayType());
+        PayRequest payRequest = createPayRequest(command, payCreator);
 
+        // 정산 타겟 멤버들 로드 & PayRequestTarget 도메인 엔티티들 생성
+        List<PayRequestTarget> payRequestTargets = createPayRequestTargets(command, payRequest);
+
+        // 정산 생성자, 정산 대상자들이 같은 스페이스에 존재하는지 검증
+        validateSpaceMembers(payCreator, payRequestTargets);
+
+        // PayAmountPolicy 유효성 검증
+        validatePayAmountPolicy(command, payRequestTargets);
+
+        // 모두 문제없으면 저장
+        return createPayPort.savePay(payRequest, payRequestTargets);
+    }
+
+    private void validatePayAmountPolicy(CreatePayCommand command, List<PayRequestTarget> payRequestTargets) {
+        PayAmountPolicy payAmountPolicy = command.getPayType().getPayAmountPolicy();
+
+        List<Money> targetAmounts = new ArrayList<>();
+        for (PayRequestTarget payRequestTarget : payRequestTargets) {
+            targetAmounts.add(payRequestTarget.getRequestedAmount());
+        }
+
+        payAmountPolicy.validatePayAmount(command.getTotalAmount(), targetAmounts);
+    }
+
+    private void validateSpaceMembers(SpaceMember payCreator, List<PayRequestTarget> payRequestTargets) {
+        List<SpaceMember> allOfSpaceMember = new ArrayList<>();
+        allOfSpaceMember.add(payCreator);
+
+        for (PayRequestTarget payRequestTarget : payRequestTargets) {
+            allOfSpaceMember.add(payRequestTarget.getTargetMember());
+        }
+
+        SpaceMembers spaceMembers = SpaceMembers.of(allOfSpaceMember);
+        try {
+            spaceMembers.validateMembersInSameSpace();
+        } catch (IllegalStateException e) {
+            throw new CustomException(PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE);
+        }
+    }
+
+    private List<PayRequestTarget> createPayRequestTargets(CreatePayCommand command, PayRequest payRequest) {
         List<PayRequestTarget> payRequestTargets = new ArrayList<>();
         for (TargetOfCreatePayCommand target : command.getTargets()) {
             SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMember(target.getTargetMemberId());
             PayRequestTarget payRequestTarget = PayRequestTarget.create(targetMember, payRequest, target.getRequestedAmount());
             payRequestTargets.add(payRequestTarget);
         }
+        return payRequestTargets;
+    }
 
-        // 이 사람들이 모두 같은 스페이스에 있는지 확인하고,
-        // (이건 일급 컬렉션 생성 & 이 스페이스 멤버들이 모두 같은 스페이스에 속하는지 검사하는 메서드 생성해서 처리하면 될 듯)
-        List<SpaceMember> spaceMembers = new ArrayList<>();
-        spaceMembers.add(payCreator);
-        for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            spaceMembers.add(payRequestTarget.getTargetMember());
-        }
-
-        Long spaceId = spaceMembers.get(0).getSpace().getId();          // 일단 현재 Space 도메인 엔티티와 JPA 분리 안되어 있어서 일단 이렇게 구현
-        for (SpaceMember spaceMember : spaceMembers) {
-            if (!Objects.equals(spaceMember.getSpace().getId(), spaceId)) {
-                throw new IllegalArgumentException("에러, 정산 생성자와 정산 대상이 같은 스페이스에 속하지 않습니다");         // 에러메시지 수정 필요
-            }
-        }
-
-        // 정산 요청 금액의 유효성을 검증하고,
-        List<Money> targetAmounts = new ArrayList<>();
-        for (TargetOfCreatePayCommand target : command.getTargets()) {
-            targetAmounts.add(target.getRequestedAmount());
-        }
-
-        PayAmountPolicy payAmountPolicy = command.getPayType().getPayAmountPolicy();
-        payAmountPolicy.validatePayAmount(command.getTotalAmount(), targetAmounts);
-
-        // 모두 문제없으면 정산, 정산 타겟 모델 생성 & 저장
-        return createPayPort.savePay(payRequest, payRequestTargets);
+    private PayRequest createPayRequest(CreatePayCommand command, SpaceMember payCreator) {
+        return PayRequest.create(payCreator, command.getTotalAmount(), command.getBank(), command.getPayType());
     }
 }

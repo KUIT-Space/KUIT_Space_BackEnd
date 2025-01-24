@@ -7,8 +7,11 @@ import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
+import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
+
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Repository
@@ -21,20 +24,19 @@ public class PayPersistenceAdapter implements CreatePayPort {
     private final PayRequestTargetMapper payRequestTargetMapper;
 
     /**
-     * 예외처리 enum 메시지 다시 작성
+     * 저장 성공한 PayRequestJpaEntity의 PK값 return
      */
     @Override
     public Long savePay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets) {
         SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payRequest.getPayCreator().getId()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 spaceMemberId : " + payRequest.getPayCreator().getId())
-        );
+                () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+
         PayRequestJpaEntity payRequestJpaEntity = payRequestMapper.toJpaEntity(payCreatorJpaEntity, payRequest);
         PayRequestJpaEntity savedPayRequestJpaEntity = payRequestRepository.save(payRequestJpaEntity);
 
         for (PayRequestTarget payRequestTarget : payRequestTargets) {
             SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(payRequestTarget.getTargetMember().getId()).orElseThrow(
-                    () -> new IllegalArgumentException("존재하지 않는 spaceMemberId : " + payRequest.getPayCreator().getId())
-            );
+                    () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
             payRequestTargetRepository.save(payRequestTargetMapper.toJpaEntity(targetMemberJpaEntity, payRequestJpaEntity, payRequestTarget));
         }
 

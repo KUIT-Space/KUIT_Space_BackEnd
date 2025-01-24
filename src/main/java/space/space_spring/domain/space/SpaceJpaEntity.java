@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nonapi.io.github.classgraph.utils.LogNode;
 import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity

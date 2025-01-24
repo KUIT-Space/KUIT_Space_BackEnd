@@ -3,6 +3,7 @@ package space.space_spring.domain.pay.adapter.out.persistence;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.pay.domain.PayType;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
@@ -10,6 +11,7 @@ import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class PayRequestJpaEntity extends BaseEntity {
 
     @Id

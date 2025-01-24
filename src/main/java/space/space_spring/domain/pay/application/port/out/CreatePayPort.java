@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CreatePayPort {
 
-    void savePay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets);
+    Long savePay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets);
 }

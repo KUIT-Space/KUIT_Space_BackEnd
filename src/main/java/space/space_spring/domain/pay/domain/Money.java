@@ -21,8 +21,8 @@ public class Money {
         return new Money(BigDecimal.valueOf(amount));
     }
 
-    public void add(Money money) {
-        amount.add(money.getAmount());
+    public Money add(Money money) {
+        return new Money(amount.add(money.getAmount()));
     }
 
     public Money dividedBy(int number) {

@@ -12,7 +12,7 @@ public class IndividualPayAmountPolicy implements PayAmountPolicy {
     public void validatePayAmount(Money totalAMount, List<Money> targetAmounts) {
         Money sumOfTargetAmounts = Money.of(0);
         for (Money targetAmount : targetAmounts) {
-            sumOfTargetAmounts.add(targetAmount);
+            sumOfTargetAmounts = sumOfTargetAmounts.add(targetAmount);
         }
 
         if (!totalAMount.isEqual(sumOfTargetAmounts)) {

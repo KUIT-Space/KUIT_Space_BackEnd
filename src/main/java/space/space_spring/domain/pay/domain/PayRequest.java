@@ -37,4 +37,8 @@ public class PayRequest {
     public static PayRequest create(SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
         return new PayRequest(payCreator, totalAmount, totalTargetNum, bank, payType);
     }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
 }

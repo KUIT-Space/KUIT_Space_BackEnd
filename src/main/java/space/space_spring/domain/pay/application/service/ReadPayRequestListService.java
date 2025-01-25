@@ -3,13 +3,16 @@ package space.space_spring.domain.pay.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.pay.application.port.in.readPayRequestList.InfoOfPayRequest;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.ReadPayRequestListUseCase;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.ResultOfReadPayRequestList;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
+import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequests;
 import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.SpaceMember;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,9 +31,32 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
         // payCreator가 요청한 PayRequest list 로드
         PayRequests payRequests = PayRequests.create(loadPayRequestPort.findListByCreator(payCreator));
 
-        //
+        // return 타입 구성
+        List<PayRequest> completePayRequests = payRequests.getCompletePayRequestList();
+        List<PayRequest> inCompletePayRequests = payRequests.getInCompletePayRequestList();
 
-        return null;
+        List<InfoOfPayRequest> infosOfComplete = new ArrayList<>();
+        for (PayRequest payRequest : completePayRequests) {
+            infosOfComplete.add(InfoOfPayRequest.of(
+                    payRequest.getPayCreator().getId(),
+                    payRequest.getTotalAmount(),
+                    payRequest.getReceivedAmount(),
+                    payRequest.getTotalTargetNum(),
+                    payRequest.getSendCompleteTargetNum()
+            ));
+        }
 
+        List<InfoOfPayRequest> infosOfInComplete = new ArrayList<>();
+        for (PayRequest payRequest : inCompletePayRequests) {
+            infosOfInComplete.add(InfoOfPayRequest.of(
+                    payRequest.getPayCreator().getId(),
+                    payRequest.getTotalAmount(),
+                    payRequest.getReceivedAmount(),
+                    payRequest.getTotalTargetNum(),
+                    payRequest.getSendCompleteTargetNum()
+            ));
+        }
+
+        return ResultOfReadPayRequestList.of(infosOfComplete, infosOfInComplete);
     }
 }

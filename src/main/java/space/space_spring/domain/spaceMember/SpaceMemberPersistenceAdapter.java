@@ -2,7 +2,6 @@ package space.space_spring.domain.spaceMember;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import space.space_spring.domain.pay.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.space.Space;
 import space.space_spring.domain.space.SpaceMapper;
 import space.space_spring.domain.user.User;

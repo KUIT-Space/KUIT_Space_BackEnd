@@ -17,4 +17,16 @@ public class InfoOfPayRequest {
 
     private NaturalNumber sendCompleteTargetNum;
 
+    private InfoOfPayRequest(Long payRequestId, Money totalAmount, Money receivedAmount, NaturalNumber totalTargetNum, NaturalNumber sendCompleteTargetNum) {
+        this.payRequestId = payRequestId;
+        this.totalAmount = totalAmount;
+        this.receivedAmount = receivedAmount;
+        this.totalTargetNum = totalTargetNum;
+        this.sendCompleteTargetNum = sendCompleteTargetNum;
+    }
+
+    public static InfoOfPayRequest of(Long payRequestId, Money totalAmount, Money receivedAmount, NaturalNumber totalTargetNum, NaturalNumber sendCompleteTargetNum) {
+        return new InfoOfPayRequest(payRequestId, totalAmount, receivedAmount, totalTargetNum, sendCompleteTargetNum);
+    }
+
 }

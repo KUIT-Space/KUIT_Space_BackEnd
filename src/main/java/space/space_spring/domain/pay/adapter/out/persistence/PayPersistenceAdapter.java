@@ -3,8 +3,10 @@ package space.space_spring.domain.pay.adapter.out.persistence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
+import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
+import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
 import space.space_spring.global.exception.CustomException;
@@ -15,7 +17,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class PayPersistenceAdapter implements CreatePayPort {
+public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort {
 
     private final SpringDataPayRequestRepository payRequestRepository;
     private final SpringDataPayRequestTargetRepository payRequestTargetRepository;
@@ -41,5 +43,10 @@ public class PayPersistenceAdapter implements CreatePayPort {
         }
 
         return savedPayRequestJpaEntity.getId();
+    }
+
+    @Override
+    public List<PayRequest> findListByCreator(SpaceMember payCreator) {
+        return List.of();
     }
 }

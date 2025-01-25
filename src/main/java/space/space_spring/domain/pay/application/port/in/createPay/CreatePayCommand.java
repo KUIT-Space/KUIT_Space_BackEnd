@@ -1,10 +1,10 @@
-package space.space_spring.domain.pay.application.port.in;
+package space.space_spring.domain.pay.application.port.in.createPay;
 
 import lombok.Getter;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayType;
-import space.space_spring.domain.pay.adapter.in.web.TargetOfPayRequest;
+import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
 
 import java.util.ArrayList;
 import java.util.List;

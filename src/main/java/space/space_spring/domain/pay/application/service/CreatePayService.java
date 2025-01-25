@@ -87,6 +87,6 @@ public class CreatePayService implements CreatePayUseCase {
     }
 
     private PayRequest createPayRequest(CreatePayCommand command, SpaceMember payCreator) {
-        return PayRequest.create(payCreator, command.getTotalAmount(), command.getBank(), command.getPayType());
+        return PayRequest.create(payCreator, command.getTotalAmount(), command.getTotalTargetNum(), command.getBank(), command.getPayType());
     }
 }

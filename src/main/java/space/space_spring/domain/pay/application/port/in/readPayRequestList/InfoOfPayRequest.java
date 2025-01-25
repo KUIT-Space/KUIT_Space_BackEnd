@@ -2,6 +2,7 @@ package space.space_spring.domain.pay.application.port.in.readPayRequestList;
 
 import lombok.Getter;
 import space.space_spring.domain.pay.domain.Money;
+import space.space_spring.global.util.NaturalNumber;
 
 @Getter
 public class InfoOfPayRequest {
@@ -12,8 +13,8 @@ public class InfoOfPayRequest {
 
     private Money receivedAmount;
 
-    private Number totalTargetNum;
+    private NaturalNumber totalTargetNum;
 
-    private Number sendCompleteTargetNum;
+    private NaturalNumber sendCompleteTargetNum;
 
 }

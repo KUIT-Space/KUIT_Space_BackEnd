@@ -29,8 +29,8 @@ public class ResponseOfPayRequestInfo {
                 infoOfPayRequest.getPayRequestId(),
                 infoOfPayRequest.getTotalAmount().getAmountInInteger(),
                 infoOfPayRequest.getReceivedAmount().getAmountInInteger(),
-                infoOfPayRequest.getTotalTargetNum().intValue(),
-                infoOfPayRequest.getSendCompleteTargetNum().intValue()
+                infoOfPayRequest.getTotalTargetNum().getNumber(),
+                infoOfPayRequest.getSendCompleteTargetNum().getNumber()
         );
     }
 }

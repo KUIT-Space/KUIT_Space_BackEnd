@@ -5,6 +5,7 @@ import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayType;
 import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
+import space.space_spring.global.util.NaturalNumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,16 @@ public class CreatePayCommand {
 
     private List<TargetOfCreatePayCommand> targets;
 
+    private NaturalNumber totalTargetNum;
+
     private PayType payType;
 
-    private CreatePayCommand(Long payCreatorId, Money totalAmount, Bank bank, List<TargetOfCreatePayCommand> targets, PayType payType) {
+    private CreatePayCommand(Long payCreatorId, Money totalAmount, Bank bank, List<TargetOfCreatePayCommand> targets, NaturalNumber totalTargetNum, PayType payType) {
         this.payCreatorId = payCreatorId;
         this.totalAmount = totalAmount;
         this.bank = bank;
         this.targets = targets;
+        this.totalTargetNum = totalTargetNum;
         this.payType = payType;
     }
 
@@ -40,6 +44,7 @@ public class CreatePayCommand {
                 Money.of(totalAmount),
                 Bank.of(bankName, bankAccountNum),
                 mapToInputModel(targets),
+                NaturalNumber.of(targets.size()),
                 PayType.fromString(valueOfPayType)
         );
     }

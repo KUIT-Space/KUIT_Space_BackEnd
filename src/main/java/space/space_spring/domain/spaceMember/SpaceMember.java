@@ -1,29 +1,28 @@
 package space.space_spring.domain.spaceMember;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import space.space_spring.domain.board.Board;
+import lombok.Getter;
 import space.space_spring.domain.space.Space;
 import space.space_spring.domain.user.User;
-import space.space_spring.global.common.entity.BaseEntity;
 
-import java.util.List;
+@Getter
+public class SpaceMember {
 
-@Entity
-public class SpaceMember extends BaseEntity {
-
-    @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne
     private Space space;
 
-    @ManyToOne
     private User user;
 
-    private Long discordId;         // 디스코드 id 값
+    private Long discordId;
 
+    private SpaceMember(Long id, Space space, User user, Long discordId) {
+        this.id = id;
+        this.space = space;
+        this.user = user;
+        this.discordId = discordId;
+    }
 
+    public static SpaceMember create(Long id, Space space, User user, Long discordId) {
+        return new SpaceMember(id, space, user, discordId);
+    }
 }

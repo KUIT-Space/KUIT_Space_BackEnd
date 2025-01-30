@@ -23,6 +23,8 @@ public class PayRequestJpaEntity extends BaseEntity {
 
     private int totalAmount;
 
+    private int totalTargetNum;
+
     private String bankName;
 
     private String bankAccountNum;
@@ -35,9 +37,10 @@ public class PayRequestJpaEntity extends BaseEntity {
     private PayType payType;
 
     @Builder
-    private PayRequestJpaEntity(SpaceMemberJpaEntity payCreator, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
+    private PayRequestJpaEntity(SpaceMemberJpaEntity payCreator, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType) {
         this.payCreator = payCreator;
         this.totalAmount = totalAmount;
+        this.totalTargetNum = totalTargetNum;
         this.bankName = bankName;
         this.bankAccountNum = bankAccountNum;
         this.receivedAmount = 0;
@@ -45,10 +48,11 @@ public class PayRequestJpaEntity extends BaseEntity {
         this.payType = payType;
     }
 
-    public static PayRequestJpaEntity create(SpaceMemberJpaEntity payCreator, int totalAmount, String bankName, String bankAccountNum, PayType payType) {
+    public static PayRequestJpaEntity create(SpaceMemberJpaEntity payCreator, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType) {
         return PayRequestJpaEntity.builder()
                 .payCreator(payCreator)
                 .totalAmount(totalAmount)
+                .totalTargetNum(totalTargetNum)
                 .bankName(bankName)
                 .bankAccountNum(bankAccountNum)
                 .payType(payType)

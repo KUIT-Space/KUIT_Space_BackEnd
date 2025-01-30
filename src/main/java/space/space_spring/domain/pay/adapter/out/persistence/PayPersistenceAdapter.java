@@ -11,7 +11,9 @@ import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 
@@ -47,6 +49,18 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort 
 
     @Override
     public List<PayRequest> findListByCreator(SpaceMember payCreator) {
-        return List.of();
+        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payCreator.getId()).orElseThrow(
+                () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        Optional<List<PayRequestJpaEntity>> byPayCreator = payRequestRepository.findByPayCreator(payCreatorJpaEntity);
+
+        if (byPayCreator.isEmpty()) return new ArrayList<>();
+
+        List<PayRequest> payRequests = new ArrayList<>();
+        for (PayRequestJpaEntity payRequestJpaEntity : byPayCreator.get()) {
+            payRequests.add(payRequestMapper.toDomainEntity(payCreator, payRequestJpaEntity));
+        }
+
+        return payRequests;
     }
 }

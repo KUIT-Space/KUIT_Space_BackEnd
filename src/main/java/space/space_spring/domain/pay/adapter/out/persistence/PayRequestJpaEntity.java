@@ -12,28 +12,38 @@ import space.space_spring.global.common.entity.BaseEntity;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "Pay_Request")
 public class PayRequestJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue
+    @Column(name = "pay_request_id")
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "space_member_id")
     private SpaceMemberJpaEntity payCreator;
 
+    @Column(name = "total_amount")
     private int totalAmount;
 
+    @Column(name = "totol_target_num")
     private int totalTargetNum;
 
+    @Column(name = "bank_name")
     private String bankName;
 
+    @Column(name = "bank_account_num")
     private String bankAccountNum;
 
+    @Column(name = "received_amount")
     private int receivedAmount;
 
+    @Column(name = "is_complete")
     private boolean isComplete;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "pay_type")
     private PayType payType;
 
     @Builder

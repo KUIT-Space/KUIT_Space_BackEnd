@@ -33,31 +33,23 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
         PayRequests payRequests = PayRequests.create(loadPayRequestPort.findListByCreator(payCreator));
 
         // return 타입 구성
-        List<PayRequest> completePayRequests = payRequests.getCompletePayRequestList();
-        List<PayRequest> inCompletePayRequests = payRequests.getInCompletePayRequestList();
-
-        List<InfoOfPayRequest> infosOfComplete = new ArrayList<>();
-        for (PayRequest payRequest : completePayRequests) {
-            infosOfComplete.add(InfoOfPayRequest.of(
-                    payRequest.getPayCreator().getId(),
-                    payRequest.getTotalAmount(),
-                    payRequest.getReceivedAmount(),
-                    payRequest.getTotalTargetNum(),
-                    payRequest.getSendCompleteTargetNum()
-            ));
-        }
-
-        List<InfoOfPayRequest> infosOfInComplete = new ArrayList<>();
-        for (PayRequest payRequest : inCompletePayRequests) {
-            infosOfInComplete.add(InfoOfPayRequest.of(
-                    payRequest.getPayCreator().getId(),
-                    payRequest.getTotalAmount(),
-                    payRequest.getReceivedAmount(),
-                    payRequest.getTotalTargetNum(),
-                    payRequest.getSendCompleteTargetNum()
-            ));
-        }
+        List<InfoOfPayRequest> infosOfComplete = mapToInfoOfPayRequests(payRequests.getCompletePayRequestList());
+        List<InfoOfPayRequest> infosOfInComplete = mapToInfoOfPayRequests(payRequests.getInCompletePayRequestList());
 
         return ResultOfReadPayRequestList.of(infosOfComplete, infosOfInComplete);
+    }
+
+    private List<InfoOfPayRequest> mapToInfoOfPayRequests(List<PayRequest> payRequests) {
+        List<InfoOfPayRequest> infosOfPayRequests = new ArrayList<>();
+        for (PayRequest payRequest : payRequests) {
+            infosOfPayRequests.add(InfoOfPayRequest.of(
+                    payRequest.getPayCreator().getId(),
+                    payRequest.getTotalAmount(),
+                    payRequest.getReceivedAmount(),
+                    payRequest.getTotalTargetNum(),
+                    payRequest.getSendCompleteTargetNum()
+            ));
+        }
+        return infosOfPayRequests;
     }
 }

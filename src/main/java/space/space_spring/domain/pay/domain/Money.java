@@ -40,11 +40,20 @@ public class Money {
         return new Money(result);
     }
 
-    public boolean isEqual(Money money) {
-        return this.amount.compareTo(money.getAmount()) == 0;
-    }
-
     public int getAmountInInteger() {
         return amount.intValue();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Money)) return false;
+        Money money = (Money) o;
+        return amount.equals(money.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return amount.hashCode();
     }
 }

@@ -29,6 +29,7 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
         SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMember(payCreatorId);
 
         // payCreator가 요청한 PayRequest list 로드
+        // 개수 제한 없이 일단 전부 로드
         PayRequests payRequests = PayRequests.create(loadPayRequestPort.findListByCreator(payCreator));
 
         // return 타입 구성

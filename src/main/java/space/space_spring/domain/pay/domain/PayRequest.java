@@ -41,4 +41,12 @@ public class PayRequest {
     public boolean isComplete() {
         return isComplete;
     }
+
+    public void changeToComplete() {
+        this.isComplete = true;
+    }
+
+    public void changeToIncomplete() {
+        this.isComplete = false;
+    }
 }

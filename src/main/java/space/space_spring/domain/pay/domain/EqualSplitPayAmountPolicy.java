@@ -14,7 +14,7 @@ public class EqualSplitPayAmountPolicy implements PayAmountPolicy {
         Money expectedAmountPerTarget = totalAMount.dividedBy(numberOfTarget);
 
         for (Money targetAmount : targetAmounts) {
-            if (!targetAmount.isEqual(expectedAmountPerTarget)) {
+            if (!targetAmount.equals(expectedAmountPerTarget)) {
                 throw new CustomException(INVALID_EQUAL_SPLIT_AMOUNT);
             }
         }

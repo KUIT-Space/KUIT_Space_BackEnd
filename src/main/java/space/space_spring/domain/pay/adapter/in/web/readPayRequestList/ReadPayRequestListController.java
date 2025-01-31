@@ -11,6 +11,10 @@ import space.space_spring.global.common.response.BaseResponse;
 @RequiredArgsConstructor
 public class ReadPayRequestListController {
 
+    /**
+     * 내가 요청한 정산 목록 조회
+     */
+
     private final ReadPayRequestListUseCase readPayRequestListUseCase;
 
     @GetMapping("/pay/request")

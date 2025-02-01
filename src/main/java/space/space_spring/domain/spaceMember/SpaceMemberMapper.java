@@ -13,7 +13,9 @@ public class SpaceMemberMapper {
                 space,
                 user,
                 spaceMemberJpaEntity.getDiscordId(),
-
+                spaceMemberJpaEntity.getNickname(),
+                spaceMemberJpaEntity.getProfileImageUrl(),
+                spaceMemberJpaEntity.isManager()
         );
     }
 }

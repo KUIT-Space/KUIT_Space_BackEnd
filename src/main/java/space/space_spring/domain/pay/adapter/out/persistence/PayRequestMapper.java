@@ -27,6 +27,7 @@ public class PayRequestMapper {
         Bank bank = Bank.of(jpaEntity.getBankName(), jpaEntity.getBankAccountNum());
 
         return PayRequest.create(
+                jpaEntity.getId(),
                 payCreator,
                 Money.of(jpaEntity.getTotalAmount()),
                 NaturalNumber.of(jpaEntity.getTotalTargetNum()),

@@ -15,14 +15,23 @@ public class SpaceMember {
 
     private Long discordId;
 
-    private SpaceMember(Long id, Space space, User user, Long discordId) {
+    private String nickname;
+
+    private String profileImageUrl;
+
+    private boolean isManager;
+
+    private SpaceMember(Long id, Space space, User user, Long discordId, String nickname, String profileImageUrl, boolean isManager) {
         this.id = id;
         this.space = space;
         this.user = user;
         this.discordId = discordId;
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+        this.isManager = isManager;
     }
 
-    public static SpaceMember create(Long id, Space space, User user, Long discordId) {
-        return new SpaceMember(id, space, user, discordId);
+    public static SpaceMember create(Long id, Space space, User user, Long discordId, String nickname, String profileImageUrl, boolean isManager) {
+        return new SpaceMember(id, space, user, discordId, nickname, profileImageUrl, isManager);
     }
 }

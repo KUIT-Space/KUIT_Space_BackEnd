@@ -33,7 +33,7 @@ public class SpaceMemberJpaEntity extends BaseEntity {
     private String nickname;
 
     @Column(name = "profile_image")
-    private String profileImage;
+    private String profileImageUrl;
 
     @Column(name = "is_manager")
     private boolean isManager;

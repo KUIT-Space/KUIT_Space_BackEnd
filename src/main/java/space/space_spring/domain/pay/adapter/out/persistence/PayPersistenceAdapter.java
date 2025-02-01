@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
+import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.SpaceMember;
@@ -19,7 +20,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort {
+public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort, LoadPayRequestTargetPort {
 
     private final SpringDataPayRequestRepository payRequestRepository;
     private final SpringDataPayRequestTargetRepository payRequestTargetRepository;
@@ -62,5 +63,10 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort 
         }
 
         return payRequests;
+    }
+
+    @Override
+    public List<PayRequestTarget> findListByTargetMember(SpaceMember targetMember) {
+        return List.of();
     }
 }

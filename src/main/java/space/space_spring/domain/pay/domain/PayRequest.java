@@ -7,6 +7,8 @@ import space.space_spring.global.util.NaturalNumber;
 @Getter
 public class PayRequest {
 
+    private Long id;
+
     private SpaceMember payCreator;
 
     private Money totalAmount;
@@ -23,7 +25,8 @@ public class PayRequest {
 
     private PayType payType;
 
-    private PayRequest(SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
+    private PayRequest(Long id, SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
+        this.id = id;
         this.payCreator = payCreator;
         this.totalAmount = totalAmount;
         this.receivedAmount = Money.of(0);
@@ -34,8 +37,8 @@ public class PayRequest {
         this.payType = payType;
     }
 
-    public static PayRequest create(SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
-        return new PayRequest(payCreator, totalAmount, totalTargetNum, bank, payType);
+    public static PayRequest create(Long id, SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
+        return new PayRequest(id, payCreator, totalAmount, totalTargetNum, bank, payType);
     }
 
     public boolean isComplete() {

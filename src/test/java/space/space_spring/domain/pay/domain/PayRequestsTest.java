@@ -29,10 +29,10 @@ class PayRequestsTest {
         User commonUser = User.create(1L, 1L);          // User 도메인 엔티티는 그냥 하나로 공유해서 테스트 진행
         kuit = Space.create(1L, "쿠잇", 1L);
 
-        seongjun = SpaceMember.create(1L, kuit, commonUser, 1L);
-        sangjun = SpaceMember.create(2L, kuit, commonUser, 2L);
-        seohyun = SpaceMember.create(3L, kuit, commonUser, 3L);
-        kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L);
+        seongjun = SpaceMember.create(1L, kuit, commonUser, 1L, "노성준");
+        sangjun = SpaceMember.create(2L, kuit, commonUser, 2L, "개구리 선비");
+        seohyun = SpaceMember.create(3L, kuit, commonUser, 3L, "정서현");
+        kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L, "김경민");
     }
 
     @Test

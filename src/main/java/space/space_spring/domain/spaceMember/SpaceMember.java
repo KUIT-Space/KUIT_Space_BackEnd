@@ -15,14 +15,17 @@ public class SpaceMember {
 
     private Long discordId;
 
-    private SpaceMember(Long id, Space space, User user, Long discordId) {
+    private String name;
+
+    private SpaceMember(Long id, Space space, User user, Long discordId, String name) {
         this.id = id;
         this.space = space;
         this.user = user;
         this.discordId = discordId;
+        this.name = name;
     }
 
-    public static SpaceMember create(Long id, Space space, User user, Long discordId) {
-        return new SpaceMember(id, space, user, discordId);
+    public static SpaceMember create(Long id, Space space, User user, Long discordId, String name) {
+        return new SpaceMember(id, space, user, discordId, name);
     }
 }

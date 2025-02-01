@@ -28,11 +28,11 @@ class SpaceMembersTest {
         kuit = Space.create(1L, "쿠잇", 1L);
         alcon = Space.create(2L, "알콘", 2L);
 
-        seongjun = SpaceMember.create(1L, kuit, commonUser, 1L);
-        sangjun = SpaceMember.create(2L, kuit, commonUser, 2L);
-        seohyun = SpaceMember.create(3L, kuit, commonUser, 3L);
-        kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L);
-        jihwan = SpaceMember.create(5L, alcon, commonUser, 5L);
+        seongjun = SpaceMember.create(1L, kuit, commonUser, 1L, "노성준");
+        sangjun = SpaceMember.create(2L, kuit, commonUser, 2L, "개구리 선비");
+        seohyun = SpaceMember.create(3L, kuit, commonUser, 3L, "정서현");
+        kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L, "김경민");
+        jihwan = SpaceMember.create(5L, alcon, commonUser, 5L, "김지환");
     }
 
     @Test

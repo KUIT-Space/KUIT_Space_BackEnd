@@ -40,9 +40,9 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
     }
 
     private List<InfoOfPayRequest> mapToInfoOfPayRequests(List<PayRequest> payRequests) {
-        List<InfoOfPayRequest> infosOfPayRequests = new ArrayList<>();
+        List<InfoOfPayRequest> infosOfPayRequest = new ArrayList<>();
         for (PayRequest payRequest : payRequests) {
-            infosOfPayRequests.add(InfoOfPayRequest.of(
+            infosOfPayRequest.add(InfoOfPayRequest.of(
                     payRequest.getPayCreator().getId(),
                     payRequest.getTotalAmount(),
                     payRequest.getReceivedAmount(),
@@ -50,6 +50,6 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
                     payRequest.getSendCompleteTargetNum()
             ));
         }
-        return infosOfPayRequests;
+        return infosOfPayRequest;
     }
 }

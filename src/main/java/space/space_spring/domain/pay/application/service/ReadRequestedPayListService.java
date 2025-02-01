@@ -41,14 +41,14 @@ public class ReadRequestedPayListService implements ReadRequestedPayListUseCase 
 
     private List<InfoOfRequestedPay> mapToInfoOfRequestedPays(List<PayRequestTarget> payRequestTargets) {
         List<InfoOfRequestedPay> infosOfPayRequestTarget = new ArrayList<>();
-        for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            infosOfPayRequestTarget.add(InfoOfRequestedPay.of(
-                    payRequestTarget.getId(),
-                    payRequestTarget.getPayRequest().getPayCreator().getName(),
-                    payRequestTarget.getRequestedAmount(),
-                    payRequestTarget.getPayRequest().getBank()
-            ));
-        }
+//        for (PayRequestTarget payRequestTarget : payRequestTargets) {
+//            infosOfPayRequestTarget.add(InfoOfRequestedPay.of(
+//                    payRequestTarget.getId(),
+//                    payRequestTarget.getPayRequest().getPayCreator().getName(),
+//                    payRequestTarget.getRequestedAmount(),
+//                    payRequestTarget.getPayRequest().getBank()
+//            ));
+//        }
         return infosOfPayRequestTarget;
     }
 }

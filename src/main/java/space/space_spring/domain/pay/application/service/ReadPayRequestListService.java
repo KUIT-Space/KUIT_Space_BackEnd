@@ -43,7 +43,7 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
         List<InfoOfPayRequest> infosOfPayRequest = new ArrayList<>();
         for (PayRequest payRequest : payRequests) {
             infosOfPayRequest.add(InfoOfPayRequest.of(
-                    payRequest.getPayCreator().getId(),
+                    payRequest.getId(),
                     payRequest.getTotalAmount(),
                     payRequest.getReceivedAmount(),
                     payRequest.getTotalTargetNum(),

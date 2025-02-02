@@ -24,7 +24,7 @@ public class PayRequestTarget {
         this.isComplete = isComplete;
     }
 
-    public static PayRequestTarget create(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
+    public static PayRequestTarget createNewPayRequestTarget(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
         return new PayRequestTarget(id, targetMember, payRequest, requestedAmount, false);
     }
 

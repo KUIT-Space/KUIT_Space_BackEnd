@@ -1,6 +1,5 @@
 package space.space_spring.domain.pay.domain;
 
-import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.global.util.NaturalNumber;
@@ -37,8 +36,8 @@ public class PayRequest {
         this.isComplete = isComplete;
         this.payType = payType;
     }
-
-    public static PayRequest create(Long id, SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
+    
+    public static PayRequest createNewPayRequest(Long id, SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
         return new PayRequest(id, payCreator, totalAmount, Money.of(0), totalTargetNum, NaturalNumber.of(0), bank, false, payType);
     }
 

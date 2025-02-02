@@ -1,8 +1,6 @@
 package space.space_spring.domain.pay.adapter.in.web.readRequestedPayList;
 
 import space.space_spring.domain.pay.application.port.in.readRequestedPayList.InfoOfRequestedPay;
-import space.space_spring.domain.pay.domain.Bank;
-import space.space_spring.domain.pay.domain.Money;
 
 public class ResponseOfRequestedPayInfo {
 
@@ -28,8 +26,8 @@ public class ResponseOfRequestedPayInfo {
 
     public static ResponseOfRequestedPayInfo of(InfoOfRequestedPay infoOfRequestedPay) {
         return new ResponseOfRequestedPayInfo(
-                infoOfRequestedPay.getPayRequestedTargetId(),
-                infoOfRequestedPay.getPayCreatorName(),
+                infoOfRequestedPay.getPayRequestTargetId(),
+                infoOfRequestedPay.getPayCreatorNickname(),
                 infoOfRequestedPay.getRequestedAmount().getAmountInInteger(),
                 infoOfRequestedPay.getBank().getName(),
                 infoOfRequestedPay.getBank().getAccountNumber()

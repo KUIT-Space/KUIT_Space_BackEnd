@@ -7,9 +7,9 @@ import space.space_spring.domain.pay.domain.Money;
 @Getter
 public class InfoOfRequestedPay {
 
-    private Long payRequestedTargetId;
+    private Long payRequestTargetId;
 
-    private String payCreatorName;
+    private String payCreatorNickname;
 
     // 정산생성자의 프로필 이미지까지 ??
 
@@ -17,15 +17,15 @@ public class InfoOfRequestedPay {
 
     private Bank bank;          // 송금할 은행 정보
 
-    private InfoOfRequestedPay(Long payRequestedTargetId, String payCreatorName, Money requestedAmount, Bank bank) {
-        this.payRequestedTargetId = payRequestedTargetId;
-        this.payCreatorName = payCreatorName;
+    private InfoOfRequestedPay(Long payRequestTargetId, String payCreatorNickname, Money requestedAmount, Bank bank) {
+        this.payRequestTargetId = payRequestTargetId;
+        this.payCreatorNickname = payCreatorNickname;
         this.requestedAmount = requestedAmount;
         this.bank = bank;
     }
 
-    public static InfoOfRequestedPay of(Long payRequestedTargetId, String payCreatorName, Money requestedAmount, Bank bank) {
-        return new InfoOfRequestedPay(payRequestedTargetId, payCreatorName, requestedAmount, bank);
+    public static InfoOfRequestedPay of(Long payRequestTargetId, String payCreatorNickname, Money requestedAmount, Bank bank) {
+        return new InfoOfRequestedPay(payRequestTargetId, payCreatorNickname, requestedAmount, bank);
     }
 
 }

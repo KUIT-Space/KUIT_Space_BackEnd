@@ -14,7 +14,7 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort {
     private final SpaceMemberMapper spaceMemberMapper;
 
     @Override
-    public SpaceMember loadSpaceMember(Long id) {
+    public SpaceMember loadSpaceMemberById(Long id) {
         SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(id).orElseThrow(() ->
                 new CustomException(SPACE_MEMBER_NOT_FOUND));
 

@@ -9,7 +9,6 @@ import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
-import space.space_spring.domain.spaceMember.SpaceMemberMapper;
 import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
 import space.space_spring.global.exception.CustomException;
 
@@ -28,13 +27,12 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final PayRequestMapper payRequestMapper;
     private final PayRequestTargetMapper payRequestTargetMapper;
-    private final SpaceMemberMapper spaceMemberMapper;
 
     /**
      * 저장 성공한 PayRequestJpaEntity의 PK값 return
      */
     @Override
-    public Long savePay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets) {
+    public Long createPay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets) {
         SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payRequest.getPayCreator().getId()).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
@@ -51,11 +49,11 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     }
 
     @Override
-    public List<PayRequest> findListByCreator(SpaceMember payCreator) {
+    public List<PayRequest> loadListByPayCreator(SpaceMember payCreator) {
         SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payCreator.getId()).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
-        Optional<List<PayRequestJpaEntity>> byPayCreator = payRequestRepository.findByPayCreator(payCreatorJpaEntity);
+        Optional<List<PayRequestJpaEntity>> byPayCreator = payRequestRepository.findListByPayCreator(payCreatorJpaEntity);
 
         if (byPayCreator.isEmpty()) return new ArrayList<>();
 
@@ -68,11 +66,11 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     }
 
     @Override
-    public List<PayRequestTarget> findListByTargetMember(SpaceMember targetMember) {
+    public List<PayRequestTarget> loadListByTargetMember(SpaceMember targetMember) {
         SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(targetMember.getId()).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
-        Optional<List<PayRequestTargetJpaEntity>> byTargetMember = payRequestTargetRepository.findByTargetMember(targetMemberJpaEntity);
+        Optional<List<PayRequestTargetJpaEntity>> byTargetMember = payRequestTargetRepository.findListByTargetMember(targetMemberJpaEntity);
 
         if (byTargetMember.isEmpty()) return new ArrayList<>();
 

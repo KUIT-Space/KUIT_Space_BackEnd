@@ -36,9 +36,13 @@ public class PayRequest {
         this.isComplete = isComplete;
         this.payType = payType;
     }
-    
+
     public static PayRequest createNewPayRequest(Long id, SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
         return new PayRequest(id, payCreator, totalAmount, Money.of(0), totalTargetNum, NaturalNumber.of(0), bank, false, payType);
+    }
+
+    public static PayRequest withoutId(SpaceMember payCreator, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
+        return new PayRequest(null, payCreator, totalAmount, Money.of(0), totalTargetNum, NaturalNumber.of(0), bank, false, payType);
     }
 
     public static PayRequest of(Long id, SpaceMember payCreator, Money totalAmount, Money receivedAmount, NaturalNumber totalTargetNum, NaturalNumber sendCompleteTargetNum, Bank bank, boolean isComplete, PayType payType) {

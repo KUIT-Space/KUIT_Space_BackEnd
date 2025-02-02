@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequest;
-import space.space_spring.domain.pay.domain.PayType;
 import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 import space.space_spring.domain.spaceMember.SpaceMemberMapper;
@@ -18,7 +17,7 @@ public class PayRequestMapper {
     private final SpaceMemberMapper spaceMemberMapper;
 
     PayRequestJpaEntity toJpaEntity(SpaceMemberJpaEntity payCreatorJpaEntity, PayRequest domain) {
-        return PayRequestJpaEntity.create(
+        return PayRequestJpaEntity.createNewJpaEntity(
                 payCreatorJpaEntity,
                 domain.getTotalAmount().getAmountInInteger(),
                 domain.getTotalTargetNum().getNumber(),

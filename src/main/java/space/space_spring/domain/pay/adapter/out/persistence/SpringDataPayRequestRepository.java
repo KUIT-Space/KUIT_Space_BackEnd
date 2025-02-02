@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface SpringDataPayRequestRepository extends JpaRepository<PayRequestJpaEntity, Long> {
 
-    Optional<List<PayRequestJpaEntity>> findByPayCreator(SpaceMemberJpaEntity payCreator);
+    Optional<List<PayRequestJpaEntity>> findListByPayCreator(SpaceMemberJpaEntity payCreator);
 }

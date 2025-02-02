@@ -14,7 +14,7 @@ public class PayRequestTargetMapper {
     private final PayRequestMapper payRequestMapper;
 
     public PayRequestTargetJpaEntity toJpaEntity(SpaceMemberJpaEntity targetMemberJpaEntity, PayRequestJpaEntity payRequestJpaEntity, PayRequestTarget domain) {
-        return PayRequestTargetJpaEntity.create(
+        return PayRequestTargetJpaEntity.createNewJpaEntity(
                 targetMemberJpaEntity,
                 payRequestJpaEntity,
                 domain.getRequestedAmount().getAmountInInteger()

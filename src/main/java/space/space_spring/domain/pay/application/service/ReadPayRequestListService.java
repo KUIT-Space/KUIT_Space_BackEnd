@@ -26,11 +26,11 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
     @Override
     public ResultOfReadPayRequestList readPayRequestList(Long payCreatorId) {
         // 정산 생성자 로드
-        SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMember(payCreatorId);
+        SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMemberById(payCreatorId);
 
         // payCreator가 요청한 PayRequest list 로드
         // 개수 제한 없이 일단 전부 로드
-        PayRequests payRequests = PayRequests.create(loadPayRequestPort.findListByCreator(payCreator));
+        PayRequests payRequests = PayRequests.create(loadPayRequestPort.loadListByPayCreator(payCreator));
 
         // return 타입 구성
         List<InfoOfPayRequest> infosOfComplete = mapToInfoOfPayRequests(payRequests.getCompletePayRequestList());

@@ -9,6 +9,7 @@ import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
+import space.space_spring.domain.spaceMember.SpaceMemberMapper;
 import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
 import space.space_spring.global.exception.CustomException;
 
@@ -27,6 +28,7 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final PayRequestMapper payRequestMapper;
     private final PayRequestTargetMapper payRequestTargetMapper;
+    private final SpaceMemberMapper spaceMemberMapper;
 
     /**
      * 저장 성공한 PayRequestJpaEntity의 PK값 return
@@ -67,6 +69,18 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
 
     @Override
     public List<PayRequestTarget> findListByTargetMember(SpaceMember targetMember) {
-        return List.of();
+        SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(targetMember.getId()).orElseThrow(
+                () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        Optional<List<PayRequestTargetJpaEntity>> byTargetMember = payRequestTargetRepository.findByTargetMember(targetMemberJpaEntity);
+
+        if (byTargetMember.isEmpty()) return new ArrayList<>();
+
+        List<PayRequestTarget> payRequestTargets = new ArrayList<>();
+        for (PayRequestTargetJpaEntity payRequestTargetJpaEntity : byTargetMember.get()) {
+            payRequestTargets.add(payRequestTargetMapper.toDomainEntity(targetMember, payRequestTargetJpaEntity));
+        }
+
+        return payRequestTargets;
     }
 }

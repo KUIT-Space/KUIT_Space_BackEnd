@@ -66,7 +66,7 @@ class ReadPayRequestListServiceTest {
         Mockito.when(loadPayRequestPort.findListByCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2));
 
         //when
-        ResultOfReadPayRequestList result = readPayRequestListService.readPayRequestList(1L);
+        ResultOfReadPayRequestList result = readPayRequestListService.readPayRequestList(seongjun.getId());
 
         //then
         assertThat(result.getCompletePayRequestList()).isEmpty();

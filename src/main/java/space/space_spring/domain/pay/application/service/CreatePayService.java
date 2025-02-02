@@ -80,13 +80,15 @@ public class CreatePayService implements CreatePayUseCase {
         List<PayRequestTarget> payRequestTargets = new ArrayList<>();
         for (TargetOfCreatePayCommand target : command.getTargets()) {
             SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMember(target.getTargetMemberId());
-            PayRequestTarget payRequestTarget = PayRequestTarget.create(targetMember, payRequest, target.getRequestedAmount());
+            // 수정 필요
+            PayRequestTarget payRequestTarget = PayRequestTarget.create(1L, targetMember, payRequest, target.getRequestedAmount());
             payRequestTargets.add(payRequestTarget);
         }
         return payRequestTargets;
     }
 
     private PayRequest createPayRequest(CreatePayCommand command, SpaceMember payCreator) {
-        return PayRequest.create(payCreator, command.getTotalAmount(), command.getTotalTargetNum(), command.getBank(), command.getPayType());
+        // 수정 필요
+        return PayRequest.create(1L, payCreator, command.getTotalAmount(), command.getTotalTargetNum(), command.getBank(), command.getPayType());
     }
 }

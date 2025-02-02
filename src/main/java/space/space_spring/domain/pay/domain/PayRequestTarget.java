@@ -16,16 +16,20 @@ public class PayRequestTarget {
 
     private boolean isComplete;
 
-    private PayRequestTarget(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
+    private PayRequestTarget(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount, boolean isComplete) {
         this.id = id;
         this.targetMember = targetMember;
         this.payRequest = payRequest;
         this.requestedAmount = requestedAmount;
-        this.isComplete = false;
+        this.isComplete = isComplete;
     }
 
     public static PayRequestTarget create(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
-        return new PayRequestTarget(id, targetMember, payRequest, requestedAmount);
+        return new PayRequestTarget(id, targetMember, payRequest, requestedAmount, false);
+    }
+
+    public static PayRequestTarget of(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount, boolean isComplete) {
+        return new PayRequestTarget(id, targetMember, payRequest, requestedAmount, isComplete);
     }
 
     public boolean isComplete() {

@@ -17,4 +17,17 @@ public class Bank {
     public static Bank of(String name, String accountNumber) {
         return new Bank(name, accountNumber);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bank)) return false;
+        Bank bank = (Bank) o;
+        return bank.getName().equals(name) && bank.getAccountNumber().equals(accountNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(name, accountNumber);
+    }
 }

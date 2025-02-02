@@ -15,7 +15,7 @@ public class IndividualPayAmountPolicy implements PayAmountPolicy {
             sumOfTargetAmounts = sumOfTargetAmounts.add(targetAmount);
         }
 
-        if (!totalAMount.isEqual(sumOfTargetAmounts)) {
+        if (!totalAMount.equals(sumOfTargetAmounts)) {
             throw new CustomException(INVALID_INDIVIDUAL_AMOUNT);
         }
     }

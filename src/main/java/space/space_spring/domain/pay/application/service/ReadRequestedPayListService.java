@@ -26,11 +26,11 @@ public class ReadRequestedPayListService implements ReadRequestedPayListUseCase 
     @Override
     public ResultOfReadRequestedPayList readRequestedPayList(Long targetMemberId) {
         // 정산 대상자 로드
-        SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMember(targetMemberId);
+        SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMemberById(targetMemberId);
 
         // targetMember가 정산 대상자인 PayRequestTarget list 로드
         // 개수 제한 없이 일단 전부 로드
-        PayRequestTargets payRequestTargets = PayRequestTargets.create(loadPayRequestTargetPort.findListByTargetMember(targetMember));
+        PayRequestTargets payRequestTargets = PayRequestTargets.create(loadPayRequestTargetPort.loadListByTargetMember(targetMember));
 
         // return 타입 구성
         List<InfoOfRequestedPay> infosOfComplete = mapToInfoOfRequestedPays(payRequestTargets.getCompletePayRequestTargetList());

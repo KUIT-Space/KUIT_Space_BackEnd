@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface LoadPayRequestPort {
 
-    List<PayRequest> findListByCreator(SpaceMember payCreator);
+    List<PayRequest> loadListByPayCreator(SpaceMember payCreator);
 }

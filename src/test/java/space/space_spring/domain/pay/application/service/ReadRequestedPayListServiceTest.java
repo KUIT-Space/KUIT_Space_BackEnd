@@ -4,9 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import space.space_spring.domain.pay.application.port.in.readPayRequestList.ResultOfReadPayRequestList;
 import space.space_spring.domain.pay.application.port.in.readRequestedPayList.ResultOfReadRequestedPayList;
-import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.pay.domain.*;
 import space.space_spring.domain.space.Space;
@@ -19,7 +17,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ReadRequestedPayListServiceTest {
 
@@ -46,13 +43,13 @@ class ReadRequestedPayListServiceTest {
         kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L, "김경민", "image_444", false);
 
         // Mockito Stubbing : 특정 ID가 들어오면 그에 맞는 SpaceMember 반환
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(seongjun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seongjun.getId()))
                 .thenReturn(seongjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(sangjun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(sangjun.getId()))
                 .thenReturn(sangjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(seohyun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seohyun.getId()))
                 .thenReturn(seohyun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(kyeongmin.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(kyeongmin.getId()))
                 .thenReturn(kyeongmin);
     }
 
@@ -66,7 +63,7 @@ class ReadRequestedPayListServiceTest {
         PayRequestTarget payRequestTarget1 = PayRequestTarget.createNewPayRequestTarget(1L, seongjun, payRequest1, Money.of(3333));
         PayRequestTarget payRequestTarget2 = PayRequestTarget.of(2L, seongjun, payRequest2, Money.of(10000), true);
 
-        Mockito.when(loadPayRequestTargetPort.findListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
+        Mockito.when(loadPayRequestTargetPort.loadListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
 
         //when
         ResultOfReadRequestedPayList result = readRequestedPayListService.readRequestedPayList(seongjun.getId());
@@ -100,7 +97,7 @@ class ReadRequestedPayListServiceTest {
         PayRequestTarget payRequestTarget1 = PayRequestTarget.createNewPayRequestTarget(1L, seongjun, payRequest1, Money.of(3333));
         PayRequestTarget payRequestTarget2 = PayRequestTarget.createNewPayRequestTarget(2L, seongjun, payRequest2, Money.of(10000));
 
-        Mockito.when(loadPayRequestTargetPort.findListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
+        Mockito.when(loadPayRequestTargetPort.loadListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
 
         //when
         ResultOfReadRequestedPayList result = readRequestedPayListService.readRequestedPayList(seongjun.getId());
@@ -128,7 +125,7 @@ class ReadRequestedPayListServiceTest {
         PayRequestTarget payRequestTarget1 = PayRequestTarget.of(1L, seongjun, payRequest1, Money.of(3333), true);
         PayRequestTarget payRequestTarget2 = PayRequestTarget.of(2L, seongjun, payRequest2, Money.of(10000), true);
 
-        Mockito.when(loadPayRequestTargetPort.findListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
+        Mockito.when(loadPayRequestTargetPort.loadListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
 
         //when
         ResultOfReadRequestedPayList result = readRequestedPayListService.readRequestedPayList(seongjun.getId());

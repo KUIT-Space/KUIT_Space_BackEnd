@@ -73,7 +73,7 @@ public class PayRequestJpaEntity extends BaseEntity {
         this.payType = payType;
     }
 
-    public static PayRequestJpaEntity create(SpaceMemberJpaEntity payCreator, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType) {
+    public static PayRequestJpaEntity createNewJpaEntity(SpaceMemberJpaEntity payCreator, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType) {
         return PayRequestJpaEntity.builder()
                 .payCreator(payCreator)
                 .totalAmount(totalAmount)

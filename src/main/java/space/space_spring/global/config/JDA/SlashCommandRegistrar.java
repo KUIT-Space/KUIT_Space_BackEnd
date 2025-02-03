@@ -18,6 +18,9 @@ public class SlashCommandRegistrar {
         CommandListUpdateAction commands = jda.updateCommands();
 
         commands.addCommands(
+                Commands.slash("init-space","initiate this Guild to Space. first call this command when add Space Bot")
+        );
+        commands.addCommands(
                 Commands.slash("guildinfo","print Guild information.")
                         .addOption(STRING,"test-option","test-option",false)
                 //.setGuildOnly(true) // this doesn't make sense in DMs

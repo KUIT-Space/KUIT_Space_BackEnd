@@ -24,8 +24,8 @@ public class SpacePersistenceAdapter implements CreateSpacePort , LoadSpacePort 
 
         Space space = Space.withoutId(guildId,guildName);
         SpaceJpaEntity spaceJpaEntity = spaceMapper.mapToJpaEntity(space);
-        SpaceJpaEntity resultSpaceJpaEntity = spaceRepository.save(spaceJpaEntity);
-        return resultSpaceJpaEntity.getId();
+        Long spaceId = spaceRepository.save(spaceJpaEntity).getId();
+        return spaceId;
     }
 
     @Override

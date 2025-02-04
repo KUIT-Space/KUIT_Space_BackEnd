@@ -8,6 +8,11 @@ import space.space_spring.domain.space.application.port.out.CreateSpacePort;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
+import space.space_spring.global.exception.CustomException;
+
+import java.util.Optional;
+
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_ALREADY_EXISTED;
 
 @RequiredArgsConstructor
 @Repository
@@ -24,12 +29,12 @@ public class SpacePersistenceAdapter implements CreateSpacePort , LoadSpacePort 
     }
 
     @Override
-    public Space loadSpaceByDiscordId(Long discordId){
-        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByDiscordId(discordId);
-        if(spaceJpaEntity==null){
-            return null;
-        }
-        return spaceMapper.mapToDomainEntity(spaceJpaEntity);
+    public Optional<Space> loadSpaceByDiscordId(Long discordId){
+        //없으면 Optional.empty() 반환
+        return spaceRepository.findByDiscordId(discordId)
+                .map(spaceMapper::mapToDomainEntity);
+
+
     }
 
 }

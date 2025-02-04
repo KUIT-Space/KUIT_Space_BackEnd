@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
+import space.space_spring.global.exception.CustomException;
 
 @Component
 @RequiredArgsConstructor
@@ -35,16 +36,19 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     .guildName(guild.getName())
                     .build();
 
-            Long spaceId = createSpaceUseCase.createSpace(command);
-            if(spaceId==null){
-                /*
-                 * 이미 guild가 space로 등록이 된 경우
-                 * */
-                event.getMessage().reply("this guild already initiated\nspace ID : "+spaceId+"\n").queue();
+            try{Long spaceId = createSpaceUseCase.createSpace(command);
+                event.getMessage()
+                        .reply("space setting success!\nspace ID : "+spaceId+"\n").queue();
+            }
+            catch (CustomException e){
+            /*
+             * 이미 guild가 space로 등록이 된 경우
+             * */
+                event.getMessage().reply(e.getMessage()).queue();
                 return;
             }
-            event.getMessage()
-                    .reply("space setting success!\nspace ID : "+spaceId+"\n").queue();
+
+
                     ;
         }
     }

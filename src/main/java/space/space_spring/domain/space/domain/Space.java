@@ -22,6 +22,6 @@ public class Space {
     }
 
     public static Space withoutId(Long discordId, String name){
-        return Space.create(null,name,discordId);
+        return new Space(null, name, discordId);
     }
 }

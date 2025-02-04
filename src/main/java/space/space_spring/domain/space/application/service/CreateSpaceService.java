@@ -9,6 +9,11 @@ import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.CreateSpacePort;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
+import space.space_spring.global.exception.CustomException;
+
+import java.util.Optional;
+
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_ALREADY_EXISTED;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +25,16 @@ public class CreateSpaceService implements CreateSpaceUseCase {
     @Override
     @Transactional
     public Long createSpace(CreateSpaceCommand command){
-        Space space=loadSpacePort.loadSpaceByDiscordId(command.getGuildId());
-        if(space!=null){
-            return null;
-        }
+
+        checkSpacePresent(loadSpacePort.loadSpaceByDiscordId(command.getGuildId()));
         return createSpacePort.saveSpace(command.getGuildId(),
                 command.getGuildName());
+    }
+
+    private void checkSpacePresent(Optional<Space> space){
+        space.ifPresent(value->{
+            throw  new CustomException(SPACE_ALREADY_EXISTED,
+                    SPACE_ALREADY_EXISTED.getMessage()+"\nspaceId: "+value.getId());
+        });
     }
 }

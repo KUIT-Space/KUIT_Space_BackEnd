@@ -3,8 +3,8 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:local}
     group:
       "local": "localRDB, localMongoDB, livekit,localS3, localOAuth, localJPA, localPort, localSecret, web-mvc"
-      "dev": "devRDB, devMongoDB, livekit,devS3,devPort, devJPA, devSecret, web-mvc"
-      "prod": "devRDB, devMongoDB, livekit,devS3,devPort, prodJPA, devSecret, web-mvc"
+      "dev": "devRDB, devMongoDB, livekit,devS3, devOAuth, devPort, devJPA, devSecret, web-mvc"
+      "prod": "devRDB, devMongoDB, livekit,devS3, devOAuth, devPort, prodJPA, devSecret, web-mvc"
 ---
 spring:
   config:
@@ -54,6 +54,24 @@ cloud:
       auto: false
 
 ---
+
+spring:
+  config:
+    activate:
+      on-profile: "devOAuth"
+
+oauth:
+  discord:
+    client:
+      id: ${DISCORD_CLIENT_ID}
+      secret: ${DISCORD_CLIENT_SECRET}
+    uri:
+      redirect: ${DISCORD_REDIRECT_URI}
+      token: ${DISCORD_TOKEN_URI}
+      request: ${DISCORD_REQUEST_URI}
+
+---
+
 spring:
   config:
     activate:

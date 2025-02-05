@@ -8,4 +8,6 @@ public interface OauthUseCase {
     String getAccessToken(String code) throws JsonProcessingException;
 
     User getUserInfo(String accessToken) throws JsonProcessingException;
+
+    String signIn(User user);
 }

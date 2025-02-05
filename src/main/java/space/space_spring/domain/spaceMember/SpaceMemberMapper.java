@@ -2,7 +2,7 @@ package space.space_spring.domain.spaceMember;
 
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.Space;
-import space.space_spring.domain.user.User;
+import space.space_spring.domain.user.domain.User;
 
 @Component
 public class SpaceMemberMapper {

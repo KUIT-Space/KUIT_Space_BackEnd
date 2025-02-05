@@ -10,7 +10,7 @@ import space.space_spring.domain.pay.application.port.out.CreatePayPort;
 import space.space_spring.domain.pay.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.space.Space;
 import space.space_spring.domain.spaceMember.SpaceMember;
-import space.space_spring.domain.user.User;
+import space.space_spring.domain.user.domain.User;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;

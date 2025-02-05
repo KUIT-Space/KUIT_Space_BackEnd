@@ -2,7 +2,7 @@ package space.space_spring.domain.spaceMember;
 
 import lombok.Getter;
 import space.space_spring.domain.space.Space;
-import space.space_spring.domain.user.User;
+import space.space_spring.domain.user.domain.User;
 
 @Getter
 public class SpaceMember {

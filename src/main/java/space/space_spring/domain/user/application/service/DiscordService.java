@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
+import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.domain.user.application.port.in.OauthUseCase;
+import space.space_spring.domain.user.application.port.out.LoadUserPort;
 import space.space_spring.domain.user.domain.User;
 import space.space_spring.global.exception.CustomException;
 
@@ -41,6 +44,9 @@ public class DiscordService implements OauthUseCase {
 
     private static final String GRANT_TYPE = "authorization_code";
     private static final String SCOPE = "identify, email";
+
+    private final LoadUserPort loadUserPort;
+    private final JwtLoginProvider jwtLoginProvider;
 
     @Override
     public String getAccessToken(String code) throws JsonProcessingException {
@@ -98,10 +104,10 @@ public class DiscordService implements OauthUseCase {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-            Long id = jsonNode.path("id").asLong();
+            Long discordId = jsonNode.path("id").asLong();
             String name = jsonNode.path("username").asText();
-            log.info("user id : " + id + ", user name : " + name);
-            return User.create(null, id);
+            log.info("user id : " + discordId + ", user name : " + name);
+            return User.create(null, discordId);
         } else {
             throw new CustomException(CANNOT_FIND_DISCORD_USER);
         }
@@ -110,6 +116,9 @@ public class DiscordService implements OauthUseCase {
     @Override
     @Transactional
     public String signIn(User user) {
-        return "";
+        User savedUser = loadUserPort.loadUserByDiscordId(user.getDiscordId())
+                .orElseGet(() -> loadUserPort.saveUser(user));
+
+        return jwtLoginProvider.generateToken(savedUser.getId(), TokenType.ACCESS);
     }
 }

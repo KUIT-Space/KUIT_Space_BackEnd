@@ -36,6 +36,9 @@ public class DiscordService implements OauthUseCase {
     @Value("${oauth.discord.uri.token}")
     private String DISCORD_TOKEN_URI;
 
+    @Value("${oauth.discord.uri.request}")
+    private String DISCORD_REQUEST_URI;
+
     private static final String GRANT_TYPE = "authorization_code";
     private static final String SCOPE = "identify, email";
 
@@ -75,11 +78,37 @@ public class DiscordService implements OauthUseCase {
     }
 
     @Override
-    public User getUserInfo(String accessToken) {
-        return null;
+    public User getUserInfo(String accessToken) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headers);
+
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
+                DISCORD_REQUEST_URI,
+                HttpMethod.GET,
+                httpEntity,
+                String.class
+        );
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            String responseBody = response.getBody();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(responseBody);
+
+            Long id = jsonNode.path("id").asLong();
+            String name = jsonNode.path("username").asText();
+            log.info("user id : " + id + ", user name : " + name);
+            return User.create(null, id);
+        } else {
+            throw new CustomException(CANNOT_FIND_DISCORD_USER);
+        }
     }
 
     @Override
+    @Transactional
     public String signIn(User user) {
         return "";
     }

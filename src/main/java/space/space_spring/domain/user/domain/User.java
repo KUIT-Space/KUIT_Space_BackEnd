@@ -1,4 +1,4 @@
-package space.space_spring.domain.user;
+package space.space_spring.domain.user.domain;
 
 import lombok.Getter;
 

@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import space.space_spring.domain.space.SpaceJpaEntity;
-import space.space_spring.domain.user.UserJpaEntity;
+import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
 import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity

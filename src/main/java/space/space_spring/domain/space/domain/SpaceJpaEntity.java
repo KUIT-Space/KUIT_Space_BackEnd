@@ -1,4 +1,4 @@
-package space.space_spring.domain.space;
+package space.space_spring.domain.space.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

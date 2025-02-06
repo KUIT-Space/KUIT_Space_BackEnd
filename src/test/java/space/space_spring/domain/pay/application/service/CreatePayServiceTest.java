@@ -9,6 +9,8 @@ import space.space_spring.domain.pay.application.port.in.createPay.CreatePayComm
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
 import space.space_spring.domain.space.Space;
 import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.pay.application.port.out.LoadSpaceMemberPort;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.user.User;
 import space.space_spring.global.exception.CustomException;

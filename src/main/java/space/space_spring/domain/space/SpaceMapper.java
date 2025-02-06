@@ -1,6 +1,8 @@
 package space.space_spring.domain.space;
 
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.space.domain.Space;
+import space.space_spring.domain.space.domain.SpaceJpaEntity;
 
 @Component
 public class SpaceMapper {

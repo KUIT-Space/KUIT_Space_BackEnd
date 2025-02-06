@@ -44,18 +44,6 @@ public class PayRequestMapper {
     }
 
     public PayRequest toDomainEntity(PayRequestJpaEntity jpaEntity) {
-        Bank bank = Bank.of(jpaEntity.getBankName(), jpaEntity.getBankAccountNum());
-
-        return PayRequest.of(
-                jpaEntity.getId(),
-                spaceMemberMapper.toDomainEntity(jpaEntity.getPayCreator()),
-                Money.of(jpaEntity.getTotalAmount()),
-                Money.of(jpaEntity.getReceivedAmount()),
-                NaturalNumber.of(jpaEntity.getTotalTargetNum()),
-                NaturalNumber.of(jpaEntity.getSendCompleteTargetNum()),
-                bank,
-                jpaEntity.isComplete(),
-                jpaEntity.getPayType()
-        );
+        return toDomainEntity(spaceMemberMapper.toDomainEntity(jpaEntity.getPayCreator()), jpaEntity);
     }
 }

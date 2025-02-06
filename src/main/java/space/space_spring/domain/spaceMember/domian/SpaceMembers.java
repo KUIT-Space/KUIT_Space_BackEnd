@@ -20,10 +20,10 @@ public class SpaceMembers {
      * 멤버 변수인 List<SpaceMember> 가 모두 같은 Space에 속해있는지 검증하는 메서드
      */
     public void validateMembersInSameSpace() {
-        Long spaceId = spaceMembers.get(0).getSpace().getId();
+        Long spaceId = spaceMembers.get(0).getSpaceId();
 
         for (SpaceMember member : spaceMembers) {
-            if (!member.getSpace().getId().equals(spaceId)) {
+            if (!member.getSpaceId().equals(spaceId)) {
                 throw new IllegalStateException("[ERROR] : members are not in same space");
             }
         }

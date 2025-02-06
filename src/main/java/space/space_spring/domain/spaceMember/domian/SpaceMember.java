@@ -11,9 +11,9 @@ public class SpaceMember {
 
     private Long id;
 
-    private Space space;
+    private Long spaceId;
 
-    private User user;
+    private Long userId;
 
     private Long discordId;
 
@@ -23,10 +23,10 @@ public class SpaceMember {
 
     private boolean isManager;
 
-    private SpaceMember(Long id, Space space, User user, Long discordId, String nickname, String profileImageUrl, boolean isManager) {
+    private SpaceMember(Long id, Long spaceId, Long userId, Long discordId, String nickname, String profileImageUrl, boolean isManager) {
         this.id = id;
-        this.space = space;
-        this.user = user;
+        this.spaceId = spaceId;
+        this.userId = userId;
         this.discordId = discordId;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
@@ -34,6 +34,6 @@ public class SpaceMember {
     }
 
     public static SpaceMember create(Long id, Space space, User user, Long discordId, String nickname, String profileImageUrl, boolean isManager) {
-        return new SpaceMember(id, space, user, discordId, nickname, profileImageUrl, isManager);
+        return new SpaceMember(id, space.getId(), user.getId(), discordId, nickname, profileImageUrl, isManager);
     }
 }

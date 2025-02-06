@@ -80,8 +80,8 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
                 .isManager(false) //ToDo
                 .nickname(member.getEffectiveName())
                 .profileImageUrl(member.getEffectiveAvatarUrl())
-                .space(space)
-                .user(null)
+                .spaceId(space.getId())
+                .userId(null)
                 .build();
 
     }

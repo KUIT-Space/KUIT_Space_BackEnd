@@ -72,6 +72,7 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
 //
 //    }
 
+    //This method return user=null, inManage=false, id=null
     private SpaceMember guildToSpaceMember(Member member,Space space,Long spaceMemberId){
         return SpaceMember.builder()
                 .id(spaceMemberId)
@@ -79,7 +80,7 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
                 .isManager(false) //ToDo
                 .nickname(member.getEffectiveName())
                 .profileImageUrl(member.getEffectiveAvatarUrl())
-                .space(null)
+                .space(space)
                 .user(null)
                 .build();
 

@@ -108,7 +108,7 @@ public class DiscordService implements OauthUseCase {
             Long discordId = jsonNode.path("id").asLong();
             String name = jsonNode.path("username").asText();
             log.info("user id : " + discordId + ", user name : " + name);
-            return User.create(null, discordId);
+            return User.withoutId(discordId);
         } else {
             throw new CustomException(CANNOT_FIND_DISCORD_USER);
         }

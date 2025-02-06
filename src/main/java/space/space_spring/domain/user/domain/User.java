@@ -17,4 +17,8 @@ public class User {
     public static User create(Long id, Long discordId) {
         return new User(id, discordId);
     }
+
+    public static User withoutId(Long discordId) {
+        return new User(null, discordId);
+    }
 }

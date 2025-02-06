@@ -2,9 +2,9 @@ package space.space_spring.domain.spaceMember.adapter.out.persistence;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import space.space_spring.domain.pay.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.adapter.out.persistence.SpaceMapper;
+import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.domain.user.User;
@@ -19,16 +19,12 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort {
 
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpaceMemberMapper spaceMemberMapper;
-    private final SpaceMapper spaceMapper;
-    private final UserMapper userMapper;
 
     @Override
-    public SpaceMember loadSpaceMember(Long id) {
+    public SpaceMember loadSpaceMemberById(Long id) {
         SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(id).orElseThrow(() ->
                 new CustomException(SPACE_MEMBER_NOT_FOUND));
 
-        Space space = spaceMapper.mapToDomainEntity(spaceMemberJpaEntity.getSpace());
-        User user = userMapper.mapToDomainEntity(spaceMemberJpaEntity.getUser());
-        return spaceMemberMapper.mapToDomainEntity(space, user, spaceMemberJpaEntity);
+        return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
     }
 }

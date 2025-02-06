@@ -3,17 +3,20 @@ package space.space_spring.domain.pay.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.domain.pay.application.port.in.CreatePayCommand;
-import space.space_spring.domain.pay.application.port.in.CreatePayUseCase;
-import space.space_spring.domain.pay.application.port.in.TargetOfCreatePayCommand;
+import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
+import space.space_spring.domain.pay.application.port.in.createPay.CreatePayUseCase;
+import space.space_spring.domain.pay.application.port.in.createPay.TargetOfCreatePayCommand;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
-import space.space_spring.domain.pay.application.port.out.LoadSpaceMemberPort;
-import space.space_spring.domain.pay.domain.Money;
-import space.space_spring.domain.pay.domain.PayAmountPolicy;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
+
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMembers;
+
+import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.pay.domain.Money;
+import space.space_spring.domain.pay.domain.PayAmountPolicy;
+
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ public class CreatePayService implements CreatePayUseCase {
     @Transactional
     public Long createPay(CreatePayCommand command) {
         // 정산 생성자 로드 & PayRequest 도메인 엔티티 생성
-        SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMember(command.getPayCreatorId());
+        SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMemberById(command.getPayCreatorId());
         PayRequest payRequest = createPayRequest(command, payCreator);
 
         // 정산 타겟 멤버들 로드 & PayRequestTarget 도메인 엔티티들 생성
@@ -46,7 +49,35 @@ public class CreatePayService implements CreatePayUseCase {
         validatePayAmountPolicy(command, payRequestTargets);
 
         // 모두 문제없으면 저장
-        return createPayPort.savePay(payRequest, payRequestTargets);
+        return createPayPort.createPay(payRequest, payRequestTargets);
+    }
+
+    private PayRequest createPayRequest(CreatePayCommand command, SpaceMember payCreator) {
+        return PayRequest.withoutId(payCreator, command.getTotalAmount(), command.getTotalTargetNum(), command.getBank(), command.getPayType());
+    }
+
+    private List<PayRequestTarget> createPayRequestTargets(CreatePayCommand command, PayRequest payRequest) {
+        List<PayRequestTarget> payRequestTargets = new ArrayList<>();
+        for (TargetOfCreatePayCommand target : command.getTargets()) {
+            SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMemberById(target.getTargetMemberId());
+            PayRequestTarget payRequestTarget = PayRequestTarget.withoutId(targetMember, payRequest, target.getRequestedAmount());
+            payRequestTargets.add(payRequestTarget);
+        }
+        return payRequestTargets;
+    }
+
+    private void validateSpaceMembers(SpaceMember payCreator, List<PayRequestTarget> payRequestTargets) {
+        List<SpaceMember> allOfSpaceMember = new ArrayList<>();
+        allOfSpaceMember.add(payCreator);
+        for (PayRequestTarget payRequestTarget : payRequestTargets) {
+            allOfSpaceMember.add(payRequestTarget.getTargetMember());
+        }
+        SpaceMembers spaceMembers = SpaceMembers.of(allOfSpaceMember);
+        try {
+            spaceMembers.validateMembersInSameSpace();
+        } catch (IllegalStateException e) {
+            throw new CustomException(PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE);
+        }
     }
 
     private void validatePayAmountPolicy(CreatePayCommand command, List<PayRequestTarget> payRequestTargets) {
@@ -56,37 +87,6 @@ public class CreatePayService implements CreatePayUseCase {
         for (PayRequestTarget payRequestTarget : payRequestTargets) {
             targetAmounts.add(payRequestTarget.getRequestedAmount());
         }
-
         payAmountPolicy.validatePayAmount(command.getTotalAmount(), targetAmounts);
-    }
-
-    private void validateSpaceMembers(SpaceMember payCreator, List<PayRequestTarget> payRequestTargets) {
-        List<SpaceMember> allOfSpaceMember = new ArrayList<>();
-        allOfSpaceMember.add(payCreator);
-
-        for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            allOfSpaceMember.add(payRequestTarget.getTargetMember());
-        }
-
-        SpaceMembers spaceMembers = SpaceMembers.of(allOfSpaceMember);
-        try {
-            spaceMembers.validateMembersInSameSpace();
-        } catch (IllegalStateException e) {
-            throw new CustomException(PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE);
-        }
-    }
-
-    private List<PayRequestTarget> createPayRequestTargets(CreatePayCommand command, PayRequest payRequest) {
-        List<PayRequestTarget> payRequestTargets = new ArrayList<>();
-        for (TargetOfCreatePayCommand target : command.getTargets()) {
-            SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMember(target.getTargetMemberId());
-            PayRequestTarget payRequestTarget = PayRequestTarget.create(targetMember, payRequest, target.getRequestedAmount());
-            payRequestTargets.add(payRequestTarget);
-        }
-        return payRequestTargets;
-    }
-
-    private PayRequest createPayRequest(CreatePayCommand command, SpaceMember payCreator) {
-        return PayRequest.create(payCreator, command.getTotalAmount(), command.getBank(), command.getPayType());
     }
 }

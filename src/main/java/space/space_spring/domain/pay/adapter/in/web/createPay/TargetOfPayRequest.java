@@ -1,4 +1,4 @@
-package space.space_spring.domain.pay.adapter.in.web;
+package space.space_spring.domain.pay.adapter.in.web.createPay;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

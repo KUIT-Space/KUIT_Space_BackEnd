@@ -18,7 +18,7 @@ public class SpacePersistenceAdapter implements CreateSpacePort , LoadSpacePort 
     public Long saveSpace(Long guildId,String guildName){
 
         Space space = Space.withoutId(guildId,guildName);
-        SpaceJpaEntity spaceJpaEntity = spaceMapper.mapToJpaEntity(space);
+        SpaceJpaEntity spaceJpaEntity = spaceMapper.toJpaEntity(space);
         Long spaceId = spaceRepository.save(spaceJpaEntity).getId();
         return spaceId;
     }
@@ -27,7 +27,7 @@ public class SpacePersistenceAdapter implements CreateSpacePort , LoadSpacePort 
     public Optional<Space> loadSpaceByDiscordId(Long discordId){
         //없으면 Optional.empty() 반환
         return spaceRepository.findByDiscordId(discordId)
-                .map(spaceMapper::mapToDomainEntity);
+                .map(spaceMapper::toDomainEntity);
 
 
     }

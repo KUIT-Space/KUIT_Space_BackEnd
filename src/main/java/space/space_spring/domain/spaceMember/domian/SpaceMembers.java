@@ -1,4 +1,6 @@
+
 package space.space_spring.domain.spaceMember.domian;
+
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class SpaceMembers {
 
         for (SpaceMember member : spaceMembers) {
             if (!member.getSpace().getId().equals(spaceId)) {
-                throw new IllegalStateException("[ERROR] : members is not in same space");
+                throw new IllegalStateException("[ERROR] : members are not in same space");
             }
         }
     }

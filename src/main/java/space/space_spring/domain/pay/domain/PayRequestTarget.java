@@ -6,7 +6,9 @@ import space.space_spring.domain.spaceMember.domian.SpaceMember;
 @Getter
 public class PayRequestTarget {
 
-    private SpaceMember targetMember;           // 이거도 jpa엔티티여서 도메인 엔티티로 변경해야 함
+    private Long id;
+
+    private SpaceMember targetMember;
 
     private PayRequest payRequest;
 
@@ -14,14 +16,27 @@ public class PayRequestTarget {
 
     private boolean isComplete;
 
-    private PayRequestTarget(SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
+    private PayRequestTarget(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount, boolean isComplete) {
+        this.id = id;
         this.targetMember = targetMember;
         this.payRequest = payRequest;
         this.requestedAmount = requestedAmount;
-        this.isComplete = false;
+        this.isComplete = isComplete;
     }
 
-    public static PayRequestTarget create(SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
-        return new PayRequestTarget(targetMember, payRequest, requestedAmount);
+    public static PayRequestTarget createNewPayRequestTarget(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
+        return new PayRequestTarget(id, targetMember, payRequest, requestedAmount, false);
+    }
+
+    public static PayRequestTarget withoutId(SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
+        return new PayRequestTarget(null, targetMember, payRequest, requestedAmount, false);
+    }
+
+    public static PayRequestTarget of(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount, boolean isComplete) {
+        return new PayRequestTarget(id, targetMember, payRequest, requestedAmount, isComplete);
+    }
+
+    public boolean isComplete() {
+        return isComplete;
     }
 }

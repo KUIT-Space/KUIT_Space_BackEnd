@@ -15,12 +15,12 @@ public class SpacePersistenceAdapter implements CreateSpacePort , LoadSpacePort 
     private final SpringDataSpace spaceRepository;
     private final SpaceMapper spaceMapper;
     @Override
-    public Long saveSpace(Long guildId,String guildName){
+    public Space saveSpace(Long guildId,String guildName){
 
         Space space = Space.withoutId(guildId,guildName);
         SpaceJpaEntity spaceJpaEntity = spaceMapper.toJpaEntity(space);
-        Long spaceId = spaceRepository.save(spaceJpaEntity).getId();
-        return spaceId;
+        Space resultSpace = spaceMapper.toDomainEntity(spaceRepository.save(spaceJpaEntity));
+        return resultSpace;
     }
 
     @Override

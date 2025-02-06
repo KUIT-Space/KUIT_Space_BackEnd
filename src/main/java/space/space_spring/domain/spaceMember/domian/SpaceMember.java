@@ -36,4 +36,27 @@ public class SpaceMember {
     public static SpaceMember create(Long id, Space space, User user, Long discordId, String nickname, String profileImageUrl, boolean isManager) {
         return new SpaceMember(id, space.getId(), user.getId(), discordId, nickname, profileImageUrl, isManager);
     }
+
+    public static SpaceMember create(Long id, Long spaceId, Long userId, Long discordId, String nickname, String profileImageUrl, boolean isManager) {
+        return new SpaceMember(id, spaceId, userId, discordId, nickname, profileImageUrl, isManager);
+    }
+    public static SpaceMember withoutId(Long spaceId,Long userId,Long discordId,String nickname,String profileImageUrl,boolean isManager){
+        return SpaceMember.builder()
+                .spaceId(spaceId)
+                .userId(userId)
+                .discordId(discordId)
+                .nickname(nickname)
+                .profileImageUrl(profileImageUrl)
+                .isManager(isManager)
+                .build();
+    }
+
+    public SpaceMember setUserId(Long userId){
+        this.userId =userId;
+        return this;
+    }
+    public SpaceMember setSpaceId(Long spaceId){
+        this.spaceId=spaceId;
+        return this;
+    }
 }

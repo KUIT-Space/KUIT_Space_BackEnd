@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.domain.space.SpaceJpaEntity;
+import space.space_spring.domain.space.domain.SpaceJpaEntity;
 import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
 import space.space_spring.global.common.entity.BaseEntity;
 

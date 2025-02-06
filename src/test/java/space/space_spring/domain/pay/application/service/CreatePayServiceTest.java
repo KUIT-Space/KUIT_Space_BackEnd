@@ -4,11 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import space.space_spring.domain.pay.adapter.in.web.TargetOfPayRequest;
-import space.space_spring.domain.pay.application.port.in.CreatePayCommand;
+import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
+import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
-import space.space_spring.domain.pay.application.port.out.LoadSpaceMemberPort;
-import space.space_spring.domain.space.Space;
+import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.user.domain.User;
 import space.space_spring.global.exception.CustomException;
@@ -51,15 +51,15 @@ class CreatePayServiceTest {
         jihwan = SpaceMember.create(5L, alcon, commonUser, 5L, "김지환", "image_555", false);
 
         // Mockito Stubbing : 특정 ID가 들어오면 그에 맞는 SpaceMember 반환
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(seongjun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seongjun.getId()))
                 .thenReturn(seongjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(sangjun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(sangjun.getId()))
                 .thenReturn(sangjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(seohyun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seohyun.getId()))
                 .thenReturn(seohyun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(kyeongmin.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(kyeongmin.getId()))
                 .thenReturn(kyeongmin);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMember(jihwan.getId()))
+        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(jihwan.getId()))
                 .thenReturn(jihwan);
     }
 
@@ -169,7 +169,7 @@ class CreatePayServiceTest {
     }
 
     private void savePayWillSucceed() {
-        Mockito.when(createPayPort.savePay(Mockito.any(), Mockito.anyList()))
+        Mockito.when(createPayPort.createPay(Mockito.any(), Mockito.anyList()))
                 .thenReturn(1L);
     }
 }

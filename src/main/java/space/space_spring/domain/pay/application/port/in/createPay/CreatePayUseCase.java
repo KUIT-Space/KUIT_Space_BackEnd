@@ -1,4 +1,4 @@
-package space.space_spring.domain.pay.application.port.in;
+package space.space_spring.domain.pay.application.port.in.createPay;
 
 public interface CreatePayUseCase {
 

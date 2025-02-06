@@ -31,7 +31,7 @@ public class PayRequestTargetJpaEntity extends BaseEntity {
     @NotNull
     private PayRequestJpaEntity payRequestJpaEntity;
 
-    @Column(name = "requsted_amount")
+    @Column(name = "requested_amount")
     @NotNull
     private int requestedAmount;
 

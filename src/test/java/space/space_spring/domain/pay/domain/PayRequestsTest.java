@@ -3,7 +3,7 @@ package space.space_spring.domain.pay.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import space.space_spring.domain.space.Space;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.user.User;
 import space.space_spring.global.util.NaturalNumber;

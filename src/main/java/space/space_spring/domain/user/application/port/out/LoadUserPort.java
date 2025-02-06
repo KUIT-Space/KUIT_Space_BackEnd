@@ -7,6 +7,4 @@ public interface LoadUserPort {
 
     Optional<User> loadUserByDiscordId(Long discordId);
 
-    User saveUser(User user);
-
 }

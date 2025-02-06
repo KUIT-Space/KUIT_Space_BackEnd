@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.SpaceMapper;
 import space.space_spring.domain.user.UserMapper;
+import space.space_spring.domain.space.domain.Space;
+import space.space_spring.domain.user.User;
 
 @Component
 @RequiredArgsConstructor

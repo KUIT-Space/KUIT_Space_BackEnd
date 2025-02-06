@@ -54,6 +54,15 @@ dependencies {
 
 	//Spring Security Test 의존성
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	//JDA
+	implementation("net.dv8tion:JDA:5.2.1") { // replace $version with the latest version
+		// Optionally disable audio natives to reduce jar size by excluding `opus-java`
+		// Gradle DSL:
+		// exclude module: 'opus-java'
+		// Kotlin DSL:
+		// exclude(module="opus-java")
+	}
 }
 
 test {

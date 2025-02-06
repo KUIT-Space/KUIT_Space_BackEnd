@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.domain.Space;
+import space.space_spring.domain.spaceMember.application.port.out.GuildMember;
+import space.space_spring.domain.spaceMember.application.port.out.GuildMembers;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
@@ -20,10 +22,10 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
     final private JDA jda;
     final LoadSpaceMemberPort loadSpaceMemberPort;
 
-    public SpaceMember loadSpaceMember(Space space, Long spaceMemberDiscordId,Long spaceMemberId){
+    public GuildMember loadSpaceMember(Space space, Long spaceMemberDiscordId, Long spaceMemberId){
         Guild guild=jda.getGuildById(space.getId());
         Member member =guild.getMemberById(spaceMemberDiscordId);
-        SpaceMember spaceMember = guildToSpaceMember(member,space,spaceMemberId);
+        GuildMember spaceMember = guildToSpaceMember(member);
 
         return spaceMember;
     }
@@ -42,7 +44,7 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
 //        return loadSpaceMember(spaceDiscordId,spaceMember.getDiscordId(),spaceMember.getId());
 //    }
     @Override
-    public SpaceMember loadSpaceMember(Space space, Long spaceMemberDiscordId){
+    public GuildMember loadSpaceMember(Space space, Long spaceMemberDiscordId){
         return loadSpaceMember(space,spaceMemberDiscordId,null);
     }
 //    @Override
@@ -58,14 +60,14 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
 
 
     @Override
-    public SpaceMembers loadAllSpaceMembers(Space space){
+    public GuildMembers loadAllSpaceMembers(Space space){
         Guild guild=jda.getGuildById(space.getDiscordId());
         //ToDo. change completableFuture
-        List<SpaceMember> spaceMemberList=guild.loadMembers().get().stream().map(member ->
-            guildToSpaceMember(member,space,null)
+        List<GuildMember> guildMemberList=guild.loadMembers().get().stream().map(member ->
+            guildToSpaceMember(member)
         ).collect(Collectors.toList());
 
-        return SpaceMembers.of(spaceMemberList);
+        return GuildMembers.of(space,guildMemberList);
     }
 
 //    private Long getSpaceMemberIdByDiscordId(Long discordId){
@@ -73,15 +75,12 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
 //    }
 
     //This method return user=null, inManage=false, id=null
-    private SpaceMember guildToSpaceMember(Member member,Space space,Long spaceMemberId){
-        return SpaceMember.builder()
-                .id(spaceMemberId)
+    private GuildMember guildToSpaceMember(Member member){
+        return GuildMember.builder()
                 .discordId(member.getIdLong())
                 .isManager(false) //ToDo
                 .nickname(member.getEffectiveName())
                 .profileImageUrl(member.getEffectiveAvatarUrl())
-                .spaceId(space.getId())
-                .userId(null)
                 .build();
 
     }

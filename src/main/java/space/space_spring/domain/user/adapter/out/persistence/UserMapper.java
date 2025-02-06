@@ -6,11 +6,11 @@ import space.space_spring.domain.user.domain.User;
 @Component
 public class UserMapper {
 
-    public User mapToDomainEntity(UserJpaEntity jpaEntity) {
+    public User toDomainEntity(UserJpaEntity jpaEntity) {
         return User.create(jpaEntity.getId(), jpaEntity.getDiscordId());
     }
 
-    public UserJpaEntity mapToJpaEntity(User domain) {
+    public UserJpaEntity toJpaEntity(User domain) {
         return UserJpaEntity.create(domain.getId(), domain.getDiscordId());
     }
 }

@@ -1,4 +1,4 @@
-package space.space_spring.domain.pay.adapter.in.web;
+package space.space_spring.domain.pay.adapter.in.web.createPay;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
@@ -6,8 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.domain.pay.application.port.in.CreatePayCommand;
-import space.space_spring.domain.pay.application.port.in.CreatePayUseCase;
+import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
+import space.space_spring.domain.pay.application.port.in.createPay.CreatePayUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.global.exception.CustomException;

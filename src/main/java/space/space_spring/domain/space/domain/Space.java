@@ -1,4 +1,4 @@
-package space.space_spring.domain.space;
+package space.space_spring.domain.space.domain;
 
 import lombok.Getter;
 
@@ -19,5 +19,9 @@ public class Space {
 
     public static Space create(Long id, String name, Long discordId) {
         return new Space(id, name, discordId);
+    }
+
+    public static Space withoutId(Long discordId, String name){
+        return new Space(null, name, discordId);
     }
 }

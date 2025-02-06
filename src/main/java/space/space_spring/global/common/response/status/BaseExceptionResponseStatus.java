@@ -69,6 +69,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     nff(6004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     gnf(6005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
     fb(6006, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
+    SPACE_ALREADY_EXISTED(6007,HttpStatus.BAD_REQUEST,"이미 등록된 SPACE입니다"),
 
     /**
      * 7000: SpaceMember 오류

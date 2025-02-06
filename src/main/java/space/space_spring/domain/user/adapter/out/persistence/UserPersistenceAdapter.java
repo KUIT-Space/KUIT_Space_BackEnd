@@ -16,12 +16,12 @@ public class UserPersistenceAdapter implements LoadUserPort {
     @Override
     public Optional<User> loadUserByDiscordId(Long discordId) {
         Optional<UserJpaEntity> userJpaEntity = userRepository.findByDiscordId(discordId);
-        return userJpaEntity.map(userMapper::mapToDomainEntity);
+        return userJpaEntity.map(userMapper::toDomainEntity);
     }
 
     @Override
     public User saveUser(User user) {
-        UserJpaEntity userJpaEntity = userMapper.mapToJpaEntity(user);
+        UserJpaEntity userJpaEntity = userMapper.toJpaEntity(user);
         userRepository.save(userJpaEntity);
         return user;
     }

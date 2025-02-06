@@ -1,4 +1,4 @@
-package space.space_spring.domain.spaceMember;
+package space.space_spring.domain.spaceMember.domian;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;

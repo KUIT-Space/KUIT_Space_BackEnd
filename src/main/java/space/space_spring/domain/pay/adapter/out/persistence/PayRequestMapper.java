@@ -2,7 +2,7 @@ package space.space_spring.domain.pay.adapter.out.persistence;
 
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.pay.domain.PayRequest;
-import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 
 @Component
 public class PayRequestMapper {

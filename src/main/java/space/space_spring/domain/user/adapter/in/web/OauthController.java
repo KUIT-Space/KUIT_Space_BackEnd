@@ -25,10 +25,10 @@ public class OauthController {
         String token = oauthUseCase.signIn(user);
         response.setHeader("Authorization", "Bearer " + token);
 
-        if (!token.isEmpty()) {
-            return new BaseResponse<>(new SuccessResponse(true));
+        if (token == null || token.isEmpty()) {
+            return new BaseResponse<>(new SuccessResponse(false));
         }
-        return new BaseResponse<>(new SuccessResponse(false));
+        return new BaseResponse<>(new SuccessResponse(true));
     }
 
 }

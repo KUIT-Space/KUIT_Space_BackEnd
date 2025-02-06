@@ -5,6 +5,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -116,9 +117,7 @@ public class DiscordService implements OauthUseCase {
     @Override
     @Transactional
     public String signIn(User user) {
-        User savedUser = loadUserPort.loadUserByDiscordId(user.getDiscordId())
-                .orElseGet(() -> loadUserPort.saveUser(user));
-
-        return jwtLoginProvider.generateToken(savedUser.getId(), TokenType.ACCESS);
+        Optional<User> savedUser = loadUserPort.loadUserByDiscordId(user.getDiscordId());
+        return savedUser.map(u -> jwtLoginProvider.generateToken(u.getId(), TokenType.ACCESS)).orElse(null);
     }
 }

@@ -30,7 +30,7 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
 
         // payCreator가 요청한 PayRequest list 로드
         // 개수 제한 없이 일단 전부 로드
-        PayRequests payRequests = PayRequests.create(loadPayRequestPort.loadListByPayCreator(payCreator));
+        PayRequests payRequests = PayRequests.create(loadPayRequestPort.loadByPayCreator(payCreator));
 
         // return 타입 구성
         List<InfoOfPayRequest> infosOfComplete = mapToInfoOfPayRequests(payRequests.getCompletePayRequestList());

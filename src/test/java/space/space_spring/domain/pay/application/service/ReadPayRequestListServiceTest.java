@@ -62,7 +62,7 @@ class ReadPayRequestListServiceTest {
         PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
         PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, seongjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
         PayRequest payRequest3 = PayRequest.of(3L, seongjun, Money.of(20000), Money.of(20000), NaturalNumber.of(2), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), true, PayType.INDIVIDUAL);
-        Mockito.when(loadPayRequestPort.loadListByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2, payRequest3));
+        Mockito.when(loadPayRequestPort.loadByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2, payRequest3));
 
         //when
         ResultOfReadPayRequestList result = readPayRequestListService.readPayRequestList(seongjun.getId());
@@ -92,7 +92,7 @@ class ReadPayRequestListServiceTest {
         //given
         PayRequest payRequest1 = PayRequest.of(1L, seongjun, Money.of(10000), Money.of(10000), NaturalNumber.of(3), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), true, PayType.EQUAL_SPLIT);
         PayRequest payRequest2 = PayRequest.of(2L, seongjun, Money.of(20000), Money.of(20000), NaturalNumber.of(2), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), true, PayType.INDIVIDUAL);
-        Mockito.when(loadPayRequestPort.loadListByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2));
+        Mockito.when(loadPayRequestPort.loadByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2));
 
         //when
         ResultOfReadPayRequestList result = readPayRequestListService.readPayRequestList(seongjun.getId());
@@ -116,7 +116,7 @@ class ReadPayRequestListServiceTest {
         //given
         PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
         PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, seongjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
-        Mockito.when(loadPayRequestPort.loadListByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2));
+        Mockito.when(loadPayRequestPort.loadByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2));
 
         //when
         ResultOfReadPayRequestList result = readPayRequestListService.readPayRequestList(seongjun.getId());

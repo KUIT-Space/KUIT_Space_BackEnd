@@ -63,7 +63,7 @@ class ReadRequestedPayListServiceTest {
         PayRequestTarget payRequestTarget1 = PayRequestTarget.createNewPayRequestTarget(1L, seongjun, payRequest1, Money.of(3333));
         PayRequestTarget payRequestTarget2 = PayRequestTarget.of(2L, seongjun, payRequest2, Money.of(10000), true);
 
-        Mockito.when(loadPayRequestTargetPort.loadListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
+        Mockito.when(loadPayRequestTargetPort.loadByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
 
         //when
         ResultOfReadRequestedPayList result = readRequestedPayListService.readRequestedPayList(seongjun.getId());
@@ -97,7 +97,7 @@ class ReadRequestedPayListServiceTest {
         PayRequestTarget payRequestTarget1 = PayRequestTarget.createNewPayRequestTarget(1L, seongjun, payRequest1, Money.of(3333));
         PayRequestTarget payRequestTarget2 = PayRequestTarget.createNewPayRequestTarget(2L, seongjun, payRequest2, Money.of(10000));
 
-        Mockito.when(loadPayRequestTargetPort.loadListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
+        Mockito.when(loadPayRequestTargetPort.loadByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
 
         //when
         ResultOfReadRequestedPayList result = readRequestedPayListService.readRequestedPayList(seongjun.getId());
@@ -125,7 +125,7 @@ class ReadRequestedPayListServiceTest {
         PayRequestTarget payRequestTarget1 = PayRequestTarget.of(1L, seongjun, payRequest1, Money.of(3333), true);
         PayRequestTarget payRequestTarget2 = PayRequestTarget.of(2L, seongjun, payRequest2, Money.of(10000), true);
 
-        Mockito.when(loadPayRequestTargetPort.loadListByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
+        Mockito.when(loadPayRequestTargetPort.loadByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
 
         //when
         ResultOfReadRequestedPayList result = readRequestedPayListService.readRequestedPayList(seongjun.getId());

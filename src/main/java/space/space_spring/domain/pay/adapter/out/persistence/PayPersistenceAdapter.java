@@ -49,7 +49,7 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     }
 
     @Override
-    public List<PayRequest> loadListByPayCreator(SpaceMember payCreator) {
+    public List<PayRequest> loadByPayCreator(SpaceMember payCreator) {
         SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payCreator.getId()).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
@@ -66,7 +66,7 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     }
 
     @Override
-    public List<PayRequestTarget> loadListByTargetMember(SpaceMember targetMember) {
+    public List<PayRequestTarget> loadByTargetMember(SpaceMember targetMember) {
         SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(targetMember.getId()).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 

@@ -30,7 +30,7 @@ public class ReadRequestedPayListService implements ReadRequestedPayListUseCase 
 
         // targetMember가 정산 대상자인 PayRequestTarget list 로드
         // 개수 제한 없이 일단 전부 로드
-        PayRequestTargets payRequestTargets = PayRequestTargets.create(loadPayRequestTargetPort.loadListByTargetMember(targetMember));
+        PayRequestTargets payRequestTargets = PayRequestTargets.create(loadPayRequestTargetPort.loadByTargetMember(targetMember));
 
         // return 타입 구성
         List<InfoOfRequestedPay> infosOfComplete = mapToInfoOfRequestedPays(payRequestTargets.getCompletePayRequestTargetList());

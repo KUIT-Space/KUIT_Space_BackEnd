@@ -9,6 +9,8 @@ import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.CreateSpacePort;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
+import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMemberPort;
+import space.space_spring.domain.spaceMember.domian.SpaceMembers;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.Optional;
@@ -22,6 +24,8 @@ public class CreateSpaceService implements CreateSpaceUseCase {
 
     private final CreateSpacePort createSpacePort;
     private final LoadSpacePort loadSpacePort;
+    private final LoadGuildMemberPort loadGuildMemberPort;
+
     @Override
     @Transactional
     public Long createSpace(CreateSpaceCommand command){
@@ -34,11 +38,12 @@ public class CreateSpaceService implements CreateSpaceUseCase {
                 command.getGuildName());
 
         //GuildMember 정보 가져오기
-
+        SpaceMembers spaceMembers =loadGuildMemberPort.loadAllSpaceMembers(newSpace);
         //User가 없는 경우 User 생성
+        spaceMembers.toStream().peek(spaceMember -> {
 
+        });
         //SpaceMember 생성
-
 
 
         return newSpace.getId();

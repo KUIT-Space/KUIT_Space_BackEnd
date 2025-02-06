@@ -8,7 +8,7 @@ import space.space_spring.domain.pay.application.port.in.readRequestedPayList.Re
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.pay.domain.*;
 import space.space_spring.domain.space.domain.Space;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.user.User;
 import space.space_spring.global.util.NaturalNumber;

@@ -13,7 +13,7 @@ import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMembers;
 
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayAmountPolicy;
 

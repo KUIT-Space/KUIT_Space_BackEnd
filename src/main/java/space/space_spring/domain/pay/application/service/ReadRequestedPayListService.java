@@ -9,7 +9,7 @@ import space.space_spring.domain.pay.application.port.in.readRequestedPayList.Re
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.pay.domain.PayRequestTargets;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 
 

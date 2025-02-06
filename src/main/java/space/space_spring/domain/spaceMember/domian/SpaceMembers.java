@@ -3,6 +3,7 @@ package space.space_spring.domain.spaceMember.domian;
 
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class SpaceMembers {
 
@@ -27,5 +28,9 @@ public class SpaceMembers {
                 throw new IllegalStateException("[ERROR] : members are not in same space");
             }
         }
+    }
+
+    public Stream<SpaceMember> toStream(){
+        return this.spaceMembers.stream();
     }
 }

@@ -4,9 +4,12 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
+import space.space_spring.domain.user.User;
 import space.space_spring.domain.user.UserJpaEntity;
 import space.space_spring.global.common.entity.BaseEntity;
 
@@ -14,6 +17,7 @@ import space.space_spring.global.common.entity.BaseEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "Space_Member")
+
 public class SpaceMemberJpaEntity extends BaseEntity {
 
     @Id @GeneratedValue
@@ -46,5 +50,32 @@ public class SpaceMemberJpaEntity extends BaseEntity {
     @Column(name = "is_manager")
     @NotNull
     private boolean isManager;
+
+    @Builder
+    private SpaceMemberJpaEntity(
+            SpaceJpaEntity space, UserJpaEntity user, String nickname,String profileImageUrl,boolean isManager
+    ){
+        this.space=space;
+        this.user = user;
+        this.nickname=nickname;
+        this.profileImageUrl=profileImageUrl;
+        this.isManager=isManager;
+    }
+
+    public static SpaceMemberJpaEntity create(
+            SpaceJpaEntity space,
+            UserJpaEntity user,
+            String nickname,
+            String profileImageUrl,
+            boolean isManager
+    ){
+        return SpaceMemberJpaEntity.builder()
+                .isManager(isManager)
+                .space(space)
+                .user(user)
+                .nickname(nickname)
+                .profileImageUrl(profileImageUrl)
+                .build();
+    }
 
 }

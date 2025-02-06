@@ -31,5 +31,10 @@ public class SpacePersistenceAdapter implements CreateSpacePort , LoadSpacePort 
 
 
     }
+    @Override
+    public Optional<Space> loadSpaceById(Long id){
+        return spaceRepository.findById(id)
+                .map(spaceMapper::toDomainEntity);
+    }
 
 }

@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
 import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.user.User;

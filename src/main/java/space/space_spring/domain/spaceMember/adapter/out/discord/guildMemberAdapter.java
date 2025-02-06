@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.domain.Space;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMembers;

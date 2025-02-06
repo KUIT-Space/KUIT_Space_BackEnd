@@ -12,8 +12,8 @@ import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayAmountPolicy;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.spaceMember.SpaceMember;
-import space.space_spring.domain.spaceMember.SpaceMembers;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
+import space.space_spring.domain.spaceMember.domian.SpaceMembers;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;

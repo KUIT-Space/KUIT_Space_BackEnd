@@ -1,4 +1,4 @@
-package space.space_spring.domain.space;
+package space.space_spring.domain.space.adapter.out.persistence;
 
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.domain.Space;

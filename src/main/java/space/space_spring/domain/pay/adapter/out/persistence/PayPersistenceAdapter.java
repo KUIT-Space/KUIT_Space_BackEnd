@@ -5,8 +5,8 @@ import org.springframework.stereotype.Repository;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
-import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;

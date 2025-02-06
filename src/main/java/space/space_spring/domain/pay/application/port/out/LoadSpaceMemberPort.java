@@ -1,7 +1,6 @@
 package space.space_spring.domain.pay.application.port.out;
 
-import space.space_spring.domain.spaceMember.SpaceMember;
-import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
 
 public interface LoadSpaceMemberPort {
 

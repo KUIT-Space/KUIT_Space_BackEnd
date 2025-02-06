@@ -1,4 +1,4 @@
-package space.space_spring.domain.spaceMember;
+package space.space_spring.domain.spaceMember.domian;
 
 import lombok.Getter;
 import space.space_spring.domain.space.domain.Space;

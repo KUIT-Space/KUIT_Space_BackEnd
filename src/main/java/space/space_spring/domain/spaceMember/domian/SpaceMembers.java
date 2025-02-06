@@ -1,6 +1,4 @@
-package space.space_spring.domain.spaceMember;
-
-import space.space_spring.global.exception.CustomException;
+package space.space_spring.domain.spaceMember.domian;
 
 import java.util.List;
 

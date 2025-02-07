@@ -3,8 +3,8 @@ package space.space_spring.domain.post.adapter.out.persistence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.post.domain.Board;
+import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.domain.space.SpaceMapper;
-import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
 
 @Component
@@ -15,22 +15,22 @@ public class BoardMapper {
 
     // 도메인 -> JPA 엔티티
     public BoardJpaEntity toJpaEntity(SpaceJpaEntity space, Board domain) {
-        return BoardJpaEntity.builder()
-                .space(space)
-                .discordId(domain.getDiscordId())
-                .name(domain.getName())
-                .boardType(domain.getBoardType())
-                .webhookUrl(domain.getWebhookUrl())
-                .build();
+        return BoardJpaEntity.create(
+                space,
+                domain.getDiscordId(),
+                domain.getBoardType(),
+                domain.getBoardName(),
+                domain.getWebhookUrl()
+        );
     }
 
     // JPA 엔티티 -> 도메인
-    public Board toDomain(Space space, BoardJpaEntity jpaEntity) {
+    public Board toDomain(Long spaceId, BoardJpaEntity jpaEntity) {
         return Board.of(
                 jpaEntity.getId(),
-                space,
+                spaceId,
                 jpaEntity.getDiscordId(),
-                jpaEntity.getName(),
+                jpaEntity.getBoardName(),
                 jpaEntity.getBoardType(),
                 jpaEntity.getWebhookUrl()
         );

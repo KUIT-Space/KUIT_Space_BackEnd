@@ -36,10 +36,10 @@ class PayRequestsTest {
     @DisplayName("List<PayRequest> 중 완료된 정산들을 반환한다.")
     void getCompletePayRequestList1() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.createNewPayRequest(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.createNewPayRequest(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
         payRequest1.changeToComplete();
         payRequest2.changeToComplete();
         payRequest3.changeToComplete();
@@ -63,10 +63,10 @@ class PayRequestsTest {
     @DisplayName("List<PayRequest> 중 완료된 정산이 없는 경우, 빈 ArrayList를 반환한다.")
     void getCompletePayRequestList2() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.createNewPayRequest(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.createNewPayRequest(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
         PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
 
         //when
@@ -80,10 +80,10 @@ class PayRequestsTest {
     @DisplayName("List<PayRequest> 중 현재 진행 중인 정산들을 반환한다.")
     void getInCompletePayRequestList1() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.createNewPayRequest(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.createNewPayRequest(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
         payRequest1.changeToComplete();
         payRequest2.changeToComplete();
         payRequest3.changeToComplete();
@@ -105,10 +105,10 @@ class PayRequestsTest {
     @DisplayName("List<PayRequest> 중 현재 진행 중인 정산이 없는 경우, 빈 ArrayList를 반환한다.")
     void getInCompletePayRequestList2() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.createNewPayRequest(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.createNewPayRequest(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
         payRequest1.changeToComplete();
         payRequest2.changeToComplete();
         payRequest3.changeToComplete();

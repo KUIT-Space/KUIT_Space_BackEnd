@@ -57,10 +57,10 @@ class ReadRequestedPayListServiceTest {
     @DisplayName("특정 유저가 요청받은 모든 정산의 [payRequestTargetId, 정산 생성자 닉네임, 요청받은 금액, 송금할 은행] 정보를 송금완료한 정산, 아직 송금하지 않은 정산으로 구분해서 반환한다.")
     void readRequestedPayList1() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, kyeongmin, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("국민은행", "222-222"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, kyeongmin, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("국민은행", "222-222"), PayType.INDIVIDUAL);
 
-        PayRequestTarget payRequestTarget1 = PayRequestTarget.createNewPayRequestTarget(1L, seongjun, payRequest1, Money.of(3333));
+        PayRequestTarget payRequestTarget1 = PayRequestTarget.create(1L, seongjun, payRequest1, Money.of(3333));
         PayRequestTarget payRequestTarget2 = PayRequestTarget.of(2L, seongjun, payRequest2, Money.of(10000), true);
 
         Mockito.when(loadPayRequestTargetPort.loadByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
@@ -91,11 +91,11 @@ class ReadRequestedPayListServiceTest {
     @DisplayName("특정 유저가 요청받은 정산 중 [송금완료한 정산] 이 없을 경우, 송금완료한 정산은 빈 ArrayList를 반환한다.")
     void readRequestedPayList2() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, kyeongmin, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("국민은행", "222-222"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, kyeongmin, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("국민은행", "222-222"), PayType.INDIVIDUAL);
 
-        PayRequestTarget payRequestTarget1 = PayRequestTarget.createNewPayRequestTarget(1L, seongjun, payRequest1, Money.of(3333));
-        PayRequestTarget payRequestTarget2 = PayRequestTarget.createNewPayRequestTarget(2L, seongjun, payRequest2, Money.of(10000));
+        PayRequestTarget payRequestTarget1 = PayRequestTarget.create(1L, seongjun, payRequest1, Money.of(3333));
+        PayRequestTarget payRequestTarget2 = PayRequestTarget.create(2L, seongjun, payRequest2, Money.of(10000));
 
         Mockito.when(loadPayRequestTargetPort.loadByTargetMember(seongjun)).thenReturn(List.of(payRequestTarget1, payRequestTarget2));
 
@@ -119,8 +119,8 @@ class ReadRequestedPayListServiceTest {
     @DisplayName("특정 유저가 요청받은 정산 중 [송금완료하지 않은 정산] 이 없을 경우, 송금완료하지 않은 정산은 빈 ArrayList를 반환한다.")
     void readRequestedPayList3() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, kyeongmin, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("국민은행", "222-222"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, kyeongmin, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("국민은행", "222-222"), PayType.INDIVIDUAL);
 
         PayRequestTarget payRequestTarget1 = PayRequestTarget.of(1L, seongjun, payRequest1, Money.of(3333), true);
         PayRequestTarget payRequestTarget2 = PayRequestTarget.of(2L, seongjun, payRequest2, Money.of(10000), true);

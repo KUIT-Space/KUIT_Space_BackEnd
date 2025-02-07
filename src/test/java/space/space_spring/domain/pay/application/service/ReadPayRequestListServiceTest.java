@@ -59,8 +59,8 @@ class ReadPayRequestListServiceTest {
     @DisplayName("특정 유저가 생성한 모든 정산의 [payRequestId, 전체 정산 요청 금액, 정산 받은 금액, 전체 정산 대상자 수, 그 중 정산 완료한 사람 수] 정보를 완료된 정산, 진행중인 정산으로 구분해서 반환한다.")
     void readPayRequestList1() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, seongjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, seongjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
         PayRequest payRequest3 = PayRequest.of(3L, seongjun, Money.of(20000), Money.of(20000), NaturalNumber.of(2), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), true, PayType.INDIVIDUAL);
         Mockito.when(loadPayRequestPort.loadByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2, payRequest3));
 
@@ -114,8 +114,8 @@ class ReadPayRequestListServiceTest {
     @DisplayName("특정 유저가 생성한 정산 중 [완료된 정산] 이 없을 경우, 완료된 정산은 빈 ArrayList를 반환한다.")
     void readPayRequestList3() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.createNewPayRequest(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.createNewPayRequest(2L, seongjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest2 = PayRequest.create(2L, seongjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
         Mockito.when(loadPayRequestPort.loadByPayCreator(seongjun)).thenReturn(List.of(payRequest1, payRequest2));
 
         //when

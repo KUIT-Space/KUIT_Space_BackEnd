@@ -47,7 +47,7 @@ public class PayRequestTargetJpaEntity extends BaseEntity {
         this.isComplete = isComplete;
     }
 
-    public static PayRequestTargetJpaEntity createNewJpaEntity(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequestJpaEntity, int requestedAmount) {
+    public static PayRequestTargetJpaEntity create(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequestJpaEntity, int requestedAmount) {
         return PayRequestTargetJpaEntity.builder()
                 .targetMember(targetMember)
                 .payRequestJpaEntity(payRequestJpaEntity)

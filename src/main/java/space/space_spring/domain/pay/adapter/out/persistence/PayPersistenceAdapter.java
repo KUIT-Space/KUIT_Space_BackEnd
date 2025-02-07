@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -32,20 +33,29 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
      * 저장 성공한 PayRequestJpaEntity의 PK값 return
      */
     @Override
-    public Long createPay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets) {
-        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payRequest.getPayCreator().getId()).orElseThrow(
+    public PayRequest createPayRequest(PayRequest payRequest) {
+        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payRequest.getPayCreatorId()).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+        PayRequestJpaEntity save = payRequestRepository.save(payRequestMapper.toJpaEntity(payCreatorJpaEntity, payRequest));
 
-        PayRequestJpaEntity payRequestJpaEntity = payRequestMapper.toJpaEntity(payCreatorJpaEntity, payRequest);
-        PayRequestJpaEntity savedPayRequestJpaEntity = payRequestRepository.save(payRequestJpaEntity);
+        return payRequestMapper.toDomainEntity(save);
+    }
 
+    @Override
+    public List<PayRequestTarget> createPayRequestTargets(List<PayRequestTarget> payRequestTargets) {
+        List<PayRequestTarget> savedList = new ArrayList<>();
         for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(payRequestTarget.getTargetMember().getId()).orElseThrow(
+            SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(payRequestTarget.getTargetMemberId()).orElseThrow(
                     () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
-            payRequestTargetRepository.save(payRequestTargetMapper.toJpaEntity(targetMemberJpaEntity, payRequestJpaEntity, payRequestTarget));
+
+            PayRequestJpaEntity payRequestJpaEntity  = payRequestRepository.findById(payRequestTarget.getPayRequestId()).orElseThrow(
+                    () -> new CustomException(PAY_REQUEST_NOT_FOUND));
+
+            PayRequestTargetJpaEntity save = payRequestTargetRepository.save(payRequestTargetMapper.toJpaEntity(targetMemberJpaEntity, payRequestJpaEntity, payRequestTarget));
+            savedList.add(payRequestTargetMapper.toDomainEntity(save));
         }
 
-        return savedPayRequestJpaEntity.getId();
+        return savedList;
     }
 
     @Override

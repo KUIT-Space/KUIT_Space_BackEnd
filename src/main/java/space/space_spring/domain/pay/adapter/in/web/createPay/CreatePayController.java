@@ -27,7 +27,15 @@ public class CreatePayController {
             throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
         }
 
-        CreatePayCommand createPayCommand = CreatePayCommand.create(id, request.getTotalAmount(), request.getBankName(), request.getBankAccountNum(), request.getTargets(), request.getValueOfPayType());
+        CreatePayCommand createPayCommand = CreatePayCommand.builder()
+                .payCreatorId(id)
+                .totalAmount(request.getTotalAmount())
+                .bankName(request.getBankName())
+                .bankAccountNum(request.getBankAccountNum())
+                .targets(request.getTargets())
+                .valueOfPayType(request.getValueOfPayType())
+                .build();
+
         return new BaseResponse<>(createPayUseCase.createPay(createPayCommand));
     }
 }

@@ -9,6 +9,7 @@ import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.CreateSpacePort;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
+import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMember;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMembers;
 import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMemberPort;
@@ -34,6 +35,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
     private final LoadGuildMemberPort loadGuildMemberPort;
     private final CreateUserPort createUserPort;
     private final LoadUserPort loadUserPort;
+    private final CreateSpaceMemberPort createSpaceMemberPort;
 
     @Override
     @Transactional
@@ -50,12 +52,17 @@ public class CreateSpaceService implements CreateSpaceUseCase {
         GuildMembers guildMembers=loadGuildMemberPort.loadAllSpaceMembers(newSpace);
 
         //User가 없는 경우 User 생성
-        List<Long> userIdList = guildMembers.toStream().map(guildMember -> {
-            return checkAndCreateUser(guildMember);
-        }).toList();
 
+        //List<SpaceMember> userIdList =
+        guildMembers.toStream().map(guildMember -> {
+            Long userId = checkAndCreateUser(guildMember);
+            return guildMember.createSpaceMember(guildMembers.getSpace().getId(), userId);
+        })
+        //        .toList();
         //SpaceMember 생성
-
+        .peek(spaceMember -> {
+            createSpaceMemberPort.createSpaceMember(spaceMember);
+        });
 
 
         return newSpace.getId();

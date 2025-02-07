@@ -15,7 +15,7 @@ import space.space_spring.global.exception.CustomException;
 @RequiredArgsConstructor
 public class TestTextCommandEventListener extends ListenerAdapter {
 
-    private final CreateSpaceUseCase createSpaceUseCase;
+    //private final CreateSpaceUseCase createSpaceUseCase;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event){
 
@@ -36,17 +36,17 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     .guildName(guild.getName())
                     .build();
 
-            try{Long spaceId = createSpaceUseCase.createSpace(command);
-                event.getMessage()
-                        .reply("space setting success!\nspace ID : "+spaceId+"\n").queue();
-            }
-            catch (CustomException e){
-            /*
-             * 이미 guild가 space로 등록이 된 경우
-             * */
-                event.getMessage().reply(e.getMessage()).queue();
-                return;
-            }
+//            try{Long spaceId = createSpaceUseCase.createSpace(command);
+//                event.getMessage()
+//                        .reply("space setting success!\nspace ID : "+spaceId+"\n").queue();
+//            }
+//            catch (CustomException e){
+//            /*
+//             * 이미 guild가 space로 등록이 된 경우
+//             * */
+//                event.getMessage().reply(e.getMessage()).queue();
+//                return;
+//            }
 
 
                     ;

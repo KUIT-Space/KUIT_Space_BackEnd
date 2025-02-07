@@ -37,43 +37,33 @@ public class CreatePayService implements CreatePayUseCase {
     @Transactional
     public Long createPay(CreatePayCommand command) {
         // 정산 생성자, 정산 대상자들이 같은 스페이스에 존재하는지 검증
-        SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMemberById(command.getPayCreatorId());
-        List<SpaceMember> targetMembers = new ArrayList<>();
-        for (TargetOfCreatePayCommand target : command.getTargets()) {
-            targetMembers.add(loadSpaceMemberPort.loadSpaceMemberById(target.getTargetMemberId()));
-        }
+        SpaceMember payCreator = loadPayCreator(command.getPayCreatorId());
+        List<SpaceMember> targetMembers = loadTargetMembers(command.getTargets());
         validateSpaceMembers(payCreator, targetMembers);
 
         // PayAmountPolicy 유효성 검증
         validatePayAmountPolicy(command);
 
         // 디스코드로 보내기
-        List<TargetOfCreatePayMessageCommand> targets = new ArrayList<>();
-        for (TargetOfCreatePayCommand target : command.getTargets()) {
-            SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMemberById(target.getTargetMemberId());
-            targets.add(TargetOfCreatePayMessageCommand.create(targetMember.getDiscordId(), target.getRequestedAmount()));
-        }
-
-        CreatePayMessageCommand discordCommand = CreatePayMessageCommand.builder()
-                .payCreatorDiscordId(payCreator.getDiscordId())
-                .totalAmount(command.getTotalAmount())
-                .bank(command.getBank())
-                .targets(targets)
-                .totalTargetNum(command.getTotalTargetNum())
-                .payType(command.getPayType())
-                .build();
-
-        Long discordIdForPay = createPayInDiscordPort.createPayMessage(discordCommand);
+        Long discordIdForPay = createPayInDiscordPort.createPayMessage(createCommandForDiscord(command, payCreator, targetMembers));
 
         // PayRequest 도메인 엔티티 생성 & 저장
-        PayRequest payRequest = command.toDomainEntity(discordIdForPay);
-        PayRequest savedPayRequest = createPayPort.createPayRequest(payRequest);
+        PayRequest savedPayRequest = savePayRequest(command, discordIdForPay);
 
         // PayRequestTarget 도메인 엔티티들 생성 & 저장
-        List<PayRequestTarget> payRequestTargets = createPayRequestTargets(command, savedPayRequest);
-        createPayPort.createPayRequestTargets(payRequestTargets);
+        savePayRequestTargets(command, savedPayRequest);
 
         return savedPayRequest.getId();
+    }
+
+    private SpaceMember loadPayCreator(Long payCreatorId) {
+        return loadSpaceMemberPort.loadSpaceMemberById(payCreatorId);
+    }
+
+    private List<SpaceMember> loadTargetMembers(List<TargetOfCreatePayCommand> targetCommands) {
+        return targetCommands.stream()
+                .map(target -> loadSpaceMemberPort.loadSpaceMemberById(target.getTargetMemberId()))
+                .toList();
     }
 
     private void validateSpaceMembers(SpaceMember payCreator, List<SpaceMember> payRequestTargets) {
@@ -91,19 +81,54 @@ public class CreatePayService implements CreatePayUseCase {
     private void validatePayAmountPolicy(CreatePayCommand command) {
         PayAmountPolicy payAmountPolicy = command.getPayType().getPayAmountPolicy();
 
-        List<Money> targetAmounts = new ArrayList<>();
-        for (TargetOfCreatePayCommand target : command.getTargets()) {
-            targetAmounts.add(target.getRequestedAmount());
-        }
+        List<Money> targetAmounts = command.getTargets().stream()
+                .map(TargetOfCreatePayCommand::getRequestedAmount)
+                .toList();
+
         payAmountPolicy.validatePayAmount(command.getTotalAmount(), targetAmounts);
     }
 
-    private List<PayRequestTarget> createPayRequestTargets(CreatePayCommand command, PayRequest payRequest) {
-        List<PayRequestTarget> payRequestTargets = new ArrayList<>();
-        for (TargetOfCreatePayCommand target : command.getTargets()) {
-            PayRequestTarget payRequestTarget = PayRequestTarget.withoutId(target.getTargetMemberId(), payRequest.getId(), target.getRequestedAmount());
-            payRequestTargets.add(payRequestTarget);
-        }
-        return payRequestTargets;
+    private CreatePayMessageCommand createCommandForDiscord(CreatePayCommand command, SpaceMember payCreator, List<SpaceMember> targetMembers) {
+        List<TargetOfCreatePayMessageCommand> targetsForDiscord = command.getTargets().stream()
+                .map(targetCommand -> {
+                    SpaceMember matchedMember = targetMembers.stream()
+                            .filter(member -> member.getId().equals(targetCommand.getTargetMemberId()))
+                            .findFirst()
+                            // 혹시라도 매칭되는 멤버가 없다면 예외를 발생시켜 문제를 조기에 파악할 수 있음
+                            .orElseThrow(() -> new IllegalArgumentException(
+                                    "해당 ID를 가진 SpaceMember를 찾을 수 없습니다. targetMemberId: " + targetCommand.getTargetMemberId()
+                            ));     // 이 방식 괜찮은지 ??
+
+                    return TargetOfCreatePayMessageCommand.create(
+                            matchedMember.getDiscordId(),
+                            targetCommand.getRequestedAmount());
+                })
+                .toList();
+
+        return CreatePayMessageCommand.builder()
+                .payCreatorDiscordId(payCreator.getDiscordId())
+                .totalAmount(command.getTotalAmount())
+                .bank(command.getBank())
+                .targets(targetsForDiscord)
+                .totalTargetNum(command.getTotalTargetNum())
+                .payType(command.getPayType())
+                .build();
+    }
+
+    private PayRequest savePayRequest(CreatePayCommand command, Long discordIdForPay) {
+        PayRequest payRequest = command.toDomainEntity(discordIdForPay);
+        return createPayPort.createPayRequest(payRequest);
+    }
+
+    private void savePayRequestTargets(CreatePayCommand command, PayRequest payRequest) {
+        List<PayRequestTarget> payRequestTargets = command.getTargets().stream()
+                .map(target -> PayRequestTarget.withoutId(
+                        target.getTargetMemberId(),
+                        payRequest.getId(),
+                        target.getRequestedAmount()
+                ))
+                .toList();
+
+        createPayPort.createPayRequestTargets(payRequestTargets);
     }
 }

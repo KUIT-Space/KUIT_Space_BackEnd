@@ -28,5 +28,5 @@ public class GuildMember {
     public SpaceMember createSpaceMember(Long spaceId, Long userId){
         return SpaceMember.withoutId(spaceId,userId,this.discordId,this.nickname,this.profileImageUrl,this.isManager);
     }
-    
+
 }

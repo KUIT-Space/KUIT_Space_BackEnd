@@ -18,4 +18,5 @@ public class TargetOfCreatePayMessageCommand {
     public static TargetOfCreatePayMessageCommand create(Long targetMemberDiscordId, Money requestedAmount) {
         return new TargetOfCreatePayMessageCommand(targetMemberDiscordId, requestedAmount);
     }
+
 }

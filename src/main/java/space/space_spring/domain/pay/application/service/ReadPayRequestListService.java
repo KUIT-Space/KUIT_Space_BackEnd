@@ -45,9 +45,7 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
             infosOfPayRequest.add(InfoOfPayRequest.of(
                     payRequest.getId(),
                     payRequest.getTotalAmount(),
-                    payRequest.getReceivedAmount(),
-                    payRequest.getTotalTargetNum(),
-                    payRequest.getSendCompleteTargetNum()
+                    payRequest.getTotalTargetNum()
             ));
         }
         return infosOfPayRequest;

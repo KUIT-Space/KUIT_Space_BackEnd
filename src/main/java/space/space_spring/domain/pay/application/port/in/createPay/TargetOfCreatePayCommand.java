@@ -19,9 +19,4 @@ public class TargetOfCreatePayCommand {
     public static TargetOfCreatePayCommand create(Long targetMemberId, int requestedAmount) {
         return new TargetOfCreatePayCommand(targetMemberId, requestedAmount);
     }
-
-    public PayRequestTarget toDomainEntity() {
-        return PayRequestTarget.withoutId(targetMemberId, )
-    }
-
 }

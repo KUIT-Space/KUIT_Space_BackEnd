@@ -1,7 +1,6 @@
 package space.space_spring.domain.pay.domain;
 
 import lombok.Getter;
-import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.global.util.NaturalNumber;
 
 @Getter
@@ -21,7 +20,7 @@ public class PayRequest {
 
     private PayType payType;
 
-    private PayRequest(Long id, Long payCreatorId, Long discordMessageId, Money totalAmount,, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
+    private PayRequest(Long id, Long payCreatorId, Long discordMessageId, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
         this.id = id;
         this.payCreatorId = payCreatorId;
         this.discordMessageId = discordMessageId;

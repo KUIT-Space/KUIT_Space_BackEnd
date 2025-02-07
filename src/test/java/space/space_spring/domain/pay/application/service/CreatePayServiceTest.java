@@ -4,19 +4,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import space.space_spring.domain.discord.application.port.in.CreatePayInDiscordUseCase;
+import space.space_spring.domain.discord.application.port.in.CreatePayInDiscordCommand;
 import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
 import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
-import space.space_spring.domain.space.domain.Space;
-import space.space_spring.domain.spaceMember.SpaceMember;
-import space.space_spring.domain.user.User;
+import space.space_spring.domain.pay.domain.PayRequest;
+import space.space_spring.domain.spaceMember.ValidateSpaceMemberUseCase;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 class CreatePayServiceTest {
@@ -25,61 +27,54 @@ class CreatePayServiceTest {
     private final String PAY_TYPE_EQUAL_SPLIT = "EQUAL_SPLIT";
 
     private final CreatePayPort createPayPort = Mockito.mock(CreatePayPort.class);
-    private final LoadSpaceMemberPort loadSpaceMemberPort = Mockito.mock(LoadSpaceMemberPort.class);
+    private final ValidateSpaceMemberUseCase validateSpaceMemberUseCase = Mockito.mock(ValidateSpaceMemberUseCase.class);
+    private final CreatePayInDiscordUseCase createPayInDiscordUseCase = Mockito.mock(CreatePayInDiscordUseCase.class);
     private CreatePayService createPayService;
-
-    private Space kuit;
-    private Space alcon;
-
-    private SpaceMember seongjun;
-    private SpaceMember sangjun;
-    private SpaceMember seohyun;
-    private SpaceMember kyeongmin;
-    private SpaceMember jihwan;
 
     @BeforeEach
     void setUp() {
-        createPayService = new CreatePayService(createPayPort, loadSpaceMemberPort);
-        User commonUser = User.create(1L, 1L);          // User 도메인 엔티티는 그냥 하나로 공유해서 테스트 진행
-        kuit = Space.create(1L, "쿠잇", 1L);
-        alcon = Space.create(2L, "알콘", 2L);
-
-        seongjun = SpaceMember.create(1L, kuit, commonUser, 1L, "노성준", "image_111", true);
-        sangjun = SpaceMember.create(2L, kuit, commonUser, 2L, "개구리비안", "image_222", false);
-        seohyun = SpaceMember.create(3L, kuit, commonUser, 3L, "정서현", "image_333", false);
-        kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L, "김경민", "image_444", false);
-        jihwan = SpaceMember.create(5L, alcon, commonUser, 5L, "김지환", "image_555", false);
-
-        // Mockito Stubbing : 특정 ID가 들어오면 그에 맞는 SpaceMember 반환
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seongjun.getId()))
-                .thenReturn(seongjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(sangjun.getId()))
-                .thenReturn(sangjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seohyun.getId()))
-                .thenReturn(seohyun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(kyeongmin.getId()))
-                .thenReturn(kyeongmin);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(jihwan.getId()))
-                .thenReturn(jihwan);
+        createPayService = new CreatePayService(createPayPort, validateSpaceMemberUseCase, createPayInDiscordUseCase);
     }
 
     @Test
     @DisplayName("정산 생성자와 정산 대상들이 모두 같은 스페이스에 속해있고, 정산 금액 정책에 위배되지 않을 경우 (= 유효한 command 일 경우) 정산 생성이 처리되고, ID값을 반환한다.")
     void createPay1() throws Exception {
         //given
-        TargetOfPayRequest target1 = new TargetOfPayRequest(sangjun.getId(), 10000);
-        TargetOfPayRequest target2 = new TargetOfPayRequest(seohyun.getId(), 20000);
-        TargetOfPayRequest target3 = new TargetOfPayRequest(kyeongmin.getId(), 30000);
+        TargetOfPayRequest target1 = new TargetOfPayRequest(1L, 10000);
+        TargetOfPayRequest target2 = new TargetOfPayRequest(2L, 20000);
+        TargetOfPayRequest target3 = new TargetOfPayRequest(3L, 30000);
         List<TargetOfPayRequest> targetOfPayRequests = List.of(target1, target2, target3);
 
-        CreatePayCommand command = createCommand(seongjun, 60000, targetOfPayRequests, PAY_TYPE_INDIVIDUAL);
-        savePayWillSucceed();
+        CreatePayCommand command = createCommand(1L, 60000, targetOfPayRequests, PAY_TYPE_INDIVIDUAL);
+
+        // ValidateSpaceMemberUseCase 의 validateSpaceMembersInSameSpace 메서드는 error 를 발생시키지 않는다.
+        spaceMembersAreInSameSpace();
+
+        // createPayInDiscordPort.createPayMessage 메서드로부터 받은 반환 결과는 1L
+        Long discordIdForPay = getDiscordIdWillSucceed();
+
+        // CreatePayPort 의 createPayRequest 메서드로부터 받은 반환 결과는 1L
+        PayRequest payRequest = createPayRequest(1L, command, discordIdForPay);
+
+        savePayWillSucceed(payRequest);
 
         //when
         Long id = createPayService.createPay(command);
 
         //then
         assertThat(id).isEqualTo(1L);
+    }
+
+    private PayRequest createPayRequest(Long payRequestId, CreatePayCommand command, Long discordIdForPay) {
+        return PayRequest.of(
+                payRequestId,
+                command.getPayCreatorId(),
+                discordIdForPay,
+                command.getTotalAmount(),
+                command.getTotalTargetNum(),
+                command.getBank(),
+                command.getPayType()
+        );
     }
 
     @Test
@@ -157,19 +152,33 @@ class CreatePayServiceTest {
                 .hasMessage(INVALID_EQUAL_SPLIT_AMOUNT.getMessage());
     }
 
-    private CreatePayCommand createCommand(SpaceMember payCreator, int totalAmount, List<TargetOfPayRequest> targetOfPayRequests, String payType) {
-        return CreatePayCommand.create(
-                payCreator.getId(),
-                totalAmount,
-                "우리은행",
-                "111-111-111",
-                targetOfPayRequests,
-                payType
-        );
+    private CreatePayCommand createCommand(Long payCreatorId, int totalAmount, List<TargetOfPayRequest> targetOfPayRequests, String payType) {
+        return CreatePayCommand.builder()
+                .payCreatorId(payCreatorId)
+                .totalAmount(totalAmount)
+                .bankName("우리 은행")
+                .bankAccountNum("111-111")
+                .targets(targetOfPayRequests)
+                .valueOfPayType(payType)
+                .build();
     }
 
-    private void savePayWillSucceed() {
-        Mockito.when(createPayPort.createPay(Mockito.any(), Mockito.anyList()))
+    private void spaceMembersAreInSameSpace() {
+        Mockito.doNothing().when(validateSpaceMemberUseCase).validateSpaceMembersInSameSpace(anyList());
+    }
+
+    private Long getDiscordIdWillSucceed() {
+        Mockito.when(createPayInDiscordPort.createPayInDiscord(any(CreatePayInDiscordCommand.class)))
                 .thenReturn(1L);
+
+        return 1L;
+    }
+
+    private void savePayWillSucceed(PayRequest payRequest) {
+        Mockito.when(createPayPort.createPayRequest(any(PayRequest.class)))
+                .thenReturn(payRequest);
+
+        Mockito.when(createPayPort.createPayRequestTargets(anyList()))
+                .thenReturn(List.of());         // createPayRequestTargets 메서드의 반환값은 사용하지 X
     }
 }

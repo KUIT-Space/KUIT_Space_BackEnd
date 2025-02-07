@@ -52,7 +52,4 @@ public class CreatePayCommand {
     public PayRequest toDomainEntity(Long discordMessageId) {
         return PayRequest.withoutId(payCreatorId, discordMessageId, totalAmount, totalTargetNum, bank, payType);
     }
-
-
-
 }

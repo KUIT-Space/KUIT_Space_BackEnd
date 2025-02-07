@@ -19,10 +19,7 @@ public class OauthController {
 
     @GetMapping("/oauth/discord")
     public BaseResponse<SuccessResponse> signInDiscord(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        String accessToken = oauthUseCase.getAccessToken(code);
-        User user = oauthUseCase.getUserInfo(accessToken);
-
-        String token = oauthUseCase.signIn(user);
+        String token = oauthUseCase.signInWithDiscord(code);
         response.setHeader("Authorization", "Bearer " + token);
 
         if (token == null || token.isEmpty()) {

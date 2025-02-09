@@ -31,43 +31,51 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
 
     @Override
     public ResultOfReadPayRequestList readPayRequestList(Long payCreatorId) {
-        // payCreator가 요청한 PayRequest list 로드
-        // 개수 제한 없이 일단 전부 로드
+        // 1. payCreator가 요청한 PayRequest 목록을 로드
         List<PayRequest> payRequests = loadPayRequestPort.loadByPayCreatorId(payCreatorId);
 
+        // 2. 각 PayRequest를 처리하여 결과 분류
         List<InfoOfPayRequest> infosOfComplete = new ArrayList<>();
         List<InfoOfPayRequest> infosOfInComplete = new ArrayList<>();
-
         for (PayRequest payRequest : payRequests) {
-            try {
-                CurrentPayRequestState currentPayRequestState = loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(payRequest.getId());
-                Money receivedAmount = currentPayRequestState.getReceivedAmount();
-                NaturalNumber sendCompleteTargetNum = currentPayRequestState.getSendCompleteTargetNum();
-
-                boolean isAmountComplete = payRequest.getTotalAmount().equals(receivedAmount);      // 정산 대상들에게 받은 돈과 totalAmount 비교
-                boolean isTargetComplete = payRequest.getTotalTargetNum().equals(sendCompleteTargetNum);        // 정산 대상들 중 돈 낸 사람들의 수와 totalTargetNum 비교
-
-                if (isAmountComplete ^ isTargetComplete) {          // 두 조건 중 하나만 완료된 경우 -> db 에러가 있다고 판단된다
-                    log.error("DB 에러 - 불일치된 상태 (payRequestId: {}) - totalAmount: {}, receivedAmount: {}, totalTargetNum: {}, sendCompleteTargetNum: {}",
-                            payRequest.getId(), payRequest.getTotalAmount(), receivedAmount, payRequest.getTotalTargetNum(), sendCompleteTargetNum);
-                    throw new CustomException(DATABASE_ERROR);
-                }
-
-                InfoOfPayRequest info = createInfoOfPayRequest(payRequest, receivedAmount, sendCompleteTargetNum);
-
-                if (isAmountComplete && isTargetComplete) {
-                    infosOfComplete.add(info);
-                } else {
-                    infosOfInComplete.add(info);
-                }
-            } catch (IllegalStateException e) {
-                log.error("대상 목록 로드 실패 - 현재 payRequestId: {}", payRequest.getId(), e);
-                throw new CustomException(THIS_PAY_REQUEST_HAS_NOT_TARGETS);
-            }
+            processPayRequest(payRequest, infosOfComplete, infosOfInComplete);
         }
 
-        // return 타입 구성
         return ResultOfReadPayRequestList.of(infosOfComplete, infosOfInComplete);
+    }
+
+    private void processPayRequest(PayRequest payRequest, List<InfoOfPayRequest> infosOfComplete, List<InfoOfPayRequest> infosOfInComplete) {
+        try {
+            CurrentPayRequestState currentState = loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(payRequest.getId());
+            Money receivedAmount = currentState.getReceivedAmount();
+            NaturalNumber sendCompleteTargetNum = currentState.getSendCompleteTargetNum();
+
+            // 완료 여부 체크 (두 조건이 모두 충족되어야 완료로 판단)
+            boolean isComplete = checkCompletionStatus(payRequest, receivedAmount, sendCompleteTargetNum);
+
+            InfoOfPayRequest info = createInfoOfPayRequest(payRequest, receivedAmount, sendCompleteTargetNum);
+
+            if (isComplete) {
+                infosOfComplete.add(info);
+            } else {
+                infosOfInComplete.add(info);
+            }
+        } catch (IllegalStateException e) {
+            log.error("정산 대상 목록 로드 실패 - 현재 payRequestId: {}", payRequest.getId(), e);
+            throw new CustomException(THIS_PAY_REQUEST_HAS_NOT_TARGETS);
+        }
+    }
+
+    private boolean checkCompletionStatus(PayRequest payRequest, Money receivedAmount, NaturalNumber sendCompleteTargetNum) {
+        boolean isAmountComplete = payRequest.isEqualToTotalAmount(receivedAmount);
+        boolean isTargetComplete = payRequest.isEqualToTotalTargetNum(sendCompleteTargetNum);
+
+        if (isAmountComplete ^ isTargetComplete) {      // XOR: 한쪽만 true인 경우
+            log.error("DB 에러 - 불일치된 상태 (payRequestId: {}) - totalAmount: {}, receivedAmount: {}, totalTargetNum: {}, sendCompleteTargetNum: {}",
+                    payRequest.getId(), payRequest.getTotalAmount(), receivedAmount, payRequest.getTotalTargetNum(), sendCompleteTargetNum);
+            throw new CustomException(DATABASE_ERROR);
+        }
+        return isAmountComplete && isTargetComplete;
     }
 
     private InfoOfPayRequest createInfoOfPayRequest(PayRequest payRequest, Money receivedAmount, NaturalNumber sendCompleteTargetNum) {

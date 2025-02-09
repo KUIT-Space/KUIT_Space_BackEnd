@@ -13,6 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SpaceMembersTest {
 
+    /**
+     * 바뀐 SpaceMember 도메인 엔티티 코드와 충돌이 발생해 컴파일 에러가 날 거 같은데,
+     * 이 코드 전부 주석처리 해주시면 됩니닷
+     */
+
     private Space kuit;
     private Space alcon;
 

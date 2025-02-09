@@ -168,7 +168,7 @@ class CreatePayServiceTest {
     }
 
     private Long getDiscordIdWillSucceed() {
-        Mockito.when(createPayInDiscordPort.createPayInDiscord(any(CreatePayInDiscordCommand.class)))
+        Mockito.when(createPayInDiscordUseCase.createPayInDiscord(any(CreatePayInDiscordCommand.class)))
                 .thenReturn(1L);
 
         return 1L;

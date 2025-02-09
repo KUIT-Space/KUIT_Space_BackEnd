@@ -7,47 +7,70 @@ import space.space_spring.domain.pay.application.port.in.readPayRequestList.Info
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.ReadPayRequestListUseCase;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.ResultOfReadPayRequestList;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
-import space.space_spring.domain.pay.domain.PayRequest;
-import space.space_spring.domain.pay.domain.PayRequests;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
-import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
+import space.space_spring.domain.pay.domain.*;
+import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.NaturalNumber;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.DATABASE_ERROR;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.THIS_PAY_REQUEST_HAS_NOT_TARGETS;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReadPayRequestListService implements ReadPayRequestListUseCase {
 
-    private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final LoadPayRequestPort loadPayRequestPort;
+    private final LoadPayRequestTargetPort loadPayRequestTargetPort;
 
     @Override
     public ResultOfReadPayRequestList readPayRequestList(Long payCreatorId) {
-        // 정산 생성자 로드
-        SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMemberById(payCreatorId);
-
         // payCreator가 요청한 PayRequest list 로드
         // 개수 제한 없이 일단 전부 로드
-        PayRequests payRequests = PayRequests.create(loadPayRequestPort.loadByPayCreator(payCreator));
+        List<PayRequest> payRequests = loadPayRequestPort.loadByPayCreatorId(payCreatorId);
+
+        List<InfoOfPayRequest> infosOfComplete = new ArrayList<>();
+        List<InfoOfPayRequest> infosOfInComplete = new ArrayList<>();
+
+        for (PayRequest payRequest : payRequests) {
+            try {
+                PayRequestTargets payRequestTargets = PayRequestTargets.create(loadPayRequestTargetPort.loadByPayRequestId(payRequest.getId()));
+
+                Money totalAmount = payRequest.getTotalAmount();
+                Money receivedAmount = payRequestTargets.calculateMoneyOfSendComplete();
+                NaturalNumber totalTargetNum = payRequest.getTotalTargetNum();
+                NaturalNumber sendCompleteTargetNum = payRequestTargets.calculateNumberOfSendCompleteTarget();
+
+                if (totalAmount.equals(receivedAmount) && totalTargetNum.equals(sendCompleteTargetNum)) {
+                    infosOfComplete.add(InfoOfPayRequest.of(
+                            payRequest.getId(),
+                            totalAmount,
+                            receivedAmount,
+                            totalTargetNum,
+                            sendCompleteTargetNum
+                    ));
+                } else if ((totalAmount.equals(receivedAmount) && !totalTargetNum.equals(sendCompleteTargetNum)) || (!totalAmount.equals(receivedAmount) && totalTargetNum.equals(sendCompleteTargetNum))) {
+                    System.err.println("db 에러 payRequestId : " + payRequest.getId());
+                    throw new CustomException(DATABASE_ERROR);
+                } else {
+                    infosOfInComplete.add(InfoOfPayRequest.of(
+                            payRequest.getId(),
+                            totalAmount,
+                            receivedAmount,
+                            totalTargetNum,
+                            sendCompleteTargetNum
+                    ));
+                }
+            } catch (IllegalStateException e) {
+                System.err.println("현재 payRequestId: " + payRequest.getId());
+                throw new CustomException(THIS_PAY_REQUEST_HAS_NOT_TARGETS);
+            }
+        }
 
         // return 타입 구성
-        List<InfoOfPayRequest> infosOfComplete = mapToInfoOfPayRequests(payRequests.getCompletePayRequestList());
-        List<InfoOfPayRequest> infosOfInComplete = mapToInfoOfPayRequests(payRequests.getInCompletePayRequestList());
-
         return ResultOfReadPayRequestList.of(infosOfComplete, infosOfInComplete);
-    }
-
-    private List<InfoOfPayRequest> mapToInfoOfPayRequests(List<PayRequest> payRequests) {
-        List<InfoOfPayRequest> infosOfPayRequest = new ArrayList<>();
-        for (PayRequest payRequest : payRequests) {
-            infosOfPayRequest.add(InfoOfPayRequest.of(
-                    payRequest.getId(),
-                    payRequest.getTotalAmount(),
-                    payRequest.getTotalTargetNum()
-            ));
-        }
-        return infosOfPayRequest;
     }
 }

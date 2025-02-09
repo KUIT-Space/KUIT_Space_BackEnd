@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 
 @Component
@@ -23,7 +22,7 @@ public class PayRequestTargetMapper {
         return PayRequestTarget.of(
                 jpaEntity.getId(),
                 jpaEntity.getTargetMember().getId(),
-                jpaEntity.getPayRequestJpaEntity().getId(),
+                jpaEntity.getPayRequest().getId(),
                 Money.of(jpaEntity.getRequestedAmount()),
                 jpaEntity.isComplete()
         );

@@ -2,14 +2,10 @@ package space.space_spring.domain.pay.adapter.out.persistence;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import space.space_spring.domain.pay.application.port.out.CreatePayPort;
-import space.space_spring.domain.pay.application.port.out.LoadPayRequestInfoPort;
-import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
-import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
+import space.space_spring.domain.pay.application.port.out.*;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.spaceMember.SpaceMember;
 import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
 import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
 import space.space_spring.global.exception.CustomException;
@@ -19,8 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_NOT_FOUND;
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @RequiredArgsConstructor
 @Repository
@@ -109,7 +104,7 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
         Optional<List<PayRequestTargetJpaEntity>> byPayRequest = payRequestTargetRepository.findByPayRequest(payRequestJpaEntity);
 
         if (byPayRequest.isEmpty()) {
-            throw new IllegalStateException();
+            return new ArrayList<>();
         }
 
         List<PayRequestTarget> payRequestTargets = new ArrayList<>();

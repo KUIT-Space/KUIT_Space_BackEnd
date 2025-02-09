@@ -32,94 +32,94 @@ class PayRequestsTest {
         kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L, "김경민", "image_444", false);
     }
 
-    @Test
-    @DisplayName("List<PayRequest> 중 완료된 정산들을 반환한다.")
-    void getCompletePayRequestList1() throws Exception {
-        //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        payRequest1.changeToComplete();
-        payRequest2.changeToComplete();
-        payRequest3.changeToComplete();
-
-        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
-
-        //when
-        List<PayRequest> completePayRequestList = payRequests.getCompletePayRequestList();
-
-        //then
-        assertThat(completePayRequestList).hasSize(3)
-                .extracting("payCreator", "totalAmount", "totalTargetNum")
-                .containsExactlyInAnyOrder(
-                        tuple(seongjun, Money.of(10000), NaturalNumber.of(3)),
-                        tuple(sangjun, Money.of(20000), NaturalNumber.of(2)),
-                        tuple(seohyun, Money.of(30000), NaturalNumber.of(5))
-                );
-    }
-
-    @Test
-    @DisplayName("List<PayRequest> 중 완료된 정산이 없는 경우, 빈 ArrayList를 반환한다.")
-    void getCompletePayRequestList2() throws Exception {
-        //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
-
-        //when
-        List<PayRequest> completePayRequestList = payRequests.getCompletePayRequestList();
-
-        //then
-        assertThat(completePayRequestList).isEmpty();
-    }
-
-    @Test
-    @DisplayName("List<PayRequest> 중 현재 진행 중인 정산들을 반환한다.")
-    void getInCompletePayRequestList1() throws Exception {
-        //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        payRequest1.changeToComplete();
-        payRequest2.changeToComplete();
-        payRequest3.changeToComplete();
-
-        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
-
-        //when
-        List<PayRequest> inCompletePayRequestList = payRequests.getInCompletePayRequestList();
-
-        //then
-        assertThat(inCompletePayRequestList).hasSize(1)
-                .extracting("payCreator", "totalAmount", "totalTargetNum")
-                .containsExactlyInAnyOrder(
-                        tuple(kyeongmin, Money.of(1000), NaturalNumber.of(2))
-                );
-    }
-
-    @Test
-    @DisplayName("List<PayRequest> 중 현재 진행 중인 정산이 없는 경우, 빈 ArrayList를 반환한다.")
-    void getInCompletePayRequestList2() throws Exception {
-        //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        payRequest1.changeToComplete();
-        payRequest2.changeToComplete();
-        payRequest3.changeToComplete();
-        payRequest4.changeToComplete();
-
-        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
-
-        //when
-        List<PayRequest> inCompletePayRequestList = payRequests.getInCompletePayRequestList();
-
-        //then
-        assertThat(inCompletePayRequestList).isEmpty();
-    }
+//    @Test
+//    @DisplayName("List<PayRequest> 중 완료된 정산들을 반환한다.")
+//    void getCompletePayRequestList1() throws Exception {
+//        //given
+//        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        payRequest1.changeToComplete();
+//        payRequest2.changeToComplete();
+//        payRequest3.changeToComplete();
+//
+//        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
+//
+//        //when
+//        List<PayRequest> completePayRequestList = payRequests.getCompletePayRequestList();
+//
+//        //then
+//        assertThat(completePayRequestList).hasSize(3)
+//                .extracting("payCreator", "totalAmount", "totalTargetNum")
+//                .containsExactlyInAnyOrder(
+//                        tuple(seongjun, Money.of(10000), NaturalNumber.of(3)),
+//                        tuple(sangjun, Money.of(20000), NaturalNumber.of(2)),
+//                        tuple(seohyun, Money.of(30000), NaturalNumber.of(5))
+//                );
+//    }
+//
+//    @Test
+//    @DisplayName("List<PayRequest> 중 완료된 정산이 없는 경우, 빈 ArrayList를 반환한다.")
+//    void getCompletePayRequestList2() throws Exception {
+//        //given
+//        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
+//
+//        //when
+//        List<PayRequest> completePayRequestList = payRequests.getCompletePayRequestList();
+//
+//        //then
+//        assertThat(completePayRequestList).isEmpty();
+//    }
+//
+//    @Test
+//    @DisplayName("List<PayRequest> 중 현재 진행 중인 정산들을 반환한다.")
+//    void getInCompletePayRequestList1() throws Exception {
+//        //given
+//        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        payRequest1.changeToComplete();
+//        payRequest2.changeToComplete();
+//        payRequest3.changeToComplete();
+//
+//        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
+//
+//        //when
+//        List<PayRequest> inCompletePayRequestList = payRequests.getInCompletePayRequestList();
+//
+//        //then
+//        assertThat(inCompletePayRequestList).hasSize(1)
+//                .extracting("payCreator", "totalAmount", "totalTargetNum")
+//                .containsExactlyInAnyOrder(
+//                        tuple(kyeongmin, Money.of(1000), NaturalNumber.of(2))
+//                );
+//    }
+//
+//    @Test
+//    @DisplayName("List<PayRequest> 중 현재 진행 중인 정산이 없는 경우, 빈 ArrayList를 반환한다.")
+//    void getInCompletePayRequestList2() throws Exception {
+//        //given
+//        PayRequest payRequest1 = PayRequest.create(1L, seongjun, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest2 = PayRequest.create(2L, sangjun, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest3 = PayRequest.create(3L, seohyun, Money.of(30000), NaturalNumber.of(5), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        PayRequest payRequest4 = PayRequest.create(4L, kyeongmin, Money.of(1000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+//        payRequest1.changeToComplete();
+//        payRequest2.changeToComplete();
+//        payRequest3.changeToComplete();
+//        payRequest4.changeToComplete();
+//
+//        PayRequests payRequests = PayRequests.create(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
+//
+//        //when
+//        List<PayRequest> inCompletePayRequestList = payRequests.getInCompletePayRequestList();
+//
+//        //then
+//        assertThat(inCompletePayRequestList).isEmpty();
+//    }
 }

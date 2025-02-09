@@ -37,4 +37,13 @@ public class PayRequest {
     public static PayRequest withoutId(Long payCreatorId, Long discordMessageId, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
         return new PayRequest(null, payCreatorId, discordMessageId, totalAmount, totalTargetNum, bank, payType);
     }
+
+    public boolean isEqualToTotalAmount(Money money) {
+        return totalAmount.equals(money);
+    }
+
+    public boolean isEqualToTotalTargetNum(NaturalNumber number) {
+        return totalTargetNum.equals(number);
+    }
+
 }

@@ -138,6 +138,22 @@ class ReadRequestedPayListServiceTest {
         assertThat(result.getInCompleteRequestedPayList()).isNotNull().isEmpty();
     }
 
+    @Test
+    @DisplayName("특정 멤버가 요청받은 정산이 하나도 없을 경우, 양쪽 리스트 모두 빈 리스트를 반환한다.")
+    void readRequestedPayList_emptyList() throws Exception {
+        //given
+        Mockito.when(loadPayRequestTargetPort.loadByTargetMemberId(seongjunId)).thenReturn(List.of());
+
+        //when
+        ResultOfReadRequestedPayList result = readRequestedPayListService.readRequestedPayList(seongjunId);
+
+        //then
+        assertThat(result.getCompleteRequestedPayList()).isEmpty();
+        assertThat(result.getInCompleteRequestedPayList()).isEmpty();
+    }
+
+
+
     private void stubLoadPayRequest(Long payRequestId, Long payCreatorId, Bank bank) {
         PayRequest payRequest = Mockito.mock(PayRequest.class);
         Mockito.when(payRequest.getPayCreatorId()).thenReturn(payCreatorId);

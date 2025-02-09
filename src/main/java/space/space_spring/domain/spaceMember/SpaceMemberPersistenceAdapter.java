@@ -8,16 +8,24 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort {
+public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort, LoadSpaceMemberInfoPort {
 
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpaceMemberMapper spaceMemberMapper;
 
     @Override
-    public SpaceMember loadSpaceMemberById(Long id) {
+    public SpaceMember loadById(Long id) {
         SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(id).orElseThrow(() ->
                 new CustomException(SPACE_MEMBER_NOT_FOUND));
 
         return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
+    }
+
+    @Override
+    public NicknameAndProfileImage loadNicknameAndProfileImageById(Long spaceMemberId) {
+        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(spaceMemberId).orElseThrow(() ->
+                new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        return NicknameAndProfileImage.of(spaceMemberJpaEntity.getNickname(), spaceMemberJpaEntity.getProfileImageUrl());
     }
 }

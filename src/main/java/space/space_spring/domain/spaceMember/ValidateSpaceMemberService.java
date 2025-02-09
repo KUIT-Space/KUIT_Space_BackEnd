@@ -19,7 +19,7 @@ public class ValidateSpaceMemberService implements ValidateSpaceMemberUseCase {
     public void validateSpaceMembersInSameSpace(List<Long> spaceMemberIds) {
         List<SpaceMember> allOfSpaceMember = new ArrayList<>();
         for (Long spaceMemberId : spaceMemberIds) {
-            allOfSpaceMember.add(loadSpaceMemberPort.loadSpaceMemberById(spaceMemberId));
+            allOfSpaceMember.add(loadSpaceMemberPort.loadById(spaceMemberId));
         }
 
         SpaceMembers spaceMembers = SpaceMembers.of(allOfSpaceMember);

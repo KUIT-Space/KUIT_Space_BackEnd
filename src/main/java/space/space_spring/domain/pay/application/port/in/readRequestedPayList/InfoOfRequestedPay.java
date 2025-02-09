@@ -11,21 +11,22 @@ public class InfoOfRequestedPay {
 
     private String payCreatorNickname;
 
-    // 정산생성자의 프로필 이미지까지 ??
+    private String payCreatorProfileImageUrl;
 
     private Money requestedAmount;
 
     private Bank bank;          // 송금할 은행 정보
 
-    private InfoOfRequestedPay(Long payRequestTargetId, String payCreatorNickname, Money requestedAmount, Bank bank) {
+    private InfoOfRequestedPay(Long payRequestTargetId, String payCreatorNickname, String payCreatorProfileImageUrl, Money requestedAmount, Bank bank) {
         this.payRequestTargetId = payRequestTargetId;
         this.payCreatorNickname = payCreatorNickname;
+        this.payCreatorProfileImageUrl = payCreatorProfileImageUrl;
         this.requestedAmount = requestedAmount;
         this.bank = bank;
     }
 
-    public static InfoOfRequestedPay of(Long payRequestTargetId, String payCreatorNickname, Money requestedAmount, Bank bank) {
-        return new InfoOfRequestedPay(payRequestTargetId, payCreatorNickname, requestedAmount, bank);
+    public static InfoOfRequestedPay of(Long payRequestTargetId, String payCreatorNickname, String payCreatorProfileImageUrl, Money requestedAmount, Bank bank) {
+        return new InfoOfRequestedPay(payRequestTargetId, payCreatorNickname, payCreatorProfileImageUrl, requestedAmount, bank);
     }
 
 }

@@ -26,13 +26,13 @@ public class CreatePayInDiscordService implements CreatePayInDiscordUseCase {
 
     private CreatePayMessageCommand mapToPayMessageCommand(CreatePayInDiscordCommand command) {
         // 정산 생성자의 Discord ID 조회
-        SpaceMember payCreator = loadSpaceMemberPort.loadSpaceMemberById(command.getPayCreatorId());
+        SpaceMember payCreator = loadSpaceMemberPort.loadById(command.getPayCreatorId());
         Long payCreatorDiscordId = payCreator.getDiscordId();
 
         // 각 정산 대상자에 대해 Discord ID를 조회하여 TargetOfCreatePayMessageCommand로 변환
         List<TargetOfCreatePayMessageCommand> messageTargets = command.getTargets().stream()
                 .map(target -> {
-                    SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMemberById(target.getTargetMemberId());
+                    SpaceMember targetMember = loadSpaceMemberPort.loadById(target.getTargetMemberId());
                     Long targetMemberDiscordId = targetMember.getDiscordId();
                     return TargetOfCreatePayMessageCommand.create(targetMemberDiscordId, target.getRequestedAmount());
                 })

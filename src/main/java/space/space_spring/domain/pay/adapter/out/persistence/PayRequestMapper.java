@@ -27,7 +27,7 @@ public class PayRequestMapper {
     public PayRequest toDomainEntity(PayRequestJpaEntity jpaEntity) {
         Bank bank = Bank.of(jpaEntity.getBankName(), jpaEntity.getBankAccountNum());
 
-        return PayRequest.of(
+        return PayRequest.create(
                 jpaEntity.getId(),
                 jpaEntity.getPayCreator().getId(),
                 jpaEntity.getDiscordMessageId(),

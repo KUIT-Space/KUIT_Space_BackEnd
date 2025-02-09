@@ -13,6 +13,7 @@ import space.space_spring.domain.spaceMember.SpringDataSpaceMemberRepository;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +60,8 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     }
 
     @Override
-    public List<PayRequest> loadByPayCreator(SpaceMember payCreator) {
-        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payCreator.getId()).orElseThrow(
+    public List<PayRequest> loadByPayCreatorId(Long payCreatorId) {
+        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payCreatorId).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
         Optional<List<PayRequestJpaEntity>> byPayCreator = payRequestRepository.findListByPayCreator(payCreatorJpaEntity);
@@ -69,10 +70,10 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
 
         List<PayRequest> payRequests = new ArrayList<>();
         for (PayRequestJpaEntity payRequestJpaEntity : byPayCreator.get()) {
-            payRequests.add(payRequestMapper.toDomainEntity(payCreator, payRequestJpaEntity));
+            payRequests.add(payRequestMapper.toDomainEntity(payRequestJpaEntity));
         }
 
-        return payRequests;
+        return Collections.unmodifiableList(payRequests);
     }
 
     @Override
@@ -86,9 +87,28 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
 
         List<PayRequestTarget> payRequestTargets = new ArrayList<>();
         for (PayRequestTargetJpaEntity payRequestTargetJpaEntity : byTargetMember.get()) {
-            payRequestTargets.add(payRequestTargetMapper.toDomainEntity(targetMember, payRequestTargetJpaEntity));
+            payRequestTargets.add(payRequestTargetMapper.toDomainEntity(payRequestTargetJpaEntity));
         }
 
         return payRequestTargets;
+    }
+
+    @Override
+    public List<PayRequestTarget> loadByPayRequestId(Long payRequestId) {
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(payRequestId).orElseThrow(
+                () -> new CustomException(PAY_REQUEST_NOT_FOUND));
+
+        Optional<List<PayRequestTargetJpaEntity>> byPayRequest = payRequestTargetRepository.findByPayRequest(payRequestJpaEntity);
+
+        if (byPayRequest.isEmpty()) {
+            throw new IllegalStateException();
+        }
+
+        List<PayRequestTarget> payRequestTargets = new ArrayList<>();
+        for (PayRequestTargetJpaEntity payRequestTargetJpaEntity : byPayRequest.get()) {
+            payRequestTargets.add(payRequestTargetMapper.toDomainEntity(payRequestTargetJpaEntity));
+        }
+
+        return Collections.unmodifiableList(payRequestTargets);
     }
 }

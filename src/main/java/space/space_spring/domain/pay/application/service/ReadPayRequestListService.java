@@ -3,11 +3,12 @@ package space.space_spring.domain.pay.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.pay.application.port.in.loadCurrentPayRequestState.CurrentPayRequestState;
+import space.space_spring.domain.pay.application.port.in.loadCurrentPayRequestState.LoadCurrentPayRequestStateUseCase;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.InfoOfPayRequest;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.ReadPayRequestListUseCase;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.ResultOfReadPayRequestList;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
-import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.pay.domain.*;
 import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.NaturalNumber;
@@ -24,7 +25,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class ReadPayRequestListService implements ReadPayRequestListUseCase {
 
     private final LoadPayRequestPort loadPayRequestPort;
-    private final LoadPayRequestTargetPort loadPayRequestTargetPort;
+    private final LoadCurrentPayRequestStateUseCase loadCurrentPayRequestStateUseCase;
 
     @Override
     public ResultOfReadPayRequestList readPayRequestList(Long payCreatorId) {
@@ -37,12 +38,12 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
 
         for (PayRequest payRequest : payRequests) {
             try {
-                PayRequestTargets payRequestTargets = PayRequestTargets.create(loadPayRequestTargetPort.loadByPayRequestId(payRequest.getId()));
-
                 Money totalAmount = payRequest.getTotalAmount();
-                Money receivedAmount = payRequestTargets.calculateMoneyOfSendComplete();
                 NaturalNumber totalTargetNum = payRequest.getTotalTargetNum();
-                NaturalNumber sendCompleteTargetNum = payRequestTargets.calculateNumberOfSendCompleteTarget();
+
+                CurrentPayRequestState currentPayRequestState = loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(payRequest.getId());
+                Money receivedAmount = currentPayRequestState.getReceivedAmount();
+                NaturalNumber sendCompleteTargetNum = currentPayRequestState.getSendCompleteTargetNum();
 
                 if (totalAmount.equals(receivedAmount) && totalTargetNum.equals(sendCompleteTargetNum)) {
                     infosOfComplete.add(InfoOfPayRequest.of(

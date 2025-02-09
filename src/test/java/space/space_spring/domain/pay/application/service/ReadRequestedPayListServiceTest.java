@@ -43,13 +43,13 @@ class ReadRequestedPayListServiceTest {
         kyeongmin = SpaceMember.create(4L, kuit, commonUser, 4L, "김경민", "image_444", false);
 
         // Mockito Stubbing : 특정 ID가 들어오면 그에 맞는 SpaceMember 반환
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seongjun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadById(seongjun.getId()))
                 .thenReturn(seongjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(sangjun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadById(sangjun.getId()))
                 .thenReturn(sangjun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(seohyun.getId()))
+        Mockito.when(loadSpaceMemberPort.loadById(seohyun.getId()))
                 .thenReturn(seohyun);
-        Mockito.when(loadSpaceMemberPort.loadSpaceMemberById(kyeongmin.getId()))
+        Mockito.when(loadSpaceMemberPort.loadById(kyeongmin.getId()))
                 .thenReturn(kyeongmin);
     }
 

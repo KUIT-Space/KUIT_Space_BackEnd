@@ -3,8 +3,10 @@ package space.space_spring.domain.pay.adapter.out.persistence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
+import space.space_spring.domain.pay.application.port.out.LoadPayRequestInfoPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
+import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.SpaceMember;
@@ -22,7 +24,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort, LoadPayRequestTargetPort {
+public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort, LoadPayRequestTargetPort, LoadPayRequestInfoPort {
 
     private final SpringDataPayRequestRepository payRequestRepository;
     private final SpringDataPayRequestTargetRepository payRequestTargetRepository;
@@ -77,8 +79,14 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
     }
 
     @Override
-    public List<PayRequestTarget> loadByTargetMember(SpaceMember targetMember) {
-        SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(targetMember.getId()).orElseThrow(
+    public PayRequest loadById(Long id) {
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(id).orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
+        return payRequestMapper.toDomainEntity(payRequestJpaEntity);
+    }
+
+    @Override
+    public List<PayRequestTarget> loadByTargetMemberId(Long targetMemberId) {
+        SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(targetMemberId).orElseThrow(
                 () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
         Optional<List<PayRequestTargetJpaEntity>> byTargetMember = payRequestTargetRepository.findListByTargetMember(targetMemberJpaEntity);
@@ -110,5 +118,12 @@ public class PayPersistenceAdapter implements CreatePayPort, LoadPayRequestPort,
         }
 
         return Collections.unmodifiableList(payRequestTargets);
+    }
+
+    @Override
+    public Bank loadBankOfPayRequestById(Long payRequestId) {
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(payRequestId).orElseThrow(
+                () -> new CustomException(PAY_REQUEST_NOT_FOUND));
+        return Bank.of(payRequestJpaEntity.getBankName(), payRequestJpaEntity.getBankAccountNum());
     }
 }

@@ -6,11 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.pay.application.port.in.readRequestedPayList.InfoOfRequestedPay;
 import space.space_spring.domain.pay.application.port.in.readRequestedPayList.ReadRequestedPayListUseCase;
 import space.space_spring.domain.pay.application.port.in.readRequestedPayList.ResultOfReadRequestedPayList;
+import space.space_spring.domain.pay.application.port.out.LoadPayRequestInfoPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
+import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.pay.domain.PayRequestTargets;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
-import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.spaceMember.LoadSpaceMemberInfoPort;
+import space.space_spring.domain.spaceMember.NicknameAndProfileImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,35 +21,43 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ReadRequestedPayListService implements ReadRequestedPayListUseCase {
 
-    private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final LoadPayRequestTargetPort loadPayRequestTargetPort;
+    private final LoadPayRequestInfoPort loadPayRequestInfoPort;
+    private final LoadSpaceMemberInfoPort spaceMemberInfoPort;
 
     @Override
     public ResultOfReadRequestedPayList readRequestedPayList(Long targetMemberId) {
-        // 정산 대상자 로드
-        SpaceMember targetMember = loadSpaceMemberPort.loadSpaceMemberById(targetMemberId);
-
         // targetMember가 정산 대상자인 PayRequestTarget list 로드
         // 개수 제한 없이 일단 전부 로드
-        PayRequestTargets payRequestTargets = PayRequestTargets.create(loadPayRequestTargetPort.loadByTargetMember(targetMember));
+        List<PayRequestTarget> payRequestTargets = loadPayRequestTargetPort.loadByTargetMemberId(targetMemberId);
 
-        // return 타입 구성
-        List<InfoOfRequestedPay> infosOfComplete = mapToInfoOfRequestedPays(payRequestTargets.getCompletePayRequestTargetList());
-        List<InfoOfRequestedPay> infosOfInComplete = mapToInfoOfRequestedPays(payRequestTargets.getInCompletePayRequestTargetList());
+        List<InfoOfRequestedPay> infosOfComplete = new ArrayList<>();
+        List<InfoOfRequestedPay> infosOfInComplete = new ArrayList<>();
+
+        for (PayRequestTarget payRequestTarget : payRequestTargets) {
+            NicknameAndProfileImage nicknameAndProfileImage = spaceMemberInfoPort.loadNicknameAndProfileImageById(payRequestTarget.getTargetMemberId());
+            Bank bank = loadPayRequestInfoPort.loadBankOfPayRequestById(payRequestTarget.getPayRequestId());
+
+            if (payRequestTarget.isComplete()) {
+                infosOfComplete.add(InfoOfRequestedPay.of(
+                        payRequestTarget.getId(),
+                        nicknameAndProfileImage.getNickname(),
+                        nicknameAndProfileImage.getProfileImageUrl(),
+                        payRequestTarget.getRequestedAmount(),
+                        bank
+                ));
+            } else {
+                infosOfInComplete.add(InfoOfRequestedPay.of(
+                        payRequestTarget.getId(),
+                        nicknameAndProfileImage.getNickname(),
+                        nicknameAndProfileImage.getProfileImageUrl(),
+                        payRequestTarget.getRequestedAmount(),
+                        bank
+                ));
+            }
+        }
 
         return ResultOfReadRequestedPayList.of(infosOfComplete, infosOfInComplete);
     }
 
-    private List<InfoOfRequestedPay> mapToInfoOfRequestedPays(List<PayRequestTarget> payRequestTargets) {
-        List<InfoOfRequestedPay> infosOfPayRequestTarget = new ArrayList<>();
-        for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            infosOfPayRequestTarget.add(InfoOfRequestedPay.of(
-                    payRequestTarget.getId(),
-                    payRequestTarget.getPayRequest().getPayCreator().getNickname(),
-                    payRequestTarget.getRequestedAmount(),
-                    payRequestTarget.getPayRequest().getBank()
-            ));
-        }
-        return infosOfPayRequestTarget;
-    }
 }

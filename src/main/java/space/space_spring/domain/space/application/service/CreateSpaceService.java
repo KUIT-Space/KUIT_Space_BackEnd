@@ -47,7 +47,10 @@ public class CreateSpaceService implements CreateSpaceUseCase {
         //space 생성
         Space newSpace = createSpacePort.saveSpace(command.getGuildId(),
                 command.getGuildName());
+        if(newSpace.getId()==null){
+            System.out.println("\n\n\nNEW SPACEID IS NULL!!!\n\n\n");
 
+        }
         //GuildMember 정보 가져오기
         GuildMembers guildMembers=loadGuildMemberPort.loadAllSpaceMembers(newSpace);
 
@@ -56,12 +59,19 @@ public class CreateSpaceService implements CreateSpaceUseCase {
         //List<SpaceMember> userIdList =
         guildMembers.toStream().map(guildMember -> {
             Long userId = checkAndCreateUser(guildMember);
-            return guildMember.createSpaceMember(guildMembers.getSpace().getId(), userId);
+            return guildMember.createSpaceMember(newSpace.getId(), userId);
         })
         //        .toList();
         //SpaceMember 생성
-        .peek(spaceMember -> {
-            createSpaceMemberPort.createSpaceMember(spaceMember);
+                .peek(spaceMember -> {
+                    if(spaceMember.getSpaceId()==null){
+                        System.out.println("\nSPACE ID IS NULL!!");
+                    }else{
+                        System.out.println("\nspaceID:"+spaceMember.getSpaceId());
+                    }
+                })
+        .forEach(spaceMember -> {
+            System.out.println("\nCreateUser:"+createSpaceMemberPort.createSpaceMember(spaceMember).getId());
         });
 
 

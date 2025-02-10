@@ -35,6 +35,7 @@ public class SpaceMemberMapper {
         return SpaceMemberJpaEntity.create(
                 space,
                 user,
+                spaceMember.getDiscordId(),
                 spaceMember.getNickname(),
                 spaceMember.getProfileImageUrl(),
                 spaceMember.isManager()

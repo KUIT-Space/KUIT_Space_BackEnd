@@ -16,6 +16,8 @@ import space.space_spring.domain.user.adapter.out.persistence.SpringDataUserRepo
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.List;
+
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -41,12 +43,17 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , Crea
     public SpaceMember createSpaceMember(SpaceMember spaceMember){
 //        Space space = loadSpacePort.loadSpaceById(spaceMember.getSpaceId()).orElseThrow();
 //        User user = loadUserPort.loadUser(spaceMember.getId()).orElseThrow();
-        SpaceJpaEntity space = spaceRepository.findById(spaceMember.getId()).orElseThrow();
-        UserJpaEntity user = userRepository.findById(spaceMember.getId()).orElseThrow();
+        SpaceJpaEntity space = spaceRepository.findById(spaceMember.getSpaceId()).orElseThrow();
+        UserJpaEntity user = userRepository.findByDiscordId(spaceMember.getDiscordId()).orElseThrow();
 
         SpaceMemberJpaEntity spaceMemberJpaEntity=spaceMemberMapper.toJpaEntity(spaceMember,space,user);
         SpaceMemberJpaEntity resultSpaceMemberJpaEntity = spaceMemberRepository.save(spaceMemberJpaEntity);
 
         return spaceMemberMapper.toDomainEntity(resultSpaceMemberJpaEntity);
+    }
+
+    @Override
+    public List<SpaceMember> loadSpaceMemberBySpaceId(Long spaceId){
+        return spaceMemberRepository.findBySpaceId(spaceId).stream().map(spaceMemberMapper::toDomainEntity).toList();
     }
 }

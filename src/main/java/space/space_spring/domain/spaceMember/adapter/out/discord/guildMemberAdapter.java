@@ -63,9 +63,13 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
     public GuildMembers loadAllSpaceMembers(Space space){
         Guild guild=jda.getGuildById(space.getDiscordId());
         //ToDo. change completableFuture
-        List<GuildMember> guildMemberList=guild.loadMembers().get().stream().map(member ->
+        List<GuildMember> guildMemberList = guild.getMembers().stream().map(member ->
             guildToSpaceMember(member)
         ).collect(Collectors.toList());
+        System.out.println("\nGuild Member load api success\n");
+        for( GuildMember guildMember: guildMemberList){
+            System.out.println("Member:"+guildMember.getNickname()+"\n");
+        }
 
         return GuildMembers.of(space,guildMemberList);
     }

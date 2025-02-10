@@ -7,4 +7,5 @@ import java.util.List;
 public interface LoadSpaceMemberPort {
 
     SpaceMember loadSpaceMemberById(Long id);
+    List<SpaceMember> loadSpaceMemberBySpaceId(Long spaceId);
 }

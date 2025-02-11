@@ -92,6 +92,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /**
      * 11000: Post 오류
      */
+    INVALID_BOARD_CREATE(11000, HttpStatus.BAD_REQUEST, "게시판 생성 요청에서 잘못된 값이 존재합니다."),
+
     INVALID_POST_CREATE(11000, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
     POST_NOT_EXIST(11001, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 id입니다."),
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),

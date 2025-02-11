@@ -3,11 +3,9 @@ package space.space_spring.domain.post.adapter.in.web;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import space.space_spring.domain.post.domain.BoardType;
-import space.space_spring.global.common.validation.SelfValidating;
 
 @Getter
-public class RequestOfCreateBoard extends SelfValidating<RequestOfCreateBoard> {
+public class RequestOfCreateBoard {
 
     @NotNull(message = "Space ID는 필수입니다.")
     private Long spaceId;

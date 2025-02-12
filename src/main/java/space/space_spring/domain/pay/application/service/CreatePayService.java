@@ -14,10 +14,16 @@ import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayAmountPolicy;
+import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.spaceMember.SpaceMembers;
 import space.space_spring.domain.spaceMember.ValidateSpaceMemberUseCase;
+import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +31,14 @@ import java.util.List;
 public class CreatePayService implements CreatePayUseCase {
 
     private final CreatePayPort createPayPort;
-    private final ValidateSpaceMemberUseCase validateSpaceMemberUseCase;
+    private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final CreatePayInDiscordUseCase createPayInDiscordUseCase;
 
     @Override
     @Transactional
     public Long createPay(CreatePayCommand command) {
         // 정산 생성자, 정산 대상자들이 같은 스페이스에 존재하는지 검증
-        validateSpaceMemberUseCase.validateSpaceMembersInSameSpace(getSpaceMemberIds(command));
+        validatePaySpaceMember(command);
 
         // PayAmountPolicy 유효성 검증
         validatePayAmountPolicy(command);
@@ -47,6 +53,15 @@ public class CreatePayService implements CreatePayUseCase {
         savePayRequestTargets(command, savedPayRequest);
 
         return savedPayRequest.getId();
+    }
+
+    private void validatePaySpaceMember(CreatePayCommand command) {
+        try {
+            List<SpaceMember> list = loadSpaceMemberPort.loadAllById(getSpaceMemberIds(command));
+            SpaceMembers.of(list);
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE);
+        }
     }
 
     private List<Long> getSpaceMemberIds(CreatePayCommand command) {

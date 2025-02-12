@@ -1,21 +1,28 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
-import org.w3c.dom.Text;
 
 @Getter
 public class Post {
 
     private Long id;
 
-    private PostBase postBaseId;
+    private Long postBaseId;
 
     private String title;
 
-    public Post(Long id, Long discordId, Board board, Text content, String title) {
-
+    private Post(Long id, Long postBaseId, String title) {
+        this.id = id;
+        this.postBaseId = postBaseId;
         this.title = title;
+    }
 
+    public static Post of(Long id, Long postBaseId, String title) {
+        return new Post(id, postBaseId, title);
+    }
+
+    public static Post withoutId(Long postBaseId, String title) {
+        return new Post(null, postBaseId, title);
     }
 
 }

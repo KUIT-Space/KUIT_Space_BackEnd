@@ -1,7 +1,6 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
-import org.w3c.dom.Text;
 
 @Getter
 public class PostBase {
@@ -10,15 +9,25 @@ public class PostBase {
 
     private Long discordId;
 
-    private Board board;
+    private Long boardId;
 
-    private Text content;
+    private Long spaceMemberId;
 
-    private PostBase(Long id, Long discordId, Board board, Text content) {
+    private Content content;
+
+    private PostBase(Long id, Long discordId, Long boardId, Long spaceMemberId, Content content) {
         this.id = id;
         this.discordId = discordId;
-        this.board = board;
+        this.boardId = boardId;
+        this.spaceMemberId = spaceMemberId;
         this.content = content;
     }
 
+    public static PostBase of(Long id, Long discordId, Long boardId, Long spaceMemberId, Content content) {
+        return new PostBase(id, discordId, boardId, spaceMemberId, content);
+    }
+
+    public static PostBase withoutId(Long discordId, Long boardId, Long spaceMemberId, Content content) {
+        return new PostBase(null, discordId, boardId, spaceMemberId, content);
+    }
 }

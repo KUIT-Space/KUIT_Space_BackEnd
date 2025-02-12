@@ -1,27 +1,31 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
-import org.w3c.dom.Text;
-import space.space_spring.domain.spaceMember.SpaceMember;
 
 @Getter
 public class Question {
 
     private Long id;
 
-    private PostBase postBaseId;
-
-    private SpaceMember spaceMemberId;
+    private Long postBaseId;
 
     private String title;
 
     private boolean isAnonymous;
 
-    public Question(Long id, Long discordId, Board board, Text content, String title, boolean isAnonymous) {
-
+    private Question(Long id, Long postBaseId, String title, boolean isAnonymous) {
+        this.id = id;
+        this.postBaseId = postBaseId;
         this.title = title;
         this.isAnonymous = isAnonymous;
     }
 
+    public static Question of(Long id, Long postBaseId, String title, boolean isAnonymous) {
+        return new Question(id, postBaseId,  title, isAnonymous);
+    }
+
+    public static Question withoutId(Long postBaseId, String title, boolean isAnonymous) {
+        return new Question(null, postBaseId, title, isAnonymous);
+    }
 
 }

@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -19,6 +22,14 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort, LoadS
                 new CustomException(SPACE_MEMBER_NOT_FOUND));
 
         return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
+    }
+
+    @Override
+    public List<SpaceMember> loadAllById(List<Long> ids) {
+        List<SpaceMemberJpaEntity> allById = spaceMemberRepository.findAllById(ids);
+
+        return allById.stream().map(spaceMemberMapper::toDomainEntity)
+                .toList();
     }
 
     @Override

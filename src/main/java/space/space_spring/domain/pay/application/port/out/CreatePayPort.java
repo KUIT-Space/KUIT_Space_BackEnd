@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface CreatePayPort {
 
-    Long createPay(PayRequest payRequest, List<PayRequestTarget> payRequestTargets);
+    PayRequest createPayRequest(PayRequest payRequest);
+
+    List<PayRequestTarget> createPayRequestTargets(List<PayRequestTarget> payRequestTargets);
 }

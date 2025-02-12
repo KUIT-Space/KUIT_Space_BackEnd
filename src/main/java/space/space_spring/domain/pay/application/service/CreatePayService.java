@@ -57,8 +57,8 @@ public class CreatePayService implements CreatePayUseCase {
 
     private void validatePaySpaceMember(CreatePayCommand command) {
         try {
-            List<SpaceMember> list = loadSpaceMemberPort.loadAllById(getSpaceMemberIds(command));
-            SpaceMembers.of(list);
+            List<SpaceMember> spaceMembers = loadSpaceMemberPort.loadAllById(getSpaceMemberIds(command));
+            SpaceMembers.of(spaceMembers);
         } catch (IllegalArgumentException e) {
             throw new CustomException(PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE);
         }

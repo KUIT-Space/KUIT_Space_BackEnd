@@ -16,6 +16,10 @@ public class OauthController {
 
     private final OauthUseCase oauthUseCase;
 
+    private final static String ACCESS_TOKEN_HEADER = "Authorization";
+    private final static String REFRESH_TOKEN_HEADER = "Authorization-refresh";
+    private final static String TOKEN_PREFIX = "Bearer ";
+
     @GetMapping("/oauth/discord")
     public BaseResponse<SuccessResponse> signInDiscord(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         TokenPair tokenPair = oauthUseCase.signInWithDiscord(code);
@@ -24,8 +28,8 @@ public class OauthController {
             return new BaseResponse<>(new SuccessResponse(false));
         }
 
-        response.setHeader("Authorization", "Bearer " + tokenPair.getAccessToken());
-        response.setHeader("Authorization-refresh", "Bearer " + tokenPair.getRefreshToken());
+        response.setHeader(ACCESS_TOKEN_HEADER, TOKEN_PREFIX + tokenPair.getAccessToken());
+        response.setHeader(REFRESH_TOKEN_HEADER, TOKEN_PREFIX + tokenPair.getRefreshToken());
         return new BaseResponse<>(new SuccessResponse(true));
     }
 

@@ -10,6 +10,7 @@ import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.domain.user.adapter.in.web.TokenPair;
 import space.space_spring.domain.user.application.port.in.OauthUseCase;
+import space.space_spring.domain.user.application.port.out.CreateRefreshTokenPort;
 import space.space_spring.domain.user.application.port.out.DiscordOauthPort;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
 import space.space_spring.domain.user.domain.User;
@@ -22,6 +23,7 @@ public class DiscordService implements OauthUseCase {
 
     private final DiscordOauthPort discordOauthPort;
     private final LoadUserPort loadUserPort;
+    private final CreateRefreshTokenPort createRefreshTokenPort;
     private final JwtLoginProvider jwtLoginProvider;
 
     @Override
@@ -37,9 +39,11 @@ public class DiscordService implements OauthUseCase {
         if (savedUser.isPresent()) {
             String accessToken = jwtLoginProvider.generateToken(savedUser.get().getId(), TokenType.ACCESS);
             String refreshToken = jwtLoginProvider.generateToken(savedUser.get().getId(), TokenType.REFRESH);
+            createRefreshTokenPort.create(savedUser.get().getId(), refreshToken);
             return new TokenPair(accessToken, refreshToken);
         }
         return null;
+
     }
 
 }

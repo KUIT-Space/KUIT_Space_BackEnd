@@ -7,14 +7,21 @@ import java.util.Objects;
 @Getter
 public class NaturalNumber {
 
-    private int number;
+    private final int number;           // NaturalNumber를 불변객체로 만들기 위해 final 키워드 추가
 
     private NaturalNumber(int number) {
+        if (number < 0) {
+            throw new IllegalArgumentException("자연수는 0 이상이어야 합니다.");
+        }
         this.number = number;
     }
 
     public static NaturalNumber of(int number) {
         return new NaturalNumber(number);
+    }
+
+    public NaturalNumber add(NaturalNumber other) {
+        return new NaturalNumber(number + other.number);
     }
 
     @Override

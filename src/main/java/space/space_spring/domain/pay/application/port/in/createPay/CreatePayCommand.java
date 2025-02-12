@@ -1,8 +1,10 @@
 package space.space_spring.domain.pay.application.port.in.createPay;
 
+import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
+import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayType;
 import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
 import space.space_spring.global.util.NaturalNumber;
@@ -29,24 +31,14 @@ public class CreatePayCommand {
 
     private PayType payType;
 
-    private CreatePayCommand(Long payCreatorId, Money totalAmount, Bank bank, List<TargetOfCreatePayCommand> targets, NaturalNumber totalTargetNum, PayType payType) {
+    @Builder
+    public CreatePayCommand(Long payCreatorId, int totalAmount, String bankName, String bankAccountNum, List<TargetOfPayRequest> targets, String valueOfPayType) {
         this.payCreatorId = payCreatorId;
-        this.totalAmount = totalAmount;
-        this.bank = bank;
-        this.targets = targets;
-        this.totalTargetNum = totalTargetNum;
-        this.payType = payType;
-    }
-
-    public static CreatePayCommand create(Long payCreatorId, int totalAmount, String bankName, String bankAccountNum, List<TargetOfPayRequest> targets, String valueOfPayType) {
-        return new CreatePayCommand(
-                payCreatorId,
-                Money.of(totalAmount),
-                Bank.of(bankName, bankAccountNum),
-                mapToInputModel(targets),
-                NaturalNumber.of(targets.size()),
-                PayType.fromString(valueOfPayType)
-        );
+        this.totalAmount = Money.of(totalAmount);
+        this.bank = Bank.of(bankName, bankAccountNum);
+        this.targets = mapToInputModel(targets);
+        this.totalTargetNum = NaturalNumber.of(targets.size());
+        this.payType = PayType.fromString(valueOfPayType);
     }
 
     private static List<TargetOfCreatePayCommand> mapToInputModel(List<TargetOfPayRequest> targets) {
@@ -57,6 +49,7 @@ public class CreatePayCommand {
         return result;
     }
 
-
-
+    public PayRequest toDomainEntity(Long discordMessageId) {
+        return PayRequest.withoutId(payCreatorId, discordMessageId, totalAmount, totalTargetNum, bank, payType);
+    }
 }

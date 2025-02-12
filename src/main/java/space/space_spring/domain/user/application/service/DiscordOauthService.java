@@ -19,7 +19,7 @@ import space.space_spring.domain.user.domain.User;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class DiscordService implements OauthUseCase {
+public class DiscordOauthService implements OauthUseCase {
 
     private final DiscordOauthPort discordOauthPort;
     private final LoadUserPort loadUserPort;
@@ -27,13 +27,13 @@ public class DiscordService implements OauthUseCase {
     private final JwtLoginProvider jwtLoginProvider;
 
     @Override
-    public TokenPair signInWithDiscord(String code) throws JsonProcessingException {
+    public TokenPair signIn(String code) throws JsonProcessingException {
         String accessToken = discordOauthPort.getAccessToken(code);
         User user = discordOauthPort.getUserInfo(accessToken);
-        return signIn(user);
+        return generateTokenPair(user);
     }
 
-    private TokenPair signIn(User user) {
+    private TokenPair generateTokenPair(User user) {
         Optional<User> savedUser = loadUserPort.loadUserByDiscordId(user.getDiscordId());
 
         if (savedUser.isPresent()) {

@@ -22,7 +22,7 @@ public class OauthController {
 
     @GetMapping("/oauth/discord")
     public BaseResponse<SuccessResponse> signInDiscord(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        TokenPair tokenPair = oauthUseCase.signInWithDiscord(code);
+        TokenPair tokenPair = oauthUseCase.signIn(code);
 
         if (tokenPair == null) {
             return new BaseResponse<>(new SuccessResponse(false));

@@ -6,6 +6,6 @@ import space.space_spring.domain.user.adapter.in.web.TokenPair;
 
 public interface OauthUseCase {
 
-    TokenPair signInWithDiscord(String code) throws JsonProcessingException;
+    TokenPair signIn(String code) throws JsonProcessingException;
 
 }

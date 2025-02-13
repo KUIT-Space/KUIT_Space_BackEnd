@@ -2,6 +2,7 @@ package space.space_spring.domain.pay.application.port.in.createPay;
 
 import lombok.Getter;
 import space.space_spring.domain.pay.domain.Money;
+import space.space_spring.domain.pay.domain.PayRequestTarget;
 
 @Getter
 public class TargetOfCreatePayCommand {
@@ -18,5 +19,4 @@ public class TargetOfCreatePayCommand {
     public static TargetOfCreatePayCommand create(Long targetMemberId, int requestedAmount) {
         return new TargetOfCreatePayCommand(targetMemberId, requestedAmount);
     }
-
 }

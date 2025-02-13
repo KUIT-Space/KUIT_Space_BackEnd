@@ -15,6 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SpaceMembersTest {
 
+    /**
+     * 바뀐 SpaceMember 도메인 엔티티 코드와 충돌이 발생해 컴파일 에러가 날 거 같은데,
+     * 이 코드 전부 주석처리 해주시면 됩니닷
+     */
+
     private Space kuit;
     private Space alcon;
 
@@ -41,21 +46,21 @@ class SpaceMembersTest {
     @DisplayName("List<SpaceMember>의 SpaceMember가 모두 같은 Space에 속해있는지 검증한다.")
     void validateMembersInSameSpace1() throws Exception {
         //given
-        SpaceMembers spaceMembers = SpaceMembers.of(List.of(seongjun, sangjun, seohyun, kyeongmin));
+        List<SpaceMember> validSpaceMembers = List.of(seongjun, sangjun, seohyun, kyeongmin);
 
         //when //then
-        assertDoesNotThrow(spaceMembers::validateMembersInSameSpace);
+        assertDoesNotThrow(() -> SpaceMembers.of(validSpaceMembers));
     }
 
     @Test
     @DisplayName("List<SpaceMember>의 SpaceMember가 모두 같은 Space에 속해있지 않으면, IllegalStateException 을 던진다.")
     void validateMembersInSameSpace2() throws Exception {
         //given
-        SpaceMembers spaceMembers = SpaceMembers.of(List.of(seongjun, sangjun, seohyun, kyeongmin, jihwan));
+        List<SpaceMember> inValidSpaceMembers = List.of(seongjun, sangjun, seohyun, kyeongmin, jihwan);
 
         //when //then
-        assertThatThrownBy(spaceMembers::validateMembersInSameSpace)
-                .isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> SpaceMembers.of(inValidSpaceMembers))
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] : members are not in same space");
     }
 

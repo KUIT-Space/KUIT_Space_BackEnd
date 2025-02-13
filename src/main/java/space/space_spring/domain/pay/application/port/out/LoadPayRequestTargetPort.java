@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface LoadPayRequestTargetPort {
 
-    List<PayRequestTarget> loadByTargetMember(SpaceMember targetMember);
+    List<PayRequestTarget> loadByTargetMemberId(Long targetMemberId);
+
+    List<PayRequestTarget> loadByPayRequestId(Long payRequestId);
 }

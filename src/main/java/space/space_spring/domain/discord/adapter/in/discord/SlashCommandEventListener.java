@@ -46,8 +46,8 @@ public class SlashCommandEventListener extends ListenerAdapter {
                 reply(event, channelInfo);
 
                 break;
-            default:
-                event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
+//            default:
+//                event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
 
         }
 

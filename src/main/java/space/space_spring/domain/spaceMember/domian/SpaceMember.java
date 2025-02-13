@@ -3,7 +3,7 @@ package space.space_spring.domain.spaceMember.domian;
 import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.domain.space.domain.Space;
-import space.space_spring.domain.user.User;
+import space.space_spring.domain.user.domain.User;
 
 @Getter
 @Builder

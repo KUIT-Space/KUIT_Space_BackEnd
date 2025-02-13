@@ -11,8 +11,8 @@ import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMembe
 import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.domain.user.UserJpaEntity;
 import space.space_spring.domain.user.adapter.out.persistence.SpringDataUserRepository;
+import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
 import space.space_spring.global.exception.CustomException;
 

@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.adapter.out.persistence.SpaceMapper;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
-import space.space_spring.domain.user.UserJpaEntity;
-import space.space_spring.domain.user.UserMapper;
-import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.domain.user.User;
+import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
+import space.space_spring.domain.user.adapter.out.persistence.UserMapper;
 
 @Component
 @RequiredArgsConstructor

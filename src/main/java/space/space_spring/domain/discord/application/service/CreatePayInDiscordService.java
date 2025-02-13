@@ -2,8 +2,8 @@ package space.space_spring.domain.discord.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import space.space_spring.domain.discord.application.port.in.CreatePayInDiscordUseCase;
-import space.space_spring.domain.discord.application.port.in.CreatePayInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.createPay.CreatePayInDiscordUseCase;
+import space.space_spring.domain.discord.application.port.in.createPay.CreatePayInDiscordCommand;
 import space.space_spring.domain.discord.application.port.out.CreatePayMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreatePayMessagePort;
 import space.space_spring.domain.discord.application.port.out.TargetOfCreatePayMessageCommand;

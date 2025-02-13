@@ -7,17 +7,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
-import space.space_spring.domain.user.User;
-import space.space_spring.domain.user.UserJpaEntity;
+import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
 import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "Space_Member")
-
 public class SpaceMemberJpaEntity extends BaseEntity {
 
     @Id @GeneratedValue

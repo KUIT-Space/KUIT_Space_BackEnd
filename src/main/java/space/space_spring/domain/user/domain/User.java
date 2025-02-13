@@ -1,4 +1,4 @@
-package space.space_spring.domain.user;
+package space.space_spring.domain.user.domain;
 
 import lombok.Getter;
 
@@ -17,5 +17,8 @@ public class User {
     public static User create(Long id, Long discordId) {
         return new User(id, discordId);
     }
-    public static User withoutId(Long discordId){return new User(null,discordId);}
+
+    public static User withoutId(Long discordId) {
+        return new User(null, discordId);
+    }
 }

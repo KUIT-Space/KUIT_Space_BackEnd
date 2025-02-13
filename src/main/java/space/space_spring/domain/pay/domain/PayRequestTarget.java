@@ -1,39 +1,39 @@
 package space.space_spring.domain.pay.domain;
 
 import lombok.Getter;
-import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
 
 @Getter
 public class PayRequestTarget {
 
     private Long id;
 
-    private SpaceMember targetMember;
+    private Long targetMemberId;
 
-    private PayRequest payRequest;
+    private Long payRequestId;
 
     private Money requestedAmount;
 
     private boolean isComplete;
 
-    private PayRequestTarget(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount, boolean isComplete) {
+    private PayRequestTarget(Long id, Long targetMemberId, Long payRequestId, Money requestedAmount, boolean isComplete) {
         this.id = id;
-        this.targetMember = targetMember;
-        this.payRequest = payRequest;
+        this.targetMemberId = targetMemberId;
+        this.payRequestId = payRequestId;
         this.requestedAmount = requestedAmount;
         this.isComplete = isComplete;
     }
 
-    public static PayRequestTarget createNewPayRequestTarget(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
-        return new PayRequestTarget(id, targetMember, payRequest, requestedAmount, false);
+    public static PayRequestTarget create(Long id, Long targetMemberId, Long payRequestId, Money requestedAmount) {
+        return new PayRequestTarget(id, targetMemberId, payRequestId, requestedAmount, false);
     }
 
-    public static PayRequestTarget withoutId(SpaceMember targetMember, PayRequest payRequest, Money requestedAmount) {
-        return new PayRequestTarget(null, targetMember, payRequest, requestedAmount, false);
+    public static PayRequestTarget withoutId(Long targetMemberId, Long payRequestId, Money requestedAmount) {
+        return new PayRequestTarget(null, targetMemberId, payRequestId, requestedAmount, false);
     }
 
-    public static PayRequestTarget of(Long id, SpaceMember targetMember, PayRequest payRequest, Money requestedAmount, boolean isComplete) {
-        return new PayRequestTarget(id, targetMember, payRequest, requestedAmount, isComplete);
+    public static PayRequestTarget of(Long id, Long targetMemberId, Long payRequestId, Money requestedAmount, boolean isComplete) {
+        return new PayRequestTarget(id, targetMemberId, payRequestId, requestedAmount, isComplete);
     }
 
     public boolean isComplete() {

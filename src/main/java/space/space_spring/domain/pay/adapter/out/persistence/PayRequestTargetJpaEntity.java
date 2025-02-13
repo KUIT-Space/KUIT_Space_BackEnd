@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
@@ -29,7 +29,7 @@ public class PayRequestTargetJpaEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "pay_request_id")
     @NotNull
-    private PayRequestJpaEntity payRequestJpaEntity;
+    private PayRequestJpaEntity payRequest;
 
     @Column(name = "requested_amount")
     @NotNull
@@ -40,26 +40,26 @@ public class PayRequestTargetJpaEntity extends BaseEntity {
     private boolean isComplete;
 
     @Builder
-    private PayRequestTargetJpaEntity(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequestJpaEntity, int requestedAmount, boolean isComplete) {
+    private PayRequestTargetJpaEntity(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount, boolean isComplete) {
         this.targetMember = targetMember;
-        this.payRequestJpaEntity = payRequestJpaEntity;
+        this.payRequest = payRequest;
         this.requestedAmount = requestedAmount;
         this.isComplete = isComplete;
     }
 
-    public static PayRequestTargetJpaEntity createNewJpaEntity(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequestJpaEntity, int requestedAmount) {
+    public static PayRequestTargetJpaEntity create(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount) {
         return PayRequestTargetJpaEntity.builder()
                 .targetMember(targetMember)
-                .payRequestJpaEntity(payRequestJpaEntity)
+                .payRequest(payRequest)
                 .requestedAmount(requestedAmount)
                 .isComplete(false)
                 .build();
     }
 
-    public static PayRequestTargetJpaEntity of(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequestJpaEntity, int requestedAmount, boolean isComplete) {
+    public static PayRequestTargetJpaEntity of(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount, boolean isComplete) {
         return PayRequestTargetJpaEntity.builder()
                 .targetMember(targetMember)
-                .payRequestJpaEntity(payRequestJpaEntity)
+                .payRequest(payRequest)
                 .requestedAmount(requestedAmount)
                 .isComplete(isComplete)
                 .build();

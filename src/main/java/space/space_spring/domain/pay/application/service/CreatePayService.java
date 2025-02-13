@@ -12,12 +12,15 @@ import space.space_spring.domain.pay.application.port.in.createPay.TargetOfCreat
 import space.space_spring.domain.pay.application.port.out.CreatePayPort;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
+
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
+import space.space_spring.domain.spaceMember.domian.SpaceMembers;
+
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayAmountPolicy;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
-import space.space_spring.domain.spaceMember.SpaceMember;
-import space.space_spring.domain.spaceMember.SpaceMembers;
-import space.space_spring.domain.spaceMember.ValidateSpaceMemberUseCase;
+
+
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;

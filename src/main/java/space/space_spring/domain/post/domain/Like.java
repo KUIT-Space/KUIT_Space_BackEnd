@@ -1,7 +1,7 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
-import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
 
 @Getter
 public class Like {

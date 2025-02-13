@@ -10,8 +10,9 @@ import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberInfoPort;
-import space.space_spring.domain.spaceMember.NicknameAndProfileImage;
+
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
+import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 
 import java.util.ArrayList;
 import java.util.List;

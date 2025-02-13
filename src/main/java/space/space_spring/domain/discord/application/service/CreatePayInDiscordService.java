@@ -7,8 +7,8 @@ import space.space_spring.domain.discord.application.port.in.CreatePayInDiscordC
 import space.space_spring.domain.discord.application.port.out.CreatePayMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreatePayMessagePort;
 import space.space_spring.domain.discord.application.port.out.TargetOfCreatePayMessageCommand;
-import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
-import space.space_spring.domain.spaceMember.SpaceMember;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
 
 import java.util.List;
 

@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.space.adapter.out.persistence.SpringDataSpace;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
-import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
+import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.domain.user.User;
 import space.space_spring.domain.user.UserJpaEntity;
 import space.space_spring.domain.user.adapter.out.persistence.SpringDataUserRepository;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
@@ -22,7 +22,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , CreateSpaceMemberPort {
+public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , CreateSpaceMemberPort, LoadSpaceMemberInfoPort {
 
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpaceMemberMapper spaceMemberMapper;
@@ -55,5 +55,31 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , Crea
     @Override
     public List<SpaceMember> loadSpaceMemberBySpaceId(Long spaceId){
         return spaceMemberRepository.findBySpaceId(spaceId).stream().map(spaceMemberMapper::toDomainEntity).toList();
+    }
+
+
+
+    @Override
+    public SpaceMember loadById(Long id) {
+        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(id).orElseThrow(() ->
+                new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
+    }
+
+    @Override
+    public List<SpaceMember> loadAllById(List<Long> ids) {
+        List<SpaceMemberJpaEntity> allById = spaceMemberRepository.findAllById(ids);
+
+        return allById.stream().map(spaceMemberMapper::toDomainEntity)
+                .toList();
+    }
+
+    @Override
+    public NicknameAndProfileImage loadNicknameAndProfileImageById(Long spaceMemberId) {
+        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(spaceMemberId).orElseThrow(() ->
+                new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        return NicknameAndProfileImage.of(spaceMemberJpaEntity.getNickname(), spaceMemberJpaEntity.getProfileImageUrl());
     }
 }

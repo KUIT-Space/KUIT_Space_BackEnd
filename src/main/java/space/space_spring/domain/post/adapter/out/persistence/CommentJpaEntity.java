@@ -25,12 +25,10 @@ public class CommentJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @NotNull
     private PostJpaEntity post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
-    @NotNull
     private QuestionJpaEntity question;
 
     private CommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post, QuestionJpaEntity question) {

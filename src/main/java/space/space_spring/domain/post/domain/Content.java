@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class Content {
 
-    private static final int MAX_LENGTH = 5000;
-    private static final int MIN_LENGTH = 10;
+    private static final int MAX_LENGTH = 2000;
+    private static final int MIN_LENGTH = 20;
 
     @Lob
     @Column(nullable = false)

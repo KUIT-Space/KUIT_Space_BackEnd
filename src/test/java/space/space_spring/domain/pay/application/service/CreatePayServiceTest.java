@@ -1,3 +1,4 @@
+
 //package space.space_spring.domain.pay.application.service;
 //
 //import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,7 @@
 //import space.space_spring.domain.pay.application.port.out.CreatePayPort;
 //import space.space_spring.domain.pay.domain.PayRequest;
 //import space.space_spring.domain.spaceMember.LoadSpaceMemberPort;
-//import space.space_spring.domain.spaceMember.ValidateSpaceMemberUseCase;
+//import space.space_spring.domain.spaceMember.application.port.in.ValidateSpaceMemberUseCase;
 //import space.space_spring.global.exception.CustomException;
 //
 //import java.util.List;

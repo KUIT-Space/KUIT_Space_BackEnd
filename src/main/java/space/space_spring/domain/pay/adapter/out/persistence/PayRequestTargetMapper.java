@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 
 @Component
 @RequiredArgsConstructor

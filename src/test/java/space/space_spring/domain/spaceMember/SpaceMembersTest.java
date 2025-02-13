@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import space.space_spring.domain.space.domain.Space;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
+import space.space_spring.domain.spaceMember.domian.SpaceMembers;
 import space.space_spring.domain.user.User;
 
 import java.util.List;

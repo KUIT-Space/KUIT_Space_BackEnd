@@ -1,4 +1,4 @@
-package space.space_spring.domain.spaceMember;
+package space.space_spring.domain.spaceMember.application.port.in;
 
 import java.util.List;
 

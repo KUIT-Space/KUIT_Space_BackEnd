@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
+import space.space_spring.global.exception.CustomException;
 
 @Component
 @RequiredArgsConstructor
@@ -26,23 +27,30 @@ public class CreateSpaceEventListener extends ListenerAdapter {
                     .guildId(guild.getIdLong())
                     .guildName(guild.getName())
                     .build();
+            try {
 
-            Long spaceId = createSpaceUseCase.createSpace(command);
-            if(spaceId==null){
+
+                event.deferReply(true).queue(msg->{
+
+                });
+
+                Long spaceId = createSpaceUseCase.createSpace(command);
+
+                event.getHook().editOriginal("space setting success!\nspace ID : " + spaceId + "\n")
+
+                        //.setEphemeral(true)
+                        .queue();
+
+
+            }catch(CustomException e) {
                 /*
-                * 이미 guild가 space로 등록이 된 경우
-                * */
-                event.getInteraction()
-                        .reply("this guild already initiated\nspace ID : "+spaceId+"\n")
-                        .setEphemeral(true)
+                 * 이미 guild가 space로 등록이 된 경우
+                 * */
+                event.deferReply().queue();
+                event.getHook().editOriginal("this guild already initiated")
                         .queue();
                 return;
             }
-            event.getInteraction()
-                    .reply("space setting success!\nspace ID : "+spaceId+"\n")
-                    .setEphemeral(true)
-                    .queue();
-
 
             return;
         }

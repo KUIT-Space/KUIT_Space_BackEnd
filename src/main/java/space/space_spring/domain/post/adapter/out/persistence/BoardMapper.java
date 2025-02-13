@@ -3,7 +3,8 @@ package space.space_spring.domain.post.adapter.out.persistence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.post.domain.Board;
-import space.space_spring.domain.space.SpaceMapper;
+
+import space.space_spring.domain.space.adapter.out.persistence.SpaceMapper;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
 
 @Component

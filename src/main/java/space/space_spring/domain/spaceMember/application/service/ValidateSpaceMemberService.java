@@ -1,7 +1,11 @@
-package space.space_spring.domain.spaceMember;
+package space.space_spring.domain.spaceMember.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import space.space_spring.domain.spaceMember.application.port.in.ValidateSpaceMemberUseCase;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
+import space.space_spring.domain.spaceMember.domian.SpaceMembers;
 
 import java.util.List;
 
@@ -17,10 +21,5 @@ public class ValidateSpaceMemberService implements ValidateSpaceMemberUseCase {
 
         SpaceMembers.of(allOfSpaceMember);
 
-//        try {
-//            spaceMembers.validateMembersInSameSpace();
-//        } catch (IllegalStateException e) {
-//            throw new CustomException(PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE);           // 이 방식 괜찮은지 ??
-//        }
     }
 }

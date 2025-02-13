@@ -55,8 +55,5 @@ public class SpaceMember {
         this.userId =userId;
         return this;
     }
-    public SpaceMember setSpaceId(Long spaceId){
-        this.spaceId=spaceId;
-        return this;
-    }
+
 }

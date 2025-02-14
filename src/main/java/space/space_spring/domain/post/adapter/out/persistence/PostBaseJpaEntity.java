@@ -3,9 +3,11 @@ package space.space_spring.domain.post.adapter.out.persistence;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.domain.spaceMember.SpaceMemberJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.entity.BaseEntity;
 
 @Entity
@@ -38,6 +40,7 @@ public class PostBaseJpaEntity extends BaseEntity {
     @NotNull
     private String content;
 
+    @Builder
     private PostBaseJpaEntity(Long discordId, BoardJpaEntity board, SpaceMemberJpaEntity spaceMember, String content) {
         this.discordId = discordId;
         this.board = board;

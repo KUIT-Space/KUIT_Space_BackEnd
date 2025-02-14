@@ -8,6 +8,7 @@ import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.CreateSpacePort;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
+import space.space_spring.domain.spaceMember.application.port.in.CreateSpaceMemberUseCase;
 import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMember;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMembers;
@@ -32,8 +33,8 @@ public class CreateSpaceService implements CreateSpaceUseCase {
     private final LoadGuildMemberPort loadGuildMemberPort;
     private final CreateUserPort createUserPort;
     private final LoadUserPort loadUserPort;
-    private final CreateSpaceMemberPort createSpaceMemberPort;
     private final CreateUserUseCase createUserUseCase;
+    private final CreateSpaceMemberUseCase createSpaceMemberUseCase;
 
     @Override
     @Transactional
@@ -69,7 +70,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
                     }
                 })
         .forEach(spaceMember -> {
-            System.out.println("\nCreateUser:"+createSpaceMemberPort.createSpaceMember(spaceMember).getId());
+            System.out.println("\nCreateUser:"+createSpaceMemberUseCase.create(spaceMember).getId());
         });
 
 

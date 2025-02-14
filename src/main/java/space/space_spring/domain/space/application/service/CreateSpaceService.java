@@ -12,6 +12,7 @@ import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMem
 import space.space_spring.domain.spaceMember.application.port.out.GuildMember;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMembers;
 import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMemberPort;
+import space.space_spring.domain.user.application.port.in.CreateUserUseCase;
 import space.space_spring.domain.user.application.port.out.CreateUserPort;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
 import space.space_spring.domain.user.domain.User;
@@ -32,6 +33,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
     private final CreateUserPort createUserPort;
     private final LoadUserPort loadUserPort;
     private final CreateSpaceMemberPort createSpaceMemberPort;
+    private final CreateUserUseCase createUserUseCase;
 
     @Override
     @Transactional
@@ -54,7 +56,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
 
         //List<SpaceMember> userIdList =
         guildMembers.toStream().map(guildMember -> {
-            Long userId = checkAndCreateUser(guildMember);
+            Long userId = createUserUseCase.findOrCreateUser(guildMember);
             return guildMember.createSpaceMember(newSpace.getId(), userId);
         })
         //        .toList();
@@ -81,13 +83,5 @@ public class CreateSpaceService implements CreateSpaceUseCase {
         });
     }
 
-    private Long checkAndCreateUser(GuildMember guildMember){
-        //User 존재 확인
-       User user=loadUserPort.loadUserByDiscordId(guildMember.getDiscordId()).orElseGet(()->{
-           User newUser = User.withoutId(guildMember.getDiscordId());
-           return createUserPort.createUser(newUser);
-       });
 
-        return user.getId();
-    }
 }

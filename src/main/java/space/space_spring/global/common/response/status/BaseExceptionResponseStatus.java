@@ -43,6 +43,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     CANNOT_FIND_USER_ID(4007, HttpStatus.UNAUTHORIZED,"토큰의 userId정보를 찾을 수 없습니다."),
     WRONG_SIGNATURE_JWT(4008,HttpStatus.UNAUTHORIZED,"JWT 서명이 잘못 되었습니다."),
     EXPIRED_REFRESH_TOKEN(4009, HttpStatus.UNAUTHORIZED, "만료된 refresh token 입니다. 다시 로그인해야합니다."),
+    DISCORD_TOKEN_ERROR(4010, HttpStatus.UNAUTHORIZED, "디스코드 서버에서 access token 발급이 실패하였습니다."),
+    CANNOT_FIND_DISCORD_USER(4011, HttpStatus.NOT_FOUND, "디스코드 계정의 정보를 가져오는 데에 실패하였습니다."),
 
     /**
      * 5000: User 오류

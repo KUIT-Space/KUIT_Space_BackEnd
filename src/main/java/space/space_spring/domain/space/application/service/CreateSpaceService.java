@@ -3,7 +3,6 @@ package space.space_spring.domain.space.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.domain.space.adapter.out.persistence.SpacePersistenceAdapter;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.CreateSpacePort;
@@ -13,14 +12,11 @@ import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMem
 import space.space_spring.domain.spaceMember.application.port.out.GuildMember;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMembers;
 import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMemberPort;
-import space.space_spring.domain.spaceMember.domian.SpaceMember;
-import space.space_spring.domain.spaceMember.domian.SpaceMembers;
-import space.space_spring.domain.user.User;
 import space.space_spring.domain.user.application.port.out.CreateUserPort;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
+import space.space_spring.domain.user.domain.User;
 import space.space_spring.global.exception.CustomException;
 
-import java.util.List;
 import java.util.Optional;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_ALREADY_EXISTED;

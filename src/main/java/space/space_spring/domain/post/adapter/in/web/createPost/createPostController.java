@@ -32,12 +32,15 @@ public class createPostController {
             throw new CustomException(INVALID_POST_CREATE, getErrorMessage(bindingResult));
         }
 
-        CreatePostCommand command = CreatePostCommand.create(id, boardId, request.getTitle(), request.getContent(), request.getAttachments());
+        CreatePostCommand command = CreatePostCommand.builder()
+                .postCreatorId(id)
+                .boardId(boardId)
+                .title(request.getTitle())
+                .content(request.getContent())
+                .attachments(request.getAttachments())
+                .build();
+
         return new BaseResponse<>(createPostUseCase.createPost(command));
 
-
-
     }
-
-
 }

@@ -20,5 +20,6 @@ public class AttachmentOfCreate extends SelfValidating<AttachmentOfCreate> {
     public AttachmentOfCreate(String valueOfAttachmentType, String attachmentUrl) {
         this.valueOfAttachmentType = valueOfAttachmentType;
         this.attachmentUrl = attachmentUrl;
+        this.validateSelf();
     }
 }

@@ -4,12 +4,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.global.common.validation.SelfValidating;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class RequestOfCreatePost {
+public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
 
     @NotBlank(message = "title은 공백일 수 없습니다.")
     private String title;
@@ -24,6 +25,7 @@ public class RequestOfCreatePost {
         this.title = title;
         this.content = content;
         this.attachments = attachments;
+        this.validateSelf();
     }
 
 }

@@ -1,4 +1,4 @@
-package space.space_spring.domain.user;
+package space.space_spring.domain.user.adapter.out.persistence;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

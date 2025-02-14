@@ -2,9 +2,9 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
     group:
-      "local": "localRDB, localMongoDB, livekit,localS3, localOAuth, localJPA, localPort, localSecret, web-mvc,localDiscordBot"
-      "dev": "devRDB, devMongoDB, livekit,devS3,devPort, devJPA, devSecret, web-mvc, devDiscordBot"
-      "prod": "devRDB, devMongoDB, livekit,devS3,devPort, prodJPA, devSecret, web-mvc, devDiscordBot"
+      "local": "localRDB, localRedis, localMongoDB, livekit,localS3, localOAuth, localJPA, localPort, localSecret, web-mvc"
+      "dev": "devRDB, devRedis, devMongoDB, livekit,devS3, devOAuth, devPort, devJPA, devSecret, web-mvc, devDiscordBot"
+      "prod": "devRDB, devRedis, devMongoDB, livekit,devS3, devOAuth, devPort, prodJPA, devSecret, web-mvc, devDiscordBot"
 ---
 spring:
   config:
@@ -27,6 +27,19 @@ spring:
 logging:
   level:
     org.hibernate.sql: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "devRedis"
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
 ---
 spring:
   config:
@@ -54,6 +67,24 @@ cloud:
       auto: false
 
 ---
+
+spring:
+  config:
+    activate:
+      on-profile: "devOAuth"
+
+oauth:
+  discord:
+    client:
+      id: ${DISCORD_CLIENT_ID}
+      secret: ${DISCORD_CLIENT_SECRET}
+    uri:
+      redirect: ${DISCORD_REDIRECT_URI}
+      token: ${DISCORD_TOKEN_URI}
+      request: ${DISCORD_REQUEST_URI}
+
+---
+
 spring:
   config:
     activate:

@@ -1,7 +1,8 @@
-package space.space_spring.domain.post.adapter.out.persistence;
+package space.space_spring.domain.post.adapter.out.persistence.postBase;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.application.port.out.CreatePostBasePort;
 import space.space_spring.domain.post.domain.PostBase;

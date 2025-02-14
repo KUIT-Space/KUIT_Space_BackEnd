@@ -16,6 +16,7 @@ import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
@@ -81,5 +82,22 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , Crea
                 new CustomException(SPACE_MEMBER_NOT_FOUND));
 
         return NicknameAndProfileImage.of(spaceMemberJpaEntity.getNickname(), spaceMemberJpaEntity.getProfileImageUrl());
+    }
+    @Override
+    public List<SpaceMember> createSpaceMembers(List<SpaceMember> spaceMembers){
+        if(spaceMembers.isEmpty()){
+            return null;
+        }
+        SpaceJpaEntity space = spaceRepository.findById(spaceMembers.get(0).getSpaceId()).orElseThrow();
+        List<SpaceMemberJpaEntity> spaceMemberJpaEntityList = new ArrayList<>();
+        spaceMembers.stream().forEach(spaceMember -> {
+            UserJpaEntity user = userRepository.findByDiscordId(spaceMember.getDiscordId()).orElseThrow();
+            spaceMemberJpaEntityList.add(spaceMemberMapper.toJpaEntity(spaceMember,space,user));
+        });
+
+        List<SpaceMemberJpaEntity> resultSpaceMemberJpaEntityList = spaceMemberRepository.saveAll(spaceMemberJpaEntityList);
+
+        return resultSpaceMemberJpaEntityList.stream().map(spaceMemberMapper::toDomainEntity).toList();
+
     }
 }

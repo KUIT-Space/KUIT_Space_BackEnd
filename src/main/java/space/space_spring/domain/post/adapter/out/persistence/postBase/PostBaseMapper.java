@@ -1,4 +1,4 @@
-package space.space_spring.domain.post.adapter.out.persistence;
+package space.space_spring.domain.post.adapter.out.persistence.postBase;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

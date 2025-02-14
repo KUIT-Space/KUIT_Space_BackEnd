@@ -1,7 +1,8 @@
-package space.space_spring.domain.post.adapter.out.persistence;
+package space.space_spring.domain.post.adapter.out.persistence.board;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.domain.Board;
 
 import space.space_spring.domain.space.adapter.out.persistence.SpaceMapper;
@@ -25,7 +26,7 @@ public class BoardMapper {
     }
 
     // JPA 엔티티 -> 도메인
-    public Board toDomain(BoardJpaEntity jpaEntity) {
+    public Board toDomainEntity(BoardJpaEntity jpaEntity) {
         return Board.of(
                 jpaEntity.getId(),
                 jpaEntity.getSpace().getId(),

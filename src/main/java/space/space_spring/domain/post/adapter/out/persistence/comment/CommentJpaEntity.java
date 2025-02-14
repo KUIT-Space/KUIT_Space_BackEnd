@@ -1,10 +1,13 @@
-package space.space_spring.domain.post.adapter.out.persistence;
+package space.space_spring.domain.post.adapter.out.persistence.comment;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.question.QuestionJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

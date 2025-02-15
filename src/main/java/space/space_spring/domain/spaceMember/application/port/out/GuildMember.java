@@ -17,11 +17,14 @@ public class GuildMember {
 
     private boolean isManager;
 
-    private GuildMember(Long discordId, String nickname, String profileImageUrl, boolean isManager){
+    private Long guildDiscordId;
+
+    private GuildMember(Long discordId, String nickname, String profileImageUrl, boolean isManager,Long guildDiscordId){
         this.discordId=discordId;
         this.nickname=nickname;
         this.profileImageUrl=profileImageUrl;
         this.isManager=isManager;
+        this.guildDiscordId=guildDiscordId;
 
     }
 

@@ -39,4 +39,11 @@ public class SpaceMemberMapper {
                 spaceMember.isManager()
         );
     }
+
+    public SpaceMemberJpaEntity updateJpaEntity(SpaceMemberJpaEntity spaceMemberJpaEntity,SpaceMember spaceMember){
+        spaceMemberJpaEntity.setNickname(spaceMember.getNickname());
+        spaceMemberJpaEntity.setProfileImageUrl(spaceMemberJpaEntity.getProfileImageUrl());
+        spaceMemberJpaEntity.setManager(spaceMemberJpaEntity.isManager());
+        return spaceMemberJpaEntity;
+    }
 }

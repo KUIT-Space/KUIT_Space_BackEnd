@@ -10,4 +10,6 @@ public interface LoadSpaceMemberPort {
     List<SpaceMember> loadAllById(List<Long> ids);
     SpaceMember loadSpaceMemberById(Long id);
     List<SpaceMember> loadSpaceMemberBySpaceId(Long spaceId);
+
+    SpaceMember loadByDiscordId(Long discordId);
 }

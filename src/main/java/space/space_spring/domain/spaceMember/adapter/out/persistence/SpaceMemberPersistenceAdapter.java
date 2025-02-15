@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.space.adapter.out.persistence.SpringDataSpace;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
-import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
-import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
-import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
-import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.*;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.domain.user.adapter.out.persistence.SpringDataUserRepository;
@@ -23,7 +21,8 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , CreateSpaceMemberPort, LoadSpaceMemberInfoPort {
+public class SpaceMemberPersistenceAdapter
+        implements LoadSpaceMemberPort , CreateSpaceMemberPort, LoadSpaceMemberInfoPort , UpdateSpaceMemberPort {
 
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpaceMemberMapper spaceMemberMapper;
@@ -99,5 +98,25 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , Crea
 
         return resultSpaceMemberJpaEntityList.stream().map(spaceMemberMapper::toDomainEntity).toList();
 
+    }
+
+    @Override
+    public SpaceMember update(SpaceMember spaceMember){
+        if(spaceMember.getId()==null){
+            throw new IllegalArgumentException("spaceMember id is null");
+        }
+
+        //check spaceMember Id exist
+        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(spaceMember.getId()).orElseThrow(()->new IllegalArgumentException("no spaceMember ID exist"));
+
+        SpaceMemberJpaEntity newSpaceMember = spaceMemberRepository.save(
+                spaceMemberMapper.updateJpaEntity(spaceMemberJpaEntity,spaceMember));
+
+        return spaceMemberMapper.toDomainEntity(newSpaceMember);
+    }
+
+    @Override
+    public SpaceMember loadByDiscordId(Long discordId){
+        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findByDiscordId(discordId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
     }
 }

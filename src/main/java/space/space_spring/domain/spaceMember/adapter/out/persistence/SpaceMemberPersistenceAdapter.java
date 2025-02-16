@@ -122,7 +122,7 @@ public class SpaceMemberPersistenceAdapter
 
     @Override
     public boolean delete(Long spaceId){
-
+        //ToDo change to soft delete
         spaceMemberRepository.delete(spaceMemberRepository.findById(spaceId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
 
         return true;

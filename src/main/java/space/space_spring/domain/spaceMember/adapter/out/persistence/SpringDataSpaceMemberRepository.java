@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface SpringDataSpaceMemberRepository extends JpaRepository<SpaceMemberJpaEntity, Long> {
     List<SpaceMemberJpaEntity> findBySpaceId(Long spaceId);
-    Optional<SpaceMemberJpaEntity> findByDiscordId(Long discordId);
+    Optional<SpaceMemberJpaEntity> findBySpaceIdAndDiscordId(Long SpaceId,Long discordId);
+
 
 }

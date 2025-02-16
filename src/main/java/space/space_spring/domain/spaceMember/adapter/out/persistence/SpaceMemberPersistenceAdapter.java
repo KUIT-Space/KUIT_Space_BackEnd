@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Repository
@@ -116,8 +117,9 @@ public class SpaceMemberPersistenceAdapter
     }
 
     @Override
-    public SpaceMember loadByDiscordId(Long discordId){
-        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findByDiscordId(discordId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
+    public SpaceMember loadByDiscord(Long spaceDiscordId , Long spaceMemberDiscordId){
+        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByDiscordId(spaceDiscordId).orElseThrow(()->new CustomException(SPACE_NOT_FOUND));
+        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findBySpaceIdAndDiscordId(spaceJpaEntity.getId(),spaceMemberDiscordId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
     }
 
     @Override

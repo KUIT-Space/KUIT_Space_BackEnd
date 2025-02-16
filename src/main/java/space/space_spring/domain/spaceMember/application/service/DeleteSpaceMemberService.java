@@ -16,7 +16,7 @@ public class DeleteSpaceMemberService implements DeleteSpaceMemberUseCase {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     @Override
     public SpaceMember delete(GuildMember guildMember){
-        SpaceMember spaceMember=loadSpaceMemberPort.loadByDiscordId(guildMember.getDiscordId());
+        SpaceMember spaceMember=loadSpaceMemberPort.loadByDiscord(guildMember.getGuildDiscordId(),guildMember.getDiscordId());
         deleteSpaceMemberPort.delete(spaceMember.getId());
         return spaceMember;
     }

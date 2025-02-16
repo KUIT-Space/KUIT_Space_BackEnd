@@ -22,7 +22,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @RequiredArgsConstructor
 @Repository
 public class SpaceMemberPersistenceAdapter
-        implements LoadSpaceMemberPort , CreateSpaceMemberPort, LoadSpaceMemberInfoPort , UpdateSpaceMemberPort {
+        implements LoadSpaceMemberPort , CreateSpaceMemberPort, LoadSpaceMemberInfoPort , UpdateSpaceMemberPort ,DeleteSpaceMemberPort {
 
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpaceMemberMapper spaceMemberMapper;
@@ -118,5 +118,13 @@ public class SpaceMemberPersistenceAdapter
     @Override
     public SpaceMember loadByDiscordId(Long discordId){
         return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findByDiscordId(discordId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
+    }
+
+    @Override
+    public boolean delete(Long spaceId){
+
+        spaceMemberRepository.delete(spaceMemberRepository.findById(spaceId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
+
+        return true;
     }
 }

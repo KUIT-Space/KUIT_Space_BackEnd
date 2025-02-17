@@ -21,9 +21,7 @@ public class UpdateSpaceMemberService implements UpdateSpaceMemberUseCase {
     @Override
     public boolean CheckChangeOrUpdate(GuildMember guildMember){
         SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildMember.getGuildDiscordId(),guildMember.getDiscordId());
-        if(guildMember.getNickname().equals(spaceMember.getNickname())
-                && guildMember.getProfileImageUrl().equals(spaceMember.getProfileImageUrl())
-                && (guildMember.isManager()== spaceMember.isManager())){
+        if(!guildMember.checkChangeSpaceMember(spaceMember)){
             return false;
         }
         SpaceMember newSpaceMember = guildMember.createSpaceMember(spaceMember.getSpaceId(), spaceMember.getUserId());

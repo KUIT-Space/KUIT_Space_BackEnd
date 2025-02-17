@@ -18,7 +18,6 @@ public class CreateSpaceMemberInDiscordService implements CreateSpaceMemberInDis
     public void create(GuildMember guildMember,Long guildId){
         Long userId = createUserUseCase.findOrCreateUser(guildMember);
         Long spaceId = loadSpacePort.loadSpaceByDiscordId(guildId).orElseThrow(()->new IllegalArgumentException()).getId();
-        guildMember.createSpaceMember(spaceId,userId);
-
+        createSpaceMemberUseCase.create(guildMember.createSpaceMember(spaceId,userId));
     }
 }

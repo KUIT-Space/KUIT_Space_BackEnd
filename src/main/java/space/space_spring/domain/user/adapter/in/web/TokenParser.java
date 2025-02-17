@@ -14,13 +14,13 @@ public class TokenParser {
     private final static String TOKEN_PREFIX = "Bearer ";
 
     public static TokenPair parseTokenPair(HttpServletRequest request) {
-        String accessToken = request.getHeader(ACCESS_TOKEN_HEADER).substring(TOKEN_PREFIX.length());
+        String accessToken = request.getHeader(ACCESS_TOKEN_HEADER);
         validateToken(accessToken);
 
-        String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER).substring(TOKEN_PREFIX.length());
+        String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER);
         validateToken(refreshToken);
 
-        return new TokenPair(accessToken, refreshToken);
+        return new TokenPair(accessToken.substring(TOKEN_PREFIX.length()), refreshToken.substring(TOKEN_PREFIX.length()));
     }
 
     private static void validateToken(String token) {

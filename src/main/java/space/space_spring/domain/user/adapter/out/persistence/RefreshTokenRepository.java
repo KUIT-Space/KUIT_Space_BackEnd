@@ -1,5 +1,6 @@
 package space.space_spring.domain.user.adapter.out.persistence;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -17,8 +18,11 @@ public class RefreshTokenRepository {
         redisTemplate.opsForValue().set(PREFIX + userId, refreshToken, Duration.ofDays(7));
     }
 
-    public String findByUserId(Long userId) {
-        return redisTemplate.opsForValue().get(PREFIX + userId);
+    public Optional<String> findByUserId(Long userId) {
+        return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + userId));
     }
 
+    public boolean deleteByUserId(Long userId) {
+        return Boolean.TRUE.equals(redisTemplate.delete(PREFIX + userId));
+    }
 }

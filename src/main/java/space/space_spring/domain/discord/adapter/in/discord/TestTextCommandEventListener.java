@@ -7,8 +7,12 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordMessageCommand;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordMessagePort;
+import space.space_spring.domain.post.application.port.in.CreateBoard.CreateBoardCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
+import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.global.exception.CustomException;
 
@@ -18,6 +22,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class TestTextCommandEventListener extends ListenerAdapter {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
+    private final CreateDiscordMessagePort createDiscordMessagePort;
 
     //private final CreateSpaceUseCase createSpaceUseCase;
     @Override
@@ -30,6 +35,19 @@ public class TestTextCommandEventListener extends ListenerAdapter {
 
         if(msg.getContentRaw().equals("!ping")){
             msg.reply("pong").queue();
+            return;
+        }
+
+        if(msg.getContentRaw().equals("!pingping")){
+            CreateDiscordMessageCommand command=CreateDiscordMessageCommand.builder()
+                            .channelDiscordId(event.getChannel().getIdLong())
+                            .guildDiscordId(event.getGuild().getIdLong())
+                            .WebHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
+                            .Content("spring server message test success")
+                            .avatarUrl(event.getMember().getEffectiveAvatarUrl())
+                            .name(event.getMember().getEffectiveName())
+                            .build();
+            createDiscordMessagePort.send(command);
             return;
         }
 

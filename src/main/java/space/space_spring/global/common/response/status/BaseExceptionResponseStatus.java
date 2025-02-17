@@ -118,8 +118,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_NOT_FOUND(12005, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
     PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
     THIS_PAY_REQUEST_HAS_NOT_TARGETS(12007, HttpStatus.INTERNAL_SERVER_ERROR, "현재 정산 요청은 정산 요청 대상이 없습니다. 현재 정산 생성 시 서버에 문제가 있었습니다."),
-    INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다.");
-  
+    INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다."),
+
+    /**
+     * 130000 Discord 오류
+     */
+    SEND_MESSAGE_FAIL(12000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다");
+
     private final int code;
     private final HttpStatus status;
     private final String message;

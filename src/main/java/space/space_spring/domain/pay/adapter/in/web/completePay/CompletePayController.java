@@ -18,14 +18,7 @@ public class CompletePayController {
 
     @PatchMapping("/pay/{payRequestTargetId}/complete")
     public BaseResponse<SuccessResponse> completeForRequestedPay(@JwtLoginAuth Long spaceMemberId, @PathVariable("payRequestTargetId") Long payRequestTargetId) {
-        try {
-            completePayUseCase.completeForRequestedPay(spaceMemberId, payRequestTargetId);
-
-            return new BaseResponse<>(new SuccessResponse(true));
-        } catch (CustomException e) {
-            // 에러 메시지 던져줄게 있으면 throw
-
-            return new BaseResponse<>(new SuccessResponse(false));
-        }
+        completePayUseCase.completeForRequestedPay(spaceMemberId, payRequestTargetId);
+        return new BaseResponse<>(new SuccessResponse(true));
     }
 }

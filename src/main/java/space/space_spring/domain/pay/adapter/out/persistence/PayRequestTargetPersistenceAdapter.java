@@ -16,8 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_NOT_FOUND;
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @RequiredArgsConstructor
 @Repository
@@ -83,6 +82,17 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
 
     @Override
     public PayRequestTarget loadById(Long payRequestTargetId) {
-        return null;
+        PayRequestTargetJpaEntity jpaEntity = payRequestTargetRepository.findById(payRequestTargetId).orElseThrow(
+                () -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
+
+        return payRequestTargetMapper.toDomainEntity(jpaEntity);
+    }
+
+    @Override
+    public void update(PayRequestTarget payRequestTarget) {
+        PayRequestTargetJpaEntity jpaEntity = payRequestTargetRepository.findById(payRequestTarget.getId()).orElseThrow(
+                () -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
+
+        jpaEntity.changeIsComplete(payRequestTarget.isComplete());
     }
 }

@@ -1,7 +1,8 @@
-package space.space_spring.domain.pay.adapter.out.persistence;
+package space.space_spring.domain.pay.adapter.out.persistence.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.pay.adapter.out.persistence.jpaEntity.PayRequestJpaEntity;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequest;
@@ -14,7 +15,7 @@ import space.space_spring.global.util.NaturalNumber;
 @RequiredArgsConstructor
 public class PayRequestMapper {
 
-    PayRequestJpaEntity toJpaEntity(SpaceMemberJpaEntity payCreatorJpaEntity, PayRequest domain) {
+    public PayRequestJpaEntity toJpaEntity(SpaceMemberJpaEntity payCreatorJpaEntity, PayRequest domain) {
         return PayRequestJpaEntity.create(
                 payCreatorJpaEntity,
                 domain.getDiscordMessageId(),

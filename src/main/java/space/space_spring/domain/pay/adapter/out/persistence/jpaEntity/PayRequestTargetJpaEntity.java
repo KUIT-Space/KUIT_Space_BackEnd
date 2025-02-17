@@ -1,4 +1,4 @@
-package space.space_spring.domain.pay.adapter.out.persistence;
+package space.space_spring.domain.pay.adapter.out.persistence.jpaEntity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

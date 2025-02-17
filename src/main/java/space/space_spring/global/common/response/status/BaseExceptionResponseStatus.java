@@ -123,7 +123,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /**
      * 130000 Discord 오류
      */
-    SEND_MESSAGE_FAIL(12000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다");
+    SEND_MESSAGE_FAIL(12000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
+    DISCORD_THREAD_CREATE_FAIL(12001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다");
 
     private final int code;
     private final HttpStatus status;

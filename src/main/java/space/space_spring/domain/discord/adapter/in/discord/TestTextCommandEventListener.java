@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordMessagePort;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadCommand;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
 import space.space_spring.domain.post.application.port.in.CreateBoard.CreateBoardCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
@@ -23,7 +25,7 @@ import java.util.Arrays;
 public class TestTextCommandEventListener extends ListenerAdapter {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final CreateDiscordMessagePort createDiscordMessagePort;
-
+    private final CreateDiscordThreadPort createDiscordThreadPort;
     //private final CreateSpaceUseCase createSpaceUseCase;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event){
@@ -47,7 +49,34 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
                             .name(event.getMember().getEffectiveName())
                             .build();
-            createDiscordMessagePort.send(command);
+            createDiscordMessagePort.send(command).thenAccept(result->{
+                try {
+                    event.getMessage().reply("success (id = "+result+")").queue();
+                }catch (Exception e){
+                    event.getMessage().reply("error : "+e.toString()).queue();
+                }
+            });
+            return;
+        }
+        if(msg.getContentRaw().equals("!threadping")){
+            CreateDiscordThreadCommand command=CreateDiscordThreadCommand.builder()
+                    .channelDiscordId(event.getChannel().getIdLong())
+                    //.guildDiscordId(event.getGuild().getIdLong())
+                    .WebHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
+                    .contentMessage("spring server thread test success")
+                    .threadName("test thread name 12")
+                    .startMessage("start message 12")
+                    .avatarUrl(event.getMember().getEffectiveAvatarUrl())
+                    .userName(event.getMember().getEffectiveName())
+
+                    .build();
+            createDiscordThreadPort.create(command).thenAccept(result->{
+                try {
+                    event.getMessage().reply("success (id = "+result+")").queue();
+                }catch (Exception e){
+                    event.getMessage().reply("error : "+e.toString()).queue();
+                }
+            });
             return;
         }
 

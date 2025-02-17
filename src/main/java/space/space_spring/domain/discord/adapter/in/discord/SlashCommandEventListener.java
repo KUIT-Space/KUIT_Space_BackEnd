@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.application.port.in.CreateBoardInDiscordCommand;
 
 import java.util.List;
 
@@ -45,7 +46,6 @@ public class SlashCommandEventListener extends ListenerAdapter {
                         channel.getId().toString();
                 reply(event, channelInfo);
 
-                break;
 //            default:
 //                event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
 

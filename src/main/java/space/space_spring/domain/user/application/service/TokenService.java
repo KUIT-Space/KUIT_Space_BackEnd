@@ -15,9 +15,6 @@ import space.space_spring.domain.user.application.port.in.TokenUseCase;
 import space.space_spring.domain.user.application.port.out.CreateRefreshTokenPort;
 import space.space_spring.domain.user.application.port.out.DeleteRefreshTokenPort;
 import space.space_spring.domain.user.application.port.out.LoadRefreshTokenPort;
-import space.space_spring.domain.user.application.port.out.LoadUserPort;
-import space.space_spring.domain.user.domain.User;
-import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtExpiredTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtUnauthorizedTokenException;
@@ -28,8 +25,7 @@ import space.space_spring.global.exception.jwt.unauthorized.JwtUnauthorizedToken
 public class TokenService implements TokenUseCase {
 
     private final JwtLoginProvider jwtLoginProvider;
-    private final LoadUserPort loadUserPort;
-    private final LoadSpaceMemberPort spaceMemberPort;
+    private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final LoadRefreshTokenPort loadRefreshTokenPort;
     private final CreateRefreshTokenPort createRefreshTokenPort;
     private final DeleteRefreshTokenPort deleteRefreshTokenPort;
@@ -38,33 +34,31 @@ public class TokenService implements TokenUseCase {
     @Transactional
     public TokenPair updateTokenPair(TokenPair expiredTokenPair) {
         SpaceMember spaceMember = extractSpaceMember(expiredTokenPair.getAccessToken());
-        User user = loadUserPort.loadUser(spaceMember.getUserId())
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         String refreshToken = expiredTokenPair.getRefreshToken();
-        String savedRefreshToken = loadRefreshTokenPort.loadByUserId(user.getId()).orElseThrow(() ->
+        String savedRefreshToken = loadRefreshTokenPort.loadByUserId(spaceMember.getUserId()).orElseThrow(() ->
                 new JwtInvalidTokenException(INVALID_REFRESH_TOKEN)); // 해당 유저에 대한 refresh token이 저장돼있지 않은데 요청이 온 경우
 
-        validateRefreshToken(user, refreshToken, savedRefreshToken);
+        validateRefreshToken(spaceMember.getUserId(), refreshToken, savedRefreshToken);
 
         return updateTokenPair(spaceMember);
     }
 
     private SpaceMember extractSpaceMember(String accessToken) {
         Long spaceMemberId = jwtLoginProvider.getSpaceMemberIdFromAccessToken(accessToken);
-        return spaceMemberPort.loadById(spaceMemberId);
+        return loadSpaceMemberPort.loadById(spaceMemberId);
     }
 
-    private void validateRefreshToken(User user, String refreshToken, String savedRefreshToken) {
+    private void validateRefreshToken(Long userId, String refreshToken, String savedRefreshToken) {
         // TODO 1. refresh token의 만료시간 체크
         if (jwtLoginProvider.isExpiredToken(refreshToken, TokenType.REFRESH)) {
-            deleteRefreshTokenStorage(user);
+            deleteRefreshTokenStorage(userId);
             throw new JwtExpiredTokenException(EXPIRED_REFRESH_TOKEN);
         }
 
         // TODO 2. refresh token이 db에 존재하는 token 값과 일치하는지 확인
         if (!savedRefreshToken.equals(refreshToken)) {
-            deleteRefreshTokenStorage(user);
+            deleteRefreshTokenStorage(userId);
             throw new JwtUnauthorizedTokenException(TOKEN_MISMATCH);
         }
     }
@@ -79,8 +73,8 @@ public class TokenService implements TokenUseCase {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteRefreshTokenStorage(User user) {
-        deleteRefreshTokenPort.deleteByUserId(user.getId());
+    protected void deleteRefreshTokenStorage(Long userId) {
+        deleteRefreshTokenPort.deleteByUserId(userId);
     }
 
 }

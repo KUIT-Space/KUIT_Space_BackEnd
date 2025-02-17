@@ -32,4 +32,13 @@ public class GuildMember {
         return SpaceMember.withoutId(spaceId,userId,this.discordId,this.nickname,this.profileImageUrl,this.isManager);
     }
 
+    public boolean checkChangeSpaceMember(SpaceMember spaceMember){
+        if(this.getNickname().equals(spaceMember.getNickname())
+                && this.getProfileImageUrl().equals(spaceMember.getProfileImageUrl())
+                && (this.isManager()== spaceMember.isManager())){
+            return false;
+        }
+        return true;
+    }
+
 }

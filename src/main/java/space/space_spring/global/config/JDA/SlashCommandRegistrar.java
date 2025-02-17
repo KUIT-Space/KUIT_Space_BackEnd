@@ -44,12 +44,18 @@ public class SlashCommandRegistrar {
 
         commands.addCommands(
                 Commands.slash("set-board","get this Channel info")
+
+                        .addOptions(
+                                new OptionData(OptionType.STRING, "webhook-url", "이 채널에 WebHook URL 주소를 입력해주세요")
+                                        .setDescription("채널 설정 -> Integrations -> WebHooks -> Copy WebHook URL")
+                                        .setRequired(true)
+                        )
                         .addOptions(
                                 new OptionData(OptionType.STRING, "board-type", "게시판 종류를 선택해주세요")
-                                .addChoice("Board", "일반 게시판입니다. 익명 기능이 없습니다")
-                                .addChoice("question-Board", "질문 게시판입니다. 익명 기능이 있습니다.")
-
-        ));
+                                        .addChoice("Board", "일반 게시판입니다. 익명 기능이 없습니다")
+                                        .addChoice("question-Board", "질문 게시판입니다. 익명 기능이 있습니다.")
+                        )
+        );
 
         commands.queue();
     }

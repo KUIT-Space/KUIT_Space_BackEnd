@@ -57,11 +57,17 @@ public class SpaceMemberPersistenceAdapter implements LoadSpaceMemberPort , Crea
         return spaceMemberRepository.findBySpaceId(spaceId).stream().map(spaceMemberMapper::toDomainEntity).toList();
     }
 
-
-
     @Override
     public SpaceMember loadById(Long id) {
         SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(id).orElseThrow(() ->
+                new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
+    }
+
+    @Override
+    public SpaceMember loadByUserId(Long userId) {
+        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findByUserId(userId).orElseThrow(() ->
                 new CustomException(SPACE_MEMBER_NOT_FOUND));
 
         return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);

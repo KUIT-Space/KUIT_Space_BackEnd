@@ -9,7 +9,8 @@ import space.space_spring.domain.discord.application.port.in.TargetOfCreatePayIn
 import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
 import space.space_spring.domain.pay.application.port.in.createPay.CreatePayUseCase;
 import space.space_spring.domain.pay.application.port.in.createPay.TargetOfCreatePayCommand;
-import space.space_spring.domain.pay.application.port.out.CreatePayPort;
+import space.space_spring.domain.pay.application.port.out.CreatePayRequestPort;
+import space.space_spring.domain.pay.application.port.out.CreatePayRequestTargetPort;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 
@@ -33,7 +34,8 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Transactional(readOnly = true)
 public class CreatePayService implements CreatePayUseCase {
 
-    private final CreatePayPort createPayPort;
+    private final CreatePayRequestPort createPayRequestPort;
+    private final CreatePayRequestTargetPort createPayRequestTargetPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final CreatePayInDiscordUseCase createPayInDiscordUseCase;
 
@@ -103,7 +105,7 @@ public class CreatePayService implements CreatePayUseCase {
 
     private PayRequest savePayRequest(CreatePayCommand command, Long discordIdForPay) {
         PayRequest payRequest = command.toDomainEntity(discordIdForPay);
-        return createPayPort.createPayRequest(payRequest);
+        return createPayRequestPort.createPayRequest(payRequest);
     }
 
     private void savePayRequestTargets(CreatePayCommand command, PayRequest payRequest) {
@@ -115,6 +117,6 @@ public class CreatePayService implements CreatePayUseCase {
                 ))
                 .toList();
 
-        createPayPort.createPayRequestTargets(payRequestTargets);
+        createPayRequestTargetPort.createPayRequestTargets(payRequestTargets);
     }
 }

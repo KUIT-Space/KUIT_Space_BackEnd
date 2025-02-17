@@ -1,7 +1,6 @@
 package space.space_spring.domain.pay.domain;
 
 import lombok.Getter;
-import space.space_spring.domain.spaceMember.domian.SpaceMember;
 
 @Getter
 public class PayRequestTarget {
@@ -38,5 +37,13 @@ public class PayRequestTarget {
 
     public boolean isComplete() {
         return isComplete;
+    }
+
+    public boolean isSameTargetMember(Long targetMemberId) {
+        return this.targetMemberId.equals(targetMemberId);
+    }
+
+    public void completeForRequestedPay() {
+        this.isComplete = true;
     }
 }

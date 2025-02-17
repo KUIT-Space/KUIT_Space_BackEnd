@@ -64,4 +64,8 @@ public class PayRequestTargetJpaEntity extends BaseEntity {
                 .isComplete(isComplete)
                 .build();
     }
+
+    public void changeIsComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
 }

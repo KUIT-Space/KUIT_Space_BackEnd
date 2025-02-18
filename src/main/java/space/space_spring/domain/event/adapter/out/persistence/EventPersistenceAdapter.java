@@ -34,7 +34,10 @@ public class EventPersistenceAdapter implements CreateEventPort, LoadEventPort {
 
     @Override
     public List<Event> loadEvents(Long spaceId) {
-        List<EventJpaEntity> eventJpaEntities = eventRepository.findBySpaceId(spaceId);
+        SpaceJpaEntity spaceJpaEntity = spaceRepository.findById(spaceId).orElseThrow(
+                () -> new CustomException(SPACE_NOT_FOUND));
+
+        List<EventJpaEntity> eventJpaEntities = eventRepository.findBySpace(spaceJpaEntity);
         if (eventJpaEntities.isEmpty()) return List.of();
 
         List<Event> events = new ArrayList<>();

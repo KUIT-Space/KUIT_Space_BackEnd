@@ -1,8 +1,10 @@
 package space.space_spring.domain.event.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class EventParticipantInfo {
 
     private Long id;

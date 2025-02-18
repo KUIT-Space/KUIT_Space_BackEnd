@@ -7,10 +7,8 @@ import space.space_spring.domain.discord.application.port.in.createPost.CreatePo
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
-import space.space_spring.domain.post.application.port.out.CreatePostBasePort;
 import space.space_spring.domain.post.application.port.out.CreatePostPort;
 import space.space_spring.domain.post.domain.Post;
-import space.space_spring.domain.post.domain.PostBase;
 
 
 @Service
@@ -18,7 +16,6 @@ import space.space_spring.domain.post.domain.PostBase;
 @Transactional(readOnly = true)
 public class CreatePostService implements CreatePostUseCase {
 
-    private final CreatePostBasePort createPostBasePort;
     private final CreatePostPort createPostPort;
     private final CreatePostInDiscordUseCase createPostInDiscordUseCase;
 
@@ -26,16 +23,13 @@ public class CreatePostService implements CreatePostUseCase {
     @Transactional
     public Long createPost(CreatePostCommand command) {
 
-        // 1. 디스코드로 보내기
+        // 1. 디스코드로 게시글 정보 전송
         Long discordIdForPost = createPostInDiscordUseCase.createPostInDiscord(mapToDiscordCommand(command));
 
-        // 2. PostBase 도메인 엔티티 생성 및 저장
-        Long postBaseId = savePostBase(command, discordIdForPost);
+        // 2. Post 도메인 엔티티 생성 후 Adapter에 저장
+        Post post = command.toPostDomainEntity(discordIdForPost);
 
-        // 3. Post 도메인 엔티티 생성 및 저장
-        Long postId = savePost(command, postBaseId);
-
-        return postId;
+        return createPostPort.createPost(post);
     }
 
     private CreatePostInDiscordCommand mapToDiscordCommand(CreatePostCommand command) {
@@ -45,16 +39,6 @@ public class CreatePostService implements CreatePostUseCase {
                 .title(command.getTitle())
                 .attachments(command.getAttachments())
                 .build();
-    }
-
-    private Long savePostBase(CreatePostCommand command, Long discordIdForPost) {
-        PostBase postBase = command.toPostBaseDomainEntity(discordIdForPost);
-        return createPostBasePort.createPostBase(postBase);
-    }
-
-    private Long savePost(CreatePostCommand command, Long postBaseId) {
-        Post post = command.toPostDomainEntity(postBaseId);
-        return createPostPort.createPost(post);
     }
 
 }

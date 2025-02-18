@@ -7,25 +7,33 @@ public class Question {
 
     private Long id;
 
-    private Long postBaseId;
+    private Long discordId;
 
-    private String title;
+    private Long boardId;
+
+    private Long spaceMemberId;
 
     private boolean isAnonymous;
 
-    private Question(Long id, Long postBaseId, String title, boolean isAnonymous) {
+    private String title;
+
+    private Content content;
+
+    private Question(Long id, Long discordId, Long boardId, Long spaceMemberId, boolean isAnonymous, String title, Content content) {
         this.id = id;
-        this.postBaseId = postBaseId;
-        this.title = title;
+        this.discordId = discordId;
+        this.boardId = boardId;
+        this.spaceMemberId = spaceMemberId;
         this.isAnonymous = isAnonymous;
+        this.title = title;
+        this.content = content;
     }
 
-    public static Question of(Long id, Long postBaseId, String title, boolean isAnonymous) {
-        return new Question(id, postBaseId,  title, isAnonymous);
+    public static Question of(Long id, Long discordId, Long boardId, Long spaceMemberId, boolean isAnonymous, String title, Content content) {
+        return new Question(id, discordId, boardId, spaceMemberId, isAnonymous, title, content);
     }
 
-    public static Question withoutId(Long postBaseId, String title, boolean isAnonymous) {
-        return new Question(null, postBaseId, title, isAnonymous);
+    public static Question withoutId(Long discordId, Long boardId, Long spaceMemberId, boolean isAnonymous, String title, Content content) {
+        return new Question(null, discordId, boardId, spaceMemberId, isAnonymous, title, content);
     }
-
 }

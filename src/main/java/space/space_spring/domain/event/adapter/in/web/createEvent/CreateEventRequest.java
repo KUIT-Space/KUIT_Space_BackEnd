@@ -1,4 +1,4 @@
-package space.space_spring.domain.event.adapter.in.web;
+package space.space_spring.domain.event.adapter.in.web.createEvent;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;

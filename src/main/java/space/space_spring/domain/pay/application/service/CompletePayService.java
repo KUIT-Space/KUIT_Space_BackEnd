@@ -31,6 +31,8 @@ public class CompletePayService implements CompletePayUseCase {
         // 정산 완료 처리
         payRequestTarget.completeForRequestedPay();
 
+        // 디스코드로 변경된 정보 보내기 (상준님과 추후 협의)
+
         // 변경 사항을 DB에 업데이트
         updatePayPort.update(payRequestTarget);
     }

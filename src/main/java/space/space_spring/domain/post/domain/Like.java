@@ -7,18 +7,29 @@ public class Like {
 
     private Long id;
 
-    private Long postBaseId;
+    private Long postId;
 
-    private Like(Long id, Long postBaseId) {
+    private Long questionId;
+
+    private Like(Long id, Long postId, Long questionId) {
         this.id = id;
-        this.postBaseId = postBaseId;
+        this.postId = postId;
+        this.questionId = questionId;
     }
 
-    public static Like of(Long id, Long postBaseId) {
-        return new Like(id, postBaseId);
+    public static Like createForPost(Long id, Long postId) {
+        return new Like(id, postId, null);
     }
 
-    public static Like withoutId(Long postBaseId) {
-        return new Like(null, postBaseId);
+    public static Like withoutIdForPost(Long postId) {
+        return new Like(null, postId, null);
+    }
+
+    public static Like createForQuestion(Long id, Long questionId) {
+        return new Like(id, null, questionId);
+    }
+
+    public static Like withoutIdForQuestion(Long questionId) {
+        return new Like(null, null, questionId);
     }
 }

@@ -4,6 +4,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.event.application.port.out.CreateEventPort;
@@ -41,5 +42,10 @@ public class EventPersistenceAdapter implements CreateEventPort, LoadEventPort {
             events.add(eventMapper.toDomainEntity(eventJpaEntity));
         }
         return events;
+    }
+
+    @Override
+    public Optional<Event> loadEvent(Long eventId) {
+        return eventRepository.findById(eventId).map(eventMapper::toDomainEntity);
     }
 }

@@ -26,7 +26,6 @@ public class CreateDiscordMessageAdapter implements CreateDiscordMessagePort {
 
         client.sendMessage(command.getContent())
                 .setAvatarUrl(command.getAvatarUrl())
-
                 .setUsername(command.getName()).queue(
                     obj->{
                         if(obj instanceof Message) {
@@ -37,6 +36,8 @@ public class CreateDiscordMessageAdapter implements CreateDiscordMessagePort {
                         }
                     }
                     ,throwable->{
+
+                            System.out.println("\n\nerror"+throwable.toString());
                             future.completeExceptionally((Throwable)throwable);
                         }
                 );

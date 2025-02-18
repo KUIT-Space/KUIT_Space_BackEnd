@@ -81,6 +81,26 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             return;
         }
 
+        if(msg.getContentRaw().equals("!forumping")) {
+            CreateDiscordMessageCommand command=CreateDiscordMessageCommand.builder()
+                    .channelDiscordId(event.getChannel().getIdLong())
+                    .guildDiscordId(event.getGuild().getIdLong())
+                    .WebHookUrl("https://discordapp.com/api/webhooks/1341258654082404403/SnSx0qzymTEkwuEeVfXMPsUbSj_yiQ0tlCSOX4WOalSKBrdDlBXbz_TMFqnWIyIBy60m")
+                    .Content("spring server message test success\nhi\ncontent")
+                    .avatarUrl(event.getMember().getEffectiveAvatarUrl())
+                    .name(event.getMember().getEffectiveName())
+                    .build();
+            createDiscordMessagePort.send(command).thenAccept(result->{
+                try {
+                    event.getMessage().reply("success (id = "+result+")").queue();
+                }catch (Exception e){
+                    event.getMessage().reply("error : "+e.toString()).queue();
+                }
+            });
+            return;
+
+        }
+
         if(msg.getContentRaw().startsWith("!member:")){
             System.out.println("\n\n\nmembertext\n\n\n");
             System.out.println("mem:"+msg.getGuild().getMembers().size());

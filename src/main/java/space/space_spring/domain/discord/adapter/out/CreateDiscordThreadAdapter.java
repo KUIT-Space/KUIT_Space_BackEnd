@@ -23,6 +23,7 @@ public class CreateDiscordThreadAdapter implements CreateDiscordThreadPort {
     @Override
     public CompletableFuture<Long> create(CreateDiscordThreadCommand command){
         WebhookClient webhookClient = WebhookClient.withUrl(command.getWebHookUrl());
+
         WebhookMessageBuilder messageBuilder = new WebhookMessageBuilder()
                 .setAvatarUrl(command.getAvatarUrl())
                 .setUsername(command.getUserName())

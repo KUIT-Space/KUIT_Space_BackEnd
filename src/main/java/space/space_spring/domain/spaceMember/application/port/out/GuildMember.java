@@ -17,16 +17,28 @@ public class GuildMember {
 
     private boolean isManager;
 
-    private GuildMember(Long discordId, String nickname, String profileImageUrl, boolean isManager){
+    private Long guildDiscordId;
+
+    private GuildMember(Long discordId, String nickname, String profileImageUrl, boolean isManager,Long guildDiscordId){
         this.discordId=discordId;
         this.nickname=nickname;
         this.profileImageUrl=profileImageUrl;
         this.isManager=isManager;
+        this.guildDiscordId=guildDiscordId;
 
     }
 
     public SpaceMember createSpaceMember(Long spaceId, Long userId){
         return SpaceMember.withoutId(spaceId,userId,this.discordId,this.nickname,this.profileImageUrl,this.isManager);
+    }
+
+    public boolean checkChangeSpaceMember(SpaceMember spaceMember){
+        if(this.getNickname().equals(spaceMember.getNickname())
+                && this.getProfileImageUrl().equals(spaceMember.getProfileImageUrl())
+                && (this.isManager()== spaceMember.isManager())){
+            return false;
+        }
+        return true;
     }
 
 }

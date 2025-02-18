@@ -18,7 +18,7 @@ public class ReadEventsResponse {
         List<ReadEventResponse> eventsResponse = new ArrayList<>();
 
         for (Event event : events.getEvents()) {
-            eventsResponse.add(new ReadEventResponse(event));
+            eventsResponse.add(ReadEventResponse.create(event));
         }
 
         return new ReadEventsResponse(eventsResponse);

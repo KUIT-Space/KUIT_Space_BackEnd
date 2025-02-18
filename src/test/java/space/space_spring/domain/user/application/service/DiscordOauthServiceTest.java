@@ -1,4 +1,4 @@
-package space.space_spring.domain.spaceMember.application.service;
+package space.space_spring.domain.user.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,22 +10,25 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 import space.space_spring.domain.authorization.jwt.model.TokenType;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.user.adapter.in.web.TokenPair;
 import space.space_spring.domain.user.application.port.out.CreateRefreshTokenPort;
 import space.space_spring.domain.user.application.port.out.DiscordOauthPort;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
-import space.space_spring.domain.user.application.service.DiscordOauthService;
 import space.space_spring.domain.user.domain.User;
 
 public class DiscordOauthServiceTest {
 
     private DiscordOauthPort discordOauthPort;
     private LoadUserPort loadUserPort;
+    private LoadSpaceMemberPort loadSpaceMemberPort;
     private CreateRefreshTokenPort createRefreshTokenPort;
     private JwtLoginProvider jwtLoginProvider;
     private DiscordOauthService discordOauthService;
 
     private static User user;
+    private static SpaceMember spaceMember;
     private static final String code = "";
     private static final String accessToken = "";
 
@@ -33,11 +36,13 @@ public class DiscordOauthServiceTest {
     void setup() throws JsonProcessingException {
         discordOauthPort = Mockito.mock(DiscordOauthPort.class);
         loadUserPort = Mockito.mock(LoadUserPort.class);
+        loadSpaceMemberPort = Mockito.mock(LoadSpaceMemberPort.class);
         createRefreshTokenPort = Mockito.mock(CreateRefreshTokenPort.class);
         jwtLoginProvider = Mockito.mock(JwtLoginProvider.class);
-        discordOauthService = new DiscordOauthService(discordOauthPort, loadUserPort, createRefreshTokenPort, jwtLoginProvider);
+        discordOauthService = new DiscordOauthService(discordOauthPort, loadUserPort, loadSpaceMemberPort, createRefreshTokenPort, jwtLoginProvider);
 
         user = User.create(0L, 0L);
+        spaceMember = SpaceMember.create(0L, 0L, 0L, 0L, "nickname", "profileImageUrl", false);
 
         Mockito.when(discordOauthPort.getAccessToken(code)).thenReturn(accessToken);
         Mockito.when(discordOauthPort.getUserInfo(accessToken)).thenReturn(user);
@@ -48,6 +53,7 @@ public class DiscordOauthServiceTest {
     void signIn() throws JsonProcessingException {
         //given
         Mockito.when(loadUserPort.loadUserByDiscordId(user.getDiscordId())).thenReturn(Optional.ofNullable(user));
+        Mockito.when(loadSpaceMemberPort.loadByUserId(user.getId())).thenReturn(spaceMember);
         Mockito.when(jwtLoginProvider.generateToken(user.getId(), TokenType.ACCESS)).thenReturn("result-access-token");
         Mockito.when(jwtLoginProvider.generateToken(user.getId(), TokenType.REFRESH)).thenReturn("result-refresh-token");
 

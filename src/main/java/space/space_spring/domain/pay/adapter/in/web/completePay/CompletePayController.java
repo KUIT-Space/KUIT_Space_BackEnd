@@ -8,7 +8,6 @@ import space.space_spring.domain.pay.application.port.in.completePay.CompletePay
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.global.common.response.SuccessResponse;
-import space.space_spring.global.exception.CustomException;
 
 @RestController
 @RequiredArgsConstructor

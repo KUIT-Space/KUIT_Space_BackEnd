@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import space.space_spring.domain.event.domain.Event;
 
 @AllArgsConstructor
-public class ReadEventResponse {
+public class EventInfoResponse {
 
     private Long id;
 
@@ -17,7 +17,7 @@ public class ReadEventResponse {
 
     private LocalDateTime endTime;
 
-    public static ReadEventResponse create(Event event) {
-        return new ReadEventResponse(event.getId(), event.getName(), event.getDate(), event.getStartTime(), event.getEndTime());
+    public static EventInfoResponse create(Event event) {
+        return new EventInfoResponse(event.getId(), event.getName(), event.getDate(), event.getStartTime(), event.getEndTime());
     }
 }

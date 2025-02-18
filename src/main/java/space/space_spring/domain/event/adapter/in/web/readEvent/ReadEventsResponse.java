@@ -8,17 +8,17 @@ import space.space_spring.domain.event.domain.Events;
 
 public class ReadEventsResponse {
 
-    private final List<ReadEventResponse> events;
+    private final List<EventInfoResponse> events;
 
-    private ReadEventsResponse(List<ReadEventResponse> events) {
+    private ReadEventsResponse(List<EventInfoResponse> events) {
         this.events = Collections.unmodifiableList(events);
     }
 
     public static ReadEventsResponse create(Events events) {
-        List<ReadEventResponse> eventsResponse = new ArrayList<>();
+        List<EventInfoResponse> eventsResponse = new ArrayList<>();
 
         for (Event event : events.getEvents()) {
-            eventsResponse.add(ReadEventResponse.create(event));
+            eventsResponse.add(EventInfoResponse.create(event));
         }
 
         return new ReadEventsResponse(eventsResponse);

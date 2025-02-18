@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import space.space_spring.global.exception.CustomException;
-import space.space_spring.global.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import space.space_spring.global.exception.jwt.badRequest.JwtUnsupportedTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtInvalidTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtMalformedTokenException;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -32,22 +32,22 @@ public class JwtLoginProvider {
     @Value("${secret.jwt.refresh-expired-in}")
     private Long REFRESH_EXPIRED_IN;
 
-    public String generateToken(Long userId, TokenType tokenType) {
+    public String generateToken(Long spaceMemberId, TokenType tokenType) {
 //        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());
 
         Date now = new Date();
         Date expiration = setExpiration(now, tokenType);
 
-        return makeToken(tokenType, userId, now, expiration);
+        return makeToken(tokenType, spaceMemberId, now, expiration);
     }
 
-    private String makeToken(TokenType tokenType, Long userId, Date now, Date expiration) {
+    private String makeToken(TokenType tokenType, Long spaceMemberId, Date now, Date expiration) {
         if (tokenType.equals(TokenType.ACCESS)) {
             return Jwts.builder()
 //                .setClaims(claims)
                     .setIssuedAt(now)
                     .setExpiration(expiration)
-                    .claim("userId", userId)
+                    .claim("spaceMemberId", spaceMemberId)
                     .signWith(SignatureAlgorithm.HS256, choiceSecretKey(tokenType))
                     .compact();
         }
@@ -102,15 +102,15 @@ public class JwtLoginProvider {
 
     }
 
-    public Long getUserIdFromAccessToken(String token) {
+    public Long getSpaceMemberIdFromAccessToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(ACCESS_SECRET_KEY).build()
                     .parseClaimsJws(token);
-            return claims.getBody().get("userId", Long.class);
+            return claims.getBody().get("spaceMemberId", Long.class);
         } catch (ExpiredJwtException e) {
             // 만료된 토큰에서 userId 추출
-            return e.getClaims().get("userId", Long.class);
+            return e.getClaims().get("spaceMemberId", Long.class);
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.getJwtPayloadDtoFromToken]", e);
             throw e;

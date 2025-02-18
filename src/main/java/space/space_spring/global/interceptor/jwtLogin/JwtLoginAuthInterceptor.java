@@ -7,8 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import space.space_spring.domain.authorization.jwt.model.TokenType;
-import space.space_spring.global.exception.jwt.bad_request.JwtNoTokenException;
-import space.space_spring.global.exception.jwt.bad_request.JwtUnsupportedTokenException;
+import space.space_spring.global.exception.jwt.badRequest.JwtNoTokenException;
+import space.space_spring.global.exception.jwt.badRequest.JwtUnsupportedTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtExpiredTokenException;
 import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -31,9 +31,9 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
             throw new JwtExpiredTokenException(EXPIRED_ACCESS_TOKEN);
         }
 
-        // TODO 3. AT 의 payload 로 부터 userId 값 get
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromAccessToken(accessToken);
-        request.setAttribute("userId", userIdFromToken);
+        // TODO 3. AT 의 payload 로 부터 spaceMemberId 값 get
+        Long spaceMemberIdFromToken = jwtLoginProvider.getSpaceMemberIdFromAccessToken(accessToken);
+        request.setAttribute("spaceMemberId", spaceMemberIdFromToken);
 
         return true;
     }

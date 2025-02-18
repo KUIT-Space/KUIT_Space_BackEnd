@@ -20,6 +20,6 @@ public class JwtLoginAuthHandlerArgumentResolver implements HandlerMethodArgumen
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        return request.getAttribute("userId");          // jwt를 복호화해서 얻은 userId get
+        return request.getAttribute("spaceMemberId");          // jwt를 복호화해서 얻은 userId get
     }
 }

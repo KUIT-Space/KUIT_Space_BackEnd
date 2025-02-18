@@ -43,6 +43,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     CANNOT_FIND_USER_ID(4007, HttpStatus.UNAUTHORIZED,"토큰의 userId정보를 찾을 수 없습니다."),
     WRONG_SIGNATURE_JWT(4008,HttpStatus.UNAUTHORIZED,"JWT 서명이 잘못 되었습니다."),
     EXPIRED_REFRESH_TOKEN(4009, HttpStatus.UNAUTHORIZED, "만료된 refresh token 입니다. 다시 로그인해야합니다."),
+    DISCORD_TOKEN_ERROR(4010, HttpStatus.UNAUTHORIZED, "디스코드 서버에서 access token 발급이 실패하였습니다."),
+    CANNOT_FIND_DISCORD_USER(4011, HttpStatus.NOT_FOUND, "디스코드 계정의 정보를 가져오는 데에 실패하였습니다."),
+    INVALID_REFRESH_TOKEN(4012, HttpStatus.NOT_FOUND, "유효하지 않은 refresh token입니다."),
 
     /**
      * 5000: User 오류
@@ -67,27 +70,20 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     nff(6004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     gnf(6005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
     fb(6006, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
+    SPACE_ALREADY_EXISTED(6007,HttpStatus.BAD_REQUEST,"이미 등록된 SPACE입니다"),
 
     /**
-     * 7000: UserSpace 오류
+     * 7000: SpaceMember 오류
      */
     USER_IS_NOT_IN_SPACE(7000, HttpStatus.NOT_FOUND, "해당 스페이스에 속하지 않는 유저입니다."),
     UNAUTHORIZED_USER(7001, HttpStatus.FORBIDDEN, "해당 스페이스에 관리자 권한이 없는 유저입니다."),
     USER_IS_ALREADY_IN_SPACE(7002, HttpStatus.BAD_REQUEST, "해당 스페이스에 이미 가입되어 있는 유저입니다"),
-    D(7003, HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    SPACE_MEMBER_NOT_FOUND(7003, HttpStatus.NOT_FOUND, "존재하지 않는 스페이스 멤버입니다."),
     E(7004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     F(7005, HttpStatus.BAD_REQUEST, "잘못된 회원 status 값입니다."),
     G(7006, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
 
-    /**
-     * 8000: Chat 오류
-     */
-    INVALID_CHATROOM_CREATE(8000, HttpStatus.BAD_REQUEST, "채팅방 생성 요청에서 잘못된 값이 존재합니다."),
-    CHATROOM_NOT_EXIST(8001, HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
-    INVALID_CHATROOM_JOIN(8001, HttpStatus.BAD_REQUEST, "채팅방 멤버 초대 요청에서 잘못된 값이 존재합니다."),
     BASE64_CONVERT_FAIL_IN_MEMORY(8002, HttpStatus.INTERNAL_SERVER_ERROR, "base64 파일 변환 과정에서 문제가 생겼습니다."),
-    USER_IS_ALREADY_IN_CHATROOM(8003, HttpStatus.BAD_REQUEST, "해당 채팅방에 이미 초대된 멤버가 포함되어 있습니다."),
-    USER_IS_NOT_IN_CHATROOM(8004, HttpStatus.NOT_FOUND, "해당 유저는 해당 채팅방에 참여하고 있지 않습니다."),
 
     /**
      * 9000 : MultipartFile 오류
@@ -97,18 +93,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
 
     /**
-     * 10000: voice room 오류
-     */
-    VOICEROOM_NOT_EXIST(10001, HttpStatus.NOT_FOUND,"존재하지 않는 보이스룸 id입니다."),
-    INVALID_VOICEROOM_REQUEST(10002, HttpStatus.BAD_REQUEST,"잘못된 요청 인자 입니다."),
-
-    VOICEROOM_NAME_ALREADY_EXIST(10003, HttpStatus.BAD_REQUEST,"이미 존재하는 VoiceRoom 이름 입니다."),
-    VOICEROOM_NOT_IN_SPACE(10004, HttpStatus.BAD_REQUEST,"해당 스페이스에 없는 보이스 룸입니다."),
-
-    /**
      * 11000: Post 오류
      */
-    INVALID_POST_CREATE(11000, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
+    INVALID_BOARD_CREATE(11000, HttpStatus.BAD_REQUEST, "게시판 생성 요청에서 잘못된 값이 존재합니다."),
+    INVALID_POST_CREATE(11001, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
+    BOARD_NOT_FOUND(11002, HttpStatus.NOT_FOUND, "존재하지 않는 게시판 id입니다."),
+    POST_BASE_NOT_FOUND(11003, HttpStatus.NOT_FOUND, "존재하지 않는 post base id입니다."),
+
     POST_NOT_EXIST(11001, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 id입니다."),
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
@@ -124,13 +115,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 12000 : Pay 오류
      */
     INVALID_PAY_CREATE(12000, HttpStatus.BAD_REQUEST, "정산 생성 요청에서 잘못된 값이 존재합니다."),
-    PAY_CREATOR_IS_NOT_IN_SPACE(12001, HttpStatus.BAD_REQUEST, "정산 생성자가 해당 스페이스에 속하지 않는 유저입니다. 정산 생성은 본인이 속한 스페이스 내에서만 가능합니다."),
-    PAY_TARGET_IS_NOT_IN_SPACE(12002, HttpStatus.BAD_REQUEST, "정산 요청 타겟들 중, 해당 스페이스에 속하지 않는 유저가 존재합니다."),
+    PAY_CREATOR_AND_TARGETS_ARE_NOT_IN_SAME_SPACE(12001, HttpStatus.BAD_REQUEST, "정산 생성자와 정산 요청 대상자가 같은 스페이스에 속해 있지 않습니다. 정산 요청은 같은 스페이스 멤버에게만 가능합니다."),
     INVALID_INDIVIDUAL_AMOUNT(12003, HttpStatus.BAD_REQUEST, "정산 요청 금액들의 합과 정산 요청 총 금액이 일치하지 않습니다."),
     INVALID_EQUAL_SPLIT_AMOUNT(12004, HttpStatus.BAD_REQUEST, "정산 요청 금액들 중 1/N 정산 정책에 위배되는 값이 있습니다."),
     PAY_REQUEST_NOT_FOUND(12005, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
     PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
-    INVALID_PAY_REQUEST_TARGET_ID(12007, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다.");
+    THIS_PAY_REQUEST_HAS_NOT_TARGETS(12007, HttpStatus.INTERNAL_SERVER_ERROR, "현재 정산 요청은 정산 요청 대상이 없습니다. 현재 정산 생성 시 서버에 문제가 있었습니다."),
+    INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다.");
   
     private final int code;
     private final HttpStatus status;

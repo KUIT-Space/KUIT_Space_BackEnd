@@ -15,4 +15,13 @@ public class PostMapper {
                 domain.getTitle()
         );
     }
+
+    public Post toDomainEntity(PostBaseJpaEntity postBase, PostJpaEntity post) {
+        return Post.of(
+                post.getId(),
+                postBase.getDiscordId(),
+                postBase.getBoard().getId(),
+
+        )
+    }
 }

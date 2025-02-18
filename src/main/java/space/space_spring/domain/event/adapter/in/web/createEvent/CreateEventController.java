@@ -1,4 +1,4 @@
-package space.space_spring.domain.event.adapter.in.web;
+package space.space_spring.domain.event.adapter.in.web.createEvent;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -16,7 +16,7 @@ import space.space_spring.global.exception.CustomException;
 
 @RestController
 @RequiredArgsConstructor
-public class EventController {
+public class CreateEventController {
 
     private final CreateEventUseCase createEventUseCase;
 

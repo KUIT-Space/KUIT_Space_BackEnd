@@ -1,8 +1,7 @@
-package space.space_spring.domain.discord.application.port.out;
+package space.space_spring.domain.discord.application.port.out.createPay;
 
 import lombok.Builder;
 import lombok.Getter;
-import space.space_spring.domain.discord.application.port.in.TargetOfCreatePayInDiscordCommand;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayType;

@@ -1,4 +1,4 @@
-package space.space_spring.domain.discord.application.port.in;
+package space.space_spring.domain.discord.application.port.in.createPay;
 
 import lombok.Builder;
 import lombok.Getter;

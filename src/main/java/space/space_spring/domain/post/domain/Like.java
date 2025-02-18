@@ -1,14 +1,35 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
-import space.space_spring.domain.spaceMember.domian.SpaceMember;
 
 @Getter
 public class Like {
 
     private Long id;
 
-    private PostBase postBaseId;
+    private Long postId;
 
-    private SpaceMember spaceMemberId;
+    private Long questionId;
+
+    private Like(Long id, Long postId, Long questionId) {
+        this.id = id;
+        this.postId = postId;
+        this.questionId = questionId;
+    }
+
+    public static Like createForPost(Long id, Long postId) {
+        return new Like(id, postId, null);
+    }
+
+    public static Like withoutIdForPost(Long postId) {
+        return new Like(null, postId, null);
+    }
+
+    public static Like createForQuestion(Long id, Long questionId) {
+        return new Like(id, null, questionId);
+    }
+
+    public static Like withoutIdForQuestion(Long questionId) {
+        return new Like(null, null, questionId);
+    }
 }

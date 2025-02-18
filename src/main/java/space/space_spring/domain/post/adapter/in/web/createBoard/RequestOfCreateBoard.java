@@ -1,4 +1,4 @@
-package space.space_spring.domain.post.adapter.in.web;
+package space.space_spring.domain.post.adapter.in.web.createBoard;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

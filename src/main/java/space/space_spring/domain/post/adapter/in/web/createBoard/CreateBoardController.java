@@ -1,4 +1,4 @@
-package space.space_spring.domain.post.adapter.in.web;
+package space.space_spring.domain.post.adapter.in.web.createBoard;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
@@ -6,8 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.domain.post.application.port.in.CreateBoard.CreateBoardCommand;
-import space.space_spring.domain.post.application.port.in.CreateBoard.CreateBoardUseCase;
+import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
+import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
 import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.global.exception.CustomException;
@@ -17,7 +17,7 @@ import static space.space_spring.global.util.bindingResult.BindingResultUtils.ge
 
 @RestController
 @RequiredArgsConstructor
-public class BoardController {
+public class CreateBoardController {
 
     private final CreateBoardUseCase createBoardUseCase;
 

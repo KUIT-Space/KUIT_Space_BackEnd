@@ -1,4 +1,4 @@
-package space.space_spring.domain.post.application.port.in.CreateBoard;
+package space.space_spring.domain.post.application.port.in.createBoard;
 
 import lombok.Builder;
 import lombok.Getter;

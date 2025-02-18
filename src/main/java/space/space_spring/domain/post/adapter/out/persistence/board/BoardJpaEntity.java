@@ -1,4 +1,4 @@
-package space.space_spring.domain.post.adapter.out.persistence;
+package space.space_spring.domain.post.adapter.out.persistence.board;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,8 +1,8 @@
 package space.space_spring.domain.discord.adapter.out;
 
 import org.springframework.stereotype.Repository;
-import space.space_spring.domain.discord.application.port.out.CreatePayMessagePort;
-import space.space_spring.domain.discord.application.port.out.CreatePayMessageCommand;
+import space.space_spring.domain.discord.application.port.out.createPay.CreatePayMessagePort;
+import space.space_spring.domain.discord.application.port.out.createPay.CreatePayMessageCommand;
 
 @Repository
 public class DiscordPayAdapter implements CreatePayMessagePort {

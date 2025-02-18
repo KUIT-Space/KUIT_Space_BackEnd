@@ -3,8 +3,8 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.space_spring.domain.post.application.port.in.CreateBoard.CreateBoardCommand;
-import space.space_spring.domain.post.application.port.in.CreateBoard.CreateBoardUseCase;
+import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
+import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
 import space.space_spring.domain.post.application.port.out.CreateBoardPort;
 import space.space_spring.domain.post.domain.Board;
 

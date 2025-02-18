@@ -20,6 +20,13 @@ public class EventMapper {
     }
 
     public Event toDomainEntity(EventJpaEntity eventJpaEntity) {
-        return null;
+        return Event.create(
+                eventJpaEntity.getId(),
+                eventJpaEntity.getSpace().getId(),
+                eventJpaEntity.getName(),
+                eventJpaEntity.getDate(),
+                eventJpaEntity.getStartTime(),
+                eventJpaEntity.getEndTime()
+        );
     }
 }

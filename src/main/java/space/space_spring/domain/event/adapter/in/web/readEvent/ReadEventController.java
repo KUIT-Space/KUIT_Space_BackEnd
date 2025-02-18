@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import space.space_spring.domain.event.application.port.in.ReadEventParticipantUseCase;
 import space.space_spring.domain.event.application.port.in.ReadEventUseCase;
 import space.space_spring.domain.event.domain.Event;
+import space.space_spring.domain.event.domain.EventParticipantInfos;
 import space.space_spring.domain.event.domain.Events;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.global.common.response.BaseResponse;
@@ -15,6 +17,7 @@ import space.space_spring.global.common.response.BaseResponse;
 public class ReadEventController {
 
     private final ReadEventUseCase readEventUseCase;
+    private final ReadEventParticipantUseCase readEventParticipantUseCase;
 
     @GetMapping("/events")
     public BaseResponse<ReadEventsResponse> readEvents(@JwtLoginAuth Long id) {
@@ -22,9 +25,10 @@ public class ReadEventController {
         return new BaseResponse<>(ReadEventsResponse.create(events));
     }
 
-    @GetMapping("/event")
-    public BaseResponse<ReadEventResponse> readEvent(@JwtLoginAuth Long id, @PathVariable Long eventId) {
+    @GetMapping("/event/{eventId}")
+    public BaseResponse<ReadEventInfoResponse> readEvent(@JwtLoginAuth Long id, @PathVariable Long eventId) {
         Event event = readEventUseCase.readEvent(eventId);
-        return new BaseResponse<>(ReadEventResponse.create(event));
+        EventParticipantInfos eventParticipantInfos = readEventParticipantUseCase.readEventParticipants(eventId);
+        return new BaseResponse<>(ReadEventInfoResponse.create(event, eventParticipantInfos));
     }
 }

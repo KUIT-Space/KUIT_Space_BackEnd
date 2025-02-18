@@ -124,6 +124,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 13000 : Event 오류
      */
     INVALID_EVENT_CREATE(13000, HttpStatus.BAD_REQUEST, "행사 생성 요청에서 잘못된 값이 존재합니다."),
+    EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다."),
     ;
 
     private final int code;

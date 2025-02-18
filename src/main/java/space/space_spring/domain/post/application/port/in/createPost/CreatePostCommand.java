@@ -5,7 +5,6 @@ import lombok.Getter;
 import space.space_spring.domain.post.adapter.in.web.createPost.AttachmentOfCreate;
 import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
-import space.space_spring.domain.post.domain.PostBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +39,7 @@ public class CreatePostCommand {
         return result;
     }
 
-    public PostBase toPostBaseDomainEntity(Long discordMessageId) {
-        return PostBase.withoutId(discordMessageId, boardId, postCreatorId, content);
-    }
-
-    public Post toPostDomainEntity(Long postBaseId) {
-        return Post.withoutId(postBaseId, title);
+    public Post toPostDomainEntity(Long discordMessageId) {
+        return Post.withoutId(discordMessageId, boardId, postCreatorId, title, content);
     }
 }

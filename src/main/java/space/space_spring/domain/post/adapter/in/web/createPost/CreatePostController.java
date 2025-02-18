@@ -18,7 +18,7 @@ import static space.space_spring.global.util.bindingResult.BindingResultUtils.ge
 
 @RestController
 @RequiredArgsConstructor
-public class createPostController {
+public class CreatePostController {
 
     private final CreatePostUseCase createPostUseCase;
 

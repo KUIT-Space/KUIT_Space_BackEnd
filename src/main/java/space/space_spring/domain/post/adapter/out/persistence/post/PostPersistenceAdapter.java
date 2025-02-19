@@ -1,26 +1,33 @@
 package space.space_spring.domain.post.adapter.out.persistence.post;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.attachment.AttachmentJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.attachment.QAttachmentJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.attachment.SpringDataAttachmentRepository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
+import space.space_spring.domain.post.adapter.out.persistence.comment.QCommentJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.like.QLikeJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
+import space.space_spring.domain.post.adapter.out.persistence.postBase.QPostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
-import space.space_spring.domain.post.application.port.in.readPostList.SummaryOfPost;
+import space.space_spring.domain.post.application.port.in.readPostList.ListOfPostSummary;
+import space.space_spring.domain.post.application.port.in.readPostList.PostSummary;
 import space.space_spring.domain.post.application.port.out.CreatePostPort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.domain.AttachmentType;
+import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.domian.QSpaceMemberJpaEntity;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.exception.CustomException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -32,9 +39,9 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
     private final SpringDataPostRepository postRepository;
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
-    private final SpringDataAttachmentRepository attachmentRepository;
     private final PostMapper postMapper;
     private final PostBaseMapper postBaseMapper;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Long createPost (Post post) {
@@ -57,43 +64,52 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
     }
 
     @Override
-    public List<SummaryOfPost> loadPostList(Long boardId) {
-        // 1. Board 조회
-        BoardJpaEntity boardJpaEntity = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+    public ListOfPostSummary loadPostList(Long boardId) {
+        QPostJpaEntity post = QPostJpaEntity.postJpaEntity;
+        QPostBaseJpaEntity postBase = QPostBaseJpaEntity.postBaseJpaEntity;
+        QSpaceMemberJpaEntity spaceMember = QSpaceMemberJpaEntity.spaceMemberJpaEntity;
+        QLikeJpaEntity like = QLikeJpaEntity.likeJpaEntity;
+        QCommentJpaEntity comment = QCommentJpaEntity.commentJpaEntity;
+        QAttachmentJpaEntity attachment = QAttachmentJpaEntity.attachmentJpaEntity;
 
-        // 2. PostBase 조회
-        List<PostBaseJpaEntity> postBaseJpaEntities = postBaseRepository.findByBoard(boardJpaEntity);
+        // QueryDSL로 데이터 조회
+        List<Tuple> results = queryFactory
+                .select(
+                    post,
+                    spaceMember,
+                    like.countDistinct(),
+                    comment.countDistinct(),
+                    attachment.attachmentUrl.min() // 첫 번째 이미지 가져오기
+                )
+                .from(post)
+                .join(post.postBase, postBase)
+                .join(postBase.spaceMember, spaceMember)
+                .leftJoin(like).on(like.postBase.eq(postBase))
+                .leftJoin(comment).on(comment.postBase.eq(postBase))
+                .leftJoin(attachment).on(attachment.postBase.eq(postBase)
+                        .and(attachment.attachmentType.eq(AttachmentType.IMAGE)))
+                .where(postBase.board.id.eq(boardId)) // boardId 기준 필터링
+                .groupBy(post.id, spaceMember.id)
+                .fetch();
 
-        if (postBaseJpaEntities.isEmpty()) {
-            return new ArrayList<>();
-        }
+        List<PostSummary> postSummaries = results.stream().map(tuple -> {
+            PostJpaEntity postJpa = tuple.get(post);
+            SpaceMemberJpaEntity spaceMemberJpa = tuple.get(spaceMember);
+            Long likeCount = tuple.get(2, Long.class);
+            Long commentCount = tuple.get(3, Long.class);
+            String postImageUrl = tuple.get(4, String.class);
 
-        // 3. Post 조회
-        List<PostJpaEntity> postJpaEntities = postRepository.findByPostBaseIn(postBaseJpaEntities);
+            return PostSummary.of(
+                    postJpa.getId(),
+                    postJpa.getTitle(),
+                    new Content(postJpa.getPostBase().getContent()),
+                    likeCount != null ? likeCount.intValue() : 0,
+                    commentCount != null ? commentCount.intValue() : 0,
+                    spaceMemberJpa.getNickname(),
+                    postImageUrl
+                );
+        }).toList();
 
-        // 4. Attachment 조회
-        List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findByPostBaseIn(postBaseJpaEntities);
-
-        // 5. 각 Entity를 Domain 객체로 변환 후 리스트 조합
-        return
+        return ListOfPostSummary.of(postSummaries);
     }
-
-    private Post mapToPost(PostJpaEntity postJpaEntity, List<PostBaseJpaEntity> postBaseJpaEntities, List<AttachmentJpaEntity> attachmentJpaEntities) {
-        // 1. PostBase 조회
-        PostBaseJpaEntity postBaseJpaEntity = postBaseJpaEntities.stream()
-                .filter(base -> base.getId().equals(postJpaEntity.getPostBase().getId()))
-                .findFirst()
-                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
-
-        // 첫 번째 이미지 첨부파일 가져오기
-        String postImageUrl = attachmentJpaEntities.stream()
-                .filter(attachment -> attachment.getPostBase().equals(postBaseJpaEntity) && attachment.getAttachmentType().equals(AttachmentType.IMAGE))
-                .map(attachmentMapper::toDomain)
-                .findFirst()
-                .map(attachment -> attachment.getAttachmentUrl())
-                .orElse(null);
-        return postMapper.toDomain(postJpaEntity, postBaseJpaEntity, postImageUrl);
-    }
-
 }

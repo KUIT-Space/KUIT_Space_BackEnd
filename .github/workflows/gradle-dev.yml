@@ -107,12 +107,11 @@ jobs:
           #password: ${{ secrets.EC2_PASSWORD }}
           key: ${{ secrets.EC2_PRIVATE_KEY_DEV }}
           port: 22
-          #          envs: GITHUB_SHA
+          envs: GITHUB_SHA
           script: |
-                    echo "${{ secrets.APPLICATION_YML_DEV }}" > ~/application_dev.yml            
-                    sudo docker ps
-                    sudo docker pull ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
-                    sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
-                    sudo docker run -d -p 8080:8080 -v ~/application_dev.yml:src/main/resources/application.yml ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
-            #            sudo docker run -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
-                    sudo docker image prune -f
+            echo "${{ secrets.APPLICATION_YML_DEV }}" > ~/application_dev.yml            
+            sudo docker ps
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
+            sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+            sudo docker run -d -p 8080:8080 -v ~/application_dev.yml:src/main/resources/application.yml ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
+            sudo docker image prune -f

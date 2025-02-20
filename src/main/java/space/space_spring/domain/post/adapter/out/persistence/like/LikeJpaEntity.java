@@ -11,7 +11,7 @@ import space.space_spring.global.common.entity.BaseEntity;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "Like")
+@Table(name = "Post_Like")
 public class LikeJpaEntity extends BaseEntity {
 
     @Id

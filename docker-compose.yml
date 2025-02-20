@@ -6,8 +6,14 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
+    restart: always
 
   app:
-    build: .                # 현재 디렉토리의 Dockerfile을 사용하여 이미지를 빌드
+    image: feed-dev
+    container_name: feed-dev
     ports:
       - "8080:8080"         # 호스트의 8080 포트를 컨테이너의 8080 포트와 매핑
+    depends_on:
+      - redis
+    volumes:
+      - ~/application_dev.yml:src/main/resources/application.yml

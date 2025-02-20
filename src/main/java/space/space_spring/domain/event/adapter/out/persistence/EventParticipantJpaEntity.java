@@ -42,7 +42,7 @@ public class EventParticipantJpaEntity extends BaseEntity{
         this.spaceMember = spaceMember;
     }
 
-    EventParticipantJpaEntity create(EventJpaEntity event, SpaceMemberJpaEntity spaceMember) {
+    static EventParticipantJpaEntity create(EventJpaEntity event, SpaceMemberJpaEntity spaceMember) {
         return EventParticipantJpaEntity.builder()
                 .event(event)
                 .spaceMember(spaceMember)

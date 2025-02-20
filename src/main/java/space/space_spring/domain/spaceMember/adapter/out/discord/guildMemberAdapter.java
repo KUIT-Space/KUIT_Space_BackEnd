@@ -78,7 +78,7 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
 //
 //    }
 
-    //This method return user=null, inManage=false, id=null
+    //This method return inManage=false
     private GuildMember guildToSpaceMember(Member member){
         return GuildMember.builder()
                 .discordId(member.getIdLong())

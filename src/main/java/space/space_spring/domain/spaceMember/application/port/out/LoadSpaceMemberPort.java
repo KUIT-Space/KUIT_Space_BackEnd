@@ -6,8 +6,11 @@ import java.util.List;
 
 public interface LoadSpaceMemberPort {
     SpaceMember loadById(Long id);
+    SpaceMember loadByUserId(Long userId);
 
     List<SpaceMember> loadAllById(List<Long> ids);
     SpaceMember loadSpaceMemberById(Long id);
     List<SpaceMember> loadSpaceMemberBySpaceId(Long spaceId);
+
+    SpaceMember loadByDiscord(Long spaceDiscordId , Long spaceMemberDiscordId);
 }

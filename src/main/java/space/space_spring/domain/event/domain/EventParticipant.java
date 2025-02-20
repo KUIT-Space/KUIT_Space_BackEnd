@@ -20,4 +20,8 @@ public class EventParticipant {
     public static EventParticipant create(Long id, Long eventId, Long spaceMemberId) {
         return new EventParticipant(id, eventId, spaceMemberId);
     }
+
+    public static EventParticipant withoutId(Long eventId, Long spaceMemberId) {
+        return new EventParticipant(null, eventId, spaceMemberId);
+    }
 }

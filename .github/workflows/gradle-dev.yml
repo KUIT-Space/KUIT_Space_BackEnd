@@ -102,17 +102,21 @@ jobs:
       ## deploy to develop
       - name: Deploy to dev
         uses: appleboy/ssh-action@master
+        env:
+          COMPOSE: "/home/ubuntu/compose/docker-compose.yml"
         with:
           host: ${{ secrets.EC2_HOST_DEV }} # EC2 퍼블릭 IPv4 DNS
           username: ${{ secrets.EC2_USERNAME_DEV }}
           #password: ${{ secrets.EC2_PASSWORD }}
           key: ${{ secrets.EC2_PRIVATE_KEY_DEV }}
           port: 22
-          envs: GITHUB_SHA
+          envs: COMPOSE
           script: |
             echo "${{ secrets.APPLICATION_YML_DEV }}" > ~/application_dev.yml            
             sudo docker ps
+            sudo docker-compose -f $COMPOSE down --rmi all
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
-            sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
-            sudo docker run -d -p 8080:8080 -v ~/application_dev.yml:src/main/resources/application.yml ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
-            sudo docker image prune -f
+            sudo docker-compose -f $COMPOSE up -d
+#            sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+#            sudo docker run -d -p 8080:8080 -v ~/application_dev.yml:src/main/resources/application.yml ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
+#            sudo docker image prune -f

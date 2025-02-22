@@ -73,6 +73,8 @@ jobs:
       contents: read
 
     steps:
+      - uses: actions/checkout@v4
+
       # 6. docker build & push
       - name: docker build & push
         run: |

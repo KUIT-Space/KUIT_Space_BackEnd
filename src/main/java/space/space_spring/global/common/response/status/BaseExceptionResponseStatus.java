@@ -125,8 +125,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 130000 Discord 오류
      */
     SEND_MESSAGE_FAIL(12000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
-    DISCORD_THREAD_CREATE_FAIL(12001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다");
-
+    DISCORD_THREAD_CREATE_FAIL(12001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
+    DISCORD_CHANNEL_NOT_FOUND(12002,HttpStatus.NOT_FOUND,"discord channel을 찾지 못했습니다"),
+    DISCORD_GUILD_NOT_FOUND(12003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습ㄴ디ㅏ"),
+    DISCORD_CHANNEL_TYPE_WRONG(12004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다");
     private final int code;
     private final HttpStatus status;
     private final String message;

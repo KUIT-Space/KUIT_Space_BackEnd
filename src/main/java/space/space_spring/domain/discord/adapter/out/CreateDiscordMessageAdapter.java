@@ -5,7 +5,9 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.WebhookClient;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordForumMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordMessagePort;
 import space.space_spring.global.exception.CustomException;
@@ -19,6 +21,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class CreateDiscordMessageAdapter implements CreateDiscordMessagePort {
     private final JDA jda;
     @Override
+    @Async
     public CompletableFuture<Long> send(CreateDiscordMessageCommand command){
         WebhookClient client= WebhookClient.createClient(jda,command.getWebHookUrl());
 
@@ -30,6 +33,7 @@ public class CreateDiscordMessageAdapter implements CreateDiscordMessagePort {
                     obj->{
                         if(obj instanceof Message) {
                             Message message = (Message) obj;
+                            client.sendMessage("msg ID:"+message.getId()).queue();
                             future.complete(message.getIdLong());
                         }else{
                             future.completeExceptionally(new RuntimeException("Webhook의 return 값이 message 타입이 아닙니다"));
@@ -52,6 +56,34 @@ public class CreateDiscordMessageAdapter implements CreateDiscordMessagePort {
 //
 //        ).thenApply(msg-> msg.getId());
 
+    }
+    @Override
+    @Async
+    public CompletableFuture<Long> sendForum(CreateDiscordForumMessageCommand command){
+        WebhookClient client= WebhookClient.createClient(jda,command.getWebHookUrl());
+
+        CompletableFuture<Long> future = new CompletableFuture<>();
+
+        client.sendMessage(command.getContent())
+                .setAvatarUrl(command.getAvatarUrl())
+                .createThread(command.getTitle())
+                .setUsername(command.getUserName()).queue(
+                        obj->{
+                            if(obj instanceof Message) {
+                                Message message = (Message) obj;
+                                future.complete(message.getIdLong());
+                            }else{
+                                future.completeExceptionally(new RuntimeException("Webhook의 return 값이 message 타입이 아닙니다"));
+                            }
+                        }
+                        ,throwable->{
+
+                            System.out.println("\n\nerror"+throwable.toString());
+                            future.completeExceptionally((Throwable)throwable);
+                        }
+                );
+
+        return future;
     }
 
 //    private WebhookClient getWebHookClient(String webHookUrl){

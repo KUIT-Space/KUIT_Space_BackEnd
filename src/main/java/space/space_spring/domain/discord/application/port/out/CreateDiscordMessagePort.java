@@ -4,4 +4,5 @@ import java.util.concurrent.CompletableFuture;
 
 public interface CreateDiscordMessagePort {
     CompletableFuture<Long> send(CreateDiscordMessageCommand command);
+    CompletableFuture<Long> sendForum(CreateDiscordForumMessageCommand command);
 }

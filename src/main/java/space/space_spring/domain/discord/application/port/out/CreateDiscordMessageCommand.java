@@ -12,7 +12,7 @@ public class CreateDiscordMessageCommand {
     private String name;
     private String avatarUrl;
 
-    private String WebHookUrl;
+    private String webHookUrl;
 
     private String Content;
 }

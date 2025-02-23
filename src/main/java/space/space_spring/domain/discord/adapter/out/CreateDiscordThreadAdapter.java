@@ -41,6 +41,8 @@ public class CreateDiscordThreadAdapter implements CreateDiscordThreadPort {
         return CompletableFuture.supplyAsync(()-> {
             return jda.getTextChannelById(channelDiscordId)
                     .createThreadChannel(threadName, startMessageId).complete().getIdLong();
+        }).exceptionally(err-> {
+            throw new CustomException(DISCORD_THREAD_CREATE_FAIL);
         });
     }
 

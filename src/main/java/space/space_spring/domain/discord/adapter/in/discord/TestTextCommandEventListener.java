@@ -2,9 +2,8 @@ package space.space_spring.domain.discord.adapter.in.discord;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Mentions;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.attribute.IWebhookContainer;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
@@ -20,6 +19,7 @@ import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMembe
 import space.space_spring.global.exception.CustomException;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -37,15 +37,31 @@ public class TestTextCommandEventListener extends ListenerAdapter {
         }
 
         if(msg.getContentRaw().equals("!ping")){
+            //event.getChannel().asTextChannel().sendMessage().set
             msg.reply("pong").queue();
             return;
         }
+        if(msg.getContentRaw().equals("!webHook")){
+            List<Webhook> hookList=event.getChannel().asTextChannel().retrieveWebhooks().complete();
+            for(Webhook hook:hookList){
+                System.out.println("\n"+hook.getName()+"\n");
+            }
 
+
+            Webhook webHook =event.getChannel().asTextChannel().createWebhook("generate WebHook").complete();
+            webHook.sendMessage("only webhook Message").setAvatarUrl(event.getAuthor().getAvatarUrl()).setUsername(event.getMember().getEffectiveName()).queue();
+            //event.getChannel().asTextChannel().retrieveWebhooks()
+
+            //WebhookClient.createClient().get
+            WebhookClient.createClient(event.getJDA(),webHook.getUrl()).sendMessage("webHook message")
+                    .setAvatarUrl(event.getAuthor().getAvatarUrl()).setUsername(event.getMember().getEffectiveName()).queue();
+            return;
+        }
         if(msg.getContentRaw().equals("!pingping")){
             CreateDiscordMessageCommand command=CreateDiscordMessageCommand.builder()
                             .channelDiscordId(event.getChannel().getIdLong())
                             .guildDiscordId(event.getGuild().getIdLong())
-                            .WebHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
+                            .webHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
                             .Content("spring server message test success")
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
                             .name(event.getMember().getEffectiveName())
@@ -63,7 +79,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             CreateDiscordThreadCommand command=CreateDiscordThreadCommand.builder()
                     .channelDiscordId(event.getChannel().getIdLong())
                     //.guildDiscordId(event.getGuild().getIdLong())
-                    .WebHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
+                    .webHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
                     .contentMessage("spring server thread test success")
                     .threadName("test thread name 12")
                     .startMessage("start message 12")
@@ -85,7 +101,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             CreateDiscordMessageCommand command=CreateDiscordMessageCommand.builder()
                     .channelDiscordId(event.getChannel().getIdLong())
                     .guildDiscordId(event.getGuild().getIdLong())
-                    .WebHookUrl("https://discordapp.com/api/webhooks/1341258654082404403/SnSx0qzymTEkwuEeVfXMPsUbSj_yiQ0tlCSOX4WOalSKBrdDlBXbz_TMFqnWIyIBy60m")
+                    .webHookUrl("https://discordapp.com/api/webhooks/1341258654082404403/SnSx0qzymTEkwuEeVfXMPsUbSj_yiQ0tlCSOX4WOalSKBrdDlBXbz_TMFqnWIyIBy60m")
                     .Content("spring server message test success\nhi\ncontent")
                     .avatarUrl(event.getMember().getEffectiveAvatarUrl())
                     .name(event.getMember().getEffectiveName())

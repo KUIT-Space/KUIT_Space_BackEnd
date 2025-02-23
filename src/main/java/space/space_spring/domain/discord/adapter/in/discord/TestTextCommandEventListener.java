@@ -76,10 +76,11 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             return;
         }
         if(msg.getContentRaw().equals("!threadping")){
+            Webhook webhook= event.getChannel().asTextChannel().createWebhook("made by server").complete();
             CreateDiscordThreadCommand command=CreateDiscordThreadCommand.builder()
                     .channelDiscordId(event.getChannel().getIdLong())
-                    //.guildDiscordId(event.getGuild().getIdLong())
-                    .webHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
+                    .guildDiscordId(event.getGuild().getIdLong())
+                    .webHookUrl(webhook.getUrl())
                     .contentMessage("spring server thread test success")
                     .threadName("test thread name 12")
                     .startMessage("start message 12")
@@ -93,26 +94,34 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                 }catch (Exception e){
                     event.getMessage().reply("error : "+e.toString()).queue();
                 }
+            }).exceptionally(t->{
+                System.out.println("\n\nerror : "+t.toString());
+                return null;
             });
             return;
         }
 
         if(msg.getContentRaw().equals("!forumping")) {
-            CreateDiscordMessageCommand command=CreateDiscordMessageCommand.builder()
-                    .channelDiscordId(event.getChannel().getIdLong())
+            CreateDiscordThreadCommand command=CreateDiscordThreadCommand.builder()
+                    .channelDiscordId(1326507142286544957L)
                     .guildDiscordId(event.getGuild().getIdLong())
                     .webHookUrl("https://discordapp.com/api/webhooks/1341258654082404403/SnSx0qzymTEkwuEeVfXMPsUbSj_yiQ0tlCSOX4WOalSKBrdDlBXbz_TMFqnWIyIBy60m")
-                    .Content("spring server message test success\nhi\ncontent")
+                    .contentMessage("spring server message test success\nhi\ncontent")
                     .avatarUrl(event.getMember().getEffectiveAvatarUrl())
-                    .name(event.getMember().getEffectiveName())
+                    .userName(event.getMember().getEffectiveName())
+                    .threadName("thread name yee")
                     .build();
-            createDiscordMessagePort.send(command).thenAccept(result->{
+            createDiscordThreadPort.create(command).thenAccept(result->{
                 try {
                     event.getMessage().reply("success (id = "+result+")").queue();
                 }catch (Exception e){
                     event.getMessage().reply("error : "+e.toString()).queue();
                 }
+            }).exceptionally(t->{
+                System.out.println("\n\nerror : "+t.toString());
+                return null;
             });
+
             return;
 
         }

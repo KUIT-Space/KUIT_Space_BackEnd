@@ -2,7 +2,9 @@ package space.space_spring.global.config.JDA;
 
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -28,19 +30,23 @@ public class SlashCommandRegistrar {
 
         commands.addCommands(
                 Commands.slash("init-space","initiate this Guild to Space. first call this command when add Space Bot")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
         );
         commands.addCommands(
                 Commands.slash("guildinfo","print Guild information.")
                         .addOption(STRING,"test-option","test-option",false)
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
                 //.setGuildOnly(true) // this doesn't make sense in DMs
                 //.setDefaultPermissions(DefaultMemberPermissions.DISABLED)
         );
         commands.addCommands(
                 Commands.slash("member-info","Get Guild Members info")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
         );
 
         commands.addCommands(
                 Commands.slash("channel-info","get this Channel info")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
         );
 
         commands.addCommands(
@@ -53,10 +59,14 @@ public class SlashCommandRegistrar {
                         )
                         .addOptions(
                                 new OptionData(OptionType.STRING, "board-type", "게시판 종류를 선택해주세요")
-                                        .addChoice("post",BoardType.POST.name())
-                                        .addChoice("question",BoardType.QUESTION.name())
-                                        .setRequired(true)
+
+                                .addChoice("post",BoardType.POST.name())
+                                .addChoice("question",BoardType.QUESTION.name())
+                                .setRequired(true)
+
                         )
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+
         );
 
         commands.queue();

@@ -2,18 +2,15 @@ package space.space_spring.domain.discord.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import space.space_spring.domain.discord.adapter.out.CreateDiscordMessageAdapter;
-import space.space_spring.domain.discord.application.port.in.CreatePostInDiscordCommand;
-import space.space_spring.domain.discord.application.port.in.CreatePostInDiscordUseCase;
-import space.space_spring.domain.discord.application.port.out.CreateDiscordMessageCommand;
-import space.space_spring.domain.discord.application.port.out.CreateDiscordMessagePort;
+
+import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordUseCase;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
-import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.global.exception.CustomException;
 
@@ -45,7 +42,7 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
     }
 
     private CreateDiscordThreadCommand MapToDiscordCommand(CreatePostInDiscordCommand command){
-        NicknameAndProfileImage userInfo = loadSpaceMemberinfoPort.loadNicknameAndProfileImageById(command.getCreatorSpaceMemberId());
+        NicknameAndProfileImage userInfo = loadSpaceMemberinfoPort.loadNicknameAndProfileImageById(command.getPostCreatorId());
         Long guildDiscordId = loadSpacePort.loadSpaceById(command.getSpaceId()).get().getDiscordId();
         Board board=loadBoardPort.load(command.getBoardId()).orElseThrow(()->new CustomException(BOARD_NOT_EXIST));
         return CreateDiscordThreadCommand.builder()
@@ -56,7 +53,9 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                 .webHookUrl(board.getWebhookUrl())
                 .startMessage(command.getTitle())
                 .threadName(command.getTitle())
-                .contentMessage(command.getContent().getTextContent())
+                .contentMessage(command.getContent().getValue())
                 .build();
     }
+
+
 }

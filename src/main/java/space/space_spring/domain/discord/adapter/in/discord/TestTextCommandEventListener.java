@@ -6,15 +6,12 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.attribute.IWebhookContainer;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordMessagePort;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
-import space.space_spring.domain.post.application.port.in.CreateBoard.CreateBoardCommand;
-import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
-import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
-import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.global.exception.CustomException;
 
@@ -22,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
+@Profile({"local", "dev"})
 @RequiredArgsConstructor
 public class TestTextCommandEventListener extends ListenerAdapter {
     private final LoadSpaceMemberPort loadSpaceMemberPort;

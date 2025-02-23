@@ -45,6 +45,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EXPIRED_REFRESH_TOKEN(4009, HttpStatus.UNAUTHORIZED, "만료된 refresh token 입니다. 다시 로그인해야합니다."),
     DISCORD_TOKEN_ERROR(4010, HttpStatus.UNAUTHORIZED, "디스코드 서버에서 access token 발급이 실패하였습니다."),
     CANNOT_FIND_DISCORD_USER(4011, HttpStatus.NOT_FOUND, "디스코드 계정의 정보를 가져오는 데에 실패하였습니다."),
+    INVALID_REFRESH_TOKEN(4012, HttpStatus.NOT_FOUND, "유효하지 않은 refresh token입니다."),
 
     /**
      * 5000: User 오류
@@ -95,8 +96,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 11000: Post 오류
      */
     INVALID_BOARD_CREATE(11000, HttpStatus.BAD_REQUEST, "게시판 생성 요청에서 잘못된 값이 존재합니다."),
+    INVALID_POST_CREATE(11001, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
+    BOARD_NOT_FOUND(11002, HttpStatus.NOT_FOUND, "존재하지 않는 게시판 id입니다."),
+    POST_BASE_NOT_FOUND(11003, HttpStatus.NOT_FOUND, "존재하지 않는 post base id입니다."),
 
-    INVALID_POST_CREATE(11000, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
     POST_NOT_EXIST(11001, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 id입니다."),
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
@@ -121,7 +124,14 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     THIS_PAY_REQUEST_HAS_NOT_TARGETS(12007, HttpStatus.INTERNAL_SERVER_ERROR, "현재 정산 요청은 정산 요청 대상이 없습니다. 현재 정산 생성 시 서버에 문제가 있었습니다."),
     INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다."),
 
+
     /**
+     * 13000 : Event 오류
+     */
+    INVALID_EVENT_CREATE(13000, HttpStatus.BAD_REQUEST, "행사 생성 요청에서 잘못된 값이 존재합니다."),
+    EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다."),
+    /**
+
      * 130000 Discord 오류
      */
     SEND_MESSAGE_FAIL(12000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
@@ -129,6 +139,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     DISCORD_CHANNEL_NOT_FOUND(12002,HttpStatus.NOT_FOUND,"discord channel을 찾지 못했습니다"),
     DISCORD_GUILD_NOT_FOUND(12003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습ㄴ디ㅏ"),
     DISCORD_CHANNEL_TYPE_WRONG(12004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다");
+    ;
+
+
     private final int code;
     private final HttpStatus status;
     private final String message;

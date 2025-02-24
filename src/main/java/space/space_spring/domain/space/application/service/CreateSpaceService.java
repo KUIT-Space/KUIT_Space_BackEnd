@@ -62,6 +62,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
                 DiscordRole.SPACE_MANAGER.toString()
                 ,DiscordRole.SPACE_MANAGER.getColor()
                 ,command.getCreatorDiscordId()
+                ,true
         );
 
         createPrivateDiscordChannelPort.createPrivateChannel(command.getGuildId(),command.getCreatorDiscordId());

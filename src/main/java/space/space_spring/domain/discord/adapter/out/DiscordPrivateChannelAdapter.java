@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordRolePort;
 import space.space_spring.domain.discord.application.port.out.CreatePrivateDiscordChannelPort;
@@ -23,7 +24,7 @@ public class DiscordPrivateChannelAdapter implements CreatePrivateDiscordChannel
 
     private final JDA jda;
     private final CreateDiscordRolePort createDiscordRolePort;
-    private final String managerChannelName = "SPACE_Manager_Channel";
+    private final String managerChannelName = "space_manager_channel";
     private final String managerCategoryName = "SPACE";
 
     @Override
@@ -54,7 +55,16 @@ public class DiscordPrivateChannelAdapter implements CreatePrivateDiscordChannel
         return categories.get(0);
     }
     private Channel getOrCreateChannel(Guild guild,Category category,Role role){
-        List<TextChannel> channels = guild.getTextChannelsByName(managerChannelName,false);
+
+//        List<GuildChannel> guildChannels = guild.getChannels(true).stream().filter(guildChannel -> {
+//            return guildChannel.getName().equals(managerChannelName);
+//        }).toList();
+//        if(guildChannels.isEmpty()){
+//            System.out.println("no match channel Name: in guild");
+//            return createPrivateChannel(guild, category, role);
+//        }
+
+        List<TextChannel> channels = guild.getTextChannelsByName(managerChannelName.toLowerCase(),true);
         if(channels.isEmpty()){
             System.out.println("no match channel Name");
             return createPrivateChannel(guild, category, role);

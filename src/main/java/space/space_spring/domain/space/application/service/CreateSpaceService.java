@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordRolePort;
+import space.space_spring.domain.discord.application.port.out.CreatePrivateDiscordChannelPort;
 import space.space_spring.domain.discord.domain.DiscordRole;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
@@ -39,6 +40,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
     private final CreateUserUseCase createUserUseCase;
     private final CreateSpaceMemberUseCase createSpaceMemberUseCase;
     private final CreateDiscordRolePort createDiscordRolePort;
+    private final CreatePrivateDiscordChannelPort createPrivateDiscordChannelPort;
 
     @Override
     @Transactional
@@ -61,6 +63,8 @@ public class CreateSpaceService implements CreateSpaceUseCase {
                 ,DiscordRole.SPACE_MANAGER.getColor()
                 ,command.getCreatorDiscordId()
         );
+
+        createPrivateDiscordChannelPort.createPrivateChannel(command.getGuildId(),command.getCreatorDiscordId());
 
         //GuildMember 정보 가져오기
         GuildMembers guildMembers=loadGuildMemberPort.loadAllSpaceMembers(newSpace);

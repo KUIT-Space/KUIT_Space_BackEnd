@@ -42,7 +42,7 @@ public class DiscordRoleAdapter implements CreateDiscordRolePort {
     }
 
     private List<Role> getRoleExist(Long guildId, String name){
-        return jda.getGuildById(guildId).getRolesByName(name,true);
+        return jda.getGuildById(guildId).getRolesByName(name,false);
 
     }
 }

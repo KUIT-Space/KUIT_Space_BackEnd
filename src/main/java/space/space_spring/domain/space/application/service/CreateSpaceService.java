@@ -3,6 +3,8 @@ package space.space_spring.domain.space.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordRolePort;
+import space.space_spring.domain.discord.domain.DiscordRole;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.CreateSpacePort;
@@ -21,6 +23,7 @@ import space.space_spring.global.exception.CustomException;
 
 import java.util.Optional;
 
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.DISCORD_TOKEN_ERROR;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_ALREADY_EXISTED;
 
 @Service
@@ -35,6 +38,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
     private final LoadUserPort loadUserPort;
     private final CreateUserUseCase createUserUseCase;
     private final CreateSpaceMemberUseCase createSpaceMemberUseCase;
+    private final CreateDiscordRolePort createDiscordRolePort;
 
     @Override
     @Transactional
@@ -50,6 +54,14 @@ public class CreateSpaceService implements CreateSpaceUseCase {
             System.out.println("\n\n\nNEW SPACEID IS NULL!!!\n\n\n");
 
         }
+
+        createDiscordRolePort.createAndAddRole(
+                command.getGuildId(),
+                DiscordRole.SPACE_MANAGER.toString()
+                ,DiscordRole.SPACE_MANAGER.getColor()
+                ,command.getCreatorDiscordId()
+        );
+
         //GuildMember 정보 가져오기
         GuildMembers guildMembers=loadGuildMemberPort.loadAllSpaceMembers(newSpace);
 

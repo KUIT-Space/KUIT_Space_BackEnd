@@ -39,11 +39,12 @@ jobs:
           distribution: 'temurin'
 
       # 2. GitHub secrets 로부터 데이터 받아 workflow에 파일 생성
+      # 프로젝트에 존재하는 application.yml 을 지우고, github secret repo에 주입한 yml로 교체
       - name : Make application-dev.yml
-        run: |         
-          cd ./src/main/resources    
-          touch ./application.yml
-          echo "${{ secrets.APPLICATION_YML_DEV }}" >> ./application.yml
+        run: |
+          cd ./src/main/resources
+          rm -f application.yml     
+          echo "${{ secrets.APPLICATION_YML_DEV }}" > application.yml
         shell: bash
 
       # 3. project에 맞는 gradle 설정
@@ -82,7 +83,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2. gradle build
+      # 2. GitHub secrets 로부터 데이터 받아 workflow에 파일 생성
+      # 프로젝트에 존재하는 application.yml 을 지우고, github secret repo에 주입한 yml로 교체
+      - name : Make application-dev.yml
+        run: |
+          cd ./src/main/resources
+          rm -f application.yml     
+          echo "${{ secrets.APPLICATION_YML_DEV }}" > application.yml
+        shell: bash
+
+      # 3. gradle build
       - name: gradle에 실행권한 부여
         run: chmod +x ./gradlew
 
@@ -91,14 +101,14 @@ jobs:
         with:
           arguments: clean bootJar
 
-      # 3. docker build & push
+      # 4. docker build & push
       - name: docker build & push
         run: |
           docker login -u ${{ secrets.DOCKERHUB_USERNAME_DEV }} -p ${{ secrets.DOCKERHUB_PASSWORD_DEV }}          
           docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev .
           docker push ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
 
-      # 4. docker deploy to ec2
+      # 5. docker deploy to ec2
       - name: docker deploy to ec2
         uses: appleboy/ssh-action@master
         env:
@@ -111,7 +121,11 @@ jobs:
           port: 22
           envs: COMPOSE
           script: |
-            sudo docker rm -f $(docker ps -aq)
+            sudo docker ps
+            sudo docker-compose -f $COMPOSE down --rmi all
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
             sudo docker-compose -f $COMPOSE up -d
             sudo docker image prune -f
+#            sudo docker rm -f $(docker ps -aq)
+#            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME_DEV }}/feed-dev
+#            sudo docker-compose -f $COMPOSE up -d

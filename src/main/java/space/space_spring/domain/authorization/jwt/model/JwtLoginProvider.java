@@ -32,16 +32,16 @@ public class JwtLoginProvider {
     @Value("${secret.jwt.refresh-expired-in}")
     private Long REFRESH_EXPIRED_IN;
 
-    public String generateToken(Long spaceMemberId, TokenType tokenType) {
+    public String generateToken(Long userId, Long spaceMemberId, TokenType tokenType) {
 //        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());
 
         Date now = new Date();
         Date expiration = setExpiration(now, tokenType);
 
-        return makeToken(tokenType, spaceMemberId, now, expiration);
+        return makeToken(tokenType, userId, spaceMemberId, now, expiration);
     }
 
-    private String makeToken(TokenType tokenType, Long spaceMemberId, Date now, Date expiration) {
+    private String makeToken(TokenType tokenType, Long userId, Long spaceMemberId, Date now, Date expiration) {
         if (tokenType.equals(TokenType.ACCESS)) {
             return Jwts.builder()
 //                .setClaims(claims)
@@ -56,6 +56,7 @@ public class JwtLoginProvider {
 //                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
+                .claim("userId", userId)
                 .signWith(SignatureAlgorithm.HS256, choiceSecretKey(tokenType))
                 .compact();
     }

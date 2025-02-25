@@ -40,9 +40,10 @@ public class DiscordOauthService implements OauthUseCase {
         Optional<User> savedUser = loadUserPort.loadUserByDiscordId(user.getDiscordId());
 
         if (savedUser.isPresent()) {
+            Long userId = savedUser.get().getId();
             Long spaceMemberId = getSpaceMemberId(savedUser.get());
-            String accessToken = jwtLoginProvider.generateToken(spaceMemberId, TokenType.ACCESS);
-            String refreshToken = jwtLoginProvider.generateToken(spaceMemberId, TokenType.REFRESH);
+            String accessToken = jwtLoginProvider.generateToken(userId, spaceMemberId, TokenType.ACCESS);
+            String refreshToken = jwtLoginProvider.generateToken(userId, spaceMemberId, TokenType.REFRESH);
             createRefreshTokenPort.create(savedUser.get().getId(), refreshToken);
             return new TokenPair(accessToken, refreshToken);
         }

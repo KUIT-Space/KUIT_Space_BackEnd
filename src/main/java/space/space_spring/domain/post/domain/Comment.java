@@ -1,36 +1,36 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
-import org.w3c.dom.Text;
 
 @Getter
 public class Comment {
 
-    private Long id;
+    private Long id; // postBaseId
 
-    private Long postId;
+    private Long boardId;
 
-    private Long questionId;
+    private Long discordId;
 
-    private Comment(Long id, Long postId, Long questionId) {
+    private Long targetId; // post, question의 postBaseId
+
+    private Long spaceMemberId;
+
+    private String content;
+
+    private Comment(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content) {
         this.id = id;
-        this.postId = postId;
-        this.questionId = questionId;
+        this.boardId = boardId;
+        this.discordId = discordId;
+        this.targetId = targetId;
+        this.spaceMemberId = spaceMemberId;
+        this.content = content;
     }
 
-    public static Comment createForPost(Long id, Long postId) {
-        return new Comment(id, postId, null);
+    public static Comment of(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content) {
+        return new Comment(id, boardId, discordId, targetId, spaceMemberId, content);
     }
 
-    public static Comment withoutIdForPost(Long postId) {
-        return new Comment(null, postId, null);
-    }
-
-    public static Comment createForQuestion(Long id, Long questionId) {
-        return new Comment(id, null, questionId);
-    }
-
-    public static Comment withoutIdForQuestion(Long questionId) {
-        return new Comment(null, null, questionId);
+    public static Comment withoutId(Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content) {
+        return new Comment(null, boardId, discordId, targetId, spaceMemberId, content);
     }
 }

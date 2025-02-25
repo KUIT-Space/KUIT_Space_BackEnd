@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class Post {
 
-    private Long id;
+    private Long id; // postBaseId
 
     private Long discordId;
 

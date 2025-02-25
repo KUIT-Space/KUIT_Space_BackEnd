@@ -7,29 +7,22 @@ public class Like {
 
     private Long id;
 
-    private Long postId;
+    private Long targetId; // post, question의 postBaseId
 
-    private Long questionId;
+    private boolean isLiked;
 
-    private Like(Long id, Long postId, Long questionId) {
+
+    private Like(Long id, Long targetId, boolean isLiked) {
         this.id = id;
-        this.postId = postId;
-        this.questionId = questionId;
+        this.targetId = targetId;
+        this.isLiked = isLiked;
     }
 
-    public static Like createForPost(Long id, Long postId) {
-        return new Like(id, postId, null);
+    public static Like of(Long id, Long targetId, boolean isLiked) {
+        return new Like(id, targetId, isLiked);
     }
 
-    public static Like withoutIdForPost(Long postId) {
-        return new Like(null, postId, null);
-    }
-
-    public static Like createForQuestion(Long id, Long questionId) {
-        return new Like(id, null, questionId);
-    }
-
-    public static Like withoutIdForQuestion(Long questionId) {
-        return new Like(null, null, questionId);
+    public static Like withoutId(Long targetId, boolean isLiked) {
+        return new Like(null, targetId, isLiked);
     }
 }

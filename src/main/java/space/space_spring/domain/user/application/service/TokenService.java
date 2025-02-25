@@ -64,8 +64,8 @@ public class TokenService implements TokenUseCase {
     }
 
     private TokenPair updateTokenPair(SpaceMember spaceMember) {
-        String newAccessToken = jwtLoginProvider.generateToken(spaceMember.getId(), TokenType.ACCESS);
-        String newRefreshToken = jwtLoginProvider.generateToken(spaceMember.getId(), TokenType.REFRESH);
+        String newAccessToken = jwtLoginProvider.generateToken(spaceMember.getUserId(), spaceMember.getId(), TokenType.ACCESS);
+        String newRefreshToken = jwtLoginProvider.generateToken(spaceMember.getUserId(), spaceMember.getId(), TokenType.REFRESH);
 
         createRefreshTokenPort.create(spaceMember.getUserId(), newRefreshToken);
 

@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.post.domain.BoardType;
 
 import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 
@@ -50,13 +51,22 @@ public class SlashCommandRegistrar {
 
         commands.addCommands(
                 Commands.slash("set-board","get this Channel info")
+
+                        .addOptions(
+                                new OptionData(OptionType.STRING, "webhook-url", "이 채널에 WebHook URL 주소를 입력해주세요")
+                                        .setDescription("채널 설정 -> Integrations -> WebHooks -> Copy WebHook URL")
+                                        .setRequired(true)
+                        )
                         .addOptions(
                                 new OptionData(OptionType.STRING, "board-type", "게시판 종류를 선택해주세요")
-                                .addChoice("Board", "일반 게시판입니다. 익명 기능이 없습니다")
-                                .addChoice("question-Board", "질문 게시판입니다. 익명 기능이 있습니다.")
+
+                                .addChoice("post",BoardType.POST.name())
+                                .addChoice("question",BoardType.QUESTION.name())
+                                .setRequired(true)
 
                         )
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+
         );
 
         commands.queue();

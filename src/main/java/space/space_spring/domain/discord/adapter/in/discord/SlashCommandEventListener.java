@@ -1,11 +1,13 @@
 package space.space_spring.domain.discord.adapter.in.discord;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.application.port.in.CreateBoardInDiscordCommand;
 
 import java.util.List;
 
@@ -42,10 +44,13 @@ public class SlashCommandEventListener extends ListenerAdapter {
                 MessageChannelUnion channel = event.getChannel();
                 String channelInfo = "Channel information\n" +
                         channel.getName() + " : " +
-                        channel.getId().toString();
+                        channel.getId().toString()+"\n"+
+                        channel.getType().toString();
+                if(channel.getType()== ChannelType.GUILD_PUBLIC_THREAD){
+                    channelInfo+="\nparent : "+channel.asThreadChannel().getParentChannel().getId();
+                }
                 reply(event, channelInfo);
 
-                break;
 //            default:
 //                event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
 

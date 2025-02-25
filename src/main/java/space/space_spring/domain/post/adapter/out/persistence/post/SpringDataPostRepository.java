@@ -8,8 +8,5 @@ import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJ
 import java.util.List;
 
 public interface SpringDataPostRepository extends JpaRepository<PostJpaEntity, Long> {
-    @Query("SELECT p FROM PostJpaEntity p " +
-            "JOIN p.postBase pb " +
-            "WHERE pb.board.id = :boardId")
-    List<PostJpaEntity> findByBoardId(@Param("boardId") Long boardId);
+
 }

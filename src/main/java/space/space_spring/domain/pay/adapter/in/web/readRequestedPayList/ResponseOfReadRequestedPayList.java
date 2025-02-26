@@ -15,11 +15,11 @@ public class ResponseOfReadRequestedPayList {
     private ResponseOfReadRequestedPayList(List<InfoOfRequestedPay> completeRequestedPayList, List<InfoOfRequestedPay> inCompleteRequestedPayList) {
         this.completeRequestedPayList = completeRequestedPayList.stream()
                 .map(ResponseOfRequestedPayInfo::of)
-                .collect(Collectors.toList());
+                .toList();
 
         this.inCompleteRequestedPayList = inCompleteRequestedPayList.stream()
                 .map(ResponseOfRequestedPayInfo::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static ResponseOfReadRequestedPayList of(ResultOfReadRequestedPayList result) {

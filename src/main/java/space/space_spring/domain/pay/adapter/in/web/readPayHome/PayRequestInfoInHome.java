@@ -1,7 +1,7 @@
 package space.space_spring.domain.pay.adapter.in.web.readPayHome;
 
 import lombok.Getter;
-import space.space_spring.domain.pay.application.port.in.readPayRequestList.InfoOfPayRequest;
+import space.space_spring.domain.pay.application.port.in.readPayHome.InfoOfPayRequestInHome;
 
 @Getter
 public class PayRequestInfoInHome {
@@ -24,13 +24,13 @@ public class PayRequestInfoInHome {
         this.sendCompleteTargetNum = sendCompleteTargetNum;
     }
 
-    public static PayRequestInfoInHome of(InfoOfPayRequest infoOfPayRequest) {
+    public static PayRequestInfoInHome of(InfoOfPayRequestInHome infoOfPayRequestInHome) {
         return new PayRequestInfoInHome(
-                infoOfPayRequest.getPayRequestId(),
-                infoOfPayRequest.getTotalAmount().getAmountInInteger(),
-                infoOfPayRequest.getReceivedAmount().getAmountInInteger(),
-                infoOfPayRequest.getTotalTargetNum().getNumber(),
-                infoOfPayRequest.getSendCompleteTargetNum().getNumber()
+                infoOfPayRequestInHome.getPayRequestId(),
+                infoOfPayRequestInHome.getTotalAmount().getAmountInInteger(),
+                infoOfPayRequestInHome.getReceivedAmount().getAmountInInteger(),
+                infoOfPayRequestInHome.getTotalTargetNum().getNumber(),
+                infoOfPayRequestInHome.getSendCompleteTargetNum().getNumber()
         );
     }
 }

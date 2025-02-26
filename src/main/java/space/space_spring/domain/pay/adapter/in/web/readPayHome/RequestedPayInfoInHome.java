@@ -1,7 +1,7 @@
 package space.space_spring.domain.pay.adapter.in.web.readPayHome;
 
 import lombok.Getter;
-import space.space_spring.domain.pay.application.port.in.readRequestedPayList.InfoOfRequestedPay;
+import space.space_spring.domain.pay.application.port.in.readPayHome.InfoOfRequestedPayInHome;
 
 @Getter
 public class RequestedPayInfoInHome {
@@ -14,17 +14,19 @@ public class RequestedPayInfoInHome {
 
     private int requestedAmount;
 
-    private RequestedPayInfoInHome(Long payRequestedTargetId, String payCreatorName, int requestedAmount) {
+    private RequestedPayInfoInHome(Long payRequestedTargetId, String payCreatorName, String payCreatorProfileImgUrl, int requestedAmount) {
         this.payRequestedTargetId = payRequestedTargetId;
         this.payCreatorName = payCreatorName;
+        this.payCreatorProfileImgUrl = payCreatorProfileImgUrl;
         this.requestedAmount = requestedAmount;
     }
 
-    public static RequestedPayInfoInHome of(InfoOfRequestedPay infoOfRequestedPay) {
+    public static RequestedPayInfoInHome of(InfoOfRequestedPayInHome infoOfRequestedPayInHome) {
         return new RequestedPayInfoInHome(
-                infoOfRequestedPay.getPayRequestTargetId(),
-                infoOfRequestedPay.getPayCreatorNickname(),
-                infoOfRequestedPay.getRequestedAmount().getAmountInInteger()
+                infoOfRequestedPayInHome.getPayRequestTargetId(),
+                infoOfRequestedPayInHome.getPayCreatorNickname(),
+                infoOfRequestedPayInHome.getPayCreatorProfileImageUrl(),
+                infoOfRequestedPayInHome.getRequestedAmount().getAmountInInteger()
         );
     }
 }

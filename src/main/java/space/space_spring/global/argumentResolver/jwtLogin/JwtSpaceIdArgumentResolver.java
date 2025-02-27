@@ -9,17 +9,16 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class JwtLoginAuthHandlerArgumentResolver implements HandlerMethodArgumentResolver {
+public class JwtSpaceIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        // 일단 parameter의 return value type 을 검사하지는 X
-        return parameter.hasParameterAnnotation(JwtLoginAuth.class);
+        return parameter.hasParameterAnnotation(JwtSpaceId.class);
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        return request.getAttribute("spaceMemberId");          // jwt를 복호화해서 얻은 userId get
+        return request.getAttribute("spaceId");
     }
 }

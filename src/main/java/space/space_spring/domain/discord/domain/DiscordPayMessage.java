@@ -41,7 +41,7 @@ public class DiscordPayMessage {
                     .collect(Collectors.joining(" "));
             content+=mentionSet;
         }
-        if(this.payType==PayType.EQUAL_SPLIT){
+        if(this.payType==PayType.INDIVIDUAL){
             content +="총 금액 " +total.toString()
                     + "\n";
             String mentionSet=targetMembers.entrySet().stream()

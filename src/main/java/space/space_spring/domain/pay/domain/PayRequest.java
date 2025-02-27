@@ -48,4 +48,7 @@ public class PayRequest {
         return totalTargetNum.equals(number);
     }
 
+    public boolean isPayCreator(Long spaceMemberId) {
+        return payCreatorId.equals(spaceMemberId);
+    }
 }

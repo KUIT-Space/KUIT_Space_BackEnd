@@ -58,8 +58,8 @@ public class TokenServiceTest {
     void updateTokenPair() {
         //given
         Mockito.when(jwtLoginProvider.isExpiredToken(refreshToken, TokenType.REFRESH)).thenReturn(false);
-        Mockito.when(jwtLoginProvider.generateToken(spaceMember.getUserId(), spaceMember.getId(), TokenType.ACCESS)).thenReturn("new-access-token");
-        Mockito.when(jwtLoginProvider.generateToken(spaceMember.getUserId(), spaceMember.getId(), TokenType.REFRESH)).thenReturn("new-refresh-token");
+        Mockito.when(jwtLoginProvider.generateAccessToken(spaceMember.getSpaceId(), spaceMember.getId())).thenReturn("new-access-token");
+        Mockito.when(jwtLoginProvider.generateRefreshToken(spaceMember.getUserId())).thenReturn("new-refresh-token");
 
         //when
         TokenPair expiredTokenPair = new TokenPair(accessToken, refreshToken);

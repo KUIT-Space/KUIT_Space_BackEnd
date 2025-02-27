@@ -1,6 +1,7 @@
 package space.space_spring.domain.authorization.jwt.model;
 
 import io.jsonwebtoken.*;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,31 +33,27 @@ public class JwtLoginProvider {
     @Value("${secret.jwt.refresh-expired-in}")
     private Long REFRESH_EXPIRED_IN;
 
-    public String generateToken(Long userId, Long spaceMemberId, TokenType tokenType) {
-//        Claims claims = Jwts.claims().setSubject(jwtPayloadDto.getUserId().toString());
+    public String generateAccessToken(Long spaceId, Long spaceMemberId) {
+        Map<String, Object> claims = Map.of(
+                "spaceId", spaceId,
+                "spaceMemberId", spaceMemberId
+        );
+        return generateToken(claims, TokenType.ACCESS);
+    }
 
+    public String generateRefreshToken(Long userId) {
+        Map<String, Object> claims = Map.of("userId", userId);
+        return generateToken(claims, TokenType.REFRESH);
+    }
+
+    private String generateToken(Map<String, Object> claims, TokenType tokenType) {
         Date now = new Date();
         Date expiration = setExpiration(now, tokenType);
 
-        return makeToken(tokenType, userId, spaceMemberId, now, expiration);
-    }
-
-    private String makeToken(TokenType tokenType, Long userId, Long spaceMemberId, Date now, Date expiration) {
-        if (tokenType.equals(TokenType.ACCESS)) {
-            return Jwts.builder()
-//                .setClaims(claims)
-                    .setIssuedAt(now)
-                    .setExpiration(expiration)
-                    .claim("spaceMemberId", spaceMemberId)
-                    .signWith(SignatureAlgorithm.HS256, choiceSecretKey(tokenType))
-                    .compact();
-        }
-
         return Jwts.builder()
-//                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .claim("userId", userId)
+                .addClaims(claims)
                 .signWith(SignatureAlgorithm.HS256, choiceSecretKey(tokenType))
                 .compact();
     }
@@ -103,6 +100,21 @@ public class JwtLoginProvider {
 
     }
 
+    public Long getSpaceIdFromAccessToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(ACCESS_SECRET_KEY).build()
+                    .parseClaimsJws(token);
+            return claims.getBody().get("spaceId", Long.class);
+        } catch (ExpiredJwtException e) {
+            // 만료된 토큰에서 spaceId 추출
+            return e.getClaims().get("spaceId", Long.class);
+        } catch (JwtException e) {
+            log.error("[JwtTokenProvider.getJwtPayloadDtoFromToken]", e);
+            throw e;
+        }
+    }
+
     public Long getSpaceMemberIdFromAccessToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
@@ -110,7 +122,7 @@ public class JwtLoginProvider {
                     .parseClaimsJws(token);
             return claims.getBody().get("spaceMemberId", Long.class);
         } catch (ExpiredJwtException e) {
-            // 만료된 토큰에서 userId 추출
+            // 만료된 토큰에서 spaceMemberId 추출
             return e.getClaims().get("spaceMemberId", Long.class);
         } catch (JwtException e) {
             log.error("[JwtTokenProvider.getJwtPayloadDtoFromToken]", e);

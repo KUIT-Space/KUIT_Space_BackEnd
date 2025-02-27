@@ -12,7 +12,7 @@ import java.util.List;
 public class CreatePostInDiscordCommand {
 
     private Long postCreatorId;
-    private Long SpaceId;
+    private Long spaceId;
     private Long boardId;
 
     private String title;

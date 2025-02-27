@@ -28,6 +28,7 @@ public class CreateDiscordThreadAdapter implements CreateDiscordThreadPort {
     @Override
     @Async
     public CompletableFuture<Long> create(CreateDiscordThreadCommand command){
+        //channel 종류에 따라 thread 생성 방식이 달라집니다
         if(isTextChannel(command.getGuildDiscordId(),command.getChannelDiscordId())){
             return createThreadInTextChannel(command);
         }else{
@@ -40,7 +41,7 @@ public class CreateDiscordThreadAdapter implements CreateDiscordThreadPort {
     @Async
     private CompletableFuture<Long> createThreadInForumChannel(CreateDiscordThreadCommand command){
 
-
+        //Forum channel 에서는 한번에 thread 생성가능
         return createDiscordMessagePort.sendForum(mapToForumMessage(command));
     }
 
@@ -48,7 +49,14 @@ public class CreateDiscordThreadAdapter implements CreateDiscordThreadPort {
     @Async
     private CompletableFuture<Long> createThreadInTextChannel(CreateDiscordThreadCommand command){
 
-
+        /*Text channel 에서 webhook 으로 thread 를 생성하기 위해서는 다음 과정을 거칩니다
+        * 1. channel 에 webhook message 작성 : send()
+        * 2. 해당 message 를 시작으로 thread channel 생성 : createThread()
+        * 3. 생성된 thread channel 에 첫 message 작성 : createThreadMessage()
+        *
+        * 3에서 OnThread()를 webhook 을 대상으로 사용하기 위해 minnced 패키지를 사용합니다.
+        * 1-3과정을 비동기로 연결 : CompletableFuture.thenCompose()로 각 앞 과정이 완료되었음을 보장하면서 연결
+        */
         return createDiscordMessagePort.send(command.getStartMessage())
                 .thenCompose(startId->{
                     return createThread(startId, command.getChannelDiscordId(), command.getThreadName());
@@ -56,6 +64,7 @@ public class CreateDiscordThreadAdapter implements CreateDiscordThreadPort {
                     return createThreadMessage(threadId,command);
                 });
     }
+
     @Async
     private CompletableFuture<Long> createThread(Long startMessageId, Long channelDiscordId, String threadName){
         return CompletableFuture.supplyAsync(()-> {

@@ -1,0 +1,19 @@
+package space.space_spring.domain.post.application.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
+import space.space_spring.domain.post.application.port.out.LoadBoardPort;
+import space.space_spring.domain.post.domain.Board;
+
+@Service
+@RequiredArgsConstructor
+public class LoadBoardService implements LoadBoardUseCase {
+    private final LoadBoardPort loadBoardPort;
+    @Override
+    public Board findById(Long boardId){
+        return loadBoardPort.loadById(boardId);
+    }
+
+
+}

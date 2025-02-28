@@ -25,4 +25,5 @@ public class RefreshTokenRepository {
     public boolean deleteByUserId(Long userId) {
         return Boolean.TRUE.equals(redisTemplate.delete(PREFIX + userId));
     }
+
 }

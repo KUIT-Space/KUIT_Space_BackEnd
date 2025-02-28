@@ -12,18 +12,17 @@ import java.time.Duration;
 public class RefreshTokenRepository {
 
     private final StringRedisTemplate redisTemplate;
-    private static final String REFRESH_TOKEN_KEY = "refreshToken";
+    private static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
 
     public void save(Long userId, String refreshToken) {
-        redisTemplate.opsForHash().put(REFRESH_TOKEN_KEY, String.valueOf(userId), refreshToken);
-        redisTemplate.expire(REFRESH_TOKEN_KEY, Duration.ofDays(14));
+        redisTemplate.opsForValue().set(REFRESH_TOKEN_PREFIX + userId, refreshToken, Duration.ofDays(7));
     }
 
     public Optional<String> findByUserId(Long userId) {
-        return Optional.ofNullable((String) redisTemplate.opsForHash().get("refreshToken", String.valueOf(userId)));
+        return Optional.ofNullable(redisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + userId));
     }
 
     public boolean deleteByUserId(Long userId) {
-        return redisTemplate.opsForHash().delete(REFRESH_TOKEN_KEY, String.valueOf(userId)) > 0;
+        return redisTemplate.opsForHash().delete(REFRESH_TOKEN_PREFIX, String.valueOf(userId)) > 0;
     }
 }

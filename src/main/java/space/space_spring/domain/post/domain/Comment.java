@@ -8,9 +8,29 @@ public class Comment {
 
     private Long id;
 
-    private PostBase postBaseId;
+    private Long postId;
 
-    public Comment(Long id, Long discordId, Board board, Text content) {
+    private Long questionId;
 
+    private Comment(Long id, Long postId, Long questionId) {
+        this.id = id;
+        this.postId = postId;
+        this.questionId = questionId;
+    }
+
+    public static Comment createForPost(Long id, Long postId) {
+        return new Comment(id, postId, null);
+    }
+
+    public static Comment withoutIdForPost(Long postId) {
+        return new Comment(null, postId, null);
+    }
+
+    public static Comment createForQuestion(Long id, Long questionId) {
+        return new Comment(id, null, questionId);
+    }
+
+    public static Comment withoutIdForQuestion(Long questionId) {
+        return new Comment(null, null, questionId);
     }
 }

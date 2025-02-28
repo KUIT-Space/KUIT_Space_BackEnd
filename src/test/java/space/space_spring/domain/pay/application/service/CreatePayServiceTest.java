@@ -1,12 +1,11 @@
-
 package space.space_spring.domain.pay.application.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import space.space_spring.domain.discord.application.port.in.CreatePayInDiscordUseCase;
-import space.space_spring.domain.discord.application.port.in.CreatePayInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.createPay.CreatePayInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.createPay.CreatePayInDiscordUseCase;
 import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
 import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
 import space.space_spring.domain.pay.application.port.out.CreatePayRequestPort;

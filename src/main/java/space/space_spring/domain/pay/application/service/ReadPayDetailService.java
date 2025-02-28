@@ -78,7 +78,7 @@ public class ReadPayDetailService implements ReadPayDetailUseCase {
                 .totalTargetNum(payRequest.getTotalTargetNum())
                 .sendCompleteTargetNum(currentState.getSendCompleteTargetNum())
                 .bank(payRequest.getBank())
-                .createDate(LocalDateTime.now())  // TODO: Base 도메인 엔티티 생성 후 수정
+                .createDate(payRequest.getBaseInfo().getCreatedAt())
                 .infoOfTargetDetails(targetDetails)
                 .build();
     }

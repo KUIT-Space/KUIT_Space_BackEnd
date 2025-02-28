@@ -14,6 +14,7 @@ import space.space_spring.domain.pay.application.port.out.CreatePayRequestTarget
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
+import space.space_spring.global.common.entity.BaseInfo;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
@@ -192,6 +193,8 @@ class CreatePayServiceTest {
     }
 
     private PayRequest createPayRequest(Long payRequestId, CreatePayCommand command, Long discordIdForPay) {
+        BaseInfo baseInfo = BaseInfo.ofEmpty();
+
         return PayRequest.create(
                 payRequestId,
                 command.getPayCreatorId(),
@@ -199,7 +202,8 @@ class CreatePayServiceTest {
                 command.getTotalAmount(),
                 command.getTotalTargetNum(),
                 command.getBank(),
-                command.getPayType()
+                command.getPayType(),
+                baseInfo
         );
     }
 

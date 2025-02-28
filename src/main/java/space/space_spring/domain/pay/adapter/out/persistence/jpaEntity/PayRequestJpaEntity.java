@@ -8,13 +8,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.pay.domain.PayType;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "Pay_Request")
-public class PayRequestJpaEntity extends BaseEntity {
+public class PayRequestJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue
@@ -53,7 +56,10 @@ public class PayRequestJpaEntity extends BaseEntity {
     private PayType payType;
 
     @Builder
-    private PayRequestJpaEntity(SpaceMemberJpaEntity payCreator, Long discordMessageId, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType) {
+    private PayRequestJpaEntity(SpaceMemberJpaEntity payCreator, Long discordMessageId, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType,
+                                LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+        super(createdAt, lastModifiedAt, baseStatus);
+
         this.payCreator = payCreator;
         this.discordMessageId = discordMessageId;
         this.totalAmount = totalAmount;
@@ -63,7 +69,8 @@ public class PayRequestJpaEntity extends BaseEntity {
         this.payType = payType;
     }
 
-    public static PayRequestJpaEntity create(SpaceMemberJpaEntity payCreator, Long discordMessageId, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType) {
+    public static PayRequestJpaEntity create(SpaceMemberJpaEntity payCreator, Long discordMessageId, int totalAmount, int totalTargetNum, String bankName, String bankAccountNum, PayType payType,
+                                             LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
         return PayRequestJpaEntity.builder()
                 .payCreator(payCreator)
                 .discordMessageId(discordMessageId)
@@ -72,6 +79,9 @@ public class PayRequestJpaEntity extends BaseEntity {
                 .bankName(bankName)
                 .bankAccountNum(bankAccountNum)
                 .payType(payType)
+                .createdAt(createdAt)
+                .lastModifiedAt(lastModifiedAt)
+                .baseStatus(baseStatus)
                 .build();
     }
 }

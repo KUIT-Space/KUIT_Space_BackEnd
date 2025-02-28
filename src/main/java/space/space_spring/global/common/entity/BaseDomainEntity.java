@@ -2,11 +2,13 @@ package space.space_spring.global.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.time.LocalDateTime;
 
 @Getter
+@SuperBuilder
 public class BaseDomainEntity {
 
     private LocalDateTime createdAt;
@@ -20,9 +22,4 @@ public class BaseDomainEntity {
         this.lastModifiedAt = lastModifiedAt;
         this.status = status;
     }
-
-    public static BaseDomainEntity create(LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType status) {
-        return new BaseDomainEntity(createdAt, lastModifiedAt, status);
-    }
-
 }

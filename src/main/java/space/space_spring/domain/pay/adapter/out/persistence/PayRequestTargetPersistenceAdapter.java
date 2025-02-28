@@ -93,6 +93,6 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
         PayRequestTargetJpaEntity jpaEntity = payRequestTargetRepository.findById(payRequestTarget.getId()).orElseThrow(
                 () -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
 
-        jpaEntity.changeIsComplete(payRequestTarget.isComplete());
+        jpaEntity.changeCompletionStatus(payRequestTarget.isComplete());
     }
 }

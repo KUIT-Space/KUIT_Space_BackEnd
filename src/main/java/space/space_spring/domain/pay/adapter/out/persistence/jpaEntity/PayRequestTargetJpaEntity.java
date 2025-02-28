@@ -79,7 +79,7 @@ public class PayRequestTargetJpaEntity extends BaseJpaEntity {
                 .build();
     }
 
-    public void changeIsComplete(boolean isComplete) {
+    public void changeCompletionStatus(boolean isComplete) {
         this.isComplete = isComplete;
     }
 }

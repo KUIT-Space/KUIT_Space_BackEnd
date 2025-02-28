@@ -2,6 +2,7 @@ package space.space_spring.domain.spaceMember.domian;
 
 import lombok.Builder;
 import lombok.Getter;
+import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.user.domain.User;
 
@@ -51,9 +52,35 @@ public class SpaceMember {
                 .build();
     }
 
-    public SpaceMember setUserId(Long userId){
-        this.userId =userId;
-        return this;
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (!(o instanceof SpaceMember)) return false;
+        SpaceMember spaceMember = (SpaceMember) o;
+
+        if(!this.nickname.equals(spaceMember.getNickname())){
+            return false;
+        }
+        if(!this.profileImageUrl.equals(spaceMember.getProfileImageUrl())){
+            return false;
+        }
+        if(!this.id.equals(spaceMember.getId())) {
+            return false;
+        }
+        if(!this.userId.equals(spaceMember.getUserId())){
+            return false;
+        }
+        if(!this.spaceId.equals(spaceMember.getSpaceId())){
+            return false;
+        }
+        if(!(this.isManager== spaceMember.isManager())){
+            return false;
+        }
+        if(!this.discordId.equals(spaceMember.getDiscordId())){
+            return false;
+        }
+        return true;
     }
 
 }

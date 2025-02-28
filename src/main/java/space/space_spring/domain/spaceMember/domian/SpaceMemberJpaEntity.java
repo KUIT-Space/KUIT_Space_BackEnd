@@ -3,10 +3,8 @@ package space.space_spring.domain.spaceMember.domian;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
 import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
 import space.space_spring.global.common.entity.BaseJpaEntity;
@@ -76,6 +74,20 @@ public class SpaceMemberJpaEntity extends BaseJpaEntity {
                 .nickname(nickname)
                 .profileImageUrl(profileImageUrl)
                 .build();
+    }
+
+    public SpaceMemberJpaEntity updateNickName(String nickname){
+        this.nickname=nickname;
+        return this;
+
+    }
+    public SpaceMemberJpaEntity updateProfileImageUrl(String profileImageUrl){
+        this.profileImageUrl =profileImageUrl;
+        return this;
+    }
+    public SpaceMemberJpaEntity updateManager(boolean isManager){
+        this.isManager=isManager;
+        return this;
     }
 
 }

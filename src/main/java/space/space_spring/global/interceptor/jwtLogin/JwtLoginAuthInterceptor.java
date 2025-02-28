@@ -31,9 +31,9 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
             throw new JwtExpiredTokenException(EXPIRED_ACCESS_TOKEN);
         }
 
-        // TODO 3. AT 의 payload 로 부터 userId 값 get
-        Long userIdFromToken = jwtLoginProvider.getUserIdFromAccessToken(accessToken);
-        request.setAttribute("userId", userIdFromToken);
+        // TODO 3. AT 의 payload 로 부터 spaceMemberId 값 get
+        Long spaceMemberIdFromToken = jwtLoginProvider.getSpaceMemberIdFromAccessToken(accessToken);
+        request.setAttribute("spaceMemberId", spaceMemberIdFromToken);
 
         return true;
     }

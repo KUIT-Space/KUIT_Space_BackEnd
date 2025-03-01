@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import space.space_spring.domain.authorization.jwt.model.TokenType;
+import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.exception.jwt.badRequest.JwtNoTokenException;
 import space.space_spring.global.exception.jwt.badRequest.JwtUnsupportedTokenException;
 import space.space_spring.global.exception.jwt.unauthorized.JwtExpiredTokenException;
@@ -15,7 +16,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Component
 @RequiredArgsConstructor
-public class JwtLoginAuthInterceptor implements HandlerInterceptor{
+public class JwtAuthInterceptor implements HandlerInterceptor{
 
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
@@ -23,16 +24,22 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // TODO 1. request header에서 access token 파싱
         String accessToken = resolveAccessToken(request);
 
-        // TODO 2. AT 유효성 검사
         if (jwtLoginProvider.isExpiredToken(accessToken, TokenType.ACCESS)) {
             throw new JwtExpiredTokenException(EXPIRED_ACCESS_TOKEN);
         }
 
-        // TODO 3. AT 의 payload 로 부터 spaceMemberId 값 get
+        Long spaceIdFromToken = jwtLoginProvider.getSpaceIdFromAccessToken(accessToken);
         Long spaceMemberIdFromToken = jwtLoginProvider.getSpaceMemberIdFromAccessToken(accessToken);
+
+        Long spaceIdFromUrl = extractSpaceIdFromUrl(request.getRequestURI());
+
+        if (!spaceIdFromToken.equals(spaceIdFromUrl)) {
+            throw new CustomException(SPACE_ID_PATHVARIABLE_ERROR);
+        }
+
+        request.setAttribute("spaceId", spaceIdFromToken);
         request.setAttribute("spaceMemberId", spaceMemberIdFromToken);
 
         return true;
@@ -44,6 +51,18 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
         return token.substring(JWT_TOKEN_PREFIX.length());
     }
 
+    private Long extractSpaceIdFromUrl(String requestUri) {
+        String[] uriParts = requestUri.split("/");
+        if (uriParts.length > 2) {
+            try {
+                return Long.parseLong(uriParts[2]);
+            } catch (NumberFormatException e) {
+                throw new CustomException(SPACE_ID_PATHVARIABLE_ERROR);
+            }
+        }
+        return null;
+    }
+
     private void validateToken(String token) {
         if (token == null) {
             throw new JwtNoTokenException(TOKEN_NOT_FOUND);
@@ -52,6 +71,5 @@ public class JwtLoginAuthInterceptor implements HandlerInterceptor{
             throw new JwtUnsupportedTokenException(UNSUPPORTED_TOKEN_TYPE);
         }
     }
-
 
 }

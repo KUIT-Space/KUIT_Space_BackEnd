@@ -22,12 +22,17 @@ public class ReadEventService implements ReadEventUseCase {
     @Override
     public Events readEvents(Long spaceMemberId) {
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(spaceMemberId);
+        validateManager(spaceMember);
         return Events.create(loadEventPort.loadEvents(spaceMember.getSpaceId()));
     }
 
     @Override
     public Event readEvent(Long eventId) {
         return loadEventPort.loadEvent(eventId).orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
+    }
+
+    private void validateManager(SpaceMember spaceMember) {
+        if (!spaceMember.isManager()) throw new CustomException(UNAUTHORIZED_USER);
     }
 
 }

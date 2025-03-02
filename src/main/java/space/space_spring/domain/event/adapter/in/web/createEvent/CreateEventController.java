@@ -9,15 +9,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.event.application.port.in.CreateEventCommand;
 import space.space_spring.domain.event.application.port.in.CreateEventUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtSpaceId;
 import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.global.exception.CustomException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/space/{spaceId}")
 @Tag(name = "Event", description = "행사 관련 API")
 public class CreateEventController {
 
@@ -29,7 +32,7 @@ public class CreateEventController {
         
         """)
     @PostMapping("/event")
-    public BaseResponse<CreateEventResponse> createEvent(@JwtLoginAuth Long id, @Validated @RequestBody CreateEventRequest request, BindingResult bindingResult) {
+    public BaseResponse<CreateEventResponse> createEvent(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId, @Validated @RequestBody CreateEventRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_EVENT_CREATE);
         }
@@ -41,7 +44,7 @@ public class CreateEventController {
                 .endTime(request.getEndTime())
                 .build();
 
-        Long eventId = createEventUseCase.createEvent(id, createEventCommand);
+        Long eventId = createEventUseCase.createEvent(spaceMemberId, createEventCommand);
         return new BaseResponse<>(new CreateEventResponse(eventId));
     }
 }

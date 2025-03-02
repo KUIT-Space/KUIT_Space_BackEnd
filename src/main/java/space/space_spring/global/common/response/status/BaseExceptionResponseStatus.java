@@ -110,6 +110,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     TARGET_ID_MISSING(11007, HttpStatus.BAD_REQUEST, "대댓글 작성 시 targetId가 필요합니다"),
     INVALID_TARGET_ID(11008, HttpStatus.BAD_REQUEST, "댓글 작성 시 targetId는 허용되지 않습니다"),
     COMMENT_IS_NOT_IN_POST(11009, HttpStatus.NOT_FOUND, "해당 댓글이 이 게시글에 속하지 않습니다."),
+    BOARD_NOT_EXIST(11010,HttpStatus.NOT_FOUND,"해당 게시판을 찾지 못했습니다"),
 
     /**
      * 12000 : Pay 오류
@@ -123,12 +124,23 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     THIS_PAY_REQUEST_HAS_NOT_TARGETS(12007, HttpStatus.INTERNAL_SERVER_ERROR, "현재 정산 요청은 정산 요청 대상이 없습니다. 현재 정산 생성 시 서버에 문제가 있었습니다."),
     INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다."),
 
+
     /**
      * 13000 : Event 오류
      */
     INVALID_EVENT_CREATE(13000, HttpStatus.BAD_REQUEST, "행사 생성 요청에서 잘못된 값이 존재합니다."),
     EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다."),
+    /**
+
+     * 130000 Discord 오류
+     */
+    SEND_MESSAGE_FAIL(12000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
+    DISCORD_THREAD_CREATE_FAIL(12001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
+    DISCORD_CHANNEL_NOT_FOUND(12002,HttpStatus.NOT_FOUND,"discord channel을 찾지 못했습니다"),
+    DISCORD_GUILD_NOT_FOUND(12003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습ㄴ디ㅏ"),
+    DISCORD_CHANNEL_TYPE_WRONG(12004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다");
     ;
+
 
     private final int code;
     private final HttpStatus status;

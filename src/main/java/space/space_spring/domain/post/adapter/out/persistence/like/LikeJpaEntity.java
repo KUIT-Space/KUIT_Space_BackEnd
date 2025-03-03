@@ -26,11 +26,16 @@ public class LikeJpaEntity extends BaseEntity {
     @NotNull
     private PostBaseJpaEntity postBase;
 
-    private LikeJpaEntity(PostBaseJpaEntity postBase) {
+    @Column(name="is_liked")
+    @NotNull
+    private boolean isLiked;    // 좋아요 여부
+
+    private LikeJpaEntity(PostBaseJpaEntity postBase, boolean isLiked) {
         this.postBase = postBase;
+        this.isLiked = isLiked;
     }
 
-    public static LikeJpaEntity create(PostBaseJpaEntity postBase) {
-        return new LikeJpaEntity(postBase);
+    public static LikeJpaEntity create(PostBaseJpaEntity postBase, boolean isLiked) {
+        return new LikeJpaEntity(postBase, isLiked);
     }
 }

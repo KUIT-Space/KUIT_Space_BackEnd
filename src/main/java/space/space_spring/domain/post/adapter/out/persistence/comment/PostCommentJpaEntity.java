@@ -20,13 +20,14 @@ public class PostCommentJpaEntity {
     @NotNull
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_base_id")
     @NotNull
     private PostBaseJpaEntity postBase;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_post_id")
+    @NotNull
     private PostJpaEntity post;
 
     private PostCommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post) {

@@ -20,21 +20,27 @@ public class QuestionCommentJpaEntity {
     @NotNull
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_base_id")
     @NotNull
     private PostBaseJpaEntity postBase;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_question_id")
+    @NotNull
     private QuestionJpaEntity question;
 
-    private QuestionCommentJpaEntity(PostBaseJpaEntity postBase, QuestionJpaEntity question) {
+    @Column(name = "is_anonymous")
+    @NotNull
+    private boolean isAnonymous;
+
+    private QuestionCommentJpaEntity(PostBaseJpaEntity postBase, QuestionJpaEntity question, boolean isAnonymous) {
         this.postBase = postBase;
         this.question = question;
+        this.isAnonymous = isAnonymous;
     }
 
-    public QuestionCommentJpaEntity create(PostBaseJpaEntity postBase, QuestionJpaEntity question) {
-        return new QuestionCommentJpaEntity(postBase, question);
+    public QuestionCommentJpaEntity create(PostBaseJpaEntity postBase, QuestionJpaEntity question, boolean isAnonymous) {
+        return new QuestionCommentJpaEntity(postBase, question, isAnonymous);
     }
 }

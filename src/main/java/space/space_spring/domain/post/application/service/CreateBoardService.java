@@ -26,7 +26,7 @@ public class CreateBoardService implements CreateBoardUseCase {
         Board board = Board.withoutId(command.getSpaceId(), command.getDiscordId(), command.getBoardName(), command.getBoardType(), command.getWebhookUrl());
         // Board 저장 및 ID 반환
         Long boardId = createBoardPort.createBoard(board);
-        if(addBoardCacheUseCase.add(boardId)){
+        if(!addBoardCacheUseCase.add(boardId)){
             throw new CustomException(BOARD_NOT_FOUND, BOARD_NOT_FOUND.getMessage()+": redis 저장과정에서 찾을 수 없습니다");
         }
 

@@ -49,6 +49,7 @@ public class BoardCacheService implements AddBoardCacheUseCase , LoadBoardCacheU
     public boolean add(Long boardId){
         Board board = loadBoardUseCase.findById(boardId);
         if(board==null){
+            log.error("board find return null");
             return false;
         }
         createBoardCachePort.create(board.getDiscordId(),board.getId());

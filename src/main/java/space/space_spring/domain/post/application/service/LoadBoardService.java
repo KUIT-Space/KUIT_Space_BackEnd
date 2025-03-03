@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.domain.Board;
+import space.space_spring.domain.post.domain.BoardType;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +17,13 @@ public class LoadBoardService implements LoadBoardUseCase {
     public Board findById(Long boardId){
         return loadBoardPort.loadById(boardId);
     }
-
+    @Override
+    public Optional<BoardType> getBoardTypeById(Long boardId){
+        Board board = findById(boardId);
+        if(board==null){
+            return Optional.empty();
+        }
+        return Optional.of(board.getBoardType());
+    }
 
 }

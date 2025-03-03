@@ -7,17 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
-import space.space_spring.domain.post.adapter.out.persistence.question.QuestionJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "Comment")
-public class CommentJpaEntity {
+@Table(name = "Post_Comment")
+public class PostCommentJpaEntity {
 
     @Id
     @GeneratedValue
-    @Column(name="comment_id")
+    @Column(name="post_comment_id")
     @NotNull
     private Long id;
 
@@ -27,20 +26,15 @@ public class CommentJpaEntity {
     private PostBaseJpaEntity postBase;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "parent_post_id")
     private PostJpaEntity post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private QuestionJpaEntity question;
-
-    private CommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post, QuestionJpaEntity question) {
+    private PostCommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post) {
         this.postBase = postBase;
         this.post = post;
-        this.question = question;
     }
 
-    public CommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post, QuestionJpaEntity question) {
-        return new CommentJpaEntity(postBase, post, question);
+    public PostCommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post) {
+        return new PostCommentJpaEntity(postBase, post);
     }
 }

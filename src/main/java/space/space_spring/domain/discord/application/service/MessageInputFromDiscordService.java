@@ -1,6 +1,7 @@
 package space.space_spring.domain.discord.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import space.space_spring.domain.discord.application.port.in.discord.InputMessageFromDiscordUseCase;
@@ -13,6 +14,7 @@ import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMembe
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MessageInputFromDiscordService implements InputMessageFromDiscordUseCase {
 
     private final CreatePostPort createPostPort;
@@ -24,18 +26,22 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
         Long spaceMemberId = loadSpaceMemberPort.loadByDiscord(
                 command.getSpaceDiscordId(),
                 command.getCreatorDiscordId()).getId();
-
+        //log.info("spaceMemberId:"+spaceMemberId);
         Post post = Post.withoutId(
                 command.getMessageDiscordId(),
                 command.getBoardId(),
                 spaceMemberId,
-                getTitle(command.getRowContent()),
-                Content.of(command.getRowContent())
+                getTitle(command.getTitle()),
+                Content.of(command.getContent())
                 );
+        printPost(command);
         createPostPort.createPost(post);
     }
 
     private String getTitle(String rowContent){
         return rowContent.split("\n")[0];
+    }
+    private void printPost(MessageInputFromDiscordCommand command){
+        System.out.println(command.toString());
     }
 }

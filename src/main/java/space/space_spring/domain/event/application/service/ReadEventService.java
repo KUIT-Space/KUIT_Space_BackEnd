@@ -27,7 +27,9 @@ public class ReadEventService implements ReadEventUseCase {
     }
 
     @Override
-    public Event readEvent(Long eventId) {
+    public Event readEvent(Long spaceMemberId, Long eventId) {
+        SpaceMember spaceMember = loadSpaceMemberPort.loadById(spaceMemberId);
+        validateManager(spaceMember);
         return loadEventPort.loadEvent(eventId).orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
     }
 

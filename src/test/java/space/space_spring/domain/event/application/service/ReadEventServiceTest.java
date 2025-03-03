@@ -38,9 +38,9 @@ public class ReadEventServiceTest {
 
         LocalDateTime now = LocalDateTime.now();
         manager = SpaceMember.create(0L, 0L, 0L, 0L, "manager", "", true);
-        event1 = Event.create(0L, 0L, "event1", now, now, now);
-        event2 = Event.create(1L, 0L, "event2", now, now, now);
-        event3 = Event.create(2L, 0L, "event3", now, now, now);
+        event1 = Event.create(0L, 0L, "event1", "", now, now, now);
+        event2 = Event.create(1L, 0L, "event2", "", now, now, now);
+        event3 = Event.create(2L, 0L, "event3", "", now, now, now);
     }
 
     @Test

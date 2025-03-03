@@ -39,8 +39,8 @@ public class CreateEventServiceTest {
 
         manager = SpaceMember.create(0L, 0L, 0L, 0L, "manager", "", true);
         general = SpaceMember.create(1L, 0L, 1L, 1L, "general", "", false);
-        createEventCommand = new CreateEventCommand("event", now, now, now);
-        event  = Event.create(0L, 0L, "event", now, now, now);
+        createEventCommand = new CreateEventCommand("event", "", now, now, now);
+        event  = Event.create(0L, 0L, "event", "", now, now, now);
 
         Mockito.when(loadSpaceMemberPort.loadById(manager.getId())).thenReturn(manager);
         Mockito.when(loadSpaceMemberPort.loadById(general.getId())).thenReturn(general);

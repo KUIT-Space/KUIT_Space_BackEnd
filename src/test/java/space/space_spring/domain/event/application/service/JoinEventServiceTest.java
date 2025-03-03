@@ -38,7 +38,7 @@ public class JoinEventServiceTest {
         LocalDateTime now = LocalDateTime.now();
 
         spaceMember = SpaceMember.create(0L, 5L, 0L, 0L, "spaceMember", "", false);
-        event  = Event.create(1L, 5L, "event", now, now, now);
+        event  = Event.create(1L, 5L, "event", "", now, now, now);
         eventParticipant = EventParticipant.create(2L, 1L, 0L);
     }
 

@@ -44,7 +44,7 @@ public class ReadEventParticipantServiceTest {
         spaceMember1 = SpaceMember.create(1L, 0L, 1L, 1L, "spaceMember1", "", false);
         spaceMember2 = SpaceMember.create(2L, 0L, 2L, 2L, "spaceMember2", "", false);
         spaceMember3 = SpaceMember.create(3L, 0L, 3L, 3L, "spaceMember3", "", false);
-        event = Event.create(0L, 0L, "event1", now, now, now);
+        event = Event.create(0L, 0L, "event1", "", now, now, now);
 
         EventParticipant participant1 = EventParticipant.create(0L, 0L, 1L);
         EventParticipant participant2 = EventParticipant.create(1L, 0L, 2L);

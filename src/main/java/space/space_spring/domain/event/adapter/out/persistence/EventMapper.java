@@ -13,6 +13,7 @@ public class EventMapper {
         return EventJpaEntity.create(
                 spaceJpaEntity,
                 event.getName(),
+                event.getImage(),
                 event.getDate(),
                 event.getStartTime(),
                 event.getEndTime()
@@ -24,6 +25,7 @@ public class EventMapper {
                 eventJpaEntity.getId(),
                 eventJpaEntity.getSpace().getId(),
                 eventJpaEntity.getName(),
+                eventJpaEntity.getImage(),
                 eventJpaEntity.getDate(),
                 eventJpaEntity.getStartTime(),
                 eventJpaEntity.getEndTime()

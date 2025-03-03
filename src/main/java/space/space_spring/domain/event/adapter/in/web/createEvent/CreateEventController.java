@@ -39,6 +39,7 @@ public class CreateEventController {
 
         CreateEventCommand createEventCommand = CreateEventCommand.builder()
                 .name(request.getName())
+                .image(request.getImage())
                 .date(request.getDate())
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())

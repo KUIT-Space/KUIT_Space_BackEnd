@@ -36,6 +36,10 @@ public class EventJpaEntity extends BaseEntity {
     @NotNull
     private String name;
 
+    @Column(name = "image")
+    @NotNull
+    private String image;
+
     @Column(name = "date")
     @NotNull
     private LocalDateTime date;
@@ -49,18 +53,20 @@ public class EventJpaEntity extends BaseEntity {
     private LocalDateTime endTime;
 
     @Builder
-    private EventJpaEntity(SpaceJpaEntity space, String name, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
+    private EventJpaEntity(SpaceJpaEntity space, String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
         this.space = space;
         this.name = name;
+        this.image = image;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public static EventJpaEntity create(SpaceJpaEntity space, String name, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
+    public static EventJpaEntity create(SpaceJpaEntity space, String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
         return EventJpaEntity.builder()
                 .space(space)
                 .name(name)
+                .image(image)
                 .date(date)
                 .startTime(startTime)
                 .endTime(endTime)

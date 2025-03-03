@@ -11,6 +11,8 @@ public class EventInfoResponse {
 
     private String name;
 
+    private String image;
+
     private LocalDateTime date;
 
     private LocalDateTime startTime;
@@ -18,6 +20,6 @@ public class EventInfoResponse {
     private LocalDateTime endTime;
 
     public static EventInfoResponse create(Event event) {
-        return new EventInfoResponse(event.getId(), event.getName(), event.getDate(), event.getStartTime(), event.getEndTime());
+        return new EventInfoResponse(event.getId(), event.getName(), event.getImage(), event.getDate(), event.getStartTime(), event.getEndTime());
     }
 }

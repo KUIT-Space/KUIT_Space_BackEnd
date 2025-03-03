@@ -27,4 +27,11 @@ public class EventParticipants {
         return Collections.unmodifiableList(ids);
     }
 
+    public boolean isAlreadyIn(Long spaceMemberId) {
+        for (EventParticipant eventParticipant : this.participants) {
+            if (eventParticipant.getSpaceMemberId().equals(spaceMemberId)) return true;
+        }
+        return false;
+    }
+
 }

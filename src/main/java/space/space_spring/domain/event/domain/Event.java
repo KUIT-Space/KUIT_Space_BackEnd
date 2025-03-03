@@ -13,6 +13,8 @@ public class Event {
 
     private String name;
 
+    private String image;
+
     private LocalDateTime date;
 
     private LocalDateTime startTime;
@@ -20,30 +22,33 @@ public class Event {
     private LocalDateTime endTime;
 
     @Builder
-    private Event(Long id, Long spaceId, String name, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
+    private Event(Long id, Long spaceId, String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.spaceId = spaceId;
         this.name = name;
+        this.image = image;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public static Event create(Long id, Long spaceId, String name, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
+    public static Event create(Long id, Long spaceId, String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
         return Event.builder()
                 .id(id)
                 .spaceId(spaceId)
                 .name(name)
+                .image(image)
                 .date(date)
                 .startTime(startTime)
                 .endTime(endTime)
                 .build();
     }
 
-    public static Event withoutId(Long spaceId, String name, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
+    public static Event withoutId(Long spaceId, String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
         return Event.builder()
                 .spaceId(spaceId)
                 .name(name)
+                .image(image)
                 .date(date)
                 .startTime(startTime)
                 .endTime(endTime)

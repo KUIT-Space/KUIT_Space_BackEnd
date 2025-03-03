@@ -4,6 +4,6 @@ import space.space_spring.domain.event.domain.EventParticipantInfos;
 
 public interface ReadEventParticipantUseCase {
 
-    EventParticipantInfos readEventParticipants(Long eventId);
+    EventParticipantInfos readEventParticipants(Long spaceMemberId, Long eventId);
 
 }

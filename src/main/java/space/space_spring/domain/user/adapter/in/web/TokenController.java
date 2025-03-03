@@ -16,7 +16,7 @@ import space.space_spring.global.common.response.SuccessResponse;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/jwt")
+@RequestMapping("/space/{spaceId}/jwt")
 public class TokenController {
 
     private final TokenUseCase tokenUseCase;

@@ -8,6 +8,8 @@ public class CreateEventCommand {
 
     private String name;
 
+    private String image;
+
     private LocalDateTime date;
 
     private LocalDateTime startTime;
@@ -15,8 +17,9 @@ public class CreateEventCommand {
     private LocalDateTime endTime;
 
     @Builder
-    public CreateEventCommand(String name, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
+    public CreateEventCommand(String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
         this.name = name;
+        this.image = image;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -26,6 +29,7 @@ public class CreateEventCommand {
         return Event.builder()
                 .spaceId(spaceId)
                 .name(this.name)
+                .image(this.image)
                 .date(this.date)
                 .startTime(this.startTime)
                 .endTime(this.endTime)

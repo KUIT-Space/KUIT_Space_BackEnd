@@ -1,4 +1,4 @@
-package space.space_spring.domain.event.adapter.in.web.deleteEvent;
+package space.space_spring.domain.event.adapter.in.web.updateEvent;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ public class DeleteEventController {
         
         """)
     @DeleteMapping("/event/{eventId}")
-    public BaseResponse<SuccessResponse> DeleteEvent(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId, @PathVariable Long eventId) {
+    public BaseResponse<SuccessResponse> deleteEvent(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId, @PathVariable Long eventId) {
         return new BaseResponse<>(new SuccessResponse(deleteEventUseCase.deleteEvent(spaceMemberId, eventId)));
     }
 }

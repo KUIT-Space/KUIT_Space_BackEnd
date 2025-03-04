@@ -1,4 +1,4 @@
-package space.space_spring.domain.pay.adapter.out.persistence;
+package space.space_spring.domain.pay.adapter.out.persistence.jpaEntity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,13 +7,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "Pay_Request_Target")
 @Getter
-public class PayRequestTargetJpaEntity extends BaseEntity {
+public class PayRequestTargetJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue
@@ -40,28 +43,43 @@ public class PayRequestTargetJpaEntity extends BaseEntity {
     private boolean isComplete;
 
     @Builder
-    private PayRequestTargetJpaEntity(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount, boolean isComplete) {
+    private PayRequestTargetJpaEntity(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount, boolean isComplete,
+                                      LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+        super(createdAt, lastModifiedAt, baseStatus);
+
         this.targetMember = targetMember;
         this.payRequest = payRequest;
         this.requestedAmount = requestedAmount;
         this.isComplete = isComplete;
     }
 
-    public static PayRequestTargetJpaEntity create(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount) {
+    public static PayRequestTargetJpaEntity create(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount,
+                                                   LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
         return PayRequestTargetJpaEntity.builder()
                 .targetMember(targetMember)
                 .payRequest(payRequest)
                 .requestedAmount(requestedAmount)
                 .isComplete(false)
+                .createdAt(createdAt)
+                .lastModifiedAt(lastModifiedAt)
+                .baseStatus(baseStatus)
                 .build();
     }
 
-    public static PayRequestTargetJpaEntity of(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount, boolean isComplete) {
+    public static PayRequestTargetJpaEntity of(SpaceMemberJpaEntity targetMember, PayRequestJpaEntity payRequest, int requestedAmount, boolean isComplete,
+                                               LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
         return PayRequestTargetJpaEntity.builder()
                 .targetMember(targetMember)
                 .payRequest(payRequest)
                 .requestedAmount(requestedAmount)
                 .isComplete(isComplete)
+                .createdAt(createdAt)
+                .lastModifiedAt(lastModifiedAt)
+                .baseStatus(baseStatus)
                 .build();
+    }
+
+    public void changeCompletionStatus(boolean isComplete) {
+        this.isComplete = isComplete;
     }
 }

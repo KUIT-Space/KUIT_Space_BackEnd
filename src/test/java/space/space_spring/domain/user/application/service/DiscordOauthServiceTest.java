@@ -54,8 +54,8 @@ public class DiscordOauthServiceTest {
         //given
         Mockito.when(loadUserPort.loadUserByDiscordId(user.getDiscordId())).thenReturn(Optional.ofNullable(user));
         Mockito.when(loadSpaceMemberPort.loadByUserId(user.getId())).thenReturn(spaceMember);
-        Mockito.when(jwtLoginProvider.generateToken(user.getId(), TokenType.ACCESS)).thenReturn("result-access-token");
-        Mockito.when(jwtLoginProvider.generateToken(user.getId(), TokenType.REFRESH)).thenReturn("result-refresh-token");
+        Mockito.when(jwtLoginProvider.generateAccessToken(spaceMember.getSpaceId(), spaceMember.getId())).thenReturn("result-access-token");
+        Mockito.when(jwtLoginProvider.generateRefreshToken(user.getId())).thenReturn("result-refresh-token");
 
         //when
         TokenPair tokenPair = discordOauthService.signIn(code);

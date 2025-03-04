@@ -7,8 +7,10 @@ import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayType;
 import space.space_spring.domain.pay.adapter.in.web.createPay.TargetOfPayRequest;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.util.NaturalNumber;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -7,14 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "Post_Like")
 
-public class LikeJpaEntity extends BaseEntity {
+public class LikeJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue

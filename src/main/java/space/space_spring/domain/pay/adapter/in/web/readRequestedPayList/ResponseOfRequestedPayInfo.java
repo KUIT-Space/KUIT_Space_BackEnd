@@ -8,7 +8,7 @@ public class ResponseOfRequestedPayInfo {
 
     private String payCreatorName;
 
-    // 정산생성자의 프로필 이미지까지 ??
+    private String payCreatorProfileImageUrl;
 
     private int requestedAmount;
 
@@ -16,9 +16,10 @@ public class ResponseOfRequestedPayInfo {
 
     private String bankAccountNum;          // 송금할 은행 정보
 
-    private ResponseOfRequestedPayInfo(Long payRequestedTargetId, String payCreatorName, int requestedAmount, String bankName, String bankAccountNum) {
+    private ResponseOfRequestedPayInfo(Long payRequestedTargetId, String payCreatorName, String payCreatorProfileImageUrl, int requestedAmount, String bankName, String bankAccountNum) {
         this.payRequestedTargetId = payRequestedTargetId;
         this.payCreatorName = payCreatorName;
+        this.payCreatorProfileImageUrl = payCreatorProfileImageUrl;
         this.requestedAmount = requestedAmount;
         this.bankName = bankName;
         this.bankAccountNum = bankAccountNum;
@@ -28,6 +29,7 @@ public class ResponseOfRequestedPayInfo {
         return new ResponseOfRequestedPayInfo(
                 infoOfRequestedPay.getPayRequestTargetId(),
                 infoOfRequestedPay.getPayCreatorNickname(),
+                infoOfRequestedPay.getPayCreatorProfileImageUrl(),
                 infoOfRequestedPay.getRequestedAmount().getAmountInInteger(),
                 infoOfRequestedPay.getBank().getName(),
                 infoOfRequestedPay.getBank().getAccountNumber()

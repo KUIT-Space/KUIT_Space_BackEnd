@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.event.application.port.out.CreateEventParticipantPort;
 import space.space_spring.domain.event.application.port.out.LoadEventParticipantPort;
+import space.space_spring.domain.event.application.port.out.UpdateEventParticipantPort;
 import space.space_spring.domain.event.domain.EventParticipant;
 import space.space_spring.domain.event.domain.EventParticipants;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
@@ -16,7 +17,8 @@ import space.space_spring.global.exception.CustomException;
 
 @RequiredArgsConstructor
 @Repository
-public class EventParticipantPersistenceAdapter implements LoadEventParticipantPort, CreateEventParticipantPort {
+public class EventParticipantPersistenceAdapter implements LoadEventParticipantPort, CreateEventParticipantPort,
+        UpdateEventParticipantPort {
 
     private final EventRepository eventRepository;
     private final EventParticipantRepository eventParticipantRepository;
@@ -49,4 +51,10 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
         return eventParticipantMapper.toDomainEntity(savedParticipant);
     }
 
+    @Override
+    public void deleteAllByEventId(Long eventId) {
+        EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
+                .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
+        eventParticipantRepository.deleteAllByEvent(eventJpaEntity);
+    }
 }

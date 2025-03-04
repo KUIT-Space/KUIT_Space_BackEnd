@@ -53,11 +53,8 @@ public abstract class BaseJpaEntity {
         lastModifiedAt = LocalDateTime.now();
     }
 
-//    protected void initializeBaseEntityFields() {
-//        onCreate();
-//    }
-//
-//    public void updateActive() { this.status = BaseStatusType.ACTIVE; }
-//
-//    public void updateInactive() { this.status = BaseStatusType.INACTIVE; }
+
+    public void updateToActive() { this.status = BaseStatusType.ACTIVE; }
+
+    public void updateToInactive() { this.status = BaseStatusType.INACTIVE; }
 }

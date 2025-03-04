@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.application.port.in.readPostList.ListOfPostSummary;
+import space.space_spring.domain.post.application.port.in.readPostList.PostSummary;
 import space.space_spring.domain.post.application.port.in.readPostList.ReadPostListUseCase;
+import space.space_spring.domain.post.application.port.out.LoadAttachmentPort;
+import space.space_spring.domain.post.application.port.out.LoadCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadLikePort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.domain.Post;
@@ -21,6 +24,8 @@ public class ReadPostListService implements ReadPostListUseCase {
 
     private final LoadPostPort loadPostPort;
     private final LoadLikePort loadLikePort;
+    private final LoadCommentPort loadCommentPort;
+    private final LoadAttachmentPort loadAttachmentPort;
 
     @Override
     public ListOfPostSummary readPostList(Long boardId) {
@@ -38,7 +43,26 @@ public class ReadPostListService implements ReadPostListUseCase {
         // 4. 댓글 수 조회
         Map<Long, Long> commentCounts = loadCommentPort.countCommentsByPostIds(postIds);
 
-        // 5. ListOfPostSummary 생성
-        return ListOfPostSummary.of();
+//        // 5. 작성자 닉네임 조회
+//        Map<Long, String> postCreators = load
+
+
+        //  6. 게시글 썸네일 이미지 조회
+        Map<Long, String> thumbnailImages = loadAttachmentPort.findFirstImageByPostIds(postIds);
+
+        // 7. PostSummary 리스트 생성
+        List<PostSummary> postSummaries = posts.stream()
+                .map(post -> PostSummary.of(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getContent(),
+                        likeCounts.getOrDefault(post.getId(), 0L).intValue(),
+                        commentCounts.getOrDefault(post.getId(), 0L).intValue(),
+//                        post.getSpaceMemberId(),
+                        thumbnailImages.getOrDefault(post.getId(), null)
+                )).toList();
+
+        // 8. ListOfPostSummary 생성
+        return ListOfPostSummary.of(postSummaries);
     }
 }

@@ -14,13 +14,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "Event")
-public class EventJpaEntity extends BaseEntity {
+public class EventJpaEntity extends BaseJpaEntity {
     @Id
     @GeneratedValue
     @Column(name = "event_id")

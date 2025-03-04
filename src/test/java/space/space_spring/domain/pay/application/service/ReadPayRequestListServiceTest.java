@@ -12,6 +12,7 @@ import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayType;
+import space.space_spring.global.common.entity.BaseInfo;
 import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.NaturalNumber;
 
@@ -41,9 +42,9 @@ class ReadPayRequestListServiceTest {
     @DisplayName("특정 유저가 생성한 모든 정산의 [payRequestId, 전체 정산 요청 금액, 정산 받은 금액, 전체 정산 대상자 수, 그 중 정산 완료한 사람 수] 정보를 완료된 정산, 진행중인 정산으로 구분해서 반환한다.")
     void readPayRequestList1() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 2L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
-        PayRequest payRequest3 = PayRequest.create(3L, seongjunId, 3L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
+        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 2L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL, BaseInfo.ofEmpty());
+        PayRequest payRequest3 = PayRequest.create(3L, seongjunId, 3L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL, BaseInfo.ofEmpty());
         Mockito.when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest1, payRequest2, payRequest3));
 
         Mockito.when(loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(1L)).thenReturn(CurrentPayRequestState.of(Money.of(3333), NaturalNumber.of(1)));          // payRequest1 의 현재 상황
@@ -76,8 +77,8 @@ class ReadPayRequestListServiceTest {
     @DisplayName("특정 유저가 생성한 정산 중 [현재 진행중인 정산] 이 없을 경우, 현재 진행중인 정산은 빈 ArrayList를 반환한다.")
     void readPayRequestList2() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 2L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
+        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 2L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL, BaseInfo.ofEmpty());
         Mockito.when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest1, payRequest2));
 
         Mockito.when(loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(1L)).thenReturn(CurrentPayRequestState.of(Money.of(10000), NaturalNumber.of(3)));         // payRequest1 의 현재 상황
@@ -103,8 +104,8 @@ class ReadPayRequestListServiceTest {
     @DisplayName("특정 유저가 생성한 정산 중 [완료된 정산] 이 없을 경우, 완료된 정산은 빈 ArrayList를 반환한다.")
     void readPayRequestList3() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 1L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
+        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 1L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "111-111"), PayType.INDIVIDUAL, BaseInfo.ofEmpty());
         Mockito.when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest1, payRequest2));
 
         Mockito.when(loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(1L)).thenReturn(CurrentPayRequestState.of(Money.of(3333), NaturalNumber.of(1)));          // payRequest1 의 현재 상황
@@ -145,7 +146,7 @@ class ReadPayRequestListServiceTest {
     void readPayRequestList_inconsistentState1() throws Exception {
         //given
         // [송금완료한 금액 == 정산 요청 총 금액 But 송금완료한 사람 != 정산 요청 총 대상 수] 인 경우
-        PayRequest payRequest = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
         Mockito.when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest));
         Mockito.when(loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(1L))
                 .thenReturn(CurrentPayRequestState.of(Money.of(10000), NaturalNumber.of(1)));
@@ -161,7 +162,7 @@ class ReadPayRequestListServiceTest {
     void readPayRequestList_inconsistentState2() throws Exception {
         //given
         // [송금완료한 금액 != 정산 요청 총 금액 But 송금완료한 사람 == 정산 요청 총 대상 수] 인 경우
-        PayRequest payRequest = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
+        PayRequest payRequest = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
         Mockito.when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest));
         Mockito.when(loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(1L))
                 .thenReturn(CurrentPayRequestState.of(Money.of(5000), NaturalNumber.of(3)));

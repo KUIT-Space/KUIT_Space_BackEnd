@@ -5,6 +5,7 @@ import static space.space_spring.domain.event.adapter.out.persistence.QEventPart
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import space.space_spring.domain.event.adapter.out.persistence.EventJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 @RequiredArgsConstructor
@@ -18,6 +19,16 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
                 .update(eventParticipantJpaEntity)
                 .set(eventParticipantJpaEntity.status, BaseStatusType.INACTIVE)
                 .where(eventParticipantJpaEntity.event.eq(event))
+                .execute();
+    }
+
+    @Override
+    public void deleteByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember) {
+        jpaQueryFactory
+                .update(eventParticipantJpaEntity)
+                .set(eventParticipantJpaEntity.status, BaseStatusType.INACTIVE)
+                .where(eventParticipantJpaEntity.event.eq(event)
+                        .and(eventParticipantJpaEntity.spaceMember.eq(spaceMember)))
                 .execute();
     }
 }

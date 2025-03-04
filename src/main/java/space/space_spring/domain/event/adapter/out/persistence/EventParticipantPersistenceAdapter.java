@@ -57,4 +57,14 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
         eventParticipantRepository.deleteAllByEvent(eventJpaEntity);
     }
+
+    @Override
+    public void deleteParticipant(Long eventId, Long spaceMemberId) {
+        EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
+                .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
+        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(spaceMemberId)
+                .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        eventParticipantRepository.deleteByEventAndSpaceMember(eventJpaEntity, spaceMemberJpaEntity);
+    }
 }

@@ -12,6 +12,7 @@ import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
@@ -35,8 +36,8 @@ public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadP
      */
     @Override
     public PayRequest createPayRequest(PayRequest payRequest) {
-        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payRequest.getPayCreatorId()).orElseThrow(
-                () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findByIdAndStatus(payRequest.getPayCreatorId(), BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
         PayRequestJpaEntity save = payRequestRepository.save(payRequestMapper.toJpaEntity(payCreatorJpaEntity, payRequest));
 
         return payRequestMapper.toDomainEntity(save);
@@ -44,10 +45,10 @@ public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadP
 
     @Override
     public List<PayRequest> loadByPayCreatorId(Long payCreatorId) {
-        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findById(payCreatorId).orElseThrow(
-                () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+        SpaceMemberJpaEntity payCreatorJpaEntity = spaceMemberRepository.findByIdAndStatus(payCreatorId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
-        Optional<List<PayRequestJpaEntity>> byPayCreator = payRequestRepository.findListByPayCreator(payCreatorJpaEntity);
+        Optional<List<PayRequestJpaEntity>> byPayCreator = payRequestRepository.findListByPayCreatorAndStatus(payCreatorJpaEntity, BaseStatusType.ACTIVE);
 
         if (byPayCreator.isEmpty()) return new ArrayList<>();
 
@@ -61,20 +62,22 @@ public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadP
 
     @Override
     public PayRequest loadById(Long id) {
-        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(id).orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findByIdAndStatus(id, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
         return payRequestMapper.toDomainEntity(payRequestJpaEntity);
     }
 
     @Override
     public Bank loadBankOfPayRequestById(Long payRequestId) {
-        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(payRequestId).orElseThrow(
-                () -> new CustomException(PAY_REQUEST_NOT_FOUND));
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findByIdAndStatus(payRequestId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
         return Bank.of(payRequestJpaEntity.getBankName(), payRequestJpaEntity.getBankAccountNum());
     }
 
     @Override
     public void deletePayRequest(Long payRequestId) {
-        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(payRequestId).orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findByIdAndStatus(payRequestId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
         payRequestJpaEntity.updateToInactive();
     }
 }

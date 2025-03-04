@@ -8,16 +8,19 @@ import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseM
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.application.port.out.CreatePostPort;
+import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.List;
+
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @Repository
 @RequiredArgsConstructor
-public class PostPersistenceAdapter implements CreatePostPort {
+public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
 
     private final SpringDataPostBaseRepository postBaseRepository;
     private final SpringDataPostRepository postRepository;
@@ -46,4 +49,10 @@ public class PostPersistenceAdapter implements CreatePostPort {
         return postRepository.save(postJpaEntity).getId();
     }
 
+    @Override
+    public List<Post> loadPostList(Long boardId) {
+        // 1. 게시글 리스트 조회
+        List<PostJpaEntity> postJpaEntities = postRepository.findPostsByBoardId(boardId);
+        return postJpaEntities.stream().map(postMapper::toDomainEntity).toList();
+    }
 }

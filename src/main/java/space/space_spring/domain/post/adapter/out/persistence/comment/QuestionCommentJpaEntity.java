@@ -6,41 +6,41 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
-import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.question.QuestionJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "Comment")
-public class CommentJpaEntity {
+@Table(name = "Question_Comment")
+public class QuestionCommentJpaEntity {
 
     @Id
     @GeneratedValue
-    @Column(name="comment_id")
+    @Column(name="question_comment_id")
     @NotNull
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_base_id")
     @NotNull
     private PostBaseJpaEntity postBase;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private PostJpaEntity post;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "parent_question_id")
+    @NotNull
     private QuestionJpaEntity question;
 
-    private CommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post, QuestionJpaEntity question) {
+    @Column(name = "is_anonymous")
+    @NotNull
+    private boolean isAnonymous;
+
+    private QuestionCommentJpaEntity(PostBaseJpaEntity postBase, QuestionJpaEntity question, boolean isAnonymous) {
         this.postBase = postBase;
-        this.post = post;
         this.question = question;
+        this.isAnonymous = isAnonymous;
     }
 
-    public CommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post, QuestionJpaEntity question) {
-        return new CommentJpaEntity(postBase, post, question);
+    public QuestionCommentJpaEntity create(PostBaseJpaEntity postBase, QuestionJpaEntity question, boolean isAnonymous) {
+        return new QuestionCommentJpaEntity(postBase, question, isAnonymous);
     }
 }

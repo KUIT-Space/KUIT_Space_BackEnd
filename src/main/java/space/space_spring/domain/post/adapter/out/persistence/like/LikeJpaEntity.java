@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.entity.BaseJpaEntity;
 
 @Entity
@@ -26,11 +27,22 @@ public class LikeJpaEntity extends BaseJpaEntity {
     @NotNull
     private PostBaseJpaEntity postBase;
 
-    private LikeJpaEntity(PostBaseJpaEntity postBase) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "space_member_id")
+    @NotNull
+    private SpaceMemberJpaEntity spaceMember;
+
+    @Column(name="is_liked")
+    @NotNull
+    private boolean isLiked;    // 좋아요 여부
+
+    private LikeJpaEntity(PostBaseJpaEntity postBase, SpaceMemberJpaEntity spaceMember, boolean isLiked) {
         this.postBase = postBase;
+        this.spaceMember = spaceMember;
+        this.isLiked = isLiked;
     }
 
-    public static LikeJpaEntity create(PostBaseJpaEntity postBase) {
-        return new LikeJpaEntity(postBase);
+    public static LikeJpaEntity create(PostBaseJpaEntity postBase, SpaceMemberJpaEntity spaceMember, boolean isLiked) {
+        return new LikeJpaEntity(postBase, spaceMember, isLiked);
     }
 }

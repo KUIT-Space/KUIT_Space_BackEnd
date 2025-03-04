@@ -22,7 +22,7 @@ public class CreatePostController {
 
     private final CreatePostUseCase createPostUseCase;
 
-    @PostMapping("/board/{boardId}/post")
+    @PostMapping("/space/{spaceId}/board/{boardId}/post")
     public BaseResponse<Long> createPost(
             @JwtLoginAuth Long id,
             @RequestParam Long boardId,

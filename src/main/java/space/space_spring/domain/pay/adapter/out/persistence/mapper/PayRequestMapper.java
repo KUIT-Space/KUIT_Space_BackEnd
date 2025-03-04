@@ -1,12 +1,14 @@
-package space.space_spring.domain.pay.adapter.out.persistence;
+package space.space_spring.domain.pay.adapter.out.persistence.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.pay.adapter.out.persistence.jpaEntity.PayRequestJpaEntity;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 
+import space.space_spring.global.common.entity.BaseInfo;
 import space.space_spring.global.util.NaturalNumber;
 
 
@@ -14,7 +16,7 @@ import space.space_spring.global.util.NaturalNumber;
 @RequiredArgsConstructor
 public class PayRequestMapper {
 
-    PayRequestJpaEntity toJpaEntity(SpaceMemberJpaEntity payCreatorJpaEntity, PayRequest domain) {
+    public PayRequestJpaEntity toJpaEntity(SpaceMemberJpaEntity payCreatorJpaEntity, PayRequest domain) {
         return PayRequestJpaEntity.create(
                 payCreatorJpaEntity,
                 domain.getDiscordMessageId(),
@@ -22,12 +24,16 @@ public class PayRequestMapper {
                 domain.getTotalTargetNum().getNumber(),
                 domain.getBank().getName(),
                 domain.getBank().getAccountNumber(),
-                domain.getPayType()
+                domain.getPayType(),
+                domain.getBaseInfo().getCreatedAt(),
+                domain.getBaseInfo().getLastModifiedAt(),
+                domain.getBaseInfo().getStatus()
         );
     }
 
     public PayRequest toDomainEntity(PayRequestJpaEntity jpaEntity) {
         Bank bank = Bank.of(jpaEntity.getBankName(), jpaEntity.getBankAccountNum());
+        BaseInfo baseInfo = BaseInfo.of(jpaEntity.getCreatedAt(), jpaEntity.getLastModifiedAt(), jpaEntity.getStatus());
 
         return PayRequest.create(
                 jpaEntity.getId(),
@@ -36,7 +42,8 @@ public class PayRequestMapper {
                 Money.of(jpaEntity.getTotalAmount()),
                 NaturalNumber.of(jpaEntity.getTotalTargetNum()),
                 bank,
-                jpaEntity.getPayType()
+                jpaEntity.getPayType(),
+                baseInfo
         );
     }
 }

@@ -45,7 +45,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EXPIRED_REFRESH_TOKEN(4009, HttpStatus.UNAUTHORIZED, "만료된 refresh token 입니다. 다시 로그인해야합니다."),
     DISCORD_TOKEN_ERROR(4010, HttpStatus.UNAUTHORIZED, "디스코드 서버에서 access token 발급이 실패하였습니다."),
     CANNOT_FIND_DISCORD_USER(4011, HttpStatus.NOT_FOUND, "디스코드 계정의 정보를 가져오는 데에 실패하였습니다."),
-    INVALID_REFRESH_TOKEN(4012, HttpStatus.NOT_FOUND, "유효하지 않은 refresh token입니다."),
+    INVALID_REFRESH_TOKEN(4012, HttpStatus.UNAUTHORIZED, "유효하지 않은 refresh token입니다."),
 
     /**
      * 5000: User 오류
@@ -119,16 +119,17 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_INDIVIDUAL_AMOUNT(12003, HttpStatus.BAD_REQUEST, "정산 요청 금액들의 합과 정산 요청 총 금액이 일치하지 않습니다."),
     INVALID_EQUAL_SPLIT_AMOUNT(12004, HttpStatus.BAD_REQUEST, "정산 요청 금액들 중 1/N 정산 정책에 위배되는 값이 있습니다."),
     PAY_REQUEST_NOT_FOUND(12005, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
-    PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
+    PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산 요청 대상 입니다"),
     THIS_PAY_REQUEST_HAS_NOT_TARGETS(12007, HttpStatus.INTERNAL_SERVER_ERROR, "현재 정산 요청은 정산 요청 대상이 없습니다. 현재 정산 생성 시 서버에 문제가 있었습니다."),
-    INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다."),
+    INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 대상자가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다."),
+    INVALID_PAY_REQUEST_ID(12009, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다. 본인이 생성한 정산에 대해서만 정산 상세 조회가 가능합니다."),
+
 
     /**
      * 13000 : Event 오류
      */
     INVALID_EVENT_CREATE(13000, HttpStatus.BAD_REQUEST, "행사 생성 요청에서 잘못된 값이 존재합니다."),
-    EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다."),
-    ;
+    EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다.");
 
     private final int code;
     private final HttpStatus status;

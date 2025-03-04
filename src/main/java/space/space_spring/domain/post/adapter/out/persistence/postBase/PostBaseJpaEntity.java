@@ -8,13 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "Post_Base")
-public class PostBaseJpaEntity extends BaseEntity {
+public class PostBaseJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue

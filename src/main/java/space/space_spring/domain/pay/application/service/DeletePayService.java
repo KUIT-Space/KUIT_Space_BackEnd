@@ -12,8 +12,6 @@ import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayRequestTargets;
 import space.space_spring.global.exception.CustomException;
 
-import java.util.List;
-
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_CREATOR_MISMATCH;
 
 @Service

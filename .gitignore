@@ -46,4 +46,4 @@ src/main/resource/application-prod.yml
 
 ### test yml file ###
 src/test/resources/application-test.yml
-.DS_Store
+/**/application-test.yml

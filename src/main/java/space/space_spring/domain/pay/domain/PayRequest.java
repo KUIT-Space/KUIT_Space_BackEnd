@@ -3,7 +3,6 @@ package space.space_spring.domain.pay.domain;
 import lombok.Getter;
 
 import space.space_spring.global.common.entity.BaseInfo;
-import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.util.NaturalNumber;
 
 

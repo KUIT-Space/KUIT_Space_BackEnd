@@ -10,6 +10,7 @@ import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequest;
 import space.space_spring.domain.pay.domain.PayType;
+import space.space_spring.global.common.entity.BaseInfo;
 import space.space_spring.global.util.NaturalNumber;
 
 import java.util.List;
@@ -38,10 +39,10 @@ class ReadBankInfoServiceTest {
     @DisplayName("스페이스 멤버가 과거 생성한 정산들의 은행정보를 중복을 제거하여 반환한다.")
     void readBankInfo1() throws Exception {
         //given
-        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 2L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "222-222"), PayType.EQUAL_SPLIT);
-        PayRequest payRequest3 = PayRequest.create(3L, seongjunId, 3L, Money.of(10000), NaturalNumber.of(5), Bank.of("국민은행", "333-333"), PayType.INDIVIDUAL);
-        PayRequest payRequest4 = PayRequest.create(4L, seongjunId, 4L, Money.of(10000), NaturalNumber.of(4), Bank.of("국민은행", "333-333"), PayType.INDIVIDUAL);
+        PayRequest payRequest1 = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
+        PayRequest payRequest2 = PayRequest.create(2L, seongjunId, 2L, Money.of(20000), NaturalNumber.of(2), Bank.of("우리은행", "222-222"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
+        PayRequest payRequest3 = PayRequest.create(3L, seongjunId, 3L, Money.of(10000), NaturalNumber.of(5), Bank.of("국민은행", "333-333"), PayType.INDIVIDUAL, BaseInfo.ofEmpty());
+        PayRequest payRequest4 = PayRequest.create(4L, seongjunId, 4L, Money.of(10000), NaturalNumber.of(4), Bank.of("국민은행", "333-333"), PayType.INDIVIDUAL, BaseInfo.ofEmpty());
 
         when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest1, payRequest2, payRequest3, payRequest4));
 

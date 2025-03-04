@@ -20,7 +20,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTargetPort, LoadPayRequestTargetPort, UpdatePayPort {
+public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTargetPort, LoadPayRequestTargetPort, UpdatePayPort, DeletePayRequestTargetPort {
 
     private final SpringDataPayRequestRepository payRequestRepository;
     private final SpringDataPayRequestTargetRepository payRequestTargetRepository;
@@ -94,5 +94,13 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
                 () -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
 
         jpaEntity.changeCompletionStatus(payRequestTarget.isComplete());
+    }
+
+    @Override
+    public void deleteAllPayRequestTarget(List<Long> payRequestTargetIds) {
+        List<PayRequestTargetJpaEntity> allById = payRequestTargetRepository.findAllById(payRequestTargetIds);
+        for (PayRequestTargetJpaEntity payRequestTargetJpaEntity : allById) {
+            payRequestTargetJpaEntity.updateToInactive();
+        }
     }
 }

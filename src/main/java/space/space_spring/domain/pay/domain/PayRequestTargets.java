@@ -71,4 +71,10 @@ public class PayRequestTargets {
 
         return Collections.unmodifiableList(inCompletePayRequestTargetList);
     }
+
+    public List<Long> getAllTargetIds() {
+        return payRequestTargets.stream()
+                .map(PayRequestTarget::getId)
+                .toList();
+    }
 }

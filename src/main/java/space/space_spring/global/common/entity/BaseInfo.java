@@ -27,8 +27,4 @@ public class BaseInfo {
     public static BaseInfo ofEmpty() {
         return new BaseInfo(null, null, null);
     }
-
-    public void changeStatus(BaseStatusType status) {
-        this.status = status;
-    }
 }

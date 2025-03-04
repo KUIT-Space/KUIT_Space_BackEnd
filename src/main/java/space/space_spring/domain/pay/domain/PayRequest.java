@@ -61,12 +61,4 @@ public class PayRequest {
     public boolean isPayCreator(Long spaceMemberId) {
         return payCreatorId.equals(spaceMemberId);
     }
-
-    public void changeToActive() {
-        this.baseInfo.changeStatus(BaseStatusType.ACTIVE);
-    }
-
-    public void changeToInactive() {
-        this.baseInfo.changeStatus(BaseStatusType.INACTIVE);
-    }
 }

@@ -19,9 +19,8 @@ import space.space_spring.global.util.NaturalNumber;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_PAY_REQUEST_ID;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_CREATOR_MISMATCH;
 
 class ReadPayDetailServiceTest {
 
@@ -105,7 +104,7 @@ class ReadPayDetailServiceTest {
         //when //then
         assertThatThrownBy(() -> readPayDetailService.readPayDetail(spaceMemberId, payRequestId))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(INVALID_PAY_REQUEST_ID.getMessage());
+                .hasMessage(PAY_REQUEST_CREATOR_MISMATCH.getMessage());
     }
 
     private PayRequest createPayRequest(Long payRequestId, Long payCreatorId) {

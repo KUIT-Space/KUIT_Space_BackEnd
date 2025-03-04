@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import space.space_spring.domain.pay.adapter.out.persistence.jpaEntity.PayRequestJpaEntity;
 import space.space_spring.domain.pay.adapter.out.persistence.mapper.PayRequestMapper;
 import space.space_spring.domain.pay.application.port.out.CreatePayRequestPort;
+import space.space_spring.domain.pay.application.port.out.DeletePayRequestPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestInfoPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
 import space.space_spring.domain.pay.domain.Bank;
@@ -23,7 +24,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadPayRequestPort, LoadPayRequestInfoPort {
+public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadPayRequestPort, LoadPayRequestInfoPort, DeletePayRequestPort {
 
     private final SpringDataPayRequestRepository payRequestRepository;
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
@@ -69,5 +70,11 @@ public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadP
         PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(payRequestId).orElseThrow(
                 () -> new CustomException(PAY_REQUEST_NOT_FOUND));
         return Bank.of(payRequestJpaEntity.getBankName(), payRequestJpaEntity.getBankAccountNum());
+    }
+
+    @Override
+    public void deletePayRequest(Long payRequestId) {
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(payRequestId).orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
+        payRequestJpaEntity.updateToInactive();
     }
 }

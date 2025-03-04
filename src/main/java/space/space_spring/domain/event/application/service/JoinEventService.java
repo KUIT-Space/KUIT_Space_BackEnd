@@ -28,7 +28,7 @@ public class JoinEventService implements JoinEventUseCase {
 
     private void validateDuplicateParticipant(EventParticipant eventParticipant) {
         EventParticipants eventParticipants = loadEventParticipantPort.loadByEventId(eventParticipant.getEventId());
-        if (eventParticipants.isAlreadyIn(eventParticipant.getSpaceMemberId())) {
+        if (eventParticipants.isSpaceMemberIn(eventParticipant.getSpaceMemberId())) {
             throw new CustomException(ALREADY_IN_EVENT);
         }
     }

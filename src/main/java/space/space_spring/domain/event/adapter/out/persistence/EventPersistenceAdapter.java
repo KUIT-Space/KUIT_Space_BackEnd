@@ -58,6 +58,6 @@ public class EventPersistenceAdapter implements CreateEventPort, LoadEventPort, 
     public void delete(Long eventId) {
         EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
-        eventRepository.delete(eventJpaEntity);
+        eventRepository.softDelete(eventJpaEntity);
     }
 }

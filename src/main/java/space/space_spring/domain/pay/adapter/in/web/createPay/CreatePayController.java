@@ -21,17 +21,13 @@ public class CreatePayController {
     private final CreatePayUseCase createPayUseCase;
 
     @PostMapping("/space/{spaceId}/pay/create")
-    public BaseResponse<Long> createPay(@JwtLoginAuth Long id, @PathVariable Long spaceId, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
-        /**
-         * 토큰 수정하면 토큰 spaceId == url spaceId 확인하는 validation 추가
-         */
-
+    public BaseResponse<Long> createPay(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
         }
 
         CreatePayCommand createPayCommand = CreatePayCommand.builder()
-                .payCreatorId(id)
+                .payCreatorId(spaceMemberId)
                 .totalAmount(request.getTotalAmount())
                 .bankName(request.getBankName())
                 .bankAccountNum(request.getBankAccountNum())

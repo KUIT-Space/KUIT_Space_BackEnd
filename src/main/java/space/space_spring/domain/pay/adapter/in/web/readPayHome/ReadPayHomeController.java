@@ -16,11 +16,7 @@ public class ReadPayHomeController {
     private final ReadPayHomeUseCase readPayHomeUseCase;
 
     @GetMapping("/space/{spaceId}/pay")
-    public BaseResponse<ResponseOfReadPayHome> showHomeView(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId) {
-        /**
-         * 토큰 수정하면 토큰 spaceId == url spaceId 확인하는 validation 추가
-         */
-
+    public BaseResponse<ResponseOfReadPayHome> showHomeView(@JwtLoginAuth Long spaceMemberId) {
         return new BaseResponse<>(ResponseOfReadPayHome.of(readPayHomeUseCase.readPayHome(spaceMemberId)));
     }
 }

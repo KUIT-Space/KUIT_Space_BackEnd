@@ -55,12 +55,4 @@ public class PayRequestTarget {
     public void completeForRequestedPay() {
         this.isComplete = true;
     }
-
-    public void changeToActive() {
-        this.baseInfo.changeStatus(BaseStatusType.ACTIVE);
-    }
-
-    public void changeToInactive() {
-        this.baseInfo.changeStatus(BaseStatusType.INACTIVE);
-    }
 }

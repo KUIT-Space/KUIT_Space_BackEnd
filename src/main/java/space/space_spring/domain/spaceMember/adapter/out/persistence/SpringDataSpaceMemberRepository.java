@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,5 +17,5 @@ public interface SpringDataSpaceMemberRepository extends JpaRepository<SpaceMemb
 
     Optional<SpaceMemberJpaEntity> findBySpaceIdAndDiscordId(Long SpaceId,Long discordId);
 
-
+    Optional<SpaceMemberJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);
 }

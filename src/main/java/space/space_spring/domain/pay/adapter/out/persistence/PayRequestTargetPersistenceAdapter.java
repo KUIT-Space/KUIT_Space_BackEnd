@@ -9,6 +9,7 @@ import space.space_spring.domain.pay.application.port.out.*;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @RequiredArgsConstructor
 @Repository
-public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTargetPort, LoadPayRequestTargetPort, UpdatePayPort {
+public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTargetPort, LoadPayRequestTargetPort, UpdatePayPort, DeletePayRequestTargetPort {
 
     private final SpringDataPayRequestRepository payRequestRepository;
     private final SpringDataPayRequestTargetRepository payRequestTargetRepository;
@@ -31,11 +32,11 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
     public List<PayRequestTarget> createPayRequestTargets(List<PayRequestTarget> payRequestTargets) {
         List<PayRequestTarget> savedList = new ArrayList<>();
         for (PayRequestTarget payRequestTarget : payRequestTargets) {
-            SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(payRequestTarget.getTargetMemberId()).orElseThrow(
-                    () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+            SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findByIdAndStatus(payRequestTarget.getTargetMemberId(), BaseStatusType.ACTIVE)
+                    .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
-            PayRequestJpaEntity payRequestJpaEntity  = payRequestRepository.findById(payRequestTarget.getPayRequestId()).orElseThrow(
-                    () -> new CustomException(PAY_REQUEST_NOT_FOUND));
+            PayRequestJpaEntity payRequestJpaEntity  = payRequestRepository.findByIdAndStatus(payRequestTarget.getPayRequestId(), BaseStatusType.ACTIVE)
+                    .orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
 
             PayRequestTargetJpaEntity save = payRequestTargetRepository.save(payRequestTargetMapper.toJpaEntity(targetMemberJpaEntity, payRequestJpaEntity, payRequestTarget));
             savedList.add(payRequestTargetMapper.toDomainEntity(save));
@@ -46,10 +47,10 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
 
     @Override
     public List<PayRequestTarget> loadByTargetMemberId(Long targetMemberId) {
-        SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findById(targetMemberId).orElseThrow(
-                () -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+        SpaceMemberJpaEntity targetMemberJpaEntity = spaceMemberRepository.findByIdAndStatus(targetMemberId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
-        Optional<List<PayRequestTargetJpaEntity>> byTargetMember = payRequestTargetRepository.findListByTargetMember(targetMemberJpaEntity);
+        Optional<List<PayRequestTargetJpaEntity>> byTargetMember = payRequestTargetRepository.findListByTargetMemberAndStatus(targetMemberJpaEntity, BaseStatusType.ACTIVE);
 
         if (byTargetMember.isEmpty()) return new ArrayList<>();
 
@@ -63,10 +64,10 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
 
     @Override
     public List<PayRequestTarget> loadByPayRequestId(Long payRequestId) {
-        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findById(payRequestId).orElseThrow(
-                () -> new CustomException(PAY_REQUEST_NOT_FOUND));
+        PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findByIdAndStatus(payRequestId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
 
-        Optional<List<PayRequestTargetJpaEntity>> byPayRequest = payRequestTargetRepository.findByPayRequest(payRequestJpaEntity);
+        Optional<List<PayRequestTargetJpaEntity>> byPayRequest = payRequestTargetRepository.findByPayRequestAndStatus(payRequestJpaEntity, BaseStatusType.ACTIVE);
 
         if (byPayRequest.isEmpty()) {
             return new ArrayList<>();
@@ -82,17 +83,32 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
 
     @Override
     public PayRequestTarget loadById(Long payRequestTargetId) {
-        PayRequestTargetJpaEntity jpaEntity = payRequestTargetRepository.findById(payRequestTargetId).orElseThrow(
-                () -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
+        PayRequestTargetJpaEntity jpaEntity = payRequestTargetRepository.findByIdAndStatus(payRequestTargetId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
 
         return payRequestTargetMapper.toDomainEntity(jpaEntity);
     }
 
     @Override
     public void update(PayRequestTarget payRequestTarget) {
-        PayRequestTargetJpaEntity jpaEntity = payRequestTargetRepository.findById(payRequestTarget.getId()).orElseThrow(
-                () -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
+        PayRequestTargetJpaEntity jpaEntity = payRequestTargetRepository.findByIdAndStatus(payRequestTarget.getId(), BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(PAY_REQUEST_TARGET_NOT_FOUND));
 
         jpaEntity.changeCompletionStatus(payRequestTarget.isComplete());
+    }
+
+    @Override
+    public void deleteAllPayRequestTarget(List<Long> payRequestTargetIds) {
+        List<PayRequestTargetJpaEntity> allById = payRequestTargetRepository.findAllByIdInAndStatus(payRequestTargetIds, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(THIS_PAY_REQUEST_HAS_NOT_TARGETS));
+
+        /**
+         * 정산 타겟들이 하나도 없는 경우 -> 예외 메시지 throw
+         * 에러 메시지 내용 좀 더 고민해보기
+         */
+
+        for (PayRequestTargetJpaEntity payRequestTargetJpaEntity : allById) {
+            payRequestTargetJpaEntity.updateToInactive();
+        }
     }
 }

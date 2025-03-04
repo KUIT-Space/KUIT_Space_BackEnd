@@ -15,10 +15,10 @@ import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMembe
 import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.global.exception.CustomException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_PAY_REQUEST_ID;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_CREATOR_MISMATCH;
+
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class ReadPayDetailService implements ReadPayDetailUseCase {
     private PayRequest loadAndValidatePayRequest(Long spaceMemberId, Long payRequestId) {
         PayRequest payRequest = loadPayRequestPort.loadById(payRequestId);
         if (!payRequest.isPayCreator(spaceMemberId)) {
-            throw new CustomException(INVALID_PAY_REQUEST_ID);
+            throw new CustomException(PAY_REQUEST_CREATOR_MISMATCH);
         }
         return payRequest;
     }

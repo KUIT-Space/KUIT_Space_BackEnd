@@ -14,7 +14,7 @@ import space.space_spring.global.exception.CustomException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_PAY_REQUEST_TARGET_ID;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_TARGET_MISMATCH;
 
 class CompletePayServiceTest {
 
@@ -76,7 +76,7 @@ class CompletePayServiceTest {
         // 경민이가 payRequestTarget에 대해서 정산 완료 처리를 요청
         assertThatThrownBy(() -> completePayService.completeForRequestedPay(kyungminId, payRequestTargetId))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(INVALID_PAY_REQUEST_TARGET_ID.getMessage());
+                .hasMessage(PAY_REQUEST_TARGET_MISMATCH.getMessage());
     }
 
 }

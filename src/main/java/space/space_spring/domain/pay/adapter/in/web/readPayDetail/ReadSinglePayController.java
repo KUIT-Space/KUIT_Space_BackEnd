@@ -20,11 +20,7 @@ public class ReadSinglePayController {
     private final ReadPayDetailUseCase readPayDetailUseCase;
 
     @GetMapping("/space/{spaceId}/pay/{payRequestId}")
-    public BaseResponse<ResponseOfReadPayDetail> showPayDetail(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId, @PathVariable("payRequestId") Long payRequestId) {
-        /**
-         * 토큰 수정하면 토큰 spaceId == url spaceId 확인하는 validation 추가
-         */
-
+    public BaseResponse<ResponseOfReadPayDetail> showPayDetail(@JwtLoginAuth Long spaceMemberId, @PathVariable("payRequestId") Long payRequestId) {
         return new BaseResponse<>(ResponseOfReadPayDetail.of(readPayDetailUseCase.readPayDetail(spaceMemberId, payRequestId)));
     }
 }

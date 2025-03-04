@@ -9,7 +9,7 @@ import space.space_spring.domain.pay.application.port.out.UpdatePayPort;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
 import space.space_spring.global.exception.CustomException;
 
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.INVALID_PAY_REQUEST_TARGET_ID;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.PAY_REQUEST_TARGET_MISMATCH;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class CompletePayService implements CompletePayUseCase {
         PayRequestTarget payRequestTarget = loadPayRequestTargetPort.loadById(payRequestTargetId);
 
         if (!payRequestTarget.isSameTargetMember(targetMemberId)) {
-            throw new CustomException(INVALID_PAY_REQUEST_TARGET_ID);
+            throw new CustomException(PAY_REQUEST_TARGET_MISMATCH);
         }
 
         // 정산 완료 처리

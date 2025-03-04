@@ -7,13 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "Board")
-public class BoardJpaEntity extends BaseEntity {
+public class BoardJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue

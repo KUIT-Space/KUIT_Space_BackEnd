@@ -1,11 +1,10 @@
 package space.space_spring.domain.pay.adapter.in.web.createPay;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.graphql.ConditionalOnGraphQlSchema;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.space_spring.domain.pay.application.port.in.createPay.CreatePayCommand;
 import space.space_spring.domain.pay.application.port.in.createPay.CreatePayUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
@@ -21,8 +20,12 @@ public class CreatePayController {
 
     private final CreatePayUseCase createPayUseCase;
 
-    @PostMapping("/pay/create")
-    public BaseResponse<Long> createPay(@JwtLoginAuth Long id, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
+    @PostMapping("/space/{spaceId}/pay/create")
+    public BaseResponse<Long> createPay(@JwtLoginAuth Long id, @PathVariable Long spaceId, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
+        /**
+         * 토큰 수정하면 토큰 spaceId == url spaceId 확인하는 validation 추가
+         */
+
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
         }

@@ -19,18 +19,18 @@ public class ResponseOfPostSummary {
 //    BaseDomainEntity 추가되면 할 것
 //    private String createdAt;
 
-    private String createdBy;
+//    private String createdBy;
 
     private String postImageUrl;
 
-    private ResponseOfPostSummary(Long postId, String title, String content, int likeCount, int commentCount, String createdBy, String postImageUrl){
+    private ResponseOfPostSummary(Long postId, String title, String content, int likeCount, int commentCount, String postImageUrl){
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
 //        this.createdAt = createdAt;
-        this.createdBy = createdBy;
+//        this.createdBy = createdBy;
         this.postImageUrl = postImageUrl;
     }
 
@@ -41,7 +41,6 @@ public class ResponseOfPostSummary {
                 summaryOfPost.getContent().getValue(),
                 summaryOfPost.getLikeCount(),
                 summaryOfPost.getCommentCount(),
-                summaryOfPost.getCreatedBy(),
                 summaryOfPost.getPostImageUrl()
         );
     }

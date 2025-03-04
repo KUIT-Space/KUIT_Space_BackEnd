@@ -16,21 +16,21 @@ public class PostSummary {
 
     private int commentCount;
 
-    private String createdBy;
+//    private String postCreator;
 
     private String postImageUrl;
 
-    private PostSummary(Long postId, String title, Content content, int likeCount, int commentCount, String createdBy, String postImageUrl) {
+    private PostSummary(Long postId, String title, Content content, int likeCount, int commentCount, String postImageUrl) {
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
-        this.createdBy = createdBy;
+//        this.postCreator = postCreator;
         this.postImageUrl = postImageUrl;
     }
 
-    public static PostSummary of(Long postId, String title, Content content, int likeCount, int commentCount, String createdBy, String postImageUrl) {
-        return new PostSummary(postId, title, content, likeCount, commentCount, createdBy, postImageUrl);
+    public static PostSummary of(Long postId, String title, Content content, int likeCount, int commentCount, String postImageUrl) {
+        return new PostSummary(postId, title, content, likeCount, commentCount, postImageUrl);
     }
 }

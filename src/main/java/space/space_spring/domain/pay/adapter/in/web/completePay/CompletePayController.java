@@ -16,11 +16,7 @@ public class CompletePayController {
     private final CompletePayUseCase completePayUseCase;
 
     @PatchMapping("/space/{spaceId}/pay/{payRequestTargetId}/complete")
-    public BaseResponse<SuccessResponse> completeForRequestedPay(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId, @PathVariable("payRequestTargetId") Long payRequestTargetId) {
-        /**
-         * 토큰 수정하면 토큰 spaceId == url spaceId 확인하는 validation 추가
-         */
-
+    public BaseResponse<SuccessResponse> completeForRequestedPay(@JwtLoginAuth Long spaceMemberId, @PathVariable("payRequestTargetId") Long payRequestTargetId) {
         completePayUseCase.completeForRequestedPay(spaceMemberId, payRequestTargetId);
         return new BaseResponse<>(new SuccessResponse(true));
     }

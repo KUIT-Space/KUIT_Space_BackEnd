@@ -8,18 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.event.application.port.out.CreateEventParticipantPort;
 import space.space_spring.domain.event.application.port.out.LoadEventParticipantPort;
-import space.space_spring.domain.event.domain.Event;
 import space.space_spring.domain.event.domain.EventParticipant;
 import space.space_spring.domain.event.domain.EventParticipants;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberMapper;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
-import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.exception.CustomException;
 
 @RequiredArgsConstructor
 @Repository
-public class EventEventParticipantPersistenceAdapter implements LoadEventParticipantPort, CreateEventParticipantPort {
+public class EventParticipantPersistenceAdapter implements LoadEventParticipantPort, CreateEventParticipantPort {
 
     private final EventRepository eventRepository;
     private final EventParticipantRepository eventParticipantRepository;

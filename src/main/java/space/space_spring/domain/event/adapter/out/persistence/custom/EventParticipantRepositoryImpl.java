@@ -31,4 +31,17 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
                         .and(eventParticipantJpaEntity.spaceMember.eq(spaceMember)))
                 .execute();
     }
+
+    @Override
+    public boolean existsByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember) {
+        Integer count = jpaQueryFactory
+                .selectOne()
+                .from(eventParticipantJpaEntity)
+                .where(eventParticipantJpaEntity.event.eq(event)
+                        .and(eventParticipantJpaEntity.spaceMember.eq(spaceMember))
+                        .and(eventParticipantJpaEntity.status.eq(BaseStatusType.ACTIVE)))
+                .fetchFirst();
+
+        return count != null;
+    }
 }

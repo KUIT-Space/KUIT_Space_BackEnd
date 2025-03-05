@@ -1,5 +1,7 @@
 package space.space_spring.domain.event.adapter.out.persistence;
 
+import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
 import space.space_spring.global.common.entity.BaseJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -71,5 +74,9 @@ public class EventJpaEntity extends BaseJpaEntity {
                 .startTime(startTime)
                 .endTime(endTime)
                 .build();
+    }
+
+    public boolean isActive() {
+        return this.getStatus().equals(ACTIVE);
     }
 }

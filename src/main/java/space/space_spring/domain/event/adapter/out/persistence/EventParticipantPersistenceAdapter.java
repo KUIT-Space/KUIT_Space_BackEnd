@@ -1,5 +1,6 @@
 package space.space_spring.domain.event.adapter.out.persistence;
 
+import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 import java.util.ArrayList;
@@ -23,14 +24,13 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
     private final EventRepository eventRepository;
     private final EventParticipantRepository eventParticipantRepository;
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
-    private final EventMapper eventMapper;
     private final EventParticipantMapper eventParticipantMapper;
 
     @Override
     public EventParticipants loadByEventId(Long eventId) {
-        EventJpaEntity eventJpaEntity = eventRepository.findById(eventId).orElseThrow(
+        EventJpaEntity eventJpaEntity = eventRepository.findByIdAndStatus(eventId, ACTIVE).orElseThrow(
                 () -> new CustomException(EVENT_NOT_FOUND));
-        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEvent(eventJpaEntity);
+        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEventAndStatus(eventJpaEntity, ACTIVE);
 
         List<EventParticipant> participants = new ArrayList<>();
         for (EventParticipantJpaEntity e : eventParticipantJpaEntities) {
@@ -42,10 +42,14 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
 
     @Override
     public EventParticipant createParticipant(EventParticipant participant) {
-        EventJpaEntity event = eventRepository.findById(participant.getEventId())
+        EventJpaEntity event = eventRepository.findByIdAndStatus(participant.getEventId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
         SpaceMemberJpaEntity spaceMember = spaceMemberRepository.findById(participant.getSpaceMemberId())
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        if (eventParticipantRepository.existsByEventAndSpaceMember(event, spaceMember)) {
+            throw new CustomException(ALREADY_IN_EVENT);
+        }
 
         EventParticipantJpaEntity savedParticipant = eventParticipantRepository.save(eventParticipantMapper.toJpaEntity(event, spaceMember));
         return eventParticipantMapper.toDomainEntity(savedParticipant);
@@ -55,6 +59,9 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
     public void deleteAllByEventId(Long eventId) {
         EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
+
+        if (eventJpaEntity.isActive()) throw new CustomException(EVENT_NOT_FOUND);
+
         eventParticipantRepository.deleteAllByEvent(eventJpaEntity);
     }
 
@@ -62,6 +69,9 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
     public void deleteParticipant(Long eventId, Long spaceMemberId) {
         EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
+
+        if (eventJpaEntity.isActive()) throw new CustomException(EVENT_NOT_FOUND);
+
         SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(spaceMemberId)
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 

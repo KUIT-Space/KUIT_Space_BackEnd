@@ -8,4 +8,6 @@ public interface EventParticipantRepositoryCustom {
     void deleteAllByEvent(EventJpaEntity event);
 
     void deleteByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember);
+
+    boolean existsByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember);
 }

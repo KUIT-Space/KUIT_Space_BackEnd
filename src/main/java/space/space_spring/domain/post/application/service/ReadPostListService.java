@@ -54,10 +54,10 @@ public class ReadPostListService implements ReadPostListUseCase {
         Map<Long, String> creatorNicknames = loadSpaceMemberInfoPort.loadNicknamesByIds(spaceMemberIds);
 
 
-        //  6. 게시글 썸네일 이미지 조회
+        // 7. 게시글 썸네일 이미지 조회
         Map<Long, String> thumbnailImages = loadAttachmentPort.findFirstImageByPostIds(postIds);
 
-        // 7. PostSummary 리스트 생성
+        // 8. PostSummary 리스트 생성
         List<PostSummary> postSummaries = posts.stream()
                 .map(post -> PostSummary.of(
                         post.getId(),
@@ -70,7 +70,7 @@ public class ReadPostListService implements ReadPostListUseCase {
                         thumbnailImages.getOrDefault(post.getId(), null)
                 )).toList();
 
-        // 8. ListOfPostSummary 생성
+        // 9. ListOfPostSummary 생성
         return ListOfPostSummary.of(postSummaries);
     }
 }

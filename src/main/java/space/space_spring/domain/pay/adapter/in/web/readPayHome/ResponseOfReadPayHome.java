@@ -1,11 +1,13 @@
 package space.space_spring.domain.pay.adapter.in.web.readPayHome;
 
+import lombok.Getter;
 import space.space_spring.domain.pay.application.port.in.readPayHome.InfoOfPayRequestInHome;
 import space.space_spring.domain.pay.application.port.in.readPayHome.InfoOfRequestedPayInHome;
 import space.space_spring.domain.pay.application.port.in.readPayHome.ResultOfPayHomeView;
 
 import java.util.List;
 
+@Getter
 public class ResponseOfReadPayHome {
 
     private List<PayRequestInfoInHome> requestInfoInHome;

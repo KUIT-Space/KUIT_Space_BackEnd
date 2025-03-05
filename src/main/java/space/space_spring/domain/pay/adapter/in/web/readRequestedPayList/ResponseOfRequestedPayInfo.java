@@ -1,10 +1,12 @@
 package space.space_spring.domain.pay.adapter.in.web.readRequestedPayList;
 
+import lombok.Getter;
 import space.space_spring.domain.pay.application.port.in.readRequestedPayList.InfoOfRequestedPay;
 
+@Getter
 public class ResponseOfRequestedPayInfo {
 
-    private Long payRequestedTargetId;
+    private Long payRequestTargetId;
 
     private String payCreatorName;
 
@@ -16,8 +18,8 @@ public class ResponseOfRequestedPayInfo {
 
     private String bankAccountNum;          // 송금할 은행 정보
 
-    private ResponseOfRequestedPayInfo(Long payRequestedTargetId, String payCreatorName, String payCreatorProfileImageUrl, int requestedAmount, String bankName, String bankAccountNum) {
-        this.payRequestedTargetId = payRequestedTargetId;
+    private ResponseOfRequestedPayInfo(Long payRequestTargetId, String payCreatorName, String payCreatorProfileImageUrl, int requestedAmount, String bankName, String bankAccountNum) {
+        this.payRequestTargetId = payRequestTargetId;
         this.payCreatorName = payCreatorName;
         this.payCreatorProfileImageUrl = payCreatorProfileImageUrl;
         this.requestedAmount = requestedAmount;

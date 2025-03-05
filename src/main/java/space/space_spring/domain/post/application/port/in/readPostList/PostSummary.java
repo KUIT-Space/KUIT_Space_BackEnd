@@ -20,22 +20,22 @@ public class PostSummary {
 
     private LocalDateTime createdAt;
 
-//    private String postCreator;
+    private String creatorNickname;
 
     private String postImageUrl;
 
-    private PostSummary(Long postId, String title, Content content, int likeCount, int commentCount, LocalDateTime createdAt, String postImageUrl) {
+    private PostSummary(Long postId, String title, Content content, int likeCount, int commentCount, LocalDateTime createdAt, String creatorNickname, String postImageUrl) {
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.createdAt = createdAt;
-//        this.postCreator = postCreator;
+        this.creatorNickname = creatorNickname;
         this.postImageUrl = postImageUrl;
     }
 
-    public static PostSummary of(Long postId, String title, Content content, int likeCount, int commentCount, LocalDateTime createdAt, String postImageUrl) {
-        return new PostSummary(postId, title, content, likeCount, commentCount, createdAt, postImageUrl);
+    public static PostSummary of(Long postId, String title, Content content, int likeCount, int commentCount, LocalDateTime createdAt, String creatorNickname, String postImageUrl) {
+        return new PostSummary(postId, title, content, likeCount, commentCount, createdAt, creatorNickname, postImageUrl);
     }
 }

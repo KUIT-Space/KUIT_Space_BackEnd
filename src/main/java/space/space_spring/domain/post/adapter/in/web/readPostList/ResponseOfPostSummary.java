@@ -19,18 +19,18 @@ public class ResponseOfPostSummary {
 
     private String createdAt;
 
-//    private String creatorNickname;
+    private String creatorNickname;
 
     private String postImageUrl;
 
-    private ResponseOfPostSummary(Long postId, String title, String content, int likeCount, int commentCount, String createdAt, String postImageUrl){
+    private ResponseOfPostSummary(Long postId, String title, String content, int likeCount, int commentCount, String createdAt, String creatorNickname, String postImageUrl){
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.createdAt = createdAt;
-//        this.creatorNickname = creatorNickname;
+        this.creatorNickname = creatorNickname;
         this.postImageUrl = postImageUrl;
     }
 
@@ -42,6 +42,7 @@ public class ResponseOfPostSummary {
                 summaryOfPost.getLikeCount(),
                 summaryOfPost.getCommentCount(),
                 ConvertCreatedDate.setCreatedDate(summaryOfPost.getCreatedAt()),
+                summaryOfPost.getCreatorNickname(),
                 summaryOfPost.getPostImageUrl()
         );
     }

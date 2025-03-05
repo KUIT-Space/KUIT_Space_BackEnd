@@ -12,6 +12,7 @@ import space.space_spring.domain.post.application.port.out.LoadCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadLikePort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.domain.Post;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class ReadPostListService implements ReadPostListUseCase {
     private final LoadLikePort loadLikePort;
     private final LoadCommentPort loadCommentPort;
     private final LoadAttachmentPort loadAttachmentPort;
+    private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
 
     @Override
     public ListOfPostSummary readPostList(Long boardId) {
@@ -43,8 +45,13 @@ public class ReadPostListService implements ReadPostListUseCase {
         // 4. 댓글 수 조회
         Map<Long, Long> commentCounts = loadCommentPort.countCommentsByPostIds(postIds);
 
-//        // 5. 작성자 닉네임 조회
-//        Map<Long, String> postCreators = load
+        // 5. spaceMemberId 리스트 추출
+        List<Long> spaceMemberIds = posts.stream()
+                .map(Post::getSpaceMemberId)
+                .toList();
+
+        // 6. 작성자 닉네임 조회
+        Map<Long, String> creatorNicknames = loadSpaceMemberInfoPort.loadNicknamesByIds(spaceMemberIds);
 
 
         //  6. 게시글 썸네일 이미지 조회
@@ -59,7 +66,7 @@ public class ReadPostListService implements ReadPostListUseCase {
                         likeCounts.getOrDefault(post.getId(), 0L).intValue(),
                         commentCounts.getOrDefault(post.getId(), 0L).intValue(),
                         post.getBaseInfo().getCreatedAt(),
-//                        post.getSpaceMemberId(),
+                        creatorNicknames.getOrDefault(post.getSpaceMemberId(), "알 수 없음"),
                         thumbnailImages.getOrDefault(post.getId(), null)
                 )).toList();
 

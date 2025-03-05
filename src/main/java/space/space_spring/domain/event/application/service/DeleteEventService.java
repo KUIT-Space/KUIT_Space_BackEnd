@@ -4,6 +4,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.event.application.port.in.DeleteEventUseCase;
 import space.space_spring.domain.event.application.port.out.UpdateEventParticipantPort;
 import space.space_spring.domain.event.application.port.out.UpdateEventPort;
@@ -13,6 +14,7 @@ import space.space_spring.global.exception.CustomException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DeleteEventService implements DeleteEventUseCase {
 
     private final LoadSpaceMemberPort loadSpaceMemberPort;

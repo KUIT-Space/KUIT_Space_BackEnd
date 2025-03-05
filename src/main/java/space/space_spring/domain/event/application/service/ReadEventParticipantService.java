@@ -5,6 +5,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.event.application.port.in.ReadEventParticipantUseCase;
 import space.space_spring.domain.event.application.port.out.LoadEventParticipantPort;
 import space.space_spring.domain.event.domain.EventParticipantInfos;
@@ -16,6 +17,7 @@ import space.space_spring.global.exception.CustomException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReadEventParticipantService implements ReadEventParticipantUseCase {
 
     private final LoadSpaceMemberPort loadSpaceMemberPort;
@@ -27,6 +29,8 @@ public class ReadEventParticipantService implements ReadEventParticipantUseCase 
         validateManager(spaceMember);
 
         EventParticipants participants = loadEventParticipantPort.loadByEventId(eventId);
+        if (participants.isEmpty()) return EventParticipantInfos.createEmpty();
+
         List<Long> participantIds = participants.getSpaceMemberIds();
         SpaceMembers spaceMemberInfos = SpaceMembers.of(loadSpaceMemberPort.loadAllById(participantIds));
 

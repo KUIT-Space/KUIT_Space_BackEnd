@@ -4,6 +4,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.event.application.port.in.JoinEventUseCase;
 import space.space_spring.domain.event.application.port.out.CreateEventParticipantPort;
 import space.space_spring.domain.event.application.port.out.LoadEventParticipantPort;
@@ -13,6 +14,7 @@ import space.space_spring.global.exception.CustomException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class JoinEventService implements JoinEventUseCase {
 
     private final CreateEventParticipantPort createEventParticipantPort;
@@ -28,6 +30,8 @@ public class JoinEventService implements JoinEventUseCase {
 
     private void validateDuplicateParticipant(EventParticipant eventParticipant) {
         EventParticipants eventParticipants = loadEventParticipantPort.loadByEventId(eventParticipant.getEventId());
+        if (eventParticipants.isEmpty()) return;
+
         if (eventParticipants.isSpaceMemberIn(eventParticipant.getSpaceMemberId())) {
             throw new CustomException(ALREADY_IN_EVENT);
         }

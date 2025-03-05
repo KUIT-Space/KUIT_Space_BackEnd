@@ -41,4 +41,7 @@ public class EventParticipants {
         return true;
     }
 
+    public boolean isEmpty() {
+        return this.participants.isEmpty();
+    }
 }

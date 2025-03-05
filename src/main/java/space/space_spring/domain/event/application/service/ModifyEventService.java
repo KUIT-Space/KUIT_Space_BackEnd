@@ -5,6 +5,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.event.application.port.in.ModifyEventUseCase;
 import space.space_spring.domain.event.application.port.in.UpdateEventParticipantCommand;
 import space.space_spring.domain.event.application.port.out.CreateEventParticipantPort;
@@ -18,6 +19,7 @@ import space.space_spring.global.exception.CustomException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ModifyEventService implements ModifyEventUseCase {
 
     private final LoadSpaceMemberPort loadSpaceMemberPort;
@@ -33,7 +35,7 @@ public class ModifyEventService implements ModifyEventUseCase {
         EventParticipants savedEventParticipants = loadEventParticipantPort.loadByEventId(eventId);
         List<Long> spaceMemberIds = updateEventParticipantCommand.getSpaceMemberIds();
         for (Long id : spaceMemberIds) {
-            if (savedEventParticipants.isSpaceMemberIn(id)) throw new CustomException(ALREADY_IN_EVENT);
+            if (!savedEventParticipants.isEmpty() && savedEventParticipants.isSpaceMemberIn(id)) throw new CustomException(ALREADY_IN_EVENT);
 
             EventParticipant eventParticipant = EventParticipant.withoutId(eventId, id);
             createEventParticipantPort.createParticipant(eventParticipant);
@@ -49,7 +51,7 @@ public class ModifyEventService implements ModifyEventUseCase {
         EventParticipants savedEventParticipants = loadEventParticipantPort.loadByEventId(eventId);
         List<Long> spaceMemberIds = updateEventParticipantCommand.getSpaceMemberIds();
         for (Long id : spaceMemberIds) {
-            if (savedEventParticipants.isSpaceMemberNotIn(id)) throw new CustomException(ALREADY_NOT_IN_EVENT);
+            if (!savedEventParticipants.isEmpty() && savedEventParticipants.isSpaceMemberNotIn(id)) throw new CustomException(ALREADY_NOT_IN_EVENT);
 
             updateEventParticipantPort.deleteParticipant(eventId, id);
         }

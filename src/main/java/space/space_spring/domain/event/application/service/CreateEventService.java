@@ -15,7 +15,7 @@ import space.space_spring.global.exception.CustomException;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class CreateEventService implements CreateEventUseCase {
 
     private final CreateEventPort createEventPort;

@@ -15,7 +15,7 @@ public interface SpringDataSpaceMemberRepository extends JpaRepository<SpaceMemb
 
     Optional<SpaceMemberJpaEntity> findByUserId(Long userId);
 
-    Optional<SpaceMemberJpaEntity> findBySpaceIdAndDiscordId(Long SpaceId,Long discordId);
+    Optional<SpaceMemberJpaEntity> findBySpaceIdAndDiscordId(Long spaceId, Long discordId);
 
 
     Optional<SpaceMemberJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);
@@ -23,6 +23,7 @@ public interface SpringDataSpaceMemberRepository extends JpaRepository<SpaceMemb
     @Query("SELECT new space.space_spring.domain.spaceMember.application.port.out.PostCreatorNickname(sm.id, sm.nickname) " +
             "FROM SpaceMemberJpaEntity sm " +
             "WHERE sm.id IN :spaceMemberIds " +
-            "AND sm.status = space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE")
-    List<PostCreatorNickname> findNicknamesByIds(@Param("spaceMemberIds") List<Long> spaceMemberIds);
+            "AND sm.status = :status")
+    List<PostCreatorNickname> findNicknamesByIds(@Param("spaceMemberIds") List<Long> spaceMemberIds,
+                                                 @Param("status") BaseStatusType status);
 }

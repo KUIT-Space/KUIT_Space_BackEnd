@@ -12,6 +12,7 @@ import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
@@ -52,7 +53,7 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
     @Override
     public List<Post> loadPostList(Long boardId) {
         // 1. 게시글 리스트 조회
-        List<PostJpaEntity> postJpaEntities = postRepository.findPostsByBoardId(boardId);
+        List<PostJpaEntity> postJpaEntities = postRepository.findPostsByBoardId(boardId, BaseStatusType.ACTIVE);
         return postJpaEntities.stream().map(postMapper::toDomainEntity).toList();
     }
 }

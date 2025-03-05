@@ -11,6 +11,7 @@ import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.domain.user.adapter.out.persistence.SpringDataUserRepository;
 import space.space_spring.domain.user.adapter.out.persistence.UserJpaEntity;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class SpaceMemberPersistenceAdapter
 
     @Override
     public Map<Long, String> loadNicknamesByIds(List<Long> spaceMemberIds) {
-        List<PostCreatorNickname> creatorNicknames = spaceMemberRepository.findNicknamesByIds(spaceMemberIds);
+        List<PostCreatorNickname> creatorNicknames = spaceMemberRepository.findNicknamesByIds(spaceMemberIds, BaseStatusType.ACTIVE);
         return creatorNicknames.stream()
                 .collect(Collectors.toMap(
                         PostCreatorNickname::getSpaceMemberId,

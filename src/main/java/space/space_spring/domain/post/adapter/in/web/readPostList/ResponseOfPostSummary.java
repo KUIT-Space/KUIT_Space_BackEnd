@@ -2,6 +2,7 @@ package space.space_spring.domain.post.adapter.in.web.readPostList;
 
 import lombok.Getter;
 import space.space_spring.domain.post.application.port.in.readPostList.PostSummary;
+import space.space_spring.global.util.post.ConvertCreatedDate;
 
 @Getter
 public class ResponseOfPostSummary {
@@ -16,21 +17,20 @@ public class ResponseOfPostSummary {
 
     private int commentCount;
 
-//    BaseDomainEntity 추가되면 할 것
-//    private String createdAt;
+    private String createdAt;
 
-//    private String createdBy;
+//    private String creatorNickname;
 
     private String postImageUrl;
 
-    private ResponseOfPostSummary(Long postId, String title, String content, int likeCount, int commentCount, String postImageUrl){
+    private ResponseOfPostSummary(Long postId, String title, String content, int likeCount, int commentCount, String createdAt, String postImageUrl){
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
-//        this.createdAt = createdAt;
-//        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+//        this.creatorNickname = creatorNickname;
         this.postImageUrl = postImageUrl;
     }
 
@@ -41,6 +41,7 @@ public class ResponseOfPostSummary {
                 summaryOfPost.getContent().getValue(),
                 summaryOfPost.getLikeCount(),
                 summaryOfPost.getCommentCount(),
+                ConvertCreatedDate.setCreatedDate(summaryOfPost.getCreatedAt()),
                 summaryOfPost.getPostImageUrl()
         );
     }

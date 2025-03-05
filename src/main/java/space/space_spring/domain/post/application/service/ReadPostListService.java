@@ -58,6 +58,7 @@ public class ReadPostListService implements ReadPostListUseCase {
                         post.getContent(),
                         likeCounts.getOrDefault(post.getId(), 0L).intValue(),
                         commentCounts.getOrDefault(post.getId(), 0L).intValue(),
+                        post.getBaseInfo().getCreatedAt(),
 //                        post.getSpaceMemberId(),
                         thumbnailImages.getOrDefault(post.getId(), null)
                 )).toList();

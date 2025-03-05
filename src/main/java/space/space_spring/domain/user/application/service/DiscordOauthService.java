@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.authorization.jwt.model.JwtLoginProvider;
-import space.space_spring.domain.authorization.jwt.model.TokenType;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.user.adapter.in.web.TokenPair;
@@ -20,7 +19,7 @@ import space.space_spring.domain.user.domain.User;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class DiscordOauthService implements OauthUseCase {
 
     private final DiscordOauthPort discordOauthPort;

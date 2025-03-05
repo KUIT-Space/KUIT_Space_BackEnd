@@ -21,7 +21,6 @@ import space.space_spring.global.exception.jwt.unauthorized.JwtUnauthorizedToken
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TokenService implements TokenUseCase {
 
     private final JwtLoginProvider jwtLoginProvider;

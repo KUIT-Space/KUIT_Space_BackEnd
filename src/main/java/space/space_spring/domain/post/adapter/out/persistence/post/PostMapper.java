@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
+import space.space_spring.global.common.entity.BaseInfo;
 
 @Component
 @RequiredArgsConstructor
@@ -18,13 +19,23 @@ public class PostMapper {
     }
 
     public Post toDomainEntity(PostJpaEntity jpaEntity) {
+        PostBaseJpaEntity postBase = jpaEntity.getPostBase();
+
+        // BaseInfo를 BaseJpaEntity에서 가져와서 매핑
+        BaseInfo baseInfo = BaseInfo.of(
+                postBase.getCreatedAt(),
+                postBase.getLastModifiedAt(),
+                postBase.getStatus()
+        );
+
         return Post.of(
-                jpaEntity.getPostBase().getId(),
-                jpaEntity.getPostBase().getDiscordId(),
-                jpaEntity.getPostBase().getBoard().getId(),
-                jpaEntity.getPostBase().getSpaceMember().getId(),
+                postBase.getId(),
+                postBase.getDiscordId(),
+                postBase.getBoard().getId(),
+                postBase.getSpaceMember().getId(),
                 jpaEntity.getTitle(),
-                Content.of(jpaEntity.getPostBase().getContent())
+                Content.of(postBase.getContent()),
+                baseInfo
         );
     }
 }

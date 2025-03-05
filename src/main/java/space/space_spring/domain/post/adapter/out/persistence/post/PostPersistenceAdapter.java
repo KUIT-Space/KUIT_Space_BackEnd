@@ -40,7 +40,7 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
         // 3. PostBaseJpaEntity 생성 및 저장
-        PostBaseJpaEntity postBaseJpaEntity = postBaseMapper.toJpaEntity(post.getDiscordId(), spaceMemberJpaEntity, boardJpaEntity, post.getContent());
+        PostBaseJpaEntity postBaseJpaEntity = postBaseMapper.toJpaEntity(spaceMemberJpaEntity, boardJpaEntity, post);
         PostBaseJpaEntity savedPostBase = postBaseRepository.save(postBaseJpaEntity);
 
         // 4. PostJpaEntity 생성 및 저장

@@ -4,18 +4,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.domain.Content;
+import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
+import space.space_spring.global.common.entity.BaseInfo;
 
 @Component
 @RequiredArgsConstructor
 public class PostBaseMapper {
 
-    public PostBaseJpaEntity toJpaEntity(Long discordId, SpaceMemberJpaEntity spaceMember, BoardJpaEntity board, Content content) {
+    public PostBaseJpaEntity toJpaEntity(SpaceMemberJpaEntity spaceMember, BoardJpaEntity board, Post domain) {
         return PostBaseJpaEntity.create(
-                discordId,
+                domain.getDiscordId(),
                 board,
                 spaceMember,
-                content.getValue()
+                domain.getContent().getValue(),
+                domain.getBaseInfo().getCreatedAt(),
+                domain.getBaseInfo().getLastModifiedAt(),
+                domain.getBaseInfo().getStatus()
         );
     }
 }

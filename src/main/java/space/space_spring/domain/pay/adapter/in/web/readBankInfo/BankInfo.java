@@ -1,7 +1,9 @@
 package space.space_spring.domain.pay.adapter.in.web.readBankInfo;
 
+import lombok.Getter;
 import space.space_spring.domain.pay.domain.Bank;
 
+@Getter
 public class BankInfo {
 
     private String bankName;

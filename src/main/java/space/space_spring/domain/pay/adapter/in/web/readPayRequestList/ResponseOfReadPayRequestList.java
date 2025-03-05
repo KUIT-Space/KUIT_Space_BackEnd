@@ -1,11 +1,13 @@
 package space.space_spring.domain.pay.adapter.in.web.readPayRequestList;
 
+import lombok.Getter;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.InfoOfPayRequest;
 import space.space_spring.domain.pay.application.port.in.readPayRequestList.ResultOfReadPayRequestList;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class ResponseOfReadPayRequestList {
 
     private List<ResponseOfPayRequestInfo> completePayRequestList;

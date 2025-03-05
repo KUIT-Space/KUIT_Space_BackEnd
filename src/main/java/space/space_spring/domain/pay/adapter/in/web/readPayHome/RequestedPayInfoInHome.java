@@ -6,7 +6,7 @@ import space.space_spring.domain.pay.application.port.in.readPayHome.InfoOfReque
 @Getter
 public class RequestedPayInfoInHome {
 
-    private Long payRequestedTargetId;
+    private Long payRequestTargetId;
 
     private String payCreatorName;
 
@@ -14,8 +14,8 @@ public class RequestedPayInfoInHome {
 
     private int requestedAmount;
 
-    private RequestedPayInfoInHome(Long payRequestedTargetId, String payCreatorName, String payCreatorProfileImgUrl, int requestedAmount) {
-        this.payRequestedTargetId = payRequestedTargetId;
+    private RequestedPayInfoInHome(Long payRequestTargetId, String payCreatorName, String payCreatorProfileImgUrl, int requestedAmount) {
+        this.payRequestTargetId = payRequestTargetId;
         this.payCreatorName = payCreatorName;
         this.payCreatorProfileImgUrl = payCreatorProfileImgUrl;
         this.requestedAmount = requestedAmount;

@@ -1,10 +1,12 @@
 package space.space_spring.domain.pay.adapter.in.web.readBankInfo;
 
+import lombok.Getter;
 import space.space_spring.domain.pay.domain.Bank;
 
 import java.util.List;
 import java.util.Set;
 
+@Getter
 public class ResponseOfBankInfo {
 
     private List<BankInfo> bankInfos;

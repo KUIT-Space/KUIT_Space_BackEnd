@@ -1,8 +1,10 @@
 package space.space_spring.domain.pay.adapter.in.web.readPayDetail;
 
 import lombok.Builder;
+import lombok.Getter;
 import space.space_spring.domain.pay.application.port.in.readPayDetail.InfoOfTargetDetail;
 
+@Getter
 public class ResponseOfTargetDetail {
 
     private Long targetMemberId;

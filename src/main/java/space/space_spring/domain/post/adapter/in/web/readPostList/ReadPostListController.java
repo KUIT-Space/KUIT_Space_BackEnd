@@ -2,7 +2,7 @@ package space.space_spring.domain.post.adapter.in.web.readPostList;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.post.application.port.in.readPostList.ListOfPostSummary;
 import space.space_spring.domain.post.application.port.in.readPostList.ReadPostListUseCase;
@@ -16,7 +16,7 @@ public class ReadPostListController {
     private final ReadPostListUseCase readPostListUseCase;
 
     @GetMapping("/space/{spaceId}/board/{boardId}/post")
-    public BaseResponse<ResponseOfReadPostList> readPostList(@RequestParam Long boardId) {
+    public BaseResponse<ResponseOfReadPostList> readPostList(@PathVariable Long boardId) {
         ListOfPostSummary postSummaries = readPostListUseCase.readPostList(boardId);
         return new BaseResponse<>(ResponseOfReadPostList.of(postSummaries));
     }

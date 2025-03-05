@@ -12,6 +12,7 @@ public interface SpringDataLikeRepository extends JpaRepository<LikeJpaEntity, L
             "FROM LikeJpaEntity l " +
             "WHERE l.postBase.id IN :postIds " +
             "AND l.isLiked = true " +
+            "AND l.status = space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE " +
             "GROUP BY l.postBase.id")
     List<PostLikeCount> countLikesByPostIds(@Param("postIds") List<Long> postIds);
 }

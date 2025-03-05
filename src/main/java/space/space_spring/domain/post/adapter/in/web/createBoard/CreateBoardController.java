@@ -21,7 +21,7 @@ public class CreateBoardController {
 
     private final CreateBoardUseCase createBoardUseCase;
 
-    @PostMapping("/board/create")
+    @PostMapping("/space/{spaceId}/board/create")
     public BaseResponse<Long> createBoard(@Validated @RequestBody RequestOfCreateBoard request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_BOARD_CREATE, getErrorMessage(bindingResult));

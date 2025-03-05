@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.space.adapter.out.persistence.SpringDataSpace;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
-import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
 import space.space_spring.domain.spaceMember.application.port.out.*;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
@@ -16,6 +15,8 @@ import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_NOT_FOUND;
@@ -89,6 +90,18 @@ public class SpaceMemberPersistenceAdapter
 
         return NicknameAndProfileImage.of(spaceMemberJpaEntity.getNickname(), spaceMemberJpaEntity.getProfileImageUrl());
     }
+
+    @Override
+    public Map<Long, String> loadNicknamesByIds(List<Long> spaceMemberIds) {
+        List<PostCreatorNickname> creatorNicknames = spaceMemberRepository.findNicknamesByIds(spaceMemberIds);
+        return creatorNicknames.stream()
+                .collect(Collectors.toMap(
+                        PostCreatorNickname::getSpaceMemberId,
+                        PostCreatorNickname::getNickname
+                ));
+    }
+
+
     @Override
     public List<SpaceMember> createSpaceMembers(List<SpaceMember> spaceMembers){
         if(spaceMembers.isEmpty()){

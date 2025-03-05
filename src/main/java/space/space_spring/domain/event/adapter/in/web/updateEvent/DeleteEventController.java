@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.event.application.port.in.DeleteEventUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.global.argumentResolver.jwtLogin.JwtSpaceId;
 import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.global.common.response.SuccessResponse;
 
@@ -27,7 +26,7 @@ public class DeleteEventController {
         
         """)
     @DeleteMapping("/event/{eventId}")
-    public BaseResponse<SuccessResponse> deleteEvent(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId, @PathVariable Long eventId) {
+    public BaseResponse<SuccessResponse> deleteEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId) {
         return new BaseResponse<>(new SuccessResponse(deleteEventUseCase.deleteEvent(spaceMemberId, eventId)));
     }
 }

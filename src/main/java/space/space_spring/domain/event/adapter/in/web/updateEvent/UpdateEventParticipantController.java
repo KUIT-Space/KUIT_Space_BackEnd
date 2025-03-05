@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.event.application.port.in.ModifyEventUseCase;
 import space.space_spring.domain.event.application.port.in.UpdateEventParticipantCommand;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.global.argumentResolver.jwtLogin.JwtSpaceId;
 import space.space_spring.global.common.response.BaseResponse;
 import space.space_spring.global.common.response.SuccessResponse;
 import space.space_spring.global.exception.CustomException;
@@ -34,7 +33,7 @@ public class UpdateEventParticipantController {
         
         """)
     @PostMapping("/event/{eventId}/participant/update")
-    public BaseResponse<SuccessResponse> addEventParticipant(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> addEventParticipant(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_EVENT_CREATE);
         }
@@ -52,7 +51,7 @@ public class UpdateEventParticipantController {
         
         """)
     @PostMapping("/event/{eventId}/participant/delete")
-    public BaseResponse<SuccessResponse> deleteEventParticipant(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> deleteEventParticipant(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_EVENT_CREATE);
         }

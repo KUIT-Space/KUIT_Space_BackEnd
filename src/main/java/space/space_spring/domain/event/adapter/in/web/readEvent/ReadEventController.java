@@ -13,7 +13,6 @@ import space.space_spring.domain.event.domain.Event;
 import space.space_spring.domain.event.domain.EventParticipantInfos;
 import space.space_spring.domain.event.domain.Events;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
-import space.space_spring.global.argumentResolver.jwtLogin.JwtSpaceId;
 import space.space_spring.global.common.response.BaseResponse;
 
 @RestController
@@ -31,7 +30,7 @@ public class ReadEventController {
         
         """)
     @GetMapping("/events")
-    public BaseResponse<ReadEventsResponse> readEvents(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId) {
+    public BaseResponse<ReadEventsResponse> readEvents(@JwtLoginAuth Long spaceMemberId) {
         Events events = readEventUseCase.readEvents(spaceMemberId);
         return new BaseResponse<>(ReadEventsResponse.create(events));
     }
@@ -42,7 +41,7 @@ public class ReadEventController {
         
         """)
     @GetMapping("/event/{eventId}")
-    public BaseResponse<ReadEventInfoResponse> readEvent(@JwtLoginAuth Long spaceMemberId, @JwtSpaceId Long spaceId, @PathVariable Long eventId) {
+    public BaseResponse<ReadEventInfoResponse> readEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId) {
         Event event = readEventUseCase.readEvent(spaceMemberId, eventId);
         EventParticipantInfos eventParticipantInfos = readEventParticipantUseCase.readEventParticipants(spaceMemberId, eventId);
         return new BaseResponse<>(ReadEventInfoResponse.create(event, eventParticipantInfos));

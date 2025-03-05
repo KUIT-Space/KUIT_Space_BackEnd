@@ -3,11 +3,10 @@ package space.space_spring.domain.post.adapter.out.persistence.attachment;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
-public interface SpringDataAttachmentRepository extends JpaRepository<AttachmentJpaEntity, Long>, QuerydslPredicateExecutor<AttachmentJpaEntity> {
+public interface SpringDataAttachmentRepository extends JpaRepository<AttachmentJpaEntity, Long> {
 
     @Query("SELECT new space.space_spring.domain.post.adapter.out.persistence.attachment.AttachmentSummary(a.postBase.id, a.attachmentUrl) " +
             "FROM AttachmentJpaEntity a " +

@@ -3,11 +3,10 @@ package space.space_spring.domain.post.adapter.out.persistence.comment;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
-public interface SpringDataPostCommentRepository extends JpaRepository<PostCommentJpaEntity, Long>, QuerydslPredicateExecutor<PostCommentJpaEntity> {
+public interface SpringDataPostCommentRepository extends JpaRepository<PostCommentJpaEntity, Long> {
 
     @Query("SELECT new space.space_spring.domain.post.adapter.out.persistence.comment.PostCommentCount(pc.postBase.id, COUNT(pc)) " +
             "FROM PostCommentJpaEntity pc " +

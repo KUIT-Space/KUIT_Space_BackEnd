@@ -3,7 +3,6 @@ package space.space_spring.domain.pay.domain;
 import lombok.Getter;
 
 import space.space_spring.global.common.entity.BaseInfo;
-import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.util.NaturalNumber;
 
 
@@ -60,13 +59,5 @@ public class PayRequest {
 
     public boolean isPayCreator(Long spaceMemberId) {
         return payCreatorId.equals(spaceMemberId);
-    }
-
-    public void changeToActive() {
-        this.baseInfo.changeStatus(BaseStatusType.ACTIVE);
-    }
-
-    public void changeToInactive() {
-        this.baseInfo.changeStatus(BaseStatusType.INACTIVE);
     }
 }

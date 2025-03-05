@@ -1,11 +1,13 @@
 package space.space_spring.domain.pay.adapter.in.web.readPayDetail;
 
 import lombok.Builder;
+import lombok.Getter;
 import space.space_spring.domain.pay.application.port.in.readPayDetail.ResultOfReadPayDetail;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Getter
 public class ResponseOfReadPayDetail {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";

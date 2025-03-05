@@ -21,6 +21,10 @@ public class EventParticipantInfos {
         return new EventParticipantInfos(participantInfos);
     }
 
+    public static EventParticipantInfos createEmpty() {
+        return new EventParticipantInfos(List.of());
+    }
+
     public List<EventParticipantInfo> getParticipantInfos() {
         return List.copyOf(this.participantInfos);
     }

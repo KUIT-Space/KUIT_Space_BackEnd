@@ -5,6 +5,7 @@ import static space.space_spring.domain.event.adapter.out.persistence.QEventPart
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import space.space_spring.domain.event.adapter.out.persistence.EventJpaEntity;
+import space.space_spring.domain.event.adapter.out.persistence.EventParticipantJpaEntity;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 
@@ -23,16 +24,6 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
     }
 
     @Override
-    public void deleteByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember) {
-        jpaQueryFactory
-                .update(eventParticipantJpaEntity)
-                .set(eventParticipantJpaEntity.status, BaseStatusType.INACTIVE)
-                .where(eventParticipantJpaEntity.event.eq(event)
-                        .and(eventParticipantJpaEntity.spaceMember.eq(spaceMember)))
-                .execute();
-    }
-
-    @Override
     public boolean existsByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember) {
         Integer count = jpaQueryFactory
                 .selectOne()
@@ -43,5 +34,14 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
                 .fetchFirst();
 
         return count != null;
+    }
+
+    @Override
+    public void softDelete(EventParticipantJpaEntity eventParticipant) {
+        jpaQueryFactory
+                .update(eventParticipantJpaEntity)
+                .set(eventParticipantJpaEntity.status, BaseStatusType.INACTIVE)
+                .where(eventParticipantJpaEntity.id.eq(eventParticipant.getId()))
+                .execute();
     }
 }

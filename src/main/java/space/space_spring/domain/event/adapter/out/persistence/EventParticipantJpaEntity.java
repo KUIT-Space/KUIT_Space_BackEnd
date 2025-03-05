@@ -1,5 +1,7 @@
 package space.space_spring.domain.event.adapter.out.persistence;
 
+import static space.space_spring.global.common.enumStatus.BaseStatusType.INACTIVE;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,4 +51,7 @@ public class EventParticipantJpaEntity extends BaseJpaEntity {
                 .build();
     }
 
+    public boolean isNotActive() {
+        return this.getStatus().equals(INACTIVE);
+    }
 }

@@ -132,6 +132,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다."),
     ALREADY_IN_EVENT(13002, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여한 행사입니다."),
     ALREADY_NOT_IN_EVENT(13003, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여를 취소한 행사입니다."),
+    PARTICIPANT_NOT_FOUND(13004, HttpStatus.NOT_FOUND, "존재하지 않는 행사 참여자입니다."),
     ;
 
     private final int code;

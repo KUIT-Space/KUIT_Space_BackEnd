@@ -60,7 +60,7 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
         EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
 
-        if (eventJpaEntity.isActive()) throw new CustomException(EVENT_NOT_FOUND);
+        if (eventJpaEntity.isNotActive()) throw new CustomException(EVENT_NOT_FOUND);
 
         eventParticipantRepository.deleteAllByEvent(eventJpaEntity);
     }
@@ -70,11 +70,15 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
         EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
 
-        if (eventJpaEntity.isActive()) throw new CustomException(EVENT_NOT_FOUND);
+        if (eventJpaEntity.isNotActive()) throw new CustomException(EVENT_NOT_FOUND);
 
         SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(spaceMemberId)
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+        EventParticipantJpaEntity eventParticipantJpaEntity = eventParticipantRepository.findByEventAndSpaceMember(eventJpaEntity, spaceMemberJpaEntity)
+                .orElseThrow(() -> new CustomException(PARTICIPANT_NOT_FOUND));
 
-        eventParticipantRepository.deleteByEventAndSpaceMember(eventJpaEntity, spaceMemberJpaEntity);
+        if (eventParticipantJpaEntity.isNotActive()) throw new CustomException(PARTICIPANT_NOT_FOUND);
+
+        eventParticipantRepository.softDelete(eventParticipantJpaEntity);
     }
 }

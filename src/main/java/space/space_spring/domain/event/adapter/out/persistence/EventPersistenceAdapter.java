@@ -53,7 +53,7 @@ public class EventPersistenceAdapter implements CreateEventPort, LoadEventPort, 
     @Override
     public Optional<Event> loadEvent(Long eventId) {
         Optional<EventJpaEntity> eventJpaEntity = eventRepository.findByIdAndStatus(eventId, ACTIVE);
-        return Optional.ofNullable(eventMapper.toDomainEntity(eventJpaEntity.get()));
+        return eventJpaEntity.map(eventMapper::toDomainEntity);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class EventPersistenceAdapter implements CreateEventPort, LoadEventPort, 
         EventJpaEntity eventJpaEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
 
-        if (eventJpaEntity.isActive()) throw new CustomException(EVENT_NOT_FOUND);
+        if (eventJpaEntity.isNotActive()) throw new CustomException(EVENT_NOT_FOUND);
 
         eventRepository.softDelete(eventJpaEntity);
     }

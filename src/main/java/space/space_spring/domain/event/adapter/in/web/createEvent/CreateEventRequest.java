@@ -18,13 +18,13 @@ public class CreateEventRequest extends SelfValidating<CreateEventRequest> {
     @NotNull(message = "행사 이미지는 null일 수 없습니다.")
     private String image;
 
-    @NotBlank(message = "행사 날짜는 공백일 수 없습니다.")
+    @NotNull(message = "행사 날짜는 공백일 수 없습니다.")
     private LocalDateTime date;
 
-    @NotBlank(message = "행사 시작 시간은 공백일 수 없습니다.")
+    @NotNull(message = "행사 시작 시간은 공백일 수 없습니다.")
     private LocalDateTime startTime;
 
-    @NotBlank(message = "행사 종료 시간은 공백일 수 없습니다.")
+    @NotNull(message = "행사 종료 시간은 공백일 수 없습니다.")
     private LocalDateTime endTime;
 
     public CreateEventRequest(String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {

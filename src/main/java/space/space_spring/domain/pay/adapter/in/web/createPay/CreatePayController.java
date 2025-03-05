@@ -21,7 +21,7 @@ public class CreatePayController {
     private final CreatePayUseCase createPayUseCase;
 
     @PostMapping("/space/{spaceId}/pay/create")
-    public BaseResponse<Long> createPay(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
+    public BaseResponse<ResponseOfCreatePay> createPay(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
         }
@@ -35,6 +35,6 @@ public class CreatePayController {
                 .valueOfPayType(request.getValueOfPayType())
                 .build();
 
-        return new BaseResponse<>(createPayUseCase.createPay(createPayCommand));
+        return new BaseResponse<>(ResponseOfCreatePay.of(createPayUseCase.createPay(createPayCommand)));
     }
 }

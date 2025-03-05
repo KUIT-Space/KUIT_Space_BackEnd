@@ -7,7 +7,7 @@ public class Attachment{
 
     private Long id;
 
-    private Long targetId;
+    private Long targetId;  // post, question의 postBaseId
 
     private AttachmentType attachmentType;
 

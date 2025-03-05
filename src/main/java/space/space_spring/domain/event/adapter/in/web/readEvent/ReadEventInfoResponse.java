@@ -2,10 +2,12 @@ package space.space_spring.domain.event.adapter.in.web.readEvent;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
 import space.space_spring.domain.event.domain.Event;
 import space.space_spring.domain.event.domain.EventParticipantInfo;
 import space.space_spring.domain.event.domain.EventParticipantInfos;
 
+@Getter
 public class ReadEventInfoResponse extends EventInfoResponse {
 
     private List<EventParticipantInfo> participants;

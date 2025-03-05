@@ -2,8 +2,10 @@ package space.space_spring.domain.event.adapter.in.web.readEvent;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import space.space_spring.domain.event.domain.Event;
 
+@Getter
 @AllArgsConstructor
 public class EventInfoResponse {
 

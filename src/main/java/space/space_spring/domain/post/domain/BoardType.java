@@ -8,7 +8,8 @@ import java.util.Arrays;
 public enum BoardType {
     POST("게시판","익명 기능이 없습니다."),
     QUESTION("질문-게시판","익명으로 질문을 작성할 수 있습니다."),
-    COMMENT("","");
+    COMMENT("",""),
+    PAY("정산-게시판","정산 생성 시 알림을 보낼 게시판입니다. 딱 한 개만 설정 가능합니다.");
 
     private String krName;
     private String detail;

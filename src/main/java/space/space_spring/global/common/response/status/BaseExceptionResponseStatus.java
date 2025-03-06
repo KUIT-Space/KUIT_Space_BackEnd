@@ -110,6 +110,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     TARGET_ID_MISSING(11007, HttpStatus.BAD_REQUEST, "대댓글 작성 시 targetId가 필요합니다"),
     INVALID_TARGET_ID(11008, HttpStatus.BAD_REQUEST, "댓글 작성 시 targetId는 허용되지 않습니다"),
     COMMENT_IS_NOT_IN_POST(11009, HttpStatus.NOT_FOUND, "해당 댓글이 이 게시글에 속하지 않습니다."),
+    PAY_BOARD_NOT_FOUND(11010,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
 
     /**
      * 12000 : Pay 오류

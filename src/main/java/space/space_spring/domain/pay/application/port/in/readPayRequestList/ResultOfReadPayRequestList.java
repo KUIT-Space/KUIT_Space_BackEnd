@@ -19,5 +19,4 @@ public class ResultOfReadPayRequestList {
     public static ResultOfReadPayRequestList of(List<InfoOfPayRequest> completePayRequestList, List<InfoOfPayRequest> inCompletePayRequestList) {
         return new ResultOfReadPayRequestList(completePayRequestList, inCompletePayRequestList);
     }
-
 }

@@ -9,6 +9,7 @@ import space.space_spring.domain.pay.application.port.in.loadCurrentPayRequestSt
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
+import space.space_spring.global.common.entity.BaseInfo;
 import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.NaturalNumber;
 
@@ -48,10 +49,10 @@ class LoadCurrentPayRequestStateServiceTest {
     void loadCurrentPayRequestState1() throws Exception {
         //given
         Long payRequestId = 1L;
-        PayRequestTarget target1 = PayRequestTarget.create(1L, seongjunId, payRequestId, Money.of(2000));
-        PayRequestTarget target2 = PayRequestTarget.create(2L, sangjunId, payRequestId, Money.of(3000));
-        PayRequestTarget target3 = PayRequestTarget.of(3L, seohyunId, payRequestId, Money.of(4000), true);
-        PayRequestTarget target4 = PayRequestTarget.of(4L, kyungminId, payRequestId, Money.of(8000), true);
+        PayRequestTarget target1 = PayRequestTarget.create(1L, seongjunId, payRequestId, Money.of(2000), BaseInfo.ofEmpty());
+        PayRequestTarget target2 = PayRequestTarget.create(2L, sangjunId, payRequestId, Money.of(3000), BaseInfo.ofEmpty());
+        PayRequestTarget target3 = PayRequestTarget.of(3L, seohyunId, payRequestId, Money.of(4000), true, BaseInfo.ofEmpty());
+        PayRequestTarget target4 = PayRequestTarget.of(4L, kyungminId, payRequestId, Money.of(8000), true, BaseInfo.ofEmpty());
         List<PayRequestTarget> targetList = List.of(target1, target2, target3, target4);
 
         Mockito.when(loadPayRequestTargetPort.loadByPayRequestId(payRequestId)).thenReturn(targetList);

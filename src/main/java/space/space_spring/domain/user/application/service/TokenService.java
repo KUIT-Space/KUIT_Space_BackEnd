@@ -21,7 +21,6 @@ import space.space_spring.global.exception.jwt.unauthorized.JwtUnauthorizedToken
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TokenService implements TokenUseCase {
 
     private final JwtLoginProvider jwtLoginProvider;
@@ -64,8 +63,8 @@ public class TokenService implements TokenUseCase {
     }
 
     private TokenPair updateTokenPair(SpaceMember spaceMember) {
-        String newAccessToken = jwtLoginProvider.generateToken(spaceMember.getId(), TokenType.ACCESS);
-        String newRefreshToken = jwtLoginProvider.generateToken(spaceMember.getId(), TokenType.REFRESH);
+        String newAccessToken = jwtLoginProvider.generateAccessToken(spaceMember.getSpaceId(), spaceMember.getId());
+        String newRefreshToken = jwtLoginProvider.generateRefreshToken(spaceMember.getUserId());
 
         createRefreshTokenPort.create(spaceMember.getUserId(), newRefreshToken);
 

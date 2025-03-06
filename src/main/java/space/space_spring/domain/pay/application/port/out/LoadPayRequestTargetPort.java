@@ -11,4 +11,6 @@ public interface LoadPayRequestTargetPort {
     List<PayRequestTarget> loadByTargetMemberId(Long targetMemberId);
 
     List<PayRequestTarget> loadByPayRequestId(Long payRequestId);
+
+    PayRequestTarget loadById(Long payRequestTargetId);
 }

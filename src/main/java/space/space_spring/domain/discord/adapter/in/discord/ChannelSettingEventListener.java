@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static space.space_spring.domain.post.domain.BoardType.PAY;
 import static space.space_spring.domain.post.domain.BoardType.POST;
 
 @Component
@@ -177,6 +178,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
     private void createPayBoard(ChannelCommand command) {
         System.out.println("createPayBoard 호출: 채널 ID - " + command.getChannelName());
         // 구현 로직 추가
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(PAY));
     }
 
     private void createQuestionBoard(ChannelCommand command) {

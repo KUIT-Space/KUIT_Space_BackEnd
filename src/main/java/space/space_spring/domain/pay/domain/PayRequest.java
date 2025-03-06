@@ -2,6 +2,7 @@ package space.space_spring.domain.pay.domain;
 
 import lombok.Getter;
 
+import space.space_spring.global.common.entity.BaseInfo;
 import space.space_spring.global.util.NaturalNumber;
 
 
@@ -22,7 +23,10 @@ public class PayRequest {
 
     private PayType payType;
 
-    private PayRequest(Long id, Long payCreatorId, Long discordMessageId, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
+    private BaseInfo baseInfo;
+
+    private PayRequest(Long id, Long payCreatorId, Long discordMessageId, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType,
+                       BaseInfo baseInfo) {
         this.id = id;
         this.payCreatorId = payCreatorId;
         this.discordMessageId = discordMessageId;
@@ -30,14 +34,19 @@ public class PayRequest {
         this.totalTargetNum = totalTargetNum;
         this.bank = bank;
         this.payType = payType;
+        this.baseInfo = baseInfo;
     }
 
-    public static PayRequest create(Long id, Long payCreatorId, Long discordMessageId, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
-        return new PayRequest(id, payCreatorId, discordMessageId, totalAmount, totalTargetNum, bank, payType);
+    public static PayRequest create(Long id, Long payCreatorId, Long discordMessageId, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType,
+                                    BaseInfo baseInfo) {
+        return new PayRequest(id, payCreatorId, discordMessageId, totalAmount, totalTargetNum, bank, payType, baseInfo);
     }
 
+    /**
+     * 처음 Domain Entity 생성 시 사용하는 정적 펙토리 메서드
+     */
     public static PayRequest withoutId(Long payCreatorId, Long discordMessageId, Money totalAmount, NaturalNumber totalTargetNum, Bank bank, PayType payType) {
-        return new PayRequest(null, payCreatorId, discordMessageId, totalAmount, totalTargetNum, bank, payType);
+        return new PayRequest(null, payCreatorId, discordMessageId, totalAmount, totalTargetNum, bank, payType, BaseInfo.ofEmpty());
     }
 
     public boolean isEqualToTotalAmount(Money money) {
@@ -48,4 +57,7 @@ public class PayRequest {
         return totalTargetNum.equals(number);
     }
 
+    public boolean isPayCreator(Long spaceMemberId) {
+        return payCreatorId.equals(spaceMemberId);
+    }
 }

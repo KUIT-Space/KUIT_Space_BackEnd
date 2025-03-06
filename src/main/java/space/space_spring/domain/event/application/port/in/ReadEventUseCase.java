@@ -7,5 +7,5 @@ public interface ReadEventUseCase {
 
     Events readEvents(Long spaceMemberId);
 
-    Event readEvent(Long eventId);
+    Event readEvent(Long spaceMemberId, Long eventId);
 }

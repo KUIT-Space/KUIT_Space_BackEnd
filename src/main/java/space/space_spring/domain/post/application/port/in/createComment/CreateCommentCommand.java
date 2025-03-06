@@ -2,10 +2,11 @@ package space.space_spring.domain.post.application.port.in.createComment;
 
 import lombok.Builder;
 import lombok.Getter;
+import space.space_spring.domain.post.domain.Comment;
 import space.space_spring.domain.post.domain.Content;
 
 @Getter
-public class CreateCommentFromDiscordCommand {
+public class CreateCommentCommand {
 
     private Long spaceId;
 
@@ -19,16 +20,17 @@ public class CreateCommentFromDiscordCommand {
 
     private boolean isAnonymous;        // 익명 댓글 여부
 
-    private Long discordId;     // 댓글의 디스코드 id 값
-
     @Builder
-    public CreateCommentFromDiscordCommand(Long spaceId, Long boardId, Long postId, Long commentCreatorId, String content, boolean isAnonymous, Long discordId) {
+    public CreateCommentCommand(Long spaceId, Long boardId, Long postId, Long commentCreatorId, String content, boolean isAnonymous) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.postId = postId;
         this.commentCreatorId = commentCreatorId;
         this.content = Content.of(content);
         this.isAnonymous = isAnonymous;
-        this.discordId = discordId;
+    }
+
+    public Comment toDomainEntity(Long discordId) {
+        return Comment.withoutId(boardId, discordId, postId, commentCreatorId, content, isAnonymous);
     }
 }

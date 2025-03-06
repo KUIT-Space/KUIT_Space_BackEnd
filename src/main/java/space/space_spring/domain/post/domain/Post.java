@@ -37,4 +37,8 @@ public class Post {
     public static Post withoutId(Long discordId, Long boardId, Long spaceMemberId, String title, Content content) {
         return new Post(null, discordId, boardId, spaceMemberId, title, content, BaseInfo.ofEmpty());
     }
+
+    public boolean isInBoard(Long boardId) {
+        return this.boardId.equals(boardId);
+    }
 }

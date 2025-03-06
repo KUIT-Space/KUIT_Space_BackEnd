@@ -34,4 +34,8 @@ public class Board {
     public static Board withoutId(Long spaceId, Long discordId, String boardName, BoardType boardType, String webhookUrl) {
         return new Board(null, spaceId, discordId, boardName, boardType, webhookUrl);
     }
+
+    public boolean isInSpace(Long spaceId) {
+        return this.spaceId.equals(spaceId);
+    }
 }

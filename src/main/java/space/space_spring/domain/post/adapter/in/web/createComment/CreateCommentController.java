@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.domain.post.application.port.in.createComment.CreateCommentFromWebCommand;
+import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.global.common.response.BaseResponse;
@@ -39,7 +39,7 @@ public class CreateCommentController {
             throw new CustomException(INVALID_COMMENT_CREATE, getErrorMessage(bindingResult));
         }
 
-        CreateCommentFromWebCommand command = CreateCommentFromWebCommand.builder()
+        CreateCommentCommand command = CreateCommentCommand.builder()
                 .spaceId(spaceId)
                 .boardId(boardId)
                 .postId(postId)

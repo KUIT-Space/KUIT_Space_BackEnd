@@ -49,10 +49,11 @@ public class ChannelSettingEventListener extends ListenerAdapter {
     private List<Button> getChannelSettingButtons(){
         List<Button> buttons = new ArrayList<>();
         for(BoardType boardType:BoardType.values()){
-            buttons.add(Button.primary("create-board:"+boardType.getName(), boardType.getKrName()));
+            buttons.add(Button.primary("create-board:"+boardType.getName(),
+                    boardType.getKrName()));
         }
 
-        buttons.add(Button.primary("create-board:payboard", "정산-안내게시판"));
+//        buttons.add(Button.primary("create-board:payboard", "정산-안내게시판"));
         buttons.add(Button.primary("delete-board:", "게시판-삭제"));
         return buttons;
 
@@ -143,6 +144,9 @@ public class ChannelSettingEventListener extends ListenerAdapter {
                 case QUESTION:
                     createQuestionBoard(command);
                     break;
+                case PAY:
+                    createPayBoard(command);
+                    break;
                 default:
                     event.reply("잘못된 요청입니다.").setEphemeral(true).queue();
                     return;
@@ -187,6 +191,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
         createBoardUseCase.createBoard(command.getCreateBoardCommand(BoardType.QUESTION));
     }
 
+    //ToDo Webhook adapter 로 책임 분리 예정
     private String getWebHookUrl(Guild guild,String channelId){
         TextChannel textChannel = guild.getChannelById(TextChannel.class,channelId);
         if(textChannel!=null){

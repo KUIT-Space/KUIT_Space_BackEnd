@@ -21,8 +21,12 @@ import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static space.space_spring.domain.post.domain.BoardType.POST;
+
 @Component
 @RequiredArgsConstructor
 public class ChannelSettingEventListener extends ListenerAdapter {
@@ -35,12 +39,22 @@ public class ChannelSettingEventListener extends ListenerAdapter {
         if (event.getName().equals("set-board")) {
             event.reply("설정하고 싶은 게시판 종류를 선택하세요.(포럼과 텍스트 채널만 가능)")
                     .addActionRow(
-                            Button.primary("create-board:board", "게시판"),
-                            Button.primary("create-board:payboard", "정산-안내게시판"),
-                            Button.primary("create-board:question-board", "질문-게시판"),
-                            Button.primary("delete-board:", "게시판-삭제")
+                        getChannelSettingButtons()
                     ).queue();
         }
+    }
+
+
+    private List<Button> getChannelSettingButtons(){
+        List<Button> buttons = new ArrayList<>();
+        for(BoardType boardType:BoardType.values()){
+            buttons.add(Button.primary("create-board:"+boardType.getName(), boardType.getKrName()));
+        }
+
+        buttons.add(Button.primary("create-board:payboard", "정산-안내게시판"));
+        buttons.add(Button.primary("delete-board:", "게시판-삭제"));
+        return buttons;
+
     }
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -48,7 +62,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
 
         // 첫 번째 메뉴 선택 (board, payboard, question-board)
         if (buttonId.startsWith("create-board:")) {
-            String boardType = buttonId.split(":")[1];
+            String boardTypeString = buttonId.split(":")[1];
             Guild guild = event.getGuild();
             if (guild == null) {
                 event.reply("길드에서만 사용 가능합니다.").setEphemeral(true).queue();
@@ -60,28 +74,16 @@ public class ChannelSettingEventListener extends ListenerAdapter {
             List<Button> channelButtons = channels.stream()
                     .filter(channel->channel.getType()== ChannelType.FORUM||channel.getType()==ChannelType.TEXT)
                     //ToDo 이미 등록한 게시판 제외
-                    .map(channel -> Button.secondary("check:create-channel:" + boardType + ":" + channel.getId()+":"+channel.getName(), channel.getName()))
+                    .map(channel -> Button.secondary("check:create-channel:" + boardTypeString + ":" + channel.getId()+":"+channel.getName(), channel.getName()))
                     .collect(Collectors.toList());
 
             // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔
             List<ActionRow> rows = partitionButtons(channelButtons);
-            if(boardType.equals("board")){
-                event.reply("게시판으로 만들고 싶은 채널을 선택하세요:")
-                        .addComponents(rows)
-                        .queue();
-            }
 
-            if(boardType.equals("question-board")){
-                event.reply("질문 게시판으로 만들고 싶은 채널을 선택하세요:")
-                        .addComponents(rows)
-                        .queue();
-            }
-            if(boardType.equals("payboard")){
-                event.reply("정산 안내 게시판으로 사용하고 싶은 채널을 선택하세요" +
-                                "\n(정산 게시판은 한개만 가능합니다. 기존에 정산 게시판이 존재할 경우, 선택한 게시판으로 교체됩니다)")
-                        .addComponents(rows)
-                        .queue();
-            }
+            BoardType boardType= BoardType.fromString(boardTypeString);
+            event.reply(boardType.getKrName()+"으로 사용할 채널을 선택하세요"+"\n"+boardType.getDetail())
+                    .addComponents(rows)
+                    .queue();
 
 
         }
@@ -126,14 +128,18 @@ public class ChannelSettingEventListener extends ListenerAdapter {
                     .spaceId(spaceId)
                     .build();
 
-            switch (menuType) {
-                case "board":
-                    createBoard(command);
-                    break;
-                case "payboard":
+            switch (menuType.toLowerCase()) {
+
+                case "pay-board":
                     createPayBoard(command);
                     break;
-                case "question-board":
+
+            }
+            switch (BoardType.fromString(menuType)){
+                case POST:
+                    createBoard(command);
+                    break;
+                case QUESTION:
                     createQuestionBoard(command);
                     break;
                 default:
@@ -143,6 +149,8 @@ public class ChannelSettingEventListener extends ListenerAdapter {
 
             event.reply("`" + menuType + "` 기능이 `" + channelId + "` 채널에서 실행되었습니다.").queue();
         }
+
+
         else if (buttonId.startsWith("delete-board")){
             // Todo 현재 등록된 게시판 전부 가져오기
 
@@ -163,7 +171,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
     private void createBoard(ChannelCommand command) {
         System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
         // Todo 중복 저장 검사
-        createBoardUseCase.createBoard(command.getCreateBoardCommand(BoardType.POST));
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));
     }
 
     private void createPayBoard(ChannelCommand command) {
@@ -173,7 +181,8 @@ public class ChannelSettingEventListener extends ListenerAdapter {
 
     private void createQuestionBoard(ChannelCommand command) {
         System.out.println("createQuestionBoard 호출: 채널 ID - " + command.getChannelName());
-        // 구현 로직 추가
+        // Todo 중복 저장 검사
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(BoardType.QUESTION));
     }
 
     private String getWebHookUrl(Guild guild,String channelId){

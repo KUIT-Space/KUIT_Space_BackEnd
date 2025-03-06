@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordUseCase;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadCommand;
-import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
+//import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessageCommand;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessagePort;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
@@ -24,12 +26,14 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
     private final LoadSpacePort loadSpacePort;
     private final LoadSpaceMemberInfoPort loadSpaceMemberinfoPort;
-    private final CreateDiscordThreadPort createDiscordThreadPort;
+    //private final CreateDiscordThreadPort createDiscordThreadPort;
+    private final CreateDiscordWebHookMessagePort createDiscordWebHookMessagePort;
     private final LoadBoardPort loadBoardPort;
     public Long CreateMessageInDiscord(CreatePostInDiscordCommand command){
         try{
-            return createDiscordThreadPort.create(MapToDiscordCommand(command))
-                .get();
+            return createDiscordWebHookMessagePort.send(mapToWebHookMessage(command)).get();
+//                    createDiscordThreadPort.create(MapToDiscordCommand(command))
+//                .get();
         }catch (InterruptedException e) {
             // 현재 스레드의 인터럽트 상태를 재설정합니다.
             Thread.currentThread().interrupt();
@@ -56,6 +60,21 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                 .contentMessage(command.getContent().getValue())
                 .build();
     }
+    private CreateDiscordWebHookMessageCommand mapToWebHookMessage(CreatePostInDiscordCommand command){
+        NicknameAndProfileImage userInfo = loadSpaceMemberinfoPort.loadNicknameAndProfileImageById(command.getPostCreatorId());
+        Long guildDiscordId = loadSpacePort.loadSpaceById(command.getSpaceId()).get().getDiscordId();
+        Board board=loadBoardPort.load(command.getBoardId()).orElseThrow(()->new CustomException(BOARD_NOT_EXIST));
+        return CreateDiscordWebHookMessageCommand.builder()
+                .name(userInfo.getNickname())
+                .avatarUrl(userInfo.getProfileImageUrl())
+                .webHookUrl(board.getWebhookUrl())
+                .title(command.getTitle())
+                .content(command.getTitle())
+                .guildDiscordId(guildDiscordId)
+                .channelDiscordId(board.getDiscordId())
+                .build();
+    }
+
 
 
 }

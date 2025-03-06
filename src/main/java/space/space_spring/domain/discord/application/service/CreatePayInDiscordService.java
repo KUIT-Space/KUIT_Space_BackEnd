@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
+import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessageCommand;
 import space.space_spring.domain.discord.domain.DiscordPayMessage;
 import space.space_spring.domain.pay.domain.Money;
 
@@ -27,7 +28,6 @@ public class CreatePayInDiscordService implements CreatePayInDiscordUseCase {
 
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final CreateDiscordThreadPort createDiscordThreadPort;
-
     @Override
     public Long createPayInDiscord(CreatePayInDiscordCommand command) {
         //String title =" 정산 ";

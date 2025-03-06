@@ -1,6 +1,5 @@
 package space.space_spring.domain.discord.adapter.out.discord;
 
-import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadCommand;

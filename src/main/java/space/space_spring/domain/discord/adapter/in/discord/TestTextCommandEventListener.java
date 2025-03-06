@@ -3,19 +3,18 @@ package space.space_spring.domain.discord.adapter.in.discord;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.attribute.IWebhookContainer;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import space.space_spring.domain.discord.application.port.out.CreateDiscordMessageCommand;
-import space.space_spring.domain.discord.application.port.out.CreateDiscordMessagePort;
-import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadCommand;
-import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
+import space.space_spring.domain.discord.application.port.out.*;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.global.exception.CustomException;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -23,9 +22,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestTextCommandEventListener extends ListenerAdapter {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
-    private final CreateDiscordMessagePort createDiscordMessagePort;
+    private final CreateDiscordWebHookMessagePort createDiscordWebHookMessagePort;
     private final CreateDiscordThreadPort createDiscordThreadPort;
     //private final CreateSpaceUseCase createSpaceUseCase;
+    private final CreateDiscordMessageOnThreadPort createDiscordMessageOnThreadPort;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event){
 
@@ -56,15 +56,15 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             return;
         }
         if(msg.getContentRaw().equals("!pingping")){
-            CreateDiscordMessageCommand command=CreateDiscordMessageCommand.builder()
+            CreateDiscordWebHookMessageCommand command= CreateDiscordWebHookMessageCommand.builder()
                             .channelDiscordId(event.getChannel().getIdLong())
                             .guildDiscordId(event.getGuild().getIdLong())
                             .webHookUrl("https://discordapp.com/api/webhooks/1327500273425584250/_U2jXVFxmSq2XiFemb-nOn44PDMZs3KiX8ZXd2cF6mjRMO2D6QuN5qkLyxN37A3qSAr2")
-                            .Content("spring server message test success")
+                            .content("spring server message test success")
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
                             .name(event.getMember().getEffectiveName())
                             .build();
-            createDiscordMessagePort.send(command).thenAccept(result->{
+            createDiscordWebHookMessagePort.send(command).thenAccept(result->{
                 try {
                     event.getMessage().reply("success (id = "+result+")").queue();
                 }catch (Exception e){
@@ -111,7 +111,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     .build();
             createDiscordThreadPort.create(command).thenAccept(result->{
                 try {
-                    event.getMessage().reply("success (id = "+result+")").queue();
+                    event.getMessage().reply("success (id = "+result+")"+"\nchannel ID : "+event.getChannel().getId()).queue();
                 }catch (Exception e){
                     event.getMessage().reply("error : "+e.toString()).queue();
                 }
@@ -121,6 +121,60 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             });
 
             return;
+
+        }
+
+        if(msg.getContentRaw().equals("!send")){
+            CreateDiscordWebHookMessageCommand command = CreateDiscordWebHookMessageCommand.builder()
+                    .title("message")
+                    .content("content")
+                    .avatarUrl(event.getMember().getEffectiveAvatarUrl())
+                    .webHookUrl(event.getChannel().asTextChannel().createWebhook("space").complete().getUrl())
+                    .guildDiscordId(event.getGuild().getIdLong())
+                    .channelDiscordId(event.getChannel().getIdLong())
+                    .name(event.getMember().getEffectiveName())
+                    .build();
+            createDiscordWebHookMessagePort.send(command).thenAccept(result->{
+                try {
+                    event.getMessage().reply("success \n(id = "+result+")"+"\nchannel ID : "+event.getChannel().getId()).queue();
+                }catch (Exception e){
+                    event.getMessage().reply("error : "+e.toString()).queue();
+                }
+            }).exceptionally(t->{
+                System.out.println("\n\nerror : "+t.toString());
+                return null;
+            });
+            return;
+        }
+
+        if(msg.getContentRaw().startsWith("!comment:")){
+            String[] commands = msg.getContentRaw().split(":");
+            Long msgId = Long.parseLong(commands[1]);
+            Long channelId = Long.parseLong(commands[2]);
+
+            CreateDiscordMessageOnThreadCommand command = CreateDiscordMessageOnThreadCommand.builder()
+                    .originPostId(0L)
+                    .originChannelId(channelId)
+                    .avatarUrl(event.getMember().getEffectiveAvatarUrl())
+                    .webHookUrl(
+                            event.getGuild().getGuildChannelById(channelId).getType()== ChannelType.TEXT ?
+                            event.getGuild().getChannelById(TextChannel.class,channelId).createWebhook("space").complete().getUrl()
+                            :event.getGuild().getChannelById(ForumChannel.class,channelId).createWebhook("space").complete().getUrl())
+                    .userName(event.getMember().getEffectiveName())
+                    .threadChannelDiscordId(msgId )
+                    .content("reply success")
+                    .guildDiscordId(event.getGuild().getIdLong())
+                    .build();
+            createDiscordMessageOnThreadPort.sendToThread(command).thenAccept(result->{
+                try {
+                    event.getMessage().reply("success \n(id = "+result+")"+"\nchannel ID : "+event.getChannel().getId()).queue();
+                }catch (Exception e){
+                    event.getMessage().reply("error : "+e.toString()).queue();
+                }
+            }).exceptionally(t->{
+                System.out.println("\n\nerror : "+t.toString());
+                return null;
+            });
 
         }
 
@@ -138,6 +192,14 @@ public class TestTextCommandEventListener extends ListenerAdapter {
 
 
             event.getChannel().sendMessage("hi"+event.getMember().getAsMention()).queue();
+        }
+        if(msg.getContentRaw().equals("!addTag")) {
+
+            if(event.getChannelType().isThread()){
+                List<ForumTag> tags = event.getChannel().asThreadChannel().getParentChannel().asForumChannel().getAvailableTags();
+                event.getChannel().asThreadChannel().getManager().setAppliedTags(tags).queue();
+            }
+
         }
     }
 

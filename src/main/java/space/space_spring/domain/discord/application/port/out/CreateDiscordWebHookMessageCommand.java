@@ -5,14 +5,17 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CreateDiscordForumMessageCommand {
+public class CreateDiscordWebHookMessageCommand {
 
     private Long guildDiscordId;
     private Long channelDiscordId;
-    private String userName;
+    private String name;
     private String avatarUrl;
 
     private String webHookUrl;
     private String title;
     private String content;
+
+
+    //private List<Tag> tags;
 }

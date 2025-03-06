@@ -2,7 +2,7 @@ package space.space_spring.domain.discord.application.port.out;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.w3c.dom.Text;
+import space.space_spring.domain.discord.adapter.out.discord.WebHookMessage;
 
 @Getter
 @Builder
@@ -17,15 +17,24 @@ public class CreateDiscordThreadCommand {
 
     private String userName;
     private String avatarUrl;
+    //private List<Tag> tags;
 
-    public CreateDiscordMessageCommand getStartMessage(){
-        return CreateDiscordMessageCommand.builder()
+    public CreateDiscordWebHookMessageCommand getStartMessage(){
+        return CreateDiscordWebHookMessageCommand.builder()
                 .name(this.userName)
-                .Content(this.startMessage)
+                .content(this.startMessage)
                 .webHookUrl(this.webHookUrl)
                 .avatarUrl(this.avatarUrl)
                 .guildDiscordId(this.guildDiscordId)
                 .channelDiscordId(this.channelDiscordId)
+                .build();
+    }
+    public WebHookMessage getContentWebHookMessage(){
+        return WebHookMessage.builder()
+                .WebHookUrl(this.webHookUrl)
+                .avatarUrl(this.avatarUrl)
+                .content(this.contentMessage)
+                .userName(this.userName)
                 .build();
     }
 }

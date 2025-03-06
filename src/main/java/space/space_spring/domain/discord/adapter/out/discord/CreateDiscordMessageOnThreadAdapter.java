@@ -27,6 +27,7 @@ public class CreateDiscordMessageOnThreadAdapter implements CreateDiscordMessage
         //만약 아직 해당 message에 thread가 생성되지 않았다면, thread를 생성합니다.
         if(!checkDiscordChannelPort.isThreadExist(command.getGuildDiscordId(), command.getThreadChannelDiscordId())){
             return discordThreadRepository.createThread(command.getThreadChannelDiscordId(),command.getOriginChannelId(),"temp")
+                    //ToDo Load Post Title name: "temp"->name
                     .thenCompose(threadId->{
                         return discordThreadRepository.createThreadMessage(threadId, command.getWebHookMessage());
                     });

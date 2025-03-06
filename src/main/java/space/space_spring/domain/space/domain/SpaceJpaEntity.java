@@ -6,12 +6,12 @@ import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SpaceJpaEntity extends BaseEntity {
+public class SpaceJpaEntity extends BaseJpaEntity {
 
     @Id @GeneratedValue
     private Long id;

@@ -1,5 +1,7 @@
 package space.space_spring.domain.event.adapter.out.persistence;
 
+import static space.space_spring.global.common.enumStatus.BaseStatusType.INACTIVE;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,13 +15,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
-import space.space_spring.global.common.entity.BaseEntity;
+import space.space_spring.global.common.entity.BaseJpaEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "Event_Participant")
-public class EventParticipantJpaEntity extends BaseEntity{
+public class EventParticipantJpaEntity extends BaseJpaEntity {
     @Id
     @GeneratedValue
     @Column(name = "event_participant_id")
@@ -49,4 +51,7 @@ public class EventParticipantJpaEntity extends BaseEntity{
                 .build();
     }
 
+    public boolean isNotActive() {
+        return this.getStatus().equals(INACTIVE);
+    }
 }

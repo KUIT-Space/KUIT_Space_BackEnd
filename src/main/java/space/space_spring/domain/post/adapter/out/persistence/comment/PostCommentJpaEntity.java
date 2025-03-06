@@ -14,6 +14,10 @@ import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity
 @Table(name = "Post_Comment")
 public class PostCommentJpaEntity {
 
+    /**
+     * Comment 테이블 하나로 합치면 수정해야함 -> 익명 여부 추가
+     */
+
     @Id
     @GeneratedValue
     @Column(name="post_comment_id")
@@ -35,7 +39,7 @@ public class PostCommentJpaEntity {
         this.post = post;
     }
 
-    public PostCommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post) {
+    public static PostCommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post) {
         return new PostCommentJpaEntity(postBase, post);
     }
 }

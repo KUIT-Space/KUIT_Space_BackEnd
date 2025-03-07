@@ -40,4 +40,8 @@ public class Post {
     public static Post withoutId(Long discordId, Long boardId, Long spaceMemberId, String title, Content content, BaseInfo baseInfo, Boolean isAnonymous) {
         return new Post(null, discordId, boardId, spaceMemberId, title, content, baseInfo, isAnonymous);
     }
+
+    public boolean isInBoard(Long boardId) {
+        return this.boardId.equals(boardId);
+    }
 }

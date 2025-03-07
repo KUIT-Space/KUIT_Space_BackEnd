@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface UploadAttachmentPort {
 
-    List<String> uploadAllAttachments(Map<AttachmentType, List<MultipartFile>> map, String dirName);
+    Map<AttachmentType, List<String>> uploadAllAttachments(Map<AttachmentType, List<MultipartFile>> map, String dirName);
 }

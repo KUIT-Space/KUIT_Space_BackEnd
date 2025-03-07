@@ -91,6 +91,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     IS_NOT_IMAGE_FILE(9000, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 이미지 파일의 형식이 아닙니다."),
     MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
+    IS_NOT_DOCUMENT_FILE(9002, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 문서 파일의 형식이 아닙니다."),
 
     /**
      * 11000: Post 오류
@@ -110,6 +111,11 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     TARGET_ID_MISSING(11007, HttpStatus.BAD_REQUEST, "대댓글 작성 시 targetId가 필요합니다"),
     INVALID_TARGET_ID(11008, HttpStatus.BAD_REQUEST, "댓글 작성 시 targetId는 허용되지 않습니다"),
     COMMENT_IS_NOT_IN_POST(11009, HttpStatus.NOT_FOUND, "해당 댓글이 이 게시글에 속하지 않습니다."),
+    INVALID_COMMENT_CREATE(11010, HttpStatus.BAD_REQUEST, "댓글 생성 요청에서 잘못된 값이 존재합니다."),
+    POST_NOT_FOUND(11011, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 입니다."),
+    BOARD_IS_NOT_IN_SPACE(11012, HttpStatus.NOT_FOUND, "현재 스페이스에는 해당 게시판이 존재하지 않습니다."),
+    POST_IS_NOT_IN_BOARD(11013, HttpStatus.NOT_FOUND, "현재 게시판에는 해당 게시글이 존재하지 않습니다."),
+    CAN_NOT_BE_ANONYMOUS(11014, HttpStatus.BAD_REQUEST, "해당 글은 익명으로 작성할 수 없습니다."),
 
     /**
      * 12000 : Pay 오류

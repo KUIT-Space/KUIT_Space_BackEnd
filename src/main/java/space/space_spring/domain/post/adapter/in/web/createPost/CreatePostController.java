@@ -39,15 +39,16 @@ public class CreatePostController {
         }
 
         CreatePostCommand command = CreatePostCommand.builder()
-                .postCreatorId(spaceMemberId)
+                .spaceId(spaceId)
                 .boardId(boardId)
+                .postCreatorId(spaceMemberId)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .attachments(request.getAttachments())
                 .isAnonymous(request.getIsAnonymous())
                 .build();
 
-        return new BaseResponse<>(createPostUseCase.createPostFromWeb(spaceMemberId, spaceId, command));
+        return new BaseResponse<>(createPostUseCase.createPostFromWeb(command));
 
     }
 }

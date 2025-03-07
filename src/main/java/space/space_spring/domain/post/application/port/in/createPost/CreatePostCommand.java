@@ -12,9 +12,11 @@ import java.util.List;
 @Getter
 public class CreatePostCommand {
 
-    private Long postCreatorId;
+    private Long spaceId;
 
     private Long boardId;
+
+    private Long postCreatorId;
 
     private String title;
 
@@ -25,9 +27,10 @@ public class CreatePostCommand {
     private Boolean isAnonymous;
 
     @Builder
-    public CreatePostCommand(Long postCreatorId, Long boardId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
-        this.postCreatorId = postCreatorId;
+    public CreatePostCommand(Long spaceId, Long boardId, Long postCreatorId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
+        this.spaceId = spaceId;
         this.boardId = boardId;
+        this.postCreatorId = postCreatorId;
         this.title = title;
         this.content = Content.of(content);
         this.attachments = mapToInputModel(attachments);

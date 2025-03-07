@@ -16,7 +16,7 @@ import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMembe
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.global.exception.CustomException;
 
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.UNAUTHORIZED_USER;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 
 @Service
@@ -39,7 +39,7 @@ public class CreatePostService implements CreatePostUseCase {
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(command.getPostCreatorId());
 
         // 3. validate
-//        validateBoardAndSpaceMember(board, spaceMember, command);
+        validateBoardAndSpaceMember(board, spaceMember, command);
 
         // 4. 디스코드로 게시글 정보 전송
         Long discordIdForPost = createPostInDiscordUseCase.createPostInDiscord(mapToDiscordCommand(command));
@@ -69,21 +69,21 @@ public class CreatePostService implements CreatePostUseCase {
                 .build();
     }
 
-//    private void validateBoardAndSpaceMember(Board board, SpaceMember spaceMember, CreatePostCommand command) {
-//        // 1. 해당 게시판이 스페이스에 속하는 지
-//        if (!board.isInSpace(command.getSpaceId())) {
-//            throw new CustomException(BOARD_IS_NOT_IN_SPACE);
-//        }
-//
-//        // 2. 질문 게시판이 아닌 게시판의 익명 여부가 FALSE인지
-//        if (board.getBoardType() != BoardType.QUESTION && command.getIsAnonymous()) {
-//            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
-//        }
-//
-//        // 3. 공지사항, 기수별 공지사항의 작성자가 운영진인지
-//        if ((board.getBoardType() == BoardType.NOTICE || board.getBoardType() == BoardType.SEASON_NOTICE)
-//            && !spaceMember.isManager()) {
-//            throw new CustomException(UNAUTHORIZED_USER);
-//        }
-//    }
+    private void validateBoardAndSpaceMember(Board board, SpaceMember spaceMember, CreatePostCommand command) {
+        // 1. 해당 게시판이 스페이스에 속하는 지
+        if (!board.isInSpace(command.getSpaceId())) {
+            throw new CustomException(BOARD_IS_NOT_IN_SPACE);
+        }
+
+        // 2. 질문 게시판이 아닌 게시판의 익명 여부가 FALSE인지
+        if (board.getBoardType() != BoardType.QUESTION && command.getIsAnonymous()) {
+            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
+        }
+
+        // 3. 공지사항, 기수별 공지사항의 작성자가 운영진인지
+        if ((board.getBoardType() == BoardType.NOTICE || board.getBoardType() == BoardType.SEASON_NOTICE)
+            && !spaceMember.isManager()) {
+            throw new CustomException(UNAUTHORIZED_USER);
+        }
+    }
 }

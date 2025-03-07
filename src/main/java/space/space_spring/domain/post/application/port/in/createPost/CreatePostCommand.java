@@ -22,13 +22,16 @@ public class CreatePostCommand {
 
     private List<AttachmentOfCreateCommand> attachments;
 
+    private Boolean isAnonymous;
+
     @Builder
-    public CreatePostCommand(Long postCreatorId, Long boardId, String title, String content, List<AttachmentOfCreate> attachments) {
+    public CreatePostCommand(Long postCreatorId, Long boardId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
         this.postCreatorId = postCreatorId;
         this.boardId = boardId;
         this.title = title;
         this.content = Content.of(content);
         this.attachments = mapToInputModel(attachments);
+        this.isAnonymous = isAnonymous;
     }
 
     private static List<AttachmentOfCreateCommand> mapToInputModel(List<AttachmentOfCreate> attachments) {
@@ -40,6 +43,6 @@ public class CreatePostCommand {
     }
 
     public Post toPostDomainEntity(Long discordMessageId) {
-        return Post.withoutId(discordMessageId, boardId, postCreatorId, title, content);
+        return Post.withoutId(discordMessageId, boardId, postCreatorId, title, content, isAnonymous);
     }
 }

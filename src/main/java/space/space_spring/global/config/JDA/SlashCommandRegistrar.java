@@ -58,6 +58,10 @@ public class SlashCommandRegistrar {
                         )
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
         );
+        commands.addCommands(
+                Commands.slash("move-message","move message to other channel")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+        );
 
         commands.queue();
     }

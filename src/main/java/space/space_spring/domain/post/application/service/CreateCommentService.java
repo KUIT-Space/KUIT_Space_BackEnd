@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentUseCase;
-import space.space_spring.domain.post.application.port.in.createComment.UploadAttachmentCommand;
+import space.space_spring.domain.post.application.port.in.createComment.CreateAttachmentCommand;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
 import space.space_spring.global.exception.CustomException;
@@ -42,8 +42,8 @@ public class CreateCommentService implements CreateCommentUseCase {
         // 3. s3에 댓글 첨부파일 upload & db에 attachment 저장
         Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachmentCommands().stream()
                 .collect(Collectors.groupingBy(
-                        UploadAttachmentCommand::getAttachmentType,
-                        Collectors.mapping(UploadAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
+                        CreateAttachmentCommand::getAttachmentType,
+                        Collectors.mapping(CreateAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
                 ));
         Map<AttachmentType, List<String>> savedAttachmentUrls = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "comment");
 

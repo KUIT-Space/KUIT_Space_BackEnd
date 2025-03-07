@@ -116,6 +116,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     BOARD_IS_NOT_IN_SPACE(11012, HttpStatus.NOT_FOUND, "현재 스페이스에는 해당 게시판이 존재하지 않습니다."),
     POST_IS_NOT_IN_BOARD(11013, HttpStatus.NOT_FOUND, "현재 게시판에는 해당 게시글이 존재하지 않습니다."),
     CAN_NOT_BE_ANONYMOUS(11014, HttpStatus.BAD_REQUEST, "해당 글은 익명으로 작성할 수 없습니다."),
+    INVALID_COMMENT_UPDATE(11015, HttpStatus.BAD_REQUEST, "댓글 수정 요청에서 잘못된 값이 존재합니다."),
 
     /**
      * 12000 : Pay 오류

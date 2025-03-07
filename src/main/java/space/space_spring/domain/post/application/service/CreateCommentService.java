@@ -27,24 +27,12 @@ public class CreateCommentService implements CreateCommentUseCase {
     @Override
     @Transactional
     public Long createCommentFromWeb(CreateCommentCommand command) {
-        // 1. boardId에 해당하는 Board 조회
+        // 1. Board, Post 조회
         Board board = loadBoardPort.loadById(command.getBoardId());
-
-        // 2. postBaseId에 해당하는 Post 조회
         Post post = loadPostPort.loadByPostBaseId(command.getPostId());
 
         // 3. validation -> 게시판이 space에 속하는게 맞는지, 게시글이 게시판에 속하는게 맞는지
-        if (!board.isInSpace(command.getSpaceId())) {
-            throw new CustomException(BOARD_IS_NOT_IN_SPACE);
-        }
-
-        if (!post.isInBoard(board.getId())) {
-            throw new CustomException(POST_IS_NOT_IN_BOARD);
-        }
-
-        if (board.getBoardType() != BoardType.QUESTION && command.isAnonymous()) {      // 질문 게시글이 아닌데 게시글 작성자가 익명이라면
-            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
-        }
+        validateBoardAndPost(board, post, command);
 
         // 4. discord 로 보내기
         Long discordId = 0L;        // 상준님과 협의
@@ -57,5 +45,19 @@ public class CreateCommentService implements CreateCommentUseCase {
     @Transactional
     public Long createCommentFromDiscord(CreateCommentCommand command, Long discordId) {
         return createCommentPort.createComment(command.toDomainEntity(discordId));
+    }
+
+    private void validateBoardAndPost(Board board, Post post, CreateCommentCommand command) {
+        if (!board.isInSpace(command.getSpaceId())) {
+            throw new CustomException(BOARD_IS_NOT_IN_SPACE);
+        }
+
+        if (!post.isInBoard(board.getId())) {
+            throw new CustomException(POST_IS_NOT_IN_BOARD);
+        }
+
+        if (board.getBoardType() != BoardType.QUESTION && command.isAnonymous()) {      // 질문 게시글이 아닌데 게시글 작성자가 익명이라면
+            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
+        }
     }
 }

@@ -3,15 +3,23 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentUseCase;
+import space.space_spring.domain.post.application.port.in.createComment.UploadAttachmentCommand;
 import space.space_spring.domain.post.application.port.out.CreateCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
+import space.space_spring.domain.post.application.port.out.UploadAttachmentPort;
+import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -20,6 +28,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Transactional(readOnly = true)
 public class CreateCommentService implements CreateCommentUseCase {
 
+    private final UploadAttachmentPort uploadAttachmentPort;
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final CreateCommentPort createCommentPort;
@@ -31,8 +40,16 @@ public class CreateCommentService implements CreateCommentUseCase {
         Board board = loadBoardPort.loadById(command.getBoardId());
         Post post = loadPostPort.loadByPostBaseId(command.getPostId());
 
-        // 3. validation -> 게시판이 space에 속하는게 맞는지, 게시글이 게시판에 속하는게 맞는지
+        // 2. validation -> 게시판이 space에 속하는게 맞는지, 게시글이 게시판에 속하는게 맞는지
         validateBoardAndPost(board, post, command);
+
+        // 3. s3에 댓글 첨부파일 upload
+        Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachmentCommands().stream()
+                .collect(Collectors.groupingBy(
+                        UploadAttachmentCommand::getAttachmentType,
+                        Collectors.mapping(UploadAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
+                ));
+        uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "comment");
 
         // 4. discord 로 보내기
         Long discordId = 0L;        // 상준님과 협의

@@ -2,7 +2,6 @@ package space.space_spring.domain.post.adapter.out.persistence.comment;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
@@ -13,7 +12,6 @@ import space.space_spring.domain.post.domain.Comment;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
-import javax.swing.*;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,10 +35,6 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
                 .collect(Collectors.toMap(PostCommentCount::getPostId, PostCommentCount::getCommentCount));
     }
 
-
-    /**
-     * Comment 테이블 하나로 합치면 수정해야함 -> 익명 여부 추가
-     */
     @Override
     public Long createComment(Comment comment) {
         PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(comment.getTargetId(), BaseStatusType.ACTIVE)
@@ -49,6 +43,6 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
         PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(comment.getTargetId())
                 .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
-        return postCommentRepository.save(commentMapper.toJpaEntity(postBaseJpaEntity, postJpaEntity)).getId();
+        return postCommentRepository.save(commentMapper.toJpaEntity(postBaseJpaEntity, postJpaEntity, comment)).getId();
     }
 }

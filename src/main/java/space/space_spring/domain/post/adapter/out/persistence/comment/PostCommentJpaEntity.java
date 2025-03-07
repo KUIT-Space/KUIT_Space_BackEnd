@@ -34,12 +34,17 @@ public class PostCommentJpaEntity {
     @NotNull
     private PostJpaEntity post;
 
-    private PostCommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post) {
+    @NotNull
+    @Column(name = "is_anonymous")
+    private boolean isAnonymous;
+
+    private PostCommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post, boolean isAnonymous) {
         this.postBase = postBase;
         this.post = post;
+        this.isAnonymous = isAnonymous;
     }
 
-    public static PostCommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post) {
-        return new PostCommentJpaEntity(postBase, post);
+    public static PostCommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post, boolean isAnonymous) {
+        return new PostCommentJpaEntity(postBase, post, isAnonymous);
     }
 }

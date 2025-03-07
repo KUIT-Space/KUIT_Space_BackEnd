@@ -22,7 +22,7 @@ public class PostJpaEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_base_id")
     @NotNull
-    private PostBaseJpaEntqity postBase;
+    private PostBaseJpaEntity postBase;
 
     @NotNull
     private String title;

@@ -59,6 +59,16 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
     @Override
     public void updateComment(Comment comment) {
-        
+        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(comment.getTargetId(), BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
+
+        PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(comment.getTargetId())
+                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+
+        PostCommentJpaEntity postCommentJpaEntity = commentMapper.toJpaEntity(postBaseJpaEntity, postJpaEntity, comment);
+
+        // jpa entity 필드 속성 update
+        postBaseJpaEntity.changeContent(comment.getContent().getValue());
+        postCommentJpaEntity.changeAnonymous(comment.isAnonymous());
     }
 }

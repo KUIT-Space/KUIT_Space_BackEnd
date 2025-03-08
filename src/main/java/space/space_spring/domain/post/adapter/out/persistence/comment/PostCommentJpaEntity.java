@@ -47,4 +47,8 @@ public class PostCommentJpaEntity {
     public static PostCommentJpaEntity create(PostBaseJpaEntity postBase, PostJpaEntity post, boolean isAnonymous) {
         return new PostCommentJpaEntity(postBase, post, isAnonymous);
     }
+
+    public void changeAnonymous(boolean isAnonymous) {
+        this.isAnonymous = isAnonymous;
+    }
 }

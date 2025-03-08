@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class Comment {
 
-    private Long id; // postBaseId
+    private Long id; // comment의 postBaseId
 
     private Long boardId;
 

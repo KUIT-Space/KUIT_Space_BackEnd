@@ -7,12 +7,12 @@ import space.space_spring.domain.post.domain.BoardType;
 
 import java.util.List;
 
-public interface SpringDataBoardRepository extends JpaRepository<BoardJpaEntity, Long> {
-    
-
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.util.Optional;
+
+
+
 
 public interface SpringDataBoardRepository extends JpaRepository<BoardJpaEntity, Long> {
 

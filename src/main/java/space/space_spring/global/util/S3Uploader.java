@@ -7,9 +7,10 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.validator.AllowedDocumentFileExtensions;
 import space.space_spring.global.validator.AllowedImageFileExtensions;
 
 import java.io.File;
@@ -25,7 +26,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+@Component
 public class S3Uploader {
 
     private final AmazonS3 amazonS3Client;
@@ -106,13 +107,23 @@ public class S3Uploader {
     }
 
     // MultipartFile이 지원하는 이미지 파일 형식인지 검증
-    public boolean isFileImage(MultipartFile file) {
+    public boolean isImageFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
         log.info("extension : {}", extension);
 
         return AllowedImageFileExtensions.contains(extension);
+    }
+
+    // MultipartFile이 지원하는 문서 파일 형식인지 검증
+    public boolean isDocumentFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        log.info("extension : {}", extension);
+
+        return AllowedDocumentFileExtensions.contains(extension);
     }
 
     public String uploadBase64File(String base64File, String dirName, String fileName) throws IOException {

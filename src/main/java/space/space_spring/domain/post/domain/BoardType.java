@@ -22,11 +22,11 @@ public enum BoardType {
     }
 
 
+
     public static BoardType fromString(String stringOfBoardType) {
         try {
             return BoardType.valueOf(stringOfBoardType.toUpperCase());
         } catch (IllegalArgumentException e) {
-
             throw new IllegalArgumentException("존재하지 않는 BoardType입니다. 사용 가능한 값: ["+ Arrays.toString(values())+"], 입력값: " + stringOfBoardType);
 
         }

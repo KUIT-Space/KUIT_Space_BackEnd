@@ -38,11 +38,13 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
         Long boardDiscordId = board.getDiscordId();
 
         return CreatePostMessageCommand.builder()
-                .postCreatorDiscordId(postCreatorDiscordId)
+                .spaceId(command.getSpaceId())
                 .boardDiscordId(boardDiscordId)
+                .postCreatorDiscordId(postCreatorDiscordId)
                 .title(command.getTitle())
                 .content(command.getContent())
                 .attachments(command.getAttachments())
+                .isAnonymous(command.getIsAnonymous())
                 .build();
     }
 

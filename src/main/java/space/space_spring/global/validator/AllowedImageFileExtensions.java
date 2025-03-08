@@ -27,8 +27,8 @@ public enum AllowedImageFileExtensions {
     public static boolean contains(String extension) {
         extension = extension.toLowerCase();        // 입력된 확장자를 소문자로 변환
 
-        for (AllowedImageFileExtensions allowedImageFileExtensions : AllowedImageFileExtensions.values()) {
-            if (allowedImageFileExtensions.getExtension().equals(extension)) {
+        for (AllowedImageFileExtensions allowedFileExtensions : AllowedImageFileExtensions.values()) {
+            if (allowedFileExtensions.getExtension().equals(extension)) {
                 return true;
             }
         }

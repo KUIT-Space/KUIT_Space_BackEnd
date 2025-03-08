@@ -14,7 +14,7 @@ public class Content {
     @Column(nullable = false)
     private String value;
 
-    private Content(String value) {
+    public Content(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Content는 비어있을 수 없습니다.");
         }

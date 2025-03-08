@@ -3,6 +3,7 @@ package space.space_spring.domain.post.adapter.in.web.createBoard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,15 +22,17 @@ public class CreateBoardController {
 
     private final CreateBoardUseCase createBoardUseCase;
 
-    @PostMapping("/board/create")
-    public BaseResponse<Long> createBoard(@Validated @RequestBody RequestOfCreateBoard request, BindingResult bindingResult) {
+    @PostMapping("/space/{spaceId}/board/create")
+    public BaseResponse<Long> createBoard(
+            @PathVariable Long spaceId,
+            @Validated @RequestBody RequestOfCreateBoard request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_BOARD_CREATE, getErrorMessage(bindingResult));
         }
 
         // Request DTO -> Command 변환
         CreateBoardCommand command = CreateBoardCommand.builder()
-                .spaceId(request.getSpaceId())
+                .spaceId(spaceId)
                 .discordId(request.getDiscordId())
                 .boardType(BoardType.fromString(request.getBoardType()))
                 .boardName(request.getBoardName())

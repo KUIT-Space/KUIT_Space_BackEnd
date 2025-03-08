@@ -45,7 +45,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     EXPIRED_REFRESH_TOKEN(4009, HttpStatus.UNAUTHORIZED, "만료된 refresh token 입니다. 다시 로그인해야합니다."),
     DISCORD_TOKEN_ERROR(4010, HttpStatus.UNAUTHORIZED, "디스코드 서버에서 access token 발급이 실패하였습니다."),
     CANNOT_FIND_DISCORD_USER(4011, HttpStatus.NOT_FOUND, "디스코드 계정의 정보를 가져오는 데에 실패하였습니다."),
-    INVALID_REFRESH_TOKEN(4012, HttpStatus.NOT_FOUND, "유효하지 않은 refresh token입니다."),
+    INVALID_REFRESH_TOKEN(4012, HttpStatus.UNAUTHORIZED, "유효하지 않은 refresh token입니다."),
 
     /**
      * 5000: User 오류
@@ -91,6 +91,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     IS_NOT_IMAGE_FILE(9000, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 이미지 파일의 형식이 아닙니다."),
     MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
+    IS_NOT_DOCUMENT_FILE(9002, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 문서 파일의 형식이 아닙니다."),
 
     /**
      * 11000: Post 오류
@@ -104,12 +105,20 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),
-    COMMENT_NOT_EXIST(11004, HttpStatus.NOT_FOUND, "존재하지 않는 댓글 id입니다."),
+    COMMENT_NOT_FOUND(11004, HttpStatus.NOT_FOUND, "존재하지 않는 댓글 id입니다."),
     ALREADY_LIKED_THE_COMMENT(11005, HttpStatus.BAD_REQUEST, "해당 댓글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_COMMENT_YET(11006, HttpStatus.BAD_REQUEST, "유저가 해당 댓글에 좋아요를 누르지 않았습니다."),
     TARGET_ID_MISSING(11007, HttpStatus.BAD_REQUEST, "대댓글 작성 시 targetId가 필요합니다"),
     INVALID_TARGET_ID(11008, HttpStatus.BAD_REQUEST, "댓글 작성 시 targetId는 허용되지 않습니다"),
     COMMENT_IS_NOT_IN_POST(11009, HttpStatus.NOT_FOUND, "해당 댓글이 이 게시글에 속하지 않습니다."),
+    INVALID_COMMENT_CREATE(11010, HttpStatus.BAD_REQUEST, "댓글 생성 요청에서 잘못된 값이 존재합니다."),
+    POST_NOT_FOUND(11011, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 입니다."),
+    BOARD_IS_NOT_IN_SPACE(11012, HttpStatus.NOT_FOUND, "현재 스페이스에는 해당 게시판이 존재하지 않습니다."),
+    POST_IS_NOT_IN_BOARD(11013, HttpStatus.NOT_FOUND, "현재 게시판에는 해당 게시글이 존재하지 않습니다."),
+    CAN_NOT_BE_ANONYMOUS(11014, HttpStatus.BAD_REQUEST, "해당 글은 익명으로 작성할 수 없습니다."),
+    INVALID_COMMENT_UPDATE(11015, HttpStatus.BAD_REQUEST, "댓글 수정 요청에서 잘못된 값이 존재합니다."),
+    COMMENT_CREATOR_MISMATCH(11016, HttpStatus.BAD_REQUEST, "댓글 생성자가 본인과 일치하지 않습니다."),
+
 
     /**
      * 12000 : Pay 오류
@@ -119,15 +128,19 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_INDIVIDUAL_AMOUNT(12003, HttpStatus.BAD_REQUEST, "정산 요청 금액들의 합과 정산 요청 총 금액이 일치하지 않습니다."),
     INVALID_EQUAL_SPLIT_AMOUNT(12004, HttpStatus.BAD_REQUEST, "정산 요청 금액들 중 1/N 정산 정책에 위배되는 값이 있습니다."),
     PAY_REQUEST_NOT_FOUND(12005, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
-    PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산요청타겟 입니다"),
+    PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산 요청 대상 입니다"),
     THIS_PAY_REQUEST_HAS_NOT_TARGETS(12007, HttpStatus.INTERNAL_SERVER_ERROR, "현재 정산 요청은 정산 요청 대상이 없습니다. 현재 정산 생성 시 서버에 문제가 있었습니다."),
-    INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다."),
+    PAY_REQUEST_TARGET_MISMATCH(12008, HttpStatus.BAD_REQUEST, "정산 요청 대상자가 본인과 일치하지 않습니다."),
+    PAY_REQUEST_CREATOR_MISMATCH(12009, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
 
     /**
      * 13000 : Event 오류
      */
     INVALID_EVENT_CREATE(13000, HttpStatus.BAD_REQUEST, "행사 생성 요청에서 잘못된 값이 존재합니다."),
     EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다."),
+    ALREADY_IN_EVENT(13002, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여한 행사입니다."),
+    ALREADY_NOT_IN_EVENT(13003, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여를 취소한 행사입니다."),
+    PARTICIPANT_NOT_FOUND(13004, HttpStatus.NOT_FOUND, "존재하지 않는 행사 참여자입니다."),
     ;
 
     private final int code;

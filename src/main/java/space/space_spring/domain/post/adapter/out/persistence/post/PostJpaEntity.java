@@ -24,14 +24,20 @@ public class PostJpaEntity {
     @NotNull
     private PostBaseJpaEntity postBase;
 
+    @NotNull
     private String title;
 
-    private PostJpaEntity(PostBaseJpaEntity postBase, String title) {
+    @Column(name = "is_anonymous")
+    @NotNull
+    private Boolean isAnonymous;
+
+    private PostJpaEntity(PostBaseJpaEntity postBase, String title, Boolean isAnonymous) {
         this.postBase = postBase;
         this.title = title;
+        this.isAnonymous = isAnonymous;
     }
 
-    public static PostJpaEntity create(PostBaseJpaEntity postBase,String title) {
-        return new PostJpaEntity(postBase, title);
+    public static PostJpaEntity create(PostBaseJpaEntity postBase, String title, Boolean isAnonymous) {
+        return new PostJpaEntity(postBase, title, isAnonymous);
     }
 }

@@ -21,7 +21,9 @@ public class CreatePostService implements CreatePostUseCase {
 
     @Override
     @Transactional
-    public Long createPost(CreatePostCommand command) {
+    public Long createPostFromWeb(Long spaceMemberId, Long spaceId, CreatePostCommand command) {
+
+
 
         // 1. 디스코드로 게시글 정보 전송
         Long discordIdForPost = createPostInDiscordUseCase.CreateMessageInDiscord(mapToDiscordCommand(command));
@@ -31,6 +33,17 @@ public class CreatePostService implements CreatePostUseCase {
 
         return createPostPort.createPost(post);
     }
+
+    @Override
+    @Transactional
+    public Long createPostFromDiscord(CreatePostCommand command, Long discordId) {
+        // 1. Post 도메인 엔티티 생성 후 Adapter에 저장
+        Post post = command.toPostDomainEntity(discordId);
+
+        return createPostPort.createPost(post);
+    }
+
+
 
     private CreatePostInDiscordCommand mapToDiscordCommand(CreatePostCommand command) {
         return CreatePostInDiscordCommand.builder()

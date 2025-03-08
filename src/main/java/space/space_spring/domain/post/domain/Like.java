@@ -7,12 +7,11 @@ public class Like {
 
     private Long id;
 
-    private Long targetId; // post, question의 postBaseId
+    private Long targetId;          // 좋아요 표시의 target(= 게시글, 댓글)
 
     private Long spaceMemberId;
 
     private boolean isLiked;
-
 
     private Like(Long id, Long targetId, Long spaceMemberId, boolean isLiked) {
         this.id = id;

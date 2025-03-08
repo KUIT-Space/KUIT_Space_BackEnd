@@ -2,9 +2,8 @@ package space.space_spring.domain.post.application.port.in.updateComment;
 
 import lombok.Builder;
 import lombok.Getter;
-import space.space_spring.domain.post.adapter.in.web.createComment.RequestOfCreateAttachment;
-import space.space_spring.domain.post.application.port.in.createComment.CreateAttachmentCommand;
-import space.space_spring.domain.post.domain.Comment;
+import space.space_spring.domain.post.adapter.in.web.updateComment.RequestOfPreviousAttachment;
+import space.space_spring.domain.post.adapter.in.web.updateComment.RequestOfUpdateAttachment;
 import space.space_spring.domain.post.domain.Content;
 
 import java.util.List;
@@ -26,28 +25,35 @@ public class UpdateCommentCommand {
 
     private boolean isAnonymous;        // 익명 댓글 여부
 
-    private List<CreateAttachmentCommand> attachmentCommands;
-
     @Builder
-    public UpdateCommentCommand(Long spaceId, Long boardId, Long postId, Long commentCreatorId, String content, boolean isAnonymous, List<RequestOfCreateAttachment> attachments) {
+    public UpdateCommentCommand(Long commentId, Long spaceId, Long boardId, Long postId, Long commentCreatorId, String content, boolean isAnonymous) {
+        this.commentId = commentId;
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.postId = postId;
         this.commentCreatorId = commentCreatorId;
         this.content = Content.of(content);
         this.isAnonymous = isAnonymous;
-        this.attachmentCommands = mapToInputModel(attachments);
     }
 
-    private static List<CreateAttachmentCommand> mapToInputModel(List<RequestOfCreateAttachment> attachments) {
+
+    /**
+     * space 2.0 v1 에서는 댓글 수정 시에 첨부파일 update 요구사항 없음
+     */
+
+    private static List<UpdateAttachmentCommand> mapToUpdateAttachmentCommand(List<RequestOfUpdateAttachment> attachments) {
         return attachments.stream()
-                .map(attachment -> CreateAttachmentCommand.of(
+                .map(attachment -> UpdateAttachmentCommand.of(
                         attachment.getValueOfAttachmentType(),
                         attachment.getAttachment()))
                 .toList();
     }
 
-    public Comment toDomainEntity(Long discordId) {
-        return Comment.withoutId(boardId, discordId, postId, commentCreatorId, content, isAnonymous);
+    private static List<PreviousAttachmentInfo> mapToPreviousAttachmentInfo(List<RequestOfPreviousAttachment> attachments) {
+        return attachments.stream()
+                .map(attachment -> PreviousAttachmentInfo.of(
+                        attachment.getAttachmentId(),
+                        attachment.getAttachmentUrl()))
+                .toList();
     }
 }

@@ -105,7 +105,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),
-    COMMENT_NOT_EXIST(11004, HttpStatus.NOT_FOUND, "존재하지 않는 댓글 id입니다."),
+    COMMENT_NOT_FOUND(11004, HttpStatus.NOT_FOUND, "존재하지 않는 댓글 id입니다."),
     ALREADY_LIKED_THE_COMMENT(11005, HttpStatus.BAD_REQUEST, "해당 댓글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_COMMENT_YET(11006, HttpStatus.BAD_REQUEST, "유저가 해당 댓글에 좋아요를 누르지 않았습니다."),
     TARGET_ID_MISSING(11007, HttpStatus.BAD_REQUEST, "대댓글 작성 시 targetId가 필요합니다"),
@@ -117,6 +117,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     POST_IS_NOT_IN_BOARD(11013, HttpStatus.NOT_FOUND, "현재 게시판에는 해당 게시글이 존재하지 않습니다."),
     CAN_NOT_BE_ANONYMOUS(11014, HttpStatus.BAD_REQUEST, "해당 글은 익명으로 작성할 수 없습니다."),
     INVALID_COMMENT_UPDATE(11015, HttpStatus.BAD_REQUEST, "댓글 수정 요청에서 잘못된 값이 존재합니다."),
+    COMMENT_CREATOR_MISMATCH(11016, HttpStatus.BAD_REQUEST, "댓글 생성자가 본인과 일치하지 않습니다."),
+
 
     /**
      * 12000 : Pay 오류

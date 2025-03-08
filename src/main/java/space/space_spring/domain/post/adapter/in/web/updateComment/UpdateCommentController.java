@@ -43,13 +43,13 @@ public class UpdateCommentController {
         }
 
         UpdateCommentCommand command = UpdateCommentCommand.builder()
+                .commentId(commentId)
                 .spaceId(spaceId)
                 .boardId(boardId)
                 .postId(postId)
                 .commentCreatorId(spaceMemberId)
                 .content(request.getContent())
                 .isAnonymous(request.isAnonymous())
-                .attachments(request.getAttachments())
                 .build();
 
         updateCommentUseCase.updateComment(command);

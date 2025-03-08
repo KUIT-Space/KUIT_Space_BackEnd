@@ -34,7 +34,6 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
     private final SpringDataPostBaseRepository postBaseRepository;
     private final SpringDataPostRepository postRepository;
     private final CommentMapper commentMapper;
-
     private final PostBaseMapper postBaseMapper;
 
     @Override
@@ -45,14 +44,16 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
     }
 
     @Override
-    public Comment loadByPostBaseId(Long postBaseId) {
-        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(postBaseId, BaseStatusType.ACTIVE)
-                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
-
-        PostCommentJpaEntity postCommentJpaEntity = postCommentRepository.findByPostBaseId(postBaseJpaEntity.getId())
+    public Comment loadById(Long commentId) {
+        // Comment 에 해당하는 jpa entity 찾기
+        PostCommentJpaEntity postCommentJpaEntity = postCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
-        return commentMapper.toDomainEntity(postBaseJpaEntity, postCommentJpaEntity);
+        if (!postCommentJpaEntity.getPostBase().isActive()) {
+            throw new CustomException(COMMENT_NOT_FOUND);          // 찾은 Comment가 Active 상태가 아닌 경우
+        }
+
+        return commentMapper.toDomainEntity(postCommentJpaEntity);
     }
 
     @Override
@@ -78,16 +79,16 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
     @Override
     public void updateComment(Comment comment) {
-        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(comment.getPostId(), BaseStatusType.ACTIVE)
-                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
+        // Comment 에 해당하는 jpa entity 찾기
+        PostCommentJpaEntity postCommentJpaEntity = postCommentRepository.findById(comment.getId())
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
-        PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(comment.getPostId())
-                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
-
-        PostCommentJpaEntity postCommentJpaEntity = commentMapper.toJpaEntity(postBaseJpaEntity, postJpaEntity, comment);
+        if (!postCommentJpaEntity.getPostBase().isActive()) {
+            throw new CustomException(COMMENT_NOT_FOUND);          // 찾은 Comment가 Active 상태가 아닌 경우
+        }
 
         // jpa entity 필드 속성 update
-        postBaseJpaEntity.changeContent(comment.getContent().getValue());
+        postCommentJpaEntity.getPostBase().changeContent(comment.getContent().getValue());
         postCommentJpaEntity.changeAnonymous(comment.isAnonymous());
     }
 }

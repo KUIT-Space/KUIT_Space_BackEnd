@@ -3,21 +3,11 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.domain.post.application.port.in.createComment.CreateAttachmentCommand;
-import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
-import space.space_spring.domain.post.application.port.in.updateComment.PreviousAttachmentInfo;
-import space.space_spring.domain.post.application.port.in.updateComment.UpdateAttachmentCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
 import space.space_spring.global.exception.CustomException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -36,8 +26,8 @@ public class UpdateCommentService implements UpdateCommentUseCase {
     public void updateComment(UpdateCommentCommand command) {
         // 1. Board, Post 조회
         Board board = loadBoardPort.loadById(command.getBoardId());
-        Post post = loadPostPort.loadByPostBaseId(command.getPostId());
-        Comment comment = loadCommentPort.loadByPostBaseId(command.getPostId());
+        Post post = loadPostPort.loadById(command.getPostId());
+        Comment comment = loadCommentPort.loadById(command.getCommentId());
 
         // 2. validation
         validate(board, post, comment, command);

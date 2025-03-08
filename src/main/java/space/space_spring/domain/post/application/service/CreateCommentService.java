@@ -3,18 +3,11 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentUseCase;
-import space.space_spring.domain.post.application.port.in.createComment.CreateAttachmentCommand;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
 import space.space_spring.global.exception.CustomException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -32,7 +25,7 @@ public class CreateCommentService implements CreateCommentUseCase {
     public Long createCommentFromWeb(CreateCommentCommand command) {
         // 1. Board, Post 조회
         Board board = loadBoardPort.loadById(command.getBoardId());
-        Post post = loadPostPort.loadByPostBaseId(command.getPostId());
+        Post post = loadPostPort.loadById(command.getPostId());
 
         // 2. validation -> 게시판이 space에 속하는게 맞는지, 게시글이 게시판에 속하는게 맞는지
         validateBoardAndPost(board, post, command);

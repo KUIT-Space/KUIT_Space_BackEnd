@@ -8,5 +8,5 @@ import java.util.Map;
 public interface LoadCommentPort {
     Map<Long, Long> countCommentsByPostIds(List<Long> postIds);
 
-    Comment loadByPostBaseId(Long postBaseId);
+    Comment loadById(Long commentId);
 }

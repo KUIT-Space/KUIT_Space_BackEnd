@@ -45,7 +45,8 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             System.out.println("mem:"+msg.getGuild().getMembers().size());
             Long spaceId= Long.parseLong(msg.getContentRaw().split(":")[1]);
             loadSpaceMemberPort.loadSpaceMemberBySpaceId(spaceId).stream().forEach(spaceMember->{
-                msg.getChannel().sendMessage("\n"+spaceMember.getNickname()+":"+spaceMember.getId()).queue();
+                msg.getChannel().sendMessage(
+                        "\n"+spaceMember.getNickname()+":"+spaceMember.getId()+":Manager:"+spaceMember.isManager()).queue();
             });
             return;
         }

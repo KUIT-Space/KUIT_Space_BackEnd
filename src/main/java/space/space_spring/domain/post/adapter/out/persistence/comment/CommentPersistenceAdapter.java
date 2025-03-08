@@ -28,8 +28,6 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @RequiredArgsConstructor
 public class CommentPersistenceAdapter implements LoadCommentPort, CreateCommentPort, UpdateCommentPort, DeleteCommentPort {
 
-    private final String DELETE_COMMENT_CONTENT = "삭제된 댓글입니다.";
-
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataPostCommentRepository postCommentRepository;
@@ -94,9 +92,7 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
     }
 
     /**
-     * 댓글 삭제는
-     * 삭제할 댓글의 내용을 "삭제된 댓글입니다." 로 수정하는 방식
-     * 으로 구현
+     * 댓글 삭제는 soft delete -> 삭제된 댓글을 보여줄때는 "삭제된 댓글입니다." 라고 표시
      */
     @Override
     public void deleteComment(Long commentId) {
@@ -108,7 +104,7 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
             throw new CustomException(COMMENT_NOT_FOUND);          // 찾은 Comment가 Active 상태가 아닌 경우
         }
 
-        // jpa entity 필드 속성 update
-        postCommentJpaEntity.getPostBase().changeContent(DELETE_COMMENT_CONTENT);
+        // jpa entity 를 INACTIVE 상태로 변경
+        postCommentJpaEntity.getPostBase().updateToInactive();
     }
 }

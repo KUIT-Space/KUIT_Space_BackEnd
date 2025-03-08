@@ -8,5 +8,5 @@ public interface LoadPostPort {
 
     List<Post> loadPostList(Long boardId);
 
-    Post loadByPostBaseId(Long postBaseId);
+    Post loadById(Long postId);
 }

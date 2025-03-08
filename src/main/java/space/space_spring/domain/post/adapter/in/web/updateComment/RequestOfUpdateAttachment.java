@@ -1,4 +1,4 @@
-package space.space_spring.domain.post.adapter.in.web.createComment;
+package space.space_spring.domain.post.adapter.in.web.updateComment;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import space.space_spring.global.validator.EnumValidator;
 
 @Getter
 @NoArgsConstructor
-public class RequestOfUploadAttachment {
+public class RequestOfUpdateAttachment {
 
     @EnumValidator(enumClass = AttachmentType.class, message = "첨부파일의 유형은 IMAGE 또는 FILE 이어야 합니다.")
     @NotBlank(message = "첨부파일의 유형은 공백일 수 없습니다.")

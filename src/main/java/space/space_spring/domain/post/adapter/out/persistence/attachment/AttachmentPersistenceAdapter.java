@@ -6,9 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
-import space.space_spring.domain.post.application.port.out.CreateAttachmentPort;
-import space.space_spring.domain.post.application.port.out.LoadAttachmentPort;
-import space.space_spring.domain.post.application.port.out.UploadAttachmentPort;
+import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.Attachment;
 import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
@@ -26,7 +24,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadAttachmentPort, CreateAttachmentPort {
+public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadAttachmentPort, CreateAttachmentPort, DeleteAttachmentPort, UpdateAttachmentPort {
 
     private final SpringDataAttachmentRepository attachmentRepository;
     private final SpringDataPostBaseRepository postBaseRepository;
@@ -87,5 +85,17 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
         }
 
         attachmentRepository.saveAll(attachmentJpaEntities);
+    }
+
+    @Override
+    public void deleteAllAttachments(List<String> attachmentUrls) {
+        for (String attachmentUrl : attachmentUrls) {
+            s3Uploader.deleteFileByUrl(attachmentUrl);
+        }
+    }
+
+    @Override
+    public void updateAllAttachments(List<Attachment> attachments) {
+
     }
 }

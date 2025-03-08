@@ -46,7 +46,6 @@ public class CreateCommentController {
                 .commentCreatorId(spaceMemberId)
                 .content(request.getContent())
                 .isAnonymous(request.isAnonymous())
-                .attachments(request.getAttachments())
                 .build();
 
         return new BaseResponse<>(ResponseOfCreateComment.of(createCommentUseCase.createCommentFromWeb(command)));

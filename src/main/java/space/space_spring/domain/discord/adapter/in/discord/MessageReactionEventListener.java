@@ -7,7 +7,11 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.post.application.port.in.boardCache.LoadBoardCacheUseCase;
+import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardCachePort;
+import space.space_spring.domain.post.application.service.LoadBoardService;
+import space.space_spring.domain.post.domain.BoardType;
 
 import java.util.Optional;
 
@@ -16,7 +20,8 @@ import java.util.Optional;
 public class MessageReactionEventListener extends ListenerAdapter {
     //private final Like
     private final DiscordUtil discordUtil;
-    private final LoadBoardCachePort loadBoardCachePort;
+    private final LoadBoardCacheUseCase loadBoardCacheUseCase;
+    private final LoadBoardUseCase loadBoardUseCase;
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event){
 
@@ -30,7 +35,12 @@ public class MessageReactionEventListener extends ListenerAdapter {
         Long messageId = event.getMessageIdLong();
         Long memberId = event.getMember().getIdLong();
 
-        //Todo 좋아요 누르는 UseCase 호출
+        if(isPayBoard(boardId.get())){
+            //Todo 정산 완료 UseCase
+        }
+
+
+        //Todo 좋아요 UseCase 호출
 
     }
 
@@ -43,12 +53,17 @@ public class MessageReactionEventListener extends ListenerAdapter {
             return;
         }
 
+
         Long guildId=event.getGuild().getIdLong();
         Long messageId = event.getMessageIdLong();
         Long memberId = event.getMember().getIdLong();
 
+        if(isPayBoard(boardId.get())){
+            //Todo 정산 완료 취소 UseCase
+        }
+
+
         //Todo 좋아요  삭제하는 UseCase 호출
-        
     }
 
     private Optional<Long> getBoardId(GenericMessageEvent event){
@@ -56,7 +71,11 @@ public class MessageReactionEventListener extends ListenerAdapter {
         Long parentChannelId = discordUtil.getRootChannelId(channel);
         //log.info("parentChannelId:"+parentChannelId);
 
-        Optional<Long> boardId = loadBoardCachePort.findByDiscordId(parentChannelId);
+        return loadBoardCacheUseCase.findByDiscordId(parentChannelId);
 
+    }
+
+    private boolean isPayBoard(Long boardId){
+        return loadBoardUseCase.getBoardTypeById(boardId).equals(BoardType.PAY);
     }
 }

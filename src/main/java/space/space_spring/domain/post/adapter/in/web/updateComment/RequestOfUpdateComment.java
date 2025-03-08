@@ -1,16 +1,14 @@
-package space.space_spring.domain.post.adapter.in.web.createComment;
+package space.space_spring.domain.post.adapter.in.web.updateComment;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
-public class RequestOfCreateComment {
+@NoArgsConstructor
+public class RequestOfUpdateComment {
 
     @NotBlank(message = "댓글 작성 내용은 공백일 수 없습니다.")
     private String content;     // 작성할 댓글 내용
@@ -25,5 +23,9 @@ public class RequestOfCreateComment {
 
 //    @Nullable
 //    @Valid
-//    private List<RequestOfCreateAttachment> attachments;        // 첨부 파일 리스트
+//    private List<RequestOfUpdateAttachment> newAttachments;        // 수정할 첨부 파일 리스트
+//
+//    @Nullable
+//    @Valid
+//    private List<RequestOfPreviousAttachment> previousAttachments;        // 삭제할 기존 첨부 파일 리스트
 }

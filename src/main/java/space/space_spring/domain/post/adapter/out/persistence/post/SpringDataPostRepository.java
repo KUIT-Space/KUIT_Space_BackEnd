@@ -16,5 +16,4 @@ public interface SpringDataPostRepository extends JpaRepository<PostJpaEntity, L
     List<PostJpaEntity> findPostsByBoardId(@Param("boardId") Long boardId,
                                            @Param("status") BaseStatusType status);
 
-    Optional<PostJpaEntity> findByPostBaseId(Long postBaseId);
 }

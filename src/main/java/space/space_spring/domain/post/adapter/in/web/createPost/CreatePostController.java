@@ -27,7 +27,7 @@ public class CreatePostController {
             스페이스 멤버가 게시글(=일반 게시글, 질문, Tip)을 생성합니다.
             
             """)
-    @PostMapping("/space/{spaceId}/board/{boardId}/create")
+    @PostMapping("/space/{spaceId}/board/{boardId}/post")
     public BaseResponse<Long> createPost(
             @JwtLoginAuth Long spaceMemberId,
             @PathVariable Long spaceId,

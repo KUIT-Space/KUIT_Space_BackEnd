@@ -7,11 +7,25 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
+
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
 import space.space_spring.domain.discord.application.port.out.*;
+
+import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
+import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
+import space.space_spring.domain.post.domain.BoardType;
+import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
+import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
+
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.global.exception.CustomException;
 
@@ -22,8 +36,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestTextCommandEventListener extends ListenerAdapter {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
+
     private final CreateDiscordWebHookMessagePort createDiscordWebHookMessagePort;
     private final CreateDiscordThreadPort createDiscordThreadPort;
+
+    private final CreateBoardUseCase createBoardUseCase;
+
     //private final CreateSpaceUseCase createSpaceUseCase;
     private final CreateDiscordMessageOnThreadPort createDiscordMessageOnThreadPort;
     @Override
@@ -200,6 +218,19 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                 List<ForumTag> tags = event.getChannel().asThreadChannel().getParentChannel().asForumChannel().getAvailableTags();
                 event.getChannel().asThreadChannel().getManager().setAppliedTags(tags).queue();
             }
+
+
+        if(msg.getContentRaw().equals("!createChannel")){
+            MessageChannelUnion channel= event.getChannel();
+            CreateBoardCommand command =CreateBoardCommand.builder()
+                    .boardType(BoardType.POST)
+                    .boardName(channel.getName())
+                    .discordId(channel.getIdLong())
+                    .webhookUrl("https://discordapp.com/api/webhooks/1327265824947310612/9SZPFqGg7fjtYAMvwkTzEtirIMWSKyDegigxupEovyiE_hJgrlOWvt2HO8O3GUM7evoV")
+                    .spaceId(1L)
+                    .build();
+            createBoardUseCase.createBoard(command);
+            return;
 
         }
     }

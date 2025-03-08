@@ -133,6 +133,11 @@ public class ChannelSettingEventListener extends ListenerAdapter {
                     .spaceId(spaceId)
                     .build();
 
+            if(isExistBoard(Long.parseLong(channelId))){
+                event.reply("이미 게시판으로 등록된 채널입니다").queue();
+                return;
+            }
+
             switch (menuType.toLowerCase()) {
 
                 case "pay-board":
@@ -232,4 +237,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
         return null;
     }
 
+    private boolean isExistBoard(Long channelId){
+        return loadBoardCacheUseCase.findByDiscordId(channelId).isPresent();
+    }
 }

@@ -16,6 +16,7 @@ import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -55,5 +56,16 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
         // 1. 게시글 리스트 조회
         List<PostJpaEntity> postJpaEntities = postRepository.findPostsByBoardId(boardId, BaseStatusType.ACTIVE);
         return postJpaEntities.stream().map(postMapper::toDomainEntity).toList();
+    }
+
+    @Override
+    public Post loadByPostBaseId(Long postBaseId) {
+        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(postBaseId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
+
+        PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(postBaseJpaEntity.getId())
+                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+
+        return postMapper.toDomainEntity(postJpaEntity);
     }
 }

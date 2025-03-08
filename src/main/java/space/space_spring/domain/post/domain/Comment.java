@@ -15,11 +15,11 @@ public class Comment {
 
     private Long spaceMemberId;
 
-    private String content;
+    private Content content;
 
     private boolean isAnonymous;
 
-    private Comment(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content, boolean isAnonymous) {
+    private Comment(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, Content content, boolean isAnonymous) {
         this.id = id;
         this.boardId = boardId;
         this.discordId = discordId;
@@ -29,19 +29,11 @@ public class Comment {
         this.isAnonymous = isAnonymous;
     }
 
-    public static Comment createForPost(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content) {
-        return new Comment(id, boardId, discordId, targetId, spaceMemberId, content, false);
-    }
-
-    public static Comment createForQuestion(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content, boolean isAnonymous) {
+    public static Comment create(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, Content content, boolean isAnonymous) {
         return new Comment(id, boardId, discordId, targetId, spaceMemberId, content, isAnonymous);
     }
 
-    public static Comment withoutIdForPost(Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content) {
-        return new Comment(null, boardId, discordId, targetId, spaceMemberId, content, false);
-    }
-
-    public static Comment withoutIdForQuestion(Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content, boolean isAnonymous) {
+    public static Comment withoutId(Long boardId, Long discordId, Long targetId, Long spaceMemberId, Content content, boolean isAnonymous) {
         return new Comment(null, boardId, discordId, targetId, spaceMemberId, content, isAnonymous);
     }
 }

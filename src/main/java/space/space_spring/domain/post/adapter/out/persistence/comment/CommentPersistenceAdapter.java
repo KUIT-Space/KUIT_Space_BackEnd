@@ -2,14 +2,19 @@ package space.space_spring.domain.post.adapter.out.persistence.comment;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
 import space.space_spring.domain.post.application.port.out.CreateCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadCommentPort;
 import space.space_spring.domain.post.application.port.out.UpdateCommentPort;
 import space.space_spring.domain.post.domain.Comment;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
@@ -23,10 +28,14 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @RequiredArgsConstructor
 public class CommentPersistenceAdapter implements LoadCommentPort, CreateCommentPort, UpdateCommentPort {
 
+    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpringDataBoardRepository boardRepository;
     private final SpringDataPostCommentRepository postCommentRepository;
     private final SpringDataPostBaseRepository postBaseRepository;
     private final SpringDataPostRepository postRepository;
     private final CommentMapper commentMapper;
+
+    private final PostBaseMapper postBaseMapper;
 
     @Override
     public Map<Long, Long> countCommentsByPostIds(List<Long> postIds) {
@@ -48,21 +57,31 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
     @Override
     public Long createComment(Comment comment) {
-        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(comment.getTargetId(), BaseStatusType.ACTIVE)
-                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
-
-        PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(comment.getTargetId())
+        // Post 에 해당하는 jpa entity 찾기
+        PostJpaEntity postJpaEntity = postRepository.findById(comment.getPostId())
                 .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
-        return postCommentRepository.save(commentMapper.toJpaEntity(postBaseJpaEntity, postJpaEntity, comment)).getId();
+        if (!postJpaEntity.getPostBase().isActive()) {
+            throw new CustomException(POST_NOT_FOUND);          // 찾은 Post가 Active 상태가 아닌 경우
+        }
+
+        // Comment에 해당하는 postBaseJpaEntity 생성
+        SpaceMemberJpaEntity commentCreator = spaceMemberRepository.findByIdAndStatus(comment.getCommentCreatorId(), BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+        BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(comment.getBoardId(), BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+        PostBaseJpaEntity commentPostBase = postBaseMapper.toJpaEntity(commentCreator, boardJpaEntity, comment);
+
+        // commentJpaEntity 생성 & 저장
+        return postCommentRepository.save(commentMapper.toJpaEntity(commentPostBase, postJpaEntity, comment)).getId();
     }
 
     @Override
     public void updateComment(Comment comment) {
-        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(comment.getTargetId(), BaseStatusType.ACTIVE)
+        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(comment.getPostId(), BaseStatusType.ACTIVE)
                 .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
 
-        PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(comment.getTargetId())
+        PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(comment.getPostId())
                 .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
         PostCommentJpaEntity postCommentJpaEntity = commentMapper.toJpaEntity(postBaseJpaEntity, postJpaEntity, comment);

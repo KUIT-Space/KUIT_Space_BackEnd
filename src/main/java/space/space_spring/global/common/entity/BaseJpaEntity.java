@@ -57,4 +57,8 @@ public abstract class BaseJpaEntity {
     public void updateToActive() { this.status = BaseStatusType.ACTIVE; }
 
     public void updateToInactive() { this.status = BaseStatusType.INACTIVE; }
+
+    public boolean isActive() {
+        return this.status == BaseStatusType.ACTIVE;
+    }
 }

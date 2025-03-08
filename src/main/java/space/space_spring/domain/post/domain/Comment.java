@@ -1,17 +1,18 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
+import space.space_spring.global.common.entity.BaseInfo;
 
 @Getter
 public class Comment {
 
-    private Long id; // comment의 postBaseId
+    private Long id;
 
     private Long boardId;
 
     private Long discordId;
 
-    private Long targetId; // post의 postBaseId
+    private Long postId;
 
     private Long commentCreatorId;
 
@@ -19,22 +20,28 @@ public class Comment {
 
     private boolean isAnonymous;
 
-    private Comment(Long id, Long boardId, Long discordId, Long targetId, Long commentCreatorId, Content content, boolean isAnonymous) {
+    private BaseInfo baseInfo;
+
+    private Comment(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous, BaseInfo baseInfo) {
         this.id = id;
         this.boardId = boardId;
         this.discordId = discordId;
-        this.targetId = targetId;
+        this.postId = postId;
         this.commentCreatorId = commentCreatorId;
         this.content = content;
         this.isAnonymous = isAnonymous;
+        this.baseInfo = baseInfo;
     }
 
-    public static Comment create(Long id, Long boardId, Long discordId, Long targetId, Long commentCreatorId, Content content, boolean isAnonymous) {
-        return new Comment(id, boardId, discordId, targetId, commentCreatorId, content, isAnonymous);
+    public static Comment create(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous, BaseInfo baseInfo) {
+        return new Comment(id, boardId, discordId, postId, commentCreatorId, content, isAnonymous, baseInfo);
     }
 
-    public static Comment withoutId(Long boardId, Long discordId, Long targetId, Long commentCreatorId, Content content, boolean isAnonymous) {
-        return new Comment(null, boardId, discordId, targetId, commentCreatorId, content, isAnonymous);
+    /**
+     * 처음 Domain Entity 생성 시 사용하는 정적 펙토리 메서드
+     */
+    public static Comment withoutId(Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous) {
+        return new Comment(null, boardId, discordId, postId, commentCreatorId, content, isAnonymous, BaseInfo.ofEmpty());
     }
 
     public boolean isCommentCreator(Long spaceMemberId) {

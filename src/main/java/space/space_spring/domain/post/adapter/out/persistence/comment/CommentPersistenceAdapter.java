@@ -8,8 +8,8 @@ import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity
 import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
-import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
 import space.space_spring.domain.post.application.port.out.CreateCommentPort;
+import space.space_spring.domain.post.application.port.out.DeleteCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadCommentPort;
 import space.space_spring.domain.post.application.port.out.UpdateCommentPort;
 import space.space_spring.domain.post.domain.Comment;
@@ -26,12 +26,13 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class CommentPersistenceAdapter implements LoadCommentPort, CreateCommentPort, UpdateCommentPort {
+public class CommentPersistenceAdapter implements LoadCommentPort, CreateCommentPort, UpdateCommentPort, DeleteCommentPort {
+
+    private final String DELETE_COMMENT_CONTENT = "삭제된 댓글입니다.";
 
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataPostCommentRepository postCommentRepository;
-    private final SpringDataPostBaseRepository postBaseRepository;
     private final SpringDataPostRepository postRepository;
     private final CommentMapper commentMapper;
     private final PostBaseMapper postBaseMapper;
@@ -90,5 +91,24 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
         // jpa entity 필드 속성 update
         postCommentJpaEntity.getPostBase().changeContent(comment.getContent().getValue());
         postCommentJpaEntity.changeAnonymous(comment.isAnonymous());
+    }
+
+    /**
+     * 댓글 삭제는
+     * 삭제할 댓글의 내용을 "삭제된 댓글입니다." 로 수정하는 방식
+     * 으로 구현
+     */
+    @Override
+    public void deleteComment(Long commentId) {
+        // Comment 에 해당하는 jpa entity 찾기
+        PostCommentJpaEntity postCommentJpaEntity = postCommentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+        if (!postCommentJpaEntity.getPostBase().isActive()) {
+            throw new CustomException(COMMENT_NOT_FOUND);          // 찾은 Comment가 Active 상태가 아닌 경우
+        }
+
+        // jpa entity 필드 속성 update
+        postCommentJpaEntity.getPostBase().changeContent(DELETE_COMMENT_CONTENT);
     }
 }

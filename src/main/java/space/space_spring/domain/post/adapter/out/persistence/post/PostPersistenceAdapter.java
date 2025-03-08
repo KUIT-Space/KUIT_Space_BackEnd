@@ -59,12 +59,14 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
     }
 
     @Override
-    public Post loadByPostBaseId(Long postBaseId) {
-        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(postBaseId, BaseStatusType.ACTIVE)
-                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
-
-        PostJpaEntity postJpaEntity = postRepository.findByPostBaseId(postBaseJpaEntity.getId())
+    public Post loadById(Long postId) {
+        // Post 에 해당하는 jpa entity 찾기
+        PostJpaEntity postJpaEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+
+        if (!postJpaEntity.getPostBase().isActive()) {
+            throw new CustomException(POST_NOT_FOUND);          // 찾은 Post가 Active 상태가 아닌 경우
+        }
 
         return postMapper.toDomainEntity(postJpaEntity);
     }

@@ -5,18 +5,18 @@ import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.domain.AttachmentType;
 
 @Getter
-public class UploadAttachmentCommand {
+public class CreateAttachmentCommand {
 
     private AttachmentType attachmentType;
 
     private MultipartFile attachment;
 
-    private UploadAttachmentCommand(AttachmentType attachmentType, MultipartFile attachment) {
+    private CreateAttachmentCommand(AttachmentType attachmentType, MultipartFile attachment) {
         this.attachmentType = attachmentType;
         this.attachment = attachment;
     }
 
-    public static UploadAttachmentCommand of(String attachmentType, MultipartFile attachment) {
-        return new UploadAttachmentCommand(AttachmentType.valueOf(attachmentType), attachment);
+    public static CreateAttachmentCommand of(String attachmentType, MultipartFile attachment) {
+        return new CreateAttachmentCommand(AttachmentType.valueOf(attachmentType), attachment);
     }
 }

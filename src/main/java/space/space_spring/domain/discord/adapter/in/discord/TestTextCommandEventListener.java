@@ -65,6 +65,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             }
 
 
+
             Webhook webHook = event.getChannel().asTextChannel().createWebhook("generate WebHook").complete();
             webHook.sendMessage("only webhook Message").setAvatarUrl(event.getAuthor().getAvatarUrl()).setUsername(event.getMember().getEffectiveName()).queue();
             //event.getChannel().asTextChannel().retrieveWebhooks()
@@ -89,6 +90,15 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                 } catch (Exception e) {
                     event.getMessage().reply("error : " + e.toString()).queue();
                 }
+
+        if(msg.getContentRaw().startsWith("!member:")){
+            System.out.println("\n\n\nmembertext\n\n\n");
+            System.out.println("mem:"+msg.getGuild().getMembers().size());
+            Long spaceId= Long.parseLong(msg.getContentRaw().split(":")[1]);
+            loadSpaceMemberPort.loadSpaceMemberBySpaceId(spaceId).stream().forEach(spaceMember->{
+                msg.getChannel().sendMessage(
+                        "\n"+spaceMember.getNickname()+":"+spaceMember.getId()+":Manager:"+spaceMember.isManager()).queue();
+
             });
             return;
         }

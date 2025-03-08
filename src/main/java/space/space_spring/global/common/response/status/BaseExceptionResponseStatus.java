@@ -118,12 +118,17 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     POST_IS_NOT_IN_BOARD(11013, HttpStatus.NOT_FOUND, "현재 게시판에는 해당 게시글이 존재하지 않습니다."),
     CAN_NOT_BE_ANONYMOUS(11014, HttpStatus.BAD_REQUEST, "해당 글은 익명으로 작성할 수 없습니다."),
 
+
   
 
 
     INVALID_COMMENT_UPDATE(11015, HttpStatus.BAD_REQUEST, "댓글 수정 요청에서 잘못된 값이 존재합니다."),
     COMMENT_CREATOR_MISMATCH(11016, HttpStatus.BAD_REQUEST, "댓글 생성자가 본인과 일치하지 않습니다."),
     BOARD_NOT_EXIST(11017,HttpStatus.NOT_FOUND,"해당 게시판을 찾지 못했습니다"),
+
+  
+    PAY_BOARD_NOT_FOUND(11018,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
+
 
 
     /**
@@ -136,8 +141,14 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_NOT_FOUND(12005, HttpStatus.NOT_FOUND, "존재하지 않는 정산입니다."),
     PAY_REQUEST_TARGET_NOT_FOUND(12006, HttpStatus.NOT_FOUND, "존재하지 않는 정산 요청 대상 입니다"),
     THIS_PAY_REQUEST_HAS_NOT_TARGETS(12007, HttpStatus.INTERNAL_SERVER_ERROR, "현재 정산 요청은 정산 요청 대상이 없습니다. 현재 정산 생성 시 서버에 문제가 있었습니다."),
-    PAY_REQUEST_TARGET_MISMATCH(12008, HttpStatus.BAD_REQUEST, "정산 요청 대상자가 본인과 일치하지 않습니다."),
-    PAY_REQUEST_CREATOR_MISMATCH(12009, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
+
+    INVALID_PAY_REQUEST_TARGET_ID(12008, HttpStatus.BAD_REQUEST, "정산 요청 타겟 id의 타겟 유저가 본인과 일치하지 않습니다. 본인의 정산에 대해서만 완료처리를 할 수 있습니다."),
+    FAIL_ROLE_CREATE(12009,HttpStatus.CONFLICT,"discord role 생성에 실패했습니다."),
+    FAIL_ROLE_CHANNEL_CREATE(12010,HttpStatus.CONFLICT,"discord channel 생성에 실패했습니다."),
+
+    PAY_REQUEST_TARGET_MISMATCH(12011, HttpStatus.BAD_REQUEST, "정산 요청 대상자가 본인과 일치하지 않습니다."),
+    PAY_REQUEST_CREATOR_MISMATCH(12012, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
+
 
 
     /**

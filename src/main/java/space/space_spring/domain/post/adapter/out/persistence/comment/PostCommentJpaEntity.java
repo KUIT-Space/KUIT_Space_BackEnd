@@ -14,17 +14,13 @@ import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity
 @Table(name = "Post_Comment")
 public class PostCommentJpaEntity {
 
-    /**
-     * Comment 테이블 하나로 합치면 수정해야함 -> 익명 여부 추가
-     */
-
     @Id
-    @GeneratedValue
     @Column(name="post_comment_id")
     @NotNull
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @MapsId     // PostBaseJpaEntity의 PK 를 공유
     @JoinColumn(name = "post_base_id")
     @NotNull
     private PostBaseJpaEntity postBase;
@@ -39,6 +35,7 @@ public class PostCommentJpaEntity {
     private boolean isAnonymous;
 
     private PostCommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post, boolean isAnonymous) {
+        this.id = postBase.getId();     // PostBaseJpaEntity 의 식별자가 이미 있어야 한다
         this.postBase = postBase;
         this.post = post;
         this.isAnonymous = isAnonymous;

@@ -23,11 +23,9 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Transactional(readOnly = true)
 public class CreateCommentService implements CreateCommentUseCase {
 
-    private final UploadAttachmentPort uploadAttachmentPort;
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final CreateCommentPort createCommentPort;
-    private final CreateAttachmentPort createAttachmentPort;
 
     @Override
     @Transactional
@@ -39,21 +37,25 @@ public class CreateCommentService implements CreateCommentUseCase {
         // 2. validation -> 게시판이 space에 속하는게 맞는지, 게시글이 게시판에 속하는게 맞는지
         validateBoardAndPost(board, post, command);
 
-        // 3. s3에 댓글 첨부파일 upload & db에 attachment 저장
-        Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachmentCommands().stream()
-                .collect(Collectors.groupingBy(
-                        CreateAttachmentCommand::getAttachmentType,
-                        Collectors.mapping(CreateAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
-                ));
-        Map<AttachmentType, List<String>> savedAttachmentUrls = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "comment");
+        /**
+         * space 2.0 v1 에서는 댓글 수정 시에 첨부파일 update 요구사항 없음
+         */
 
-        List<Attachment> attachments = new ArrayList<>();
-        for (Map.Entry<AttachmentType, List<String>> entry : savedAttachmentUrls.entrySet()) {
-            for (String savedAttachmentUrl : entry.getValue()) {
-                attachments.add(Attachment.withoutId(command.getPostId(), entry.getKey(), savedAttachmentUrl));
-            }
-        }
-        createAttachmentPort.createAttachments(attachments);
+//        // 3. s3에 댓글 첨부파일 upload & db에 attachment 저장
+//        Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachmentCommands().stream()
+//                .collect(Collectors.groupingBy(
+//                        CreateAttachmentCommand::getAttachmentType,
+//                        Collectors.mapping(CreateAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
+//                ));
+//        Map<AttachmentType, List<String>> savedAttachmentUrls = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "comment");
+//
+//        List<Attachment> attachments = new ArrayList<>();
+//        for (Map.Entry<AttachmentType, List<String>> entry : savedAttachmentUrls.entrySet()) {
+//            for (String savedAttachmentUrl : entry.getValue()) {
+//                attachments.add(Attachment.withoutId(command.getPostId(), entry.getKey(), savedAttachmentUrl));
+//            }
+//        }
+//        createAttachmentPort.createAttachments(attachments);
 
         // 4. discord 로 보내기
         Long discordId = 0L;        // 상준님과 협의

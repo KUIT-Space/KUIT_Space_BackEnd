@@ -11,6 +11,7 @@ import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
+import space.space_spring.global.common.entity.BaseInfo;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,10 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                 spaceMemberId,
                 getTitle(command.getTitle()),
                 Content.of(command.getContent()),
+                /**
+                 * TODO : 확인해야 할 부분
+                 */
+                BaseInfo.ofEmpty(),
                 false
                 );
         printPost(command);

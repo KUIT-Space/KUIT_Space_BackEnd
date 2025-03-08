@@ -10,7 +10,10 @@ import space.space_spring.domain.space.adapter.out.persistence.SpringDataSpace;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.Optional;
+
 import java.util.List;
+
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_NOT_FOUND;
@@ -31,6 +34,12 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
         BoardJpaEntity boardJpaEntity = boardMapper.toJpaEntity(spaceJpaEntity, board);
         return boardRepository.save(boardJpaEntity).getId();
     }
+    @Override
+    public Optional<Board> load(Long boardId){
+
+        return boardRepository.findById(boardId).map(boardMapper::toDomainEntity);
+    }
+
 
     @Override
     public Board loadById(Long id) {

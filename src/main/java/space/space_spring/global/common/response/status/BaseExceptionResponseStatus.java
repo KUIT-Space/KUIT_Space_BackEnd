@@ -118,10 +118,17 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     POST_IS_NOT_IN_BOARD(11013, HttpStatus.NOT_FOUND, "현재 게시판에는 해당 게시글이 존재하지 않습니다."),
     CAN_NOT_BE_ANONYMOUS(11014, HttpStatus.BAD_REQUEST, "해당 글은 익명으로 작성할 수 없습니다."),
 
+
+  
+
+
     INVALID_COMMENT_UPDATE(11015, HttpStatus.BAD_REQUEST, "댓글 수정 요청에서 잘못된 값이 존재합니다."),
     COMMENT_CREATOR_MISMATCH(11016, HttpStatus.BAD_REQUEST, "댓글 생성자가 본인과 일치하지 않습니다."),
+    BOARD_NOT_EXIST(11017,HttpStatus.NOT_FOUND,"해당 게시판을 찾지 못했습니다"),
+
   
-    PAY_BOARD_NOT_FOUND(11017,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
+    PAY_BOARD_NOT_FOUND(11018,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
+
 
 
     /**
@@ -143,15 +150,27 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_CREATOR_MISMATCH(12012, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
 
 
+
     /**
      * 13000 : Event 오류
      */
     INVALID_EVENT_CREATE(13000, HttpStatus.BAD_REQUEST, "행사 생성 요청에서 잘못된 값이 존재합니다."),
     EVENT_NOT_FOUND(13001, HttpStatus.NOT_FOUND, "존재하지 않는 행사입니다."),
+
     ALREADY_IN_EVENT(13002, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여한 행사입니다."),
     ALREADY_NOT_IN_EVENT(13003, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여를 취소한 행사입니다."),
     PARTICIPANT_NOT_FOUND(13004, HttpStatus.NOT_FOUND, "존재하지 않는 행사 참여자입니다."),
+
+    /**
+     * 140000 Discord 오류
+     */
+    SEND_MESSAGE_FAIL(14000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
+    DISCORD_THREAD_CREATE_FAIL(14001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
+    DISCORD_CHANNEL_NOT_FOUND(14002,HttpStatus.NOT_FOUND,"discord channel을 찾지 못했습니다"),
+    DISCORD_GUILD_NOT_FOUND(14003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습ㄴ디ㅏ"),
+    DISCORD_CHANNEL_TYPE_WRONG(14004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다");
     ;
+
 
     private final int code;
     private final HttpStatus status;

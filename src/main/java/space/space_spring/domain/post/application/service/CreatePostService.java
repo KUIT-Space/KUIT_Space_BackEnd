@@ -26,7 +26,7 @@ public class CreatePostService implements CreatePostUseCase {
 
 
         // 1. 디스코드로 게시글 정보 전송
-        Long discordIdForPost = createPostInDiscordUseCase.createPostInDiscord(mapToDiscordCommand(command));
+        Long discordIdForPost = createPostInDiscordUseCase.CreateMessageInDiscord(mapToDiscordCommand(command));
 
         // 2. Post 도메인 엔티티 생성 후 Adapter에 저장
         Post post = command.toPostDomainEntity(discordIdForPost);

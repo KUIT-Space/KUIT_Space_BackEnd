@@ -5,6 +5,7 @@ import lombok.Getter;
 import space.space_spring.domain.post.adapter.in.web.createPost.AttachmentOfCreate;
 import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
+import space.space_spring.global.common.entity.BaseInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +41,12 @@ public class CreatePostCommand {
     private static List<AttachmentOfCreateCommand> mapToInputModel(List<AttachmentOfCreate> attachments) {
         List<AttachmentOfCreateCommand> result = new ArrayList<>();
         for (AttachmentOfCreate attachment : attachments) {
-            result.add(AttachmentOfCreateCommand.create(attachment.getValueOfAttachmentType(), attachment.getAttachmentUrl()));
+            result.add(AttachmentOfCreateCommand.create(attachment.getValueOfAttachmentType(), attachment.getAttachment()));
         }
         return result;
     }
 
     public Post toPostDomainEntity(Long discordMessageId) {
-        return Post.withoutId(discordMessageId, boardId, postCreatorId, title, content, isAnonymous);
+        return Post.withoutId(discordMessageId, boardId, postCreatorId, title, content, BaseInfo.ofEmpty(), isAnonymous);
     }
 }

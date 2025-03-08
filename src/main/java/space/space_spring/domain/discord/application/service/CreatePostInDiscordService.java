@@ -10,13 +10,16 @@ import space.space_spring.domain.discord.application.port.out.CreateDiscordThrea
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessagePort;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
+import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
 import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_EXIST;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.DISCORD_THREAD_CREATE_FAIL;
@@ -72,6 +75,11 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                 .content(command.getTitle())
                 .guildDiscordId(guildDiscordId)
                 .channelDiscordId(board.getDiscordId())
+                .attachmentsUrl(
+                        command.getAttachments().stream()
+                                .sorted(Comparator.comparing(a -> a.getAttachmentType().equals(AttachmentType.IMAGE) ? 0 : 1)) // image 우선 정렬
+                                .map(attachment->attachment.getAttachmentUrl()).toList()
+                )
                 .build();
     }
 

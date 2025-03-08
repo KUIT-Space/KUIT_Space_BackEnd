@@ -41,7 +41,7 @@ public class CreateDiscordWebHookMessageAdapter implements CreateDiscordWebHookM
 
         CompletableFuture<Long> future = new CompletableFuture<>();
 
-        client.sendMessage(command.getContent())
+        client.sendMessage(command.getMessageContent())
                 .setAvatarUrl(command.getAvatarUrl())
                 .setUsername(command.getName()).queue(
                         obj->{

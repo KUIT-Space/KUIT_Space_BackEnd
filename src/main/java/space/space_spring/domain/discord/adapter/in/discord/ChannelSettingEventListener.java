@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.domain.ChannelCommand;
+import space.space_spring.domain.post.application.port.in.boardCache.LoadBoardCacheUseCase;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
 import space.space_spring.domain.post.domain.BoardType;
@@ -33,14 +34,15 @@ import static space.space_spring.domain.post.domain.BoardType.POST;
 public class ChannelSettingEventListener extends ListenerAdapter {
     private final CreateBoardUseCase createBoardUseCase;
     private final LoadSpaceUseCase loadSpaceUseCase;
+    private final LoadBoardCacheUseCase loadBoardCacheUseCase;
 
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("set-board")) {
             event.reply("설정하고 싶은 게시판 종류를 선택하세요.(포럼과 텍스트 채널만 가능)")
-                    .addActionRow(
-                        getChannelSettingButtons()
+                    .addComponents(
+                            partitionButtons(getChannelSettingButtons())
                     ).queue();
         }
     }
@@ -76,6 +78,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
             List<Button> channelButtons = channels.stream()
                     .filter(channel->channel.getType()== ChannelType.FORUM||channel.getType()==ChannelType.TEXT)
                     //ToDo 이미 등록한 게시판 제외
+                    .filter(channel->loadBoardCacheUseCase.findByDiscordId(channel.getIdLong()).isEmpty())
                     .map(channel -> Button.secondary("check:create-channel:" + boardTypeString + ":" + channel.getId()+":"+channel.getName(), channel.getName()))
                     .collect(Collectors.toList());
 
@@ -147,6 +150,15 @@ public class ChannelSettingEventListener extends ListenerAdapter {
                 case PAY:
                     createPayBoard(command);
                     break;
+                case TIP:
+                    createTipBoard(command);
+                    break;
+                case NOTICE:
+                    createNoticeBoard(command);
+                    break;
+                case SEASON_NOTICE:
+                    createSeasonNoticeBoard(command);
+                    break;
                 default:
                     event.reply("잘못된 요청입니다.").setEphemeral(true).queue();
                     return;
@@ -174,6 +186,22 @@ public class ChannelSettingEventListener extends ListenerAdapter {
     }
 
     private void createBoard(ChannelCommand command) {
+        System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
+        // Todo 중복 저장 검사
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));
+    }
+    private void createNoticeBoard(ChannelCommand command) {
+        System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
+        // Todo 중복 저장 검사
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));
+    }
+    private void createSeasonNoticeBoard(ChannelCommand command) {
+        System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
+        // Todo 중복 저장 검사
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));
+    }
+
+    private void createTipBoard(ChannelCommand command) {
         System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
         // Todo 중복 저장 검사
         createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));

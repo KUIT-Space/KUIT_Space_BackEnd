@@ -33,10 +33,16 @@ public class BoardCacheAdapter implements CreateBoardCachePort, LoadBoardCachePo
     }
 
     private String toString(Long value){
+        if(value==null){
+            return null;
+        }
         return String.valueOf(value);
     }
 
     private Long toLong(String value){
+        if(value==null){
+            return null;
+        }
         return Long.valueOf(value);
     }
 

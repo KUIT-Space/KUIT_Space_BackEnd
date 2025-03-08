@@ -10,6 +10,7 @@ import space.space_spring.domain.post.application.port.in.createPost.AttachmentI
 import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
+import space.space_spring.domain.post.application.port.out.CreateAttachmentPort;
 import space.space_spring.domain.post.application.port.out.CreatePostPort;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.application.port.out.UploadAttachmentPort;
@@ -36,6 +37,7 @@ public class CreatePostService implements CreatePostUseCase {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreatePostInDiscordUseCase createPostInDiscordUseCase;
+    private final CreateAttachmentPort createAttachmentPort;
 
     @Override
     @Transactional
@@ -72,6 +74,7 @@ public class CreatePostService implements CreatePostUseCase {
         attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
                 attachments.add(Attachment.withoutId(postId, type, url))
         ));
+        createAttachmentPort.createAttachments(attachments);
         return postId;
     }
 
@@ -87,6 +90,7 @@ public class CreatePostService implements CreatePostUseCase {
          * TODO : 게시글 생성 Discord Input, attachment 파일 형식 정해진 후 리팩토링
          */
         List<Attachment> attachments = new ArrayList<>();
+        createAttachmentPort.createAttachments(attachments);
 
         return postId;
     }

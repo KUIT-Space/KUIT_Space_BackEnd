@@ -32,7 +32,8 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                 command.getBoardId(),
                 spaceMemberId,
                 getTitle(command.getTitle()),
-                Content.of(command.getContent())
+                Content.of(command.getContent()),
+                false
                 );
         printPost(command);
         createPostPort.createPost(post);

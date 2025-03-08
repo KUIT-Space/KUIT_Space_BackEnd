@@ -44,4 +44,9 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
     public List<Board> loadByType(BoardType type){
         return boardRepository.findByBoardType(type).stream().map(boardMapper::toDomainEntity).toList();
     }
+    @Override
+    public List<Board> findAll(){
+        return boardRepository.findAll().stream().map(boardMapper::toDomainEntity).toList();
+
+    }
 }

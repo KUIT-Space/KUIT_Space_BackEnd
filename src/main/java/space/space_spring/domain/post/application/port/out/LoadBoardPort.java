@@ -5,7 +5,12 @@ import space.space_spring.domain.post.domain.BoardType;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface LoadBoardPort {
     Board loadById(Long id);
     List<Board> loadByType(BoardType type);
+
+    List<Board> findAll();
+
 }

@@ -25,4 +25,5 @@ public class RefreshTokenRepository {
     public boolean deleteByUserId(Long userId) {
         return redisTemplate.opsForHash().delete(REFRESH_TOKEN_PREFIX, String.valueOf(userId)) > 0;
     }
+
 }

@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.application.port.in.discord.InputMessageFromDiscordUseCase;
 import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
 import space.space_spring.domain.discord.application.service.MessageInputFromDiscordService;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
@@ -24,7 +25,7 @@ import java.util.Optional;
 public class MessageCreateEventListener extends ListenerAdapter {
     private final LoadBoardCachePort loadBoardCachePort;
     private final DiscordUtil discordUtil;
-    private final MessageInputFromDiscordService messageInputFromDiscordService;
+    private final InputMessageFromDiscordUseCase inputMessageFromDiscordUseCase;
     private final DiscordMessageMapper discordMessageMapper;
     private final CreateBoardUseCase createBoardUseCase;
     @Override
@@ -54,7 +55,7 @@ public class MessageCreateEventListener extends ListenerAdapter {
         }
         MessageInputFromDiscordCommand command = discordMessageMapper.mapToCommand(event,boardId.get());
         //log.info(command.toString());
-        messageInputFromDiscordService.put(command);
+        inputMessageFromDiscordUseCase.put(command);
         //ToDo 채널 분류 후 useCase 호출
 
     }

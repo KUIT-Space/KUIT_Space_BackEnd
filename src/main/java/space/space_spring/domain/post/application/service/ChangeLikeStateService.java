@@ -21,12 +21,11 @@ public class ChangeLikeStateService implements ChangeLikeStateUseCase {
     @Transactional
     @Override
     public void changeLikeState(ChangeLikeStateCommand command) {
-        Like like;
         try {
             changeLikeStatePort.changeLikeState(command.getTargetId(), command.getSpaceMemberId());
         } catch (CustomException e) {       // 아직 스페이스 멤버가 target에 좋아요 표시를 한 적이 없는 경우
-            like = Like.withoutId(command.getTargetId(), command.getSpaceMemberId(), true);
-            createLikePort.createLike(like);
+            Like newLike = Like.withoutId(command.getTargetId(), command.getSpaceMemberId(), true);
+            createLikePort.createLike(newLike);
         }
     }
 }

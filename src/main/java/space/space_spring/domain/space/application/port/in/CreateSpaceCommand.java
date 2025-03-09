@@ -12,13 +12,17 @@ public class CreateSpaceCommand {
     //limit 100 char
     private String guildName;
 
+    private Long creatorDiscordId;
+
     @Builder
-    private CreateSpaceCommand(Long guildId,String guildName){
+    private CreateSpaceCommand(Long guildId,String guildName,Long creatorDiscordId){
         this.guildId=guildId;
         this.guildName = guildName;
+        this.creatorDiscordId=creatorDiscordId;
     }
-    static public CreateSpaceCommand of(Long guildId,String guildName){
+    static public CreateSpaceCommand of(Long guildId,String guildName,Long creatorDiscordId){
            return CreateSpaceCommand.builder()
+                   .creatorDiscordId(creatorDiscordId)
                    .guildName(guildName)
                    .guildId(guildId)
                    .build();

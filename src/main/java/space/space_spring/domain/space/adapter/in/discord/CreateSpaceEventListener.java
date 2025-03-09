@@ -24,6 +24,7 @@ public class CreateSpaceEventListener extends ListenerAdapter {
             //이 길드를 space로 등록합니다
             Guild guild = event.getGuild();
             CreateSpaceCommand command = CreateSpaceCommand.builder()
+                    .creatorDiscordId(event.getMember().getIdLong())
                     .guildId(guild.getIdLong())
                     .guildName(guild.getName())
                     .build();
@@ -33,7 +34,6 @@ public class CreateSpaceEventListener extends ListenerAdapter {
                 event.deferReply(true).queue(msg->{
 
                 });
-
                 Long spaceId = createSpaceUseCase.createSpace(command);
 
                 event.getHook().editOriginal("space setting success!\nspace ID : " + spaceId + "\n")

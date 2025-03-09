@@ -40,14 +40,14 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                 BaseInfo.ofEmpty(),
                 false
                 );
-        printPost(command);
+        //printPost(command);
         createPostPort.createPost(post);
     }
 
     private String getTitle(String rowContent){
         return rowContent.split("\n")[0];
     }
-    private void printPost(MessageInputFromDiscordCommand command){
-        System.out.println(command.toString());
-    }
+//    private void printPost(MessageInputFromDiscordCommand command){
+//        System.out.println(command.toString());
+//    }
 }

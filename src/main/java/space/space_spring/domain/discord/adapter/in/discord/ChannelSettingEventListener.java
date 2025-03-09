@@ -70,7 +70,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
                 processor.process(event);
                 return;
             }
-            System.out.println("button processor work");
+            //System.out.println("button processor work");
         }
 
         if(!hasButton) {

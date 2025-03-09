@@ -31,31 +31,31 @@ public class CreateChannelButtonProcessor implements ButtonInteractionProcessor 
     @Override
     public void process(ButtonInteractionEvent event){
         String buttonId = event.getComponentId();
-            String boardTypeString = buttonId.split(":")[1];
-            Guild guild = event.getGuild();
-            if (guild == null) {
-                event.reply("길드에서만 사용 가능합니다.").setEphemeral(true).queue();
-                return;
-            }
-
-            // 길드의 모든 텍스트 채널을 버튼으로 생성
-            List<GuildChannel> channels = guild.getChannels();
-            List<Button> channelButtons = channels.stream()
-                    .filter(channel->channel.getType()== ChannelType.FORUM||channel.getType()==ChannelType.TEXT)
-                    //ToDo 이미 등록한 게시판 제외
-                    .filter(channel->loadBoardCacheUseCase.findByDiscordId(channel.getIdLong()).isEmpty())
-                    .map(channel -> Button.secondary("check:create-channel:" + boardTypeString + ":" + channel.getId()+":"+channel.getName(), channel.getName()))
-                    .collect(Collectors.toList());
-
-            // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔
-            List<ActionRow> rows = buttonUtil.partitionButtons(channelButtons);
-
-            BoardType boardType= BoardType.fromString(boardTypeString);
-            event.reply(boardType.getKrName()+"으로 사용할 채널을 선택하세요"+"\n"+boardType.getDetail())
-                    .addComponents(rows)
-                    .queue();
-
-
+        String boardTypeString = buttonId.split(":")[1];
+        Guild guild = event.getGuild();
+        if (guild == null) {
+            event.reply("길드에서만 사용 가능합니다.").setEphemeral(true).queue();
+            return;
         }
+
+        // 길드의 모든 텍스트 채널을 버튼으로 생성
+        List<GuildChannel> channels = guild.getChannels();
+        List<Button> channelButtons = channels.stream()
+                .filter(channel->channel.getType()== ChannelType.FORUM||channel.getType()==ChannelType.TEXT)
+                //ToDo 이미 등록한 게시판 제외
+                .filter(channel->loadBoardCacheUseCase.findByDiscordId(channel.getIdLong()).isEmpty())
+                .map(channel -> Button.secondary("check:create-channel:" + boardTypeString + ":" + channel.getId()+":"+channel.getName(), channel.getName()))
+                .collect(Collectors.toList());
+
+        // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔
+        List<ActionRow> rows = buttonUtil.partitionButtons(channelButtons);
+
+        BoardType boardType= BoardType.fromString(boardTypeString);
+        event.reply(boardType.getKrName()+"으로 사용할 채널을 선택하세요"+"\n"+boardType.getDetail())
+                .addComponents(rows)
+                .queue();
+
+
+    }
 
 }

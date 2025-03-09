@@ -3,6 +3,7 @@ package space.space_spring.domain.post.adapter.in.web.createPost;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.global.common.validation.SelfValidating;
 import space.space_spring.global.validator.EnumValidator;
@@ -11,15 +12,11 @@ import space.space_spring.global.validator.EnumValidator;
 @NoArgsConstructor
 public class AttachmentOfCreate extends SelfValidating<AttachmentOfCreate> {
 
-    @EnumValidator(enumClass = AttachmentType.class, message = "attachmentType은 IMAGE 또는 FILE 이어야 합니다.")
+    @EnumValidator(enumClass = AttachmentType.class, message = "첨부파일의 유형은 IMAGE 또는 FILE 이어야 합니다.")
+    @NotBlank(message = "첨부파일의 유형은 공백일 수 없습니다.")
     private String valueOfAttachmentType;
 
-    @NotBlank(message = "attachmentUrl은 필수입니다.")
-    private String attachmentUrl;
+    @NotBlank(message = "첨부파일은 공백일 수 없습니다.")
+    private MultipartFile attachment;
 
-    public AttachmentOfCreate(String valueOfAttachmentType, String attachmentUrl) {
-        this.valueOfAttachmentType = valueOfAttachmentType;
-        this.attachmentUrl = attachmentUrl;
-        this.validateSelf();
-    }
 }

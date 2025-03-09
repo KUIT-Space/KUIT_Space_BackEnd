@@ -37,8 +37,8 @@ public class Post {
         return new Post(id, discordId, boardId, spaceMemberId, title, content, baseInfo, isAnonymous);
     }
 
-    public static Post withoutId(Long discordId, Long boardId, Long spaceMemberId, String title, Content content, Boolean isAnonymous) {
-        return new Post(null, discordId, boardId, spaceMemberId, title, content, BaseInfo.ofEmpty(), isAnonymous);
+    public static Post withoutId(Long discordId, Long boardId, Long spaceMemberId, String title, Content content, BaseInfo baseInfo, Boolean isAnonymous) {
+        return new Post(null, discordId, boardId, spaceMemberId, title, content, baseInfo, isAnonymous);
     }
 
     public boolean isInBoard(Long boardId) {

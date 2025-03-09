@@ -1,6 +1,7 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
+import space.space_spring.global.common.entity.BaseInfo;
 
 @Getter
 public class Like {
@@ -13,18 +14,21 @@ public class Like {
 
     private boolean isLiked;
 
-    private Like(Long id, Long targetId, Long spaceMemberId, boolean isLiked) {
+    private BaseInfo baseInfo;
+
+    private Like(Long id, Long targetId, Long spaceMemberId, boolean isLiked, BaseInfo baseInfo) {
         this.id = id;
         this.targetId = targetId;
         this.spaceMemberId = spaceMemberId;
         this.isLiked = isLiked;
+        this.baseInfo = baseInfo;
     }
 
-    public static Like of(Long id, Long targetId, Long spaceMemberId, boolean isLiked) {
-        return new Like(id, targetId, spaceMemberId, isLiked);
+    public static Like of(Long id, Long targetId, Long spaceMemberId, boolean isLiked, BaseInfo baseInfo) {
+        return new Like(id, targetId, spaceMemberId, isLiked, baseInfo);
     }
 
     public static Like withoutId(Long targetId, Long spaceMemberId, boolean isLiked) {
-        return new Like(null, targetId, spaceMemberId, isLiked);
+        return new Like(null, targetId, spaceMemberId, isLiked, BaseInfo.ofEmpty());
     }
 }

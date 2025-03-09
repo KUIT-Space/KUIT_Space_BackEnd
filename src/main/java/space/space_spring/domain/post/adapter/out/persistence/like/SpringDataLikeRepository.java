@@ -3,8 +3,10 @@ package space.space_spring.domain.post.adapter.out.persistence.like;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SpringDataLikeRepository extends JpaRepository<LikeJpaEntity, Long> {
 
@@ -15,4 +17,6 @@ public interface SpringDataLikeRepository extends JpaRepository<LikeJpaEntity, L
             "AND l.status = space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE " +
             "GROUP BY l.postBase.id")
     List<PostLikeCount> countLikesByPostIds(@Param("postIds") List<Long> postIds);
+
+    Optional<LikeJpaEntity> findBySpaceMemberIdAndPostBaseIdAndStatus(Long spaceMemberId, Long targetId, BaseStatusType baseStatusType);
 }

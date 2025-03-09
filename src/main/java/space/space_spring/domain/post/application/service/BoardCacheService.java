@@ -32,6 +32,9 @@ public class BoardCacheService implements AddBoardCacheUseCase , LoadBoardCacheU
     @PostConstruct
     public void loadBoardDataIntoRedis() {
         log.info("Loading Board data into Redis...");
+
+        deleteBoardCachePort.deleteAllChannel();
+
         List<Board> boardList = loadBoardPort.findAll();
         if(boardList.isEmpty()){
             return;
@@ -60,6 +63,11 @@ public class BoardCacheService implements AddBoardCacheUseCase , LoadBoardCacheU
     @Override
     public Optional<Long> findByDiscordId(Long discordId){
         return loadBoardCachePort.findByDiscordId(discordId);
+    }
+
+    @Override
+    public List<Long> findAllChannel(){
+        return loadBoardCachePort.findAllChannel();
     }
 
 

@@ -93,17 +93,17 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             });
 
         }
-                if (msg.getContentRaw().startsWith("!member:")) {
-                    System.out.println("\n\n\nmembertext\n\n\n");
-                    System.out.println("mem:" + msg.getGuild().getMembers().size());
-                    Long spaceId = Long.parseLong(msg.getContentRaw().split(":")[1]);
-                    loadSpaceMemberPort.loadSpaceMemberBySpaceId(spaceId).stream().forEach(spaceMember -> {
-                        msg.getChannel().sendMessage(
-                                "\n" + spaceMember.getNickname() + ":" + spaceMember.getId() + ":Manager:" + spaceMember.isManager()).queue();
+            if (msg.getContentRaw().startsWith("!member:")) {
+                System.out.println("\n\n\nmembertext\n\n\n");
+                System.out.println("mem:" + msg.getGuild().getMembers().size());
+                Long spaceId = Long.parseLong(msg.getContentRaw().split(":")[1]);
+                loadSpaceMemberPort.loadSpaceMemberBySpaceId(spaceId).stream().forEach(spaceMember -> {
+                    msg.getChannel().sendMessage(
+                            "\n" + spaceMember.getNickname() + ":" + spaceMember.getId() + ":Manager:" + spaceMember.isManager()).queue();
 
-                    });
-                    return;
-                }
+                });
+                return;
+            }
 
 
                 if (msg.getContentRaw().equals("!threadping")) {

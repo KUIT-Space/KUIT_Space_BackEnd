@@ -62,5 +62,10 @@ public class BoardCacheService implements AddBoardCacheUseCase , LoadBoardCacheU
         return loadBoardCachePort.findByDiscordId(discordId);
     }
 
+    @Override
+    public List<Long> findAllChannel(){
+        return loadBoardCachePort.findAllChannel();
+    }
+
 
 }

@@ -9,6 +9,7 @@ import space.space_spring.domain.post.application.port.out.DeleteBoardCachePort;
 import space.space_spring.domain.post.application.port.out.LoadBoardCachePort;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,6 +26,12 @@ public class BoardCacheAdapter implements CreateBoardCachePort, LoadBoardCachePo
     @Override
     public Optional<Long> findByDiscordId(Long discordId) {
         return Optional.ofNullable(toLong(redisTemplate.opsForValue().get(CHANNEL_PREFIX+ discordId)));
+    }
+
+    @Override
+    public List<Long> findAllChannel(){
+        return redisTemplate.keys(CHANNEL_PREFIX + "*").stream()
+                .map(string->toLong(string)).toList();
     }
 
     public boolean deleteByDiscordId(Long discordId) {

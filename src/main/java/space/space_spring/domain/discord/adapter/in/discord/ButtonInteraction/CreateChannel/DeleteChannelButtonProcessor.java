@@ -45,6 +45,11 @@ public class DeleteChannelButtonProcessor implements ButtonInteractionProcessor 
                 .map(channel -> Button.secondary("check:delete-channel:"  + channel.getId()+":"+loadBoardCacheUseCase.findByDiscordId(channel.getIdLong()).get()+":"+channel.getName(), channel.getName()))
                 .collect(Collectors.toList());
 
+        if(channelButtons.isEmpty()||channelButtons==null){
+            event.reply("현재 등록된 게시판이 없습니다").queue();
+            return;
+        }
+
         // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔
         List<ActionRow> rows = buttonUtil.partitionButtons(channelButtons);
 

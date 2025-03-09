@@ -22,7 +22,7 @@ import static space.space_spring.domain.post.domain.BoardType.POST;
 public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
     private final CreateBoardUseCase createBoardUseCase;
     private final LoadBoardCacheUseCase loadBoardCacheUseCase;
-    private LoadSpaceUseCase loadSpaceUseCase;
+    private final LoadSpaceUseCase loadSpaceUseCase;
     @Override
     public boolean supports(String buttonId){
         if (buttonId.startsWith("create-channel:")){

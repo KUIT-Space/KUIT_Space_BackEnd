@@ -12,47 +12,66 @@ import space.space_spring.domain.discord.adapter.in.discord.ButtonInteraction.Bu
 import space.space_spring.domain.discord.adapter.in.discord.ButtonInteraction.ButtonUtil;
 import space.space_spring.domain.post.application.port.in.boardCache.LoadBoardCacheUseCase;
 import space.space_spring.domain.post.application.port.in.deleteBoard.DeleteBoardUseCase;
-import space.space_spring.domain.post.domain.BoardType;
+import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
+import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
+import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_IS_NOT_IN_SPACE;
+
 @Component
 @RequiredArgsConstructor
 public class DeleteBoardButtonProcessor implements ButtonInteractionProcessor {
-    private final LoadBoardCacheUseCase loadBoardCacheUseCase;
-    private final ButtonUtil buttonUtil;
+
+    private final LoadSpaceUseCase loadSpaceUseCase;
+    private final LoadBoardUseCase loadBoardUseCase;
+    private final DeleteBoardUseCase deleteBoardUseCase;
     @Override
     public boolean supports(String buttonId){
-        if (buttonId.startsWith("delete-board")){
-             return true;
+        if (buttonId.startsWith("delete-channel")){
+            return true;
         }
         return false;
     }
 
     @Override
     public void process(ButtonInteractionEvent event){
-
         String buttonId = event.getComponentId();
-        Guild guild = event.getGuild();
-        // Todo 현재 등록된 게시판 전부 가져오기
-        // 길드의 모든 텍스트 채널을 버튼으로 생성
-        List<Long> boardList = loadBoardCacheUseCase.findAllChannel();
+        String[] parts = buttonId.split(":");
+        if (parts.length < 3) return;
 
-        List<GuildChannel> channels = guild.getChannels();
-        List<Button> channelButtons = channels.stream()
-                .filter(channel->channel.getType()== ChannelType.FORUM||channel.getType()==ChannelType.TEXT)
-                //현재 등록된 채널만 버튼으로
-                .filter(channel->loadBoardCacheUseCase.findByDiscordId(channel.getIdLong()).isPresent())
-                .map(channel -> Button.secondary("check:delete-channel:"  + channel.getId()+":"+channel.getName(), channel.getName()))
-                .collect(Collectors.toList());
 
-        // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔
-        List<ActionRow> rows = buttonUtil.partitionButtons(channelButtons);
+        Long channelId = Long.parseLong(parts[1]);
+        Long boardId = Long.parseLong(parts[2]);
 
-        event.reply("삭제할 채널을 선택하세요")
-                .addComponents(rows)
-                .queue();
+        Long guildId  =event.getGuild().getIdLong();
+
+        validateBoardInSpace(guildId, boardId);
+        if(!deleteBoard(boardId) ){
+            event.reply("삭제할 완료")
+                    .queue();
+        }
+
+//        event.reply("삭제할 채널을 선택하세요")
+//                .addComponents(rows)
+//                .queue();
 
     }
+
+    private boolean deleteBoard(Long boardId){
+        return deleteBoardUseCase.delete(boardId);
+    }
+
+    private void validateBoardInSpace(Long guildId, Long boardId){
+        Long spaceId=loadSpaceUseCase.loadByDiscordId(guildId).getId();
+
+        if(loadBoardUseCase.findById(boardId).getSpaceId().equals(spaceId)){
+            return;
+
+        }
+        throw new CustomException(BOARD_IS_NOT_IN_SPACE);
+    }
+
 }

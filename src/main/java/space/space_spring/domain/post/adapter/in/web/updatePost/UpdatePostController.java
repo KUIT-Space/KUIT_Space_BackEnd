@@ -53,7 +53,7 @@ public class UpdatePostController {
                 .isAnonymous(request.getIsAnonymous())
                 .build();
 
-        updatePostUseCase.updatePost(command);
+        updatePostUseCase.updatePostFromWeb(command);
 
         return new BaseResponse<>(new SuccessResponse(true));
     }

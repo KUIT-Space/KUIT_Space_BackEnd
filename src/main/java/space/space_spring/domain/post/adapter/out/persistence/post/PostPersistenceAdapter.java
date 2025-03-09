@@ -9,6 +9,7 @@ import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDat
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.application.port.out.CreatePostPort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
+import space.space_spring.domain.post.application.port.out.UpdatePostPort;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
@@ -22,7 +23,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
+public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, UpdatePostPort {
 
     private final SpringDataPostBaseRepository postBaseRepository;
     private final SpringDataPostRepository postRepository;
@@ -69,5 +70,19 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
         }
 
         return postMapper.toDomainEntity(postJpaEntity);
+    }
+
+    @Override
+    public void updatePost(Post post) {
+        // Post에 해당하는 jpa entity 찾기
+        PostJpaEntity postJpaEntity = postRepository.findById(post.getId())
+                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+
+        if (!postJpaEntity.getPostBase().isActive()) {
+            throw new CustomException(POST_NOT_FOUND);      // 찾은 Post가 Active 상태가 아닌 경우
+        }
+
+        postJpaEntity.getPostBase().changeContent(post.getContent().getValue());
+        postJpaEntity.updatePost(post.getTitle(), postJpaEntity.getIsAnonymous());
     }
 }

@@ -49,14 +49,13 @@ public class DeleteBoardButtonProcessor implements ButtonInteractionProcessor {
         Long guildId  =event.getGuild().getIdLong();
 
         validateBoardInSpace(guildId, boardId);
-        if(!deleteBoard(boardId) ){
-            event.reply("삭제할 완료")
+        if(deleteBoard(boardId) ){
+            event.reply("삭제 완료")
                     .queue();
         }
 
-//        event.reply("삭제할 채널을 선택하세요")
-//                .addComponents(rows)
-//                .queue();
+        event.reply("채널 삭제에 문제가 발생했습니다")
+                .queue();
 
     }
 

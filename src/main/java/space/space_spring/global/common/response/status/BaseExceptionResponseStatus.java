@@ -129,6 +129,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
   
     PAY_BOARD_NOT_FOUND(11018,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
 
+    LIKE_NOT_FOUND(11019, HttpStatus.NOT_FOUND, "존재하지 않는 좋아요 입니다."),
 
 
     /**

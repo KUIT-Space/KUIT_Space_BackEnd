@@ -1,0 +1,61 @@
+package space.space_spring.domain.post.adapter.in.web.readPostDetail;
+
+import lombok.Builder;
+import lombok.Getter;
+import space.space_spring.domain.post.application.port.in.readPostDetail.ResultOfReadPostDetail;
+
+import java.util.List;
+
+@Getter
+public class ResponseOfReadPostDetail {
+
+    private String creatorName;
+
+    private String creatorProfileImageUrl;
+
+    private String createdAt;
+
+    private String title;
+
+    private String content;
+
+    private List<String> attachmentUrls;
+
+    private int likeCount;
+
+    private boolean isLiked;
+
+    private List<ResponseOfCommentDetail> responseOfCommentDetails;
+
+    @Builder
+    private ResponseOfReadPostDetail(String creatorName, String creatorProfileImageUrl, String createdAt, String title,
+                                     String content, List<String> attachmentUrls, int likeCount, boolean isLiked,
+                                     List<ResponseOfCommentDetail> responseOfCommentDetails) {
+        this.creatorName = creatorName;
+        this.creatorProfileImageUrl = creatorProfileImageUrl;
+        this.createdAt = createdAt;
+        this.title = title;
+        this.content = content;
+        this.attachmentUrls = attachmentUrls;
+        this.likeCount = likeCount;
+        this.isLiked = isLiked;
+        this.responseOfCommentDetails = responseOfCommentDetails;
+    }
+
+    public static ResponseOfReadPostDetail of(ResultOfReadPostDetail result) {
+        return ResponseOfReadPostDetail.builder()
+                .creatorName(result.getCreatorName())
+                .creatorProfileImageUrl(result.getCreatorProfileImageUrl())
+                .createdAt(result.getCreatedAt())
+                .title(result.getTitle())
+                .content(result.getContent().getValue())
+                .attachmentUrls(result.getAttachmentUrls())
+                .likeCount(result.getLikeCount().getNumber())
+                .isLiked(result.isLiked())
+                .responseOfCommentDetails(
+                        result.getInfoOfCommentDetails().stream()
+                                .map(ResponseOfCommentDetail::of)
+                                .toList())
+                .build();
+    }
+}

@@ -3,6 +3,8 @@ package space.space_spring.domain.post.adapter.out.persistence.like;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
+import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.util.List;
@@ -18,5 +20,11 @@ public interface SpringDataLikeRepository extends JpaRepository<LikeJpaEntity, L
             "GROUP BY l.postBase.id")
     List<PostLikeCount> countLikesByPostIds(@Param("postIds") List<Long> postIds);
 
-    Optional<LikeJpaEntity> findBySpaceMemberIdAndPostBaseIdAndStatus(Long spaceMemberId, Long targetId, BaseStatusType baseStatusType);
+    /**
+     * findBySpaceMemberIdAndPostBaseIdAndStatus(Long spaceMemberId, Long postBaseId, BaseStatusType status),
+     * findBySpaceMember_IdAndPostBase_IdAndStatus(Long spaceMemberId, Long postBaseId, BaseStatusType status),
+     * findBySpaceMemberAndPostBaseAndStatus(SpaceMemberJpaEntity spaceMemberJpa, PostBaseJpaEntity postBaseJpa, BaseStatusType status)
+     * -> 이렇게 3가지 모두 가능
+     */
+    Optional<LikeJpaEntity> findBySpaceMemberIdAndPostBaseIdAndStatus(Long spaceMemberId, Long postBaseId, BaseStatusType status);
 }

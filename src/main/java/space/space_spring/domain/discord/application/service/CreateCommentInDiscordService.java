@@ -33,18 +33,16 @@ public class CreateCommentInDiscordService implements CreateCommentInDiscordUseC
 
     private CreateDiscordMessageOnThreadCommand mapToDiscordOnThread(CreateCommentInDiscordCommand command){
         Board board = loadBoardPort.loadById(command.getBoardId());
-        //Post post = loadPostPort.
+        Post post = loadPostPort.loadById(command.getOriginPostId());
         return CreateDiscordMessageOnThreadCommand.builder()
-
                 .threadChannelDiscordId(command.getOriginPostId())
                 .guildDiscordId(loadSpacePort.loadSpaceById(command.getSpaceId()).get().getDiscordId())
                 .avatarUrl(command.getProfileUrl())
                 .userName(command.getUserName())
                 .webHookUrl(board.getWebhookUrl())
                 .content(command.getContent())
-                .originPostId(0L/*loadPostDiscordId*/)
+                .originPostId(post.getDiscordId())
                 .originChannelId(board.getDiscordId())
-
                 .build();
     }
 

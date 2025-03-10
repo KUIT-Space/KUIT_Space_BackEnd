@@ -20,7 +20,6 @@ import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.NaturalNumber;
 import space.space_spring.global.util.post.ConvertCreatedDate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,52 +54,20 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         NaturalNumber postLikeCount = loadLikePort.countLikeByPostId(post.getId());
         Map<Long, NaturalNumber> commentLikeCountMap = loadLikePort.countLikesByPostIds(comments.stream().map(Comment::getId).toList());
 
-        // 5. return
-        // 익명인 경우 작성자 네이밍 변경 -> 익명 스페이서 + PK
-        // 또한 comment의 status 가 INACTIVE 일 경우 댓글 내용을 삭제된 댓글입니다. 로 수정 -> 이거 다시 한번 확인?? (뭔가 지우는게 나을수도 ??)
-        // 추가로 게시글 작성자와 댓글 작성자가 같은지도 확인
-        List<InfoOfCommentDetail> infoOfCommentDetails = new ArrayList<>();
-        for (Comment comment : comments) {
-            if (!comment.getBaseInfo().isActive()) {
-                // TODO : comment 내용 수정 -> "삭제된 댓글입니다."
-                comment.changeContent("삭제된 댓글입니다.");
-            }
+        // 5. 댓글 상세 정보 생성
+        List<InfoOfCommentDetail> infoOfCommentDetails = comments.stream()
+                .map(comment -> buildCommentDetail(comment, post, command, commentLikeCountMap))
+                .toList();
 
-            NicknameAndProfileImage commentCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(comment.getCommentCreatorId());
-            boolean hasSpaceMemberLikedToComment = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), comment.getId());
-
-            boolean isPostOwner;
-            if (post.isPostCreator(comment.getCommentCreatorId())) isPostOwner = true;
-            else isPostOwner = false;
-
-            String commentCreatorNickname;      // TODO : 익명 댓글인 경우 네이밍 수정
-            if (comment.getIsAnonymous()) commentCreatorNickname = "익명 스페이서 " + post.getId() * 10 + comment.getCommentCreatorId();
-            else commentCreatorNickname = commentCreator.getNickname();
-
-            InfoOfCommentDetail infoOfCommentDetail = InfoOfCommentDetail.builder()
-                    .creatorName(commentCreatorNickname)        // TODO : 익명 댓글인 경우 네이밍 수정
-                    .creatorProfileImageUrl(commentCreator.getProfileImageUrl())
-                    .isPostOwner(isPostOwner)
-                    .content(comment.getContent())
-                    .createdAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getCreatedAt()))
-                    .lastModifiedAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getLastModifiedAt()))
-                    .likeCount(commentLikeCountMap.get(comment.getId()))
-                    .isLiked(hasSpaceMemberLikedToComment)
-                    .build();
-
-            infoOfCommentDetails.add(infoOfCommentDetail);
-        }
-
+        // 6. return
         NicknameAndProfileImage postCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(post.getPostCreatorId());
         List<String> attachmentUrls = loadAttachmentPort.loadAttachmentUrlByTargetId(post.getId());
         boolean hasSpaceMemberLikedToPost = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), post.getId());
 
-        String postCreatorNickname;      // TODO : 익명 게시글인 경우 네이밍 수정
-        if (post.getIsAnonymous()) postCreatorNickname = "익명 스페이서";
-        else postCreatorNickname = postCreator.getNickname();
+        String postCreatorNickname = post.getIsAnonymous() ? "익명 스페이서" : postCreator.getNickname();
 
         return ResultOfReadPostDetail.builder()
-                .creatorName(postCreatorNickname)         // TODO : 익명 게시글인 경우 네이밍 수정
+                .creatorName(postCreatorNickname)
                 .creatorProfileImageUrl(postCreator.getProfileImageUrl())
                 .createdAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt()))
                 .lastModifiedAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getLastModifiedAt()))
@@ -121,5 +88,34 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         if (!post.isInBoard(board.getId())) {       // post가 보드에 속하는지 검증
             throw new CustomException(POST_IS_NOT_IN_BOARD);
         }
+    }
+
+    private InfoOfCommentDetail buildCommentDetail(Comment comment, Post post, ReadPostDetailCommand command, Map<Long, NaturalNumber> commentLikeCountMap) {
+        // 댓글이 비활성화된 경우 내용 수정
+        if (!comment.getBaseInfo().isActive()) {
+            comment.changeContent("삭제된 댓글입니다.");
+        }
+
+        // 댓글 작성자 정보 조회
+        NicknameAndProfileImage commentCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(comment.getCommentCreatorId());
+        boolean hasSpaceMemberLikedToComment = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), comment.getId());
+        boolean isPostOwner = post.isPostCreator(comment.getCommentCreatorId());
+
+        // 익명 댓글인 경우 이름 재정의
+        // TODO : 익명인 댓글 작성자의 네이밍 알고리즘 개선
+        String creatorNickname = comment.getIsAnonymous() ?
+                "익명 스페이서 " + (post.getId() * 10) + comment.getCommentCreatorId() :
+                commentCreator.getNickname();
+
+        return InfoOfCommentDetail.builder()
+                .creatorName(creatorNickname)
+                .creatorProfileImageUrl(commentCreator.getProfileImageUrl())
+                .isPostOwner(isPostOwner)
+                .content(comment.getContent())
+                .createdAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getCreatedAt()))
+                .lastModifiedAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getLastModifiedAt()))
+                .likeCount(commentLikeCountMap.get(comment.getId()))
+                .isLiked(hasSpaceMemberLikedToComment)
+                .build();
     }
 }

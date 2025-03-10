@@ -2,6 +2,7 @@ package space.space_spring.domain.post.adapter.out.persistence.post;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
@@ -45,6 +46,8 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
         PostBaseJpaEntity postBaseJpaEntity = postBaseMapper.toJpaEntity(spaceMemberJpaEntity, boardJpaEntity, post);
         PostBaseJpaEntity savedPostBase = postBaseRepository.save(postBaseJpaEntity);
 
+        System.out.println("postBaseId:"+savedPostBase.getId());
+
         // 4. PostJpaEntity 생성 및 저장
         PostJpaEntity postJpaEntity = postMapper.toJpaEntity(savedPostBase, post);
 
@@ -69,5 +72,14 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
         }
 
         return postMapper.toDomainEntity(postJpaEntity);
+    }
+
+    @Override
+    public Optional<Post> loadByDiscordId(Long discordId){
+        PostJpaEntity postJpaEntity = postRepository.findByDiscordId(discordId,BaseStatusType.ACTIVE);
+        if(postJpaEntity==null){
+            return Optional.empty();
+        }
+        return Optional.of(postMapper.toDomainEntity(postJpaEntity));
     }
 }

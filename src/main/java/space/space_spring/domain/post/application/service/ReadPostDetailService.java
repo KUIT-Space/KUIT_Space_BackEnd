@@ -63,6 +63,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         for (Comment comment : comments) {
             if (!comment.getBaseInfo().isActive()) {
                 // TODO : comment 내용 수정 -> "삭제된 댓글입니다."
+                comment.changeContent("삭제된 댓글입니다.");
             }
 
             NicknameAndProfileImage commentCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(comment.getCommentCreatorId());
@@ -72,8 +73,12 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
             if (post.isPostCreator(comment.getCommentCreatorId())) isPostOwner = true;
             else isPostOwner = false;
 
+            String commentCreatorNickname;      // TODO : 익명 댓글인 경우 네이밍 수정
+            if (comment.getIsAnonymous()) commentCreatorNickname = "익명 스페이서 " + post.getId() * 10 + comment.getCommentCreatorId();
+            else commentCreatorNickname = commentCreator.getNickname();
+
             InfoOfCommentDetail infoOfCommentDetail = InfoOfCommentDetail.builder()
-                    .creatorName(commentCreator.getNickname())          // TODO : 익명 댓글인 경우 네이밍 수정
+                    .creatorName(commentCreatorNickname)        // TODO : 익명 댓글인 경우 네이밍 수정
                     .creatorProfileImageUrl(commentCreator.getProfileImageUrl())
                     .isPostOwner(isPostOwner)
                     .content(comment.getContent())
@@ -90,8 +95,12 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         List<String> attachmentUrls = loadAttachmentPort.loadAttachmentUrlByTargetId(post.getId());
         boolean hasSpaceMemberLikedToPost = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), post.getId());
 
+        String postCreatorNickname;      // TODO : 익명 게시글인 경우 네이밍 수정
+        if (post.getIsAnonymous()) postCreatorNickname = "익명 스페이서";
+        else postCreatorNickname = postCreator.getNickname();
+
         return ResultOfReadPostDetail.builder()
-                .creatorName(postCreator.getNickname())         // TODO : 익명 게시글인 경우 네이밍 수정
+                .creatorName(postCreatorNickname)         // TODO : 익명 게시글인 경우 네이밍 수정
                 .creatorProfileImageUrl(postCreator.getProfileImageUrl())
                 .createdAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt()))
                 .lastModifiedAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getLastModifiedAt()))

@@ -168,4 +168,3 @@ spring:
 
 discord:
   bot-token: ${DISCORD_BOT_TOKEN}
-

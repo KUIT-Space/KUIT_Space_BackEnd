@@ -21,7 +21,7 @@ public class DiscordForumRepository {
 
         CompletableFuture<Long> future = new CompletableFuture<>();
 
-        client.sendMessage(command.getContent())
+        client.sendMessage(command.getMessageContent())
                 .setAvatarUrl(command.getAvatarUrl())
                 .createThread(command.getTitle())
                 .setUsername(command.getName()).queue(

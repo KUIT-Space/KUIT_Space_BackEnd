@@ -55,4 +55,8 @@ public class PostBaseJpaEntity extends BaseJpaEntity {
     public static PostBaseJpaEntity create(Long discordId, BoardJpaEntity board, SpaceMemberJpaEntity spaceMember, String content, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
         return new PostBaseJpaEntity(discordId, board, spaceMember, content, createdAt, lastModifiedAt, baseStatus);
     }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
 }

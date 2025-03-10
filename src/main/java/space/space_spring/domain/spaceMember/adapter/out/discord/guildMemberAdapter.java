@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.domain.DiscordRole;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMember;
 import space.space_spring.domain.spaceMember.application.port.out.GuildMembers;
@@ -13,6 +14,7 @@ import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMembe
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.spaceMember.domian.SpaceMembers;
 
+import javax.management.relation.Role;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,9 +82,14 @@ public class guildMemberAdapter implements LoadGuildMemberPort {
 
     //This method return inManage=false
     private GuildMember guildToSpaceMember(Member member){
+
         return GuildMember.builder()
                 .discordId(member.getIdLong())
-                .isManager(false) //ToDo
+                .isManager(
+                        member.getRoles().stream().anyMatch(
+                                role->role.getName().equals(DiscordRole.SPACE_MANAGER.toString())
+                        )
+                )
                 .nickname(member.getEffectiveName())
                 .profileImageUrl(member.getEffectiveAvatarUrl())
                 .build();

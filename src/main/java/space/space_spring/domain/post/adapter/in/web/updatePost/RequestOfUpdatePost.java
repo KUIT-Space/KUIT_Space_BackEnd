@@ -3,6 +3,7 @@ package space.space_spring.domain.post.adapter.in.web.updatePost;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.space_spring.global.common.validation.SelfValidating;

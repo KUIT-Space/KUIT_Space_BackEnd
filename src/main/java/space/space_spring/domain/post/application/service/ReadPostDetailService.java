@@ -62,7 +62,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         List<InfoOfCommentDetail> infoOfCommentDetails = new ArrayList<>();
         for (Comment comment : comments) {
             if (!comment.getBaseInfo().isActive()) {
-                // TODO : comment 내용 수정
+                // TODO : comment 내용 수정 -> "삭제된 댓글입니다."
             }
 
             NicknameAndProfileImage commentCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(comment.getCommentCreatorId());
@@ -73,7 +73,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
             else isPostOwner = false;
 
             InfoOfCommentDetail infoOfCommentDetail = InfoOfCommentDetail.builder()
-                    .creatorName(commentCreator.getNickname())
+                    .creatorName(commentCreator.getNickname())          // TODO : 익명 댓글인 경우 네이밍 수정
                     .creatorProfileImageUrl(commentCreator.getProfileImageUrl())
                     .isPostOwner(isPostOwner)
                     .content(comment.getContent())
@@ -91,7 +91,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         boolean hasSpaceMemberLikedToPost = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), post.getId());
 
         return ResultOfReadPostDetail.builder()
-                .creatorName(postCreator.getNickname())
+                .creatorName(postCreator.getNickname())         // TODO : 익명 게시글인 경우 네이밍 수정
                 .creatorProfileImageUrl(postCreator.getProfileImageUrl())
                 .createdAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt()))
                 .lastModifiedAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getLastModifiedAt()))

@@ -91,31 +91,39 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
     }
 
     private InfoOfCommentDetail buildCommentDetail(Comment comment, Post post, ReadPostDetailCommand command, Map<Long, NaturalNumber> commentLikeCountMap) {
-        // 댓글이 비활성화된 경우 내용 수정
-        if (!comment.getBaseInfo().isActive()) {
-            comment.changeContent("삭제된 댓글입니다.");
-        }
-
         // 댓글 작성자 정보 조회
         NicknameAndProfileImage commentCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(comment.getCommentCreatorId());
-        boolean hasSpaceMemberLikedToComment = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), comment.getId());
-        boolean isPostOwner = post.isPostCreator(comment.getCommentCreatorId());
+        String creatorNickname = commentCreator.getNickname();
+        String creatorProfileImageUrl = commentCreator.getProfileImageUrl();
 
         // 익명 댓글인 경우 이름 재정의
         // TODO : 익명인 댓글 작성자의 네이밍 알고리즘 개선
-        String creatorNickname = comment.getIsAnonymous() ?
-                "익명 스페이서 " + (post.getId() * 10) + comment.getCommentCreatorId() :
-                commentCreator.getNickname();
+        if (comment.getIsAnonymous()) {
+            creatorNickname = "익명 스페이서 " + (post.getId() * 10) + comment.getCommentCreatorId();
+            creatorProfileImageUrl = null;      // 프론트에서 익명 디폴트 이미지 보여주기?? 아니면 s3에 익명 디폴트 이미지 저장 & 로드?
+        }
+
+        // 댓글이 비활성화된 경우 내용 수정
+        boolean isActiveComment = comment.getBaseInfo().isActive();
+        if (!isActiveComment) {
+            comment.changeContent("삭제된 댓글입니다.");
+            creatorNickname = null;
+            creatorProfileImageUrl = null;
+        }
+
+        boolean hasSpaceMemberLikedToComment = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), comment.getId());
+        boolean isPostOwner = post.isPostCreator(comment.getCommentCreatorId());
 
         return InfoOfCommentDetail.builder()
                 .creatorName(creatorNickname)
-                .creatorProfileImageUrl(commentCreator.getProfileImageUrl())
+                .creatorProfileImageUrl(creatorProfileImageUrl)
                 .isPostOwner(isPostOwner)
                 .content(comment.getContent())
                 .createdAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getCreatedAt()))
                 .lastModifiedAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getLastModifiedAt()))
                 .likeCount(commentLikeCountMap.get(comment.getId()))
                 .isLiked(hasSpaceMemberLikedToComment)
+                .isActiveComment(isActiveComment)
                 .build();
     }
 }

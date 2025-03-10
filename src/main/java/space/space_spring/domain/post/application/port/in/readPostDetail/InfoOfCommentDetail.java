@@ -23,8 +23,10 @@ public class InfoOfCommentDetail {
 
     private boolean isLiked;
 
+    private boolean isActiveComment;
+
     @Builder
-    public InfoOfCommentDetail(String creatorName, String creatorProfileImageUrl, boolean isPostOwner, String content, String createdAt, String lastModifiedAt, NaturalNumber likeCount, boolean isLiked) {
+    public InfoOfCommentDetail(String creatorName, String creatorProfileImageUrl, boolean isPostOwner, String content, String createdAt, String lastModifiedAt, NaturalNumber likeCount, boolean isLiked, boolean isActiveComment) {
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.isPostOwner = isPostOwner;
@@ -33,6 +35,7 @@ public class InfoOfCommentDetail {
         this.lastModifiedAt = lastModifiedAt;
         this.likeCount = likeCount;
         this.isLiked = isLiked;
+        this.isActiveComment = isActiveComment;
     }
 
 }

@@ -23,9 +23,11 @@ public class ResponseOfCommentDetail {
 
     private boolean isLiked;
 
+    private boolean isActiveComment;
+
     @Builder
     private ResponseOfCommentDetail(String creatorName, String creatorProfileImageUrl, boolean isPostOwner, String content, String createdAt,
-                                    String lastModifiedAt, int likeCount, boolean isLiked) {
+                                    String lastModifiedAt, int likeCount, boolean isLiked, boolean isActiveComment) {
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.isPostOwner = isPostOwner;
@@ -34,6 +36,7 @@ public class ResponseOfCommentDetail {
         this.lastModifiedAt = lastModifiedAt;
         this.likeCount = likeCount;
         this.isLiked = isLiked;
+        this.isActiveComment = isActiveComment;
     }
 
     public static ResponseOfCommentDetail of(InfoOfCommentDetail info) {
@@ -46,6 +49,7 @@ public class ResponseOfCommentDetail {
                 .lastModifiedAt(info.getLastModifiedAt())
                 .likeCount(info.getLikeCount().getNumber())
                 .isLiked(info.isLiked())
+                .isActiveComment(info.isActiveComment())
                 .build();
     }
 

@@ -8,6 +8,7 @@ import space.space_spring.domain.post.application.port.in.deletePost.DeletePostU
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.Attachment;
 import space.space_spring.domain.post.domain.Board;
+import space.space_spring.domain.post.domain.Comment;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
 
@@ -23,7 +24,9 @@ public class DeletePostService implements DeletePostUseCase {
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final LoadAttachmentPort loadAttachmentPort;
+    private final LoadCommentPort loadCommentPort;
     private final DeletePostPort deletePostPort;
+    private final DeleteCommentPort deleteCommentPort;
     private final DeleteAttachmentPort deleteAttachmentPort;
 
     @Override
@@ -38,6 +41,9 @@ public class DeletePostService implements DeletePostUseCase {
         // 3. Attachment 조회
         List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
 
+        // 4. Comment 조회
+        List<Comment> comments = loadCommentPort.loadAllComments(command.getPostId());
+
         // 4. validate
         validate(board, post, command);
 
@@ -45,7 +51,9 @@ public class DeletePostService implements DeletePostUseCase {
         deleteAttachmentPort.deleteAllAttachments(attachments);
 
         // 6. 댓글 삭제
-
+        if (!comments.isEmpty()) {
+            deleteCommentPort.deleteAllComments(comments);
+        }
 
         // 7. 게시글 삭제
         deletePostPort.deletePost(command.getPostId());

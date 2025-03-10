@@ -9,4 +9,6 @@ public interface LoadCommentPort {
     Map<Long, Long> countCommentsByPostIds(List<Long> postIds);
 
     Comment loadById(Long commentId);
+
+    List<Comment> loadAllComments(Long postId);
 }

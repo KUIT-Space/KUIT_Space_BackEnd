@@ -20,6 +20,7 @@ import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -53,6 +54,14 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
         }
 
         return commentMapper.toDomainEntity(postCommentJpaEntity);
+    }
+
+    @Override
+    public List<Comment> loadAllComments(Long postId) {
+        List<PostCommentJpaEntity> commentJpaEntities = postCommentRepository.findByPostBaseId(postId);
+        return commentJpaEntities.stream()
+                .map(commentMapper::toDomainEntity)
+                .toList();
     }
 
     @Override
@@ -106,5 +115,22 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
         // jpa entity 를 INACTIVE 상태로 변경
         postCommentJpaEntity.getPostBase().updateToInactive();
+    }
+
+    @Override
+    public void deleteAllComments(List<Comment> comments) {
+        if (comments.isEmpty()) {
+            return;
+        }
+
+        List<Long> commentIds = comments.stream()
+                .map(Comment::getId)
+                .toList();
+
+        List<PostCommentJpaEntity> commentEntities = postCommentRepository.findAllById(commentIds);
+
+        for (PostCommentJpaEntity comment : commentEntities) {
+            comment.getPostBase().updateToInactive(); // Soft Delete 적용
+        }
     }
 }

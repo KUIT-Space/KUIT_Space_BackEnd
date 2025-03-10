@@ -45,21 +45,24 @@ public class MoveMessageEventListener extends ListenerAdapter {
         List<Button> channelButtons = channels.stream()
                 .filter(channel->channel.getType()== ChannelType.FORUM||channel.getType()==ChannelType.TEXT)
                 //현재 등록된 채널만 버튼으로
+
                 .filter(channel->loadBoardCacheUseCase.findByDiscordId(channel.getIdLong()).isPresent())
+                .filter(channel-> event.getChannel().getIdLong()!=channel.getIdLong())
                 .map(channel -> Button.secondary("check:move-message:"  + channel.getId()+":"+loadBoardCacheUseCase.findByDiscordId(channel.getIdLong()).get()+":"+channel.getName(), channel.getName()))
                 .collect(Collectors.toList());
-
-        if(channelButtons.isEmpty()||channelButtons==null){
-            event.reply("현재 등록된 게시판이 없습니다").queue();
-            return;
-        }
-
         // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔
         List<ActionRow> rows = buttonUtil.partitionButtons(channelButtons);
 
         if(loadBoardCacheUseCase.findByDiscordId(event.getChannelIdLong()).isPresent()){
             rows.add(ActionRow.of(Button.primary("check:move-current-message","현재 채널")));
         }
+
+        if(rows.isEmpty()||rows==null){
+            event.reply("현재 등록된 게시판이 없습니다").setEphemeral(true).queue();
+            return;
+        }
+
+
 
         event.reply("이 채널의 글을 이동 시킬 게시판(채널)을 선택 해주세요"+
                         "\n이 채널의 메세지가 디스코드와 space web 모두 메세지가 복사됩니다.")

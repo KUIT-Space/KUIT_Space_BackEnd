@@ -55,7 +55,8 @@ public class MessageCreateEventListener extends ListenerAdapter {
         }
         MessageInputFromDiscordCommand command = discordMessageMapper.mapToCommand(event,boardId.get());
         //log.info(command.toString());
-        inputMessageFromDiscordUseCase.put(command);
+        inputMessageFromDiscordUseCase.putPost(command);
+        inputMessageFromDiscordUseCase.putComment(command,boardId.get());
         //ToDo 채널 분류 후 useCase 호출
 
     }

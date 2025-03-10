@@ -33,7 +33,7 @@ public class UpdateEventParticipantController {
         
         """)
     @PostMapping("/event/{eventId}/participant/update")
-    public BaseResponse<SuccessResponse> addEventParticipant(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> addEventParticipant(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_EVENT_CREATE);
         }
@@ -51,7 +51,7 @@ public class UpdateEventParticipantController {
         
         """)
     @PostMapping("/event/{eventId}/participant/delete")
-    public BaseResponse<SuccessResponse> deleteEventParticipant(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> deleteEventParticipant(@JwtLoginAuth Long spaceMemberId, @PathVariable String spaceId, @PathVariable Long eventId, @Validated @RequestBody UpdateEventParticipantRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_EVENT_CREATE);
         }

@@ -30,7 +30,7 @@ public class ReadEventController {
         
         """)
     @GetMapping("/events")
-    public BaseResponse<ReadEventsResponse> readEvents(@JwtLoginAuth Long spaceMemberId) {
+    public BaseResponse<ReadEventsResponse> readEvents(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId) {
         Events events = readEventUseCase.readEvents(spaceMemberId);
         return new BaseResponse<>(ReadEventsResponse.create(events));
     }
@@ -41,7 +41,7 @@ public class ReadEventController {
         
         """)
     @GetMapping("/event/{eventId}")
-    public BaseResponse<ReadEventInfoResponse> readEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId) {
+    public BaseResponse<ReadEventInfoResponse> readEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable String spaceId, @PathVariable Long eventId) {
         Event event = readEventUseCase.readEvent(spaceMemberId, eventId);
         EventParticipantInfos eventParticipantInfos = readEventParticipantUseCase.readEventParticipants(spaceMemberId, eventId);
         return new BaseResponse<>(ReadEventInfoResponse.create(event, eventParticipantInfos));

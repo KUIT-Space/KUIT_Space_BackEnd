@@ -44,4 +44,12 @@ public class Post {
     public boolean isInBoard(Long boardId) {
         return this.boardId.equals(boardId);
     }
+
+    public boolean isPostCreator(Long postCreatorId) { return spaceMemberId.equals(postCreatorId); }
+
+    public void updatePost(String title, Content content, boolean isAnonymous) {
+        this.title = title;
+        this.content = content;
+        this.isAnonymous = isAnonymous;
+    }
 }

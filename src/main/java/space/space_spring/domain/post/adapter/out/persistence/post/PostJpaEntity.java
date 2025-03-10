@@ -41,4 +41,9 @@ public class PostJpaEntity {
     public static PostJpaEntity create(PostBaseJpaEntity postBase, String title, Boolean isAnonymous) {
         return new PostJpaEntity(postBase, title, isAnonymous);
     }
+
+    public void updatePost(String title, boolean isAnonymous) {
+        this.title = title;
+        this.isAnonymous = isAnonymous;
+    }
 }

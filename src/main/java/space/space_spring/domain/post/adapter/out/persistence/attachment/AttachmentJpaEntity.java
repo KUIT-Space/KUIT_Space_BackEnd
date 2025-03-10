@@ -44,4 +44,8 @@ public class AttachmentJpaEntity extends BaseJpaEntity {
     public static AttachmentJpaEntity create(PostBaseJpaEntity postBase, AttachmentType attachmentType, String attachmentUrl) {
         return new AttachmentJpaEntity(postBase, attachmentType, attachmentUrl);
     }
+
+    public void softDelete() {
+        this.updateToInactive();
+    }
 }

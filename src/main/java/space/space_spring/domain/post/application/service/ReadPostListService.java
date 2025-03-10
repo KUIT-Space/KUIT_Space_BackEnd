@@ -9,7 +9,7 @@ import space.space_spring.domain.post.application.port.in.readPostList.PostSumma
 import space.space_spring.domain.post.application.port.in.readPostList.ReadPostListUseCase;
 import space.space_spring.domain.post.application.port.out.LoadAttachmentPort;
 import space.space_spring.domain.post.application.port.out.LoadCommentPort;
-import space.space_spring.domain.post.application.port.out.LoadLikePort;
+import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;

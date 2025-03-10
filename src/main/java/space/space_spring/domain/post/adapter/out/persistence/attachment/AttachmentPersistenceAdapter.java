@@ -44,7 +44,7 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
     @Override
     public List<Attachment> loadById(Long postId) {
         // 1. DB에서 ACTIVE 상태의 첨부파일 조회
-        List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findByIdAndStatus(postId, BaseStatusType.ACTIVE);
+        List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findByPostBaseIdAndStatus(postId, BaseStatusType.ACTIVE);
 
         // 2. JPA 엔티티 → 도메인 엔티티로 변환하여 반환
         return attachmentJpaEntities.stream()
@@ -97,22 +97,25 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
     }
 
     @Override
-    public void deleteAllAttachments(List<String> attachmentUrls) {
-        // 1. S3에서 파일 삭제
-        for (String attachmentUrl : attachmentUrls) {
-            s3Uploader.deleteFileByUrl(attachmentUrl); // S3 에서 삭제
-        }
-
-        // 2. DB에서 ACTIVE 상태의 첨부파일만 조회
-        List<AttachmentJpaEntity> attachments = attachmentRepository
-                .findByAttachmentUrlInAndStatus(attachmentUrls);
-
+    public void deleteAllAttachments(List<Attachment> attachments) {
+        // 1. 삭제할 파일이 없으면 그대로 종료
         if (attachments.isEmpty()) {
             return; // 삭제할 파일이 없으면 그대로 종료
         }
 
+        // 2. S3에서 파일 삭제
+        for (Attachment attachment : attachments) {
+            s3Uploader.deleteFileByUrl(attachment.getAttachmentUrl()); // S3 에서 삭제
+        }
+
         // 3. DB에서 Soft Delete 수행
-        for (AttachmentJpaEntity attachment : attachments) {
+        List<Long> attachmentIds = attachments.stream()
+                .map(Attachment::getId)
+                .toList();
+
+        List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findAllById(attachmentIds);
+
+        for (AttachmentJpaEntity attachment : attachmentJpaEntities) {
             attachment.softDelete();
         }
     }

@@ -41,11 +41,8 @@ public class DeletePostService implements DeletePostUseCase {
         // 4. validate
         validate(board, post, command);
 
-        // 5. S3에서 첨부파일 삭제
-        List<String> attachmentUrls = attachments.stream()
-                .map(Attachment::getAttachmentUrl)
-                .toList();
-        deleteAttachmentPort.deleteAllAttachments(attachmentUrls);
+        // 5. 첨부파일 삭제
+        deleteAttachmentPort.deleteAllAttachments(attachments);
 
         // 6. 댓글 삭제
 

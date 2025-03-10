@@ -3,18 +3,21 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
+import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostAttachmentCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostUseCase;
-import space.space_spring.domain.post.application.port.out.LoadBoardPort;
-import space.space_spring.domain.post.application.port.out.LoadPostPort;
-import space.space_spring.domain.post.application.port.out.UpdateAttachmentPort;
-import space.space_spring.domain.post.application.port.out.UpdatePostPort;
-import space.space_spring.domain.post.domain.Board;
-import space.space_spring.domain.post.domain.BoardType;
-import space.space_spring.domain.post.domain.Post;
+import space.space_spring.domain.post.application.port.out.*;
+import space.space_spring.domain.post.domain.*;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.global.exception.CustomException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -26,8 +29,11 @@ public class UpdatePostService implements UpdatePostUseCase {
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
+    private final LoadAttachmentPort loadAttachmentPort;
+    private final DeleteAttachmentPort deleteAttachmentPort;
+    private final UploadAttachmentPort uploadAttachmentPort;
+    private final CreateAttachmentPort createAttachmentPort;
     private final UpdatePostPort updatePostPort;
-    private final UpdateAttachmentPort updateAttachmentPort;
 
     @Override
     @Transactional
@@ -45,6 +51,7 @@ public class UpdatePostService implements UpdatePostUseCase {
         validate(board, post, spaceMember, command);
 
         // 5. 이미지 수정
+        updateAttachments(command);
 
         // 6. 디스코드로 게시글 수정 정보 전송
 
@@ -87,5 +94,33 @@ public class UpdatePostService implements UpdatePostUseCase {
         /**
          * TODO : 디스코드에서 게시글 수정 로직
          */
+    }
+
+    private void updateAttachments(UpdatePostCommand command) {
+        // 1. Attachment 조회
+        List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
+
+        // 2. S3에서 기존 첨부파일 삭제
+        List<String> attachmentUrls = attachments.stream()
+                .map(Attachment::getAttachmentUrl)
+                .toList();
+        deleteAttachmentPort.deleteAllAttachments(attachmentUrls);
+
+        // 3. 새로운 첨부파일 업데이트
+        if (!command.getAttachments().isEmpty()) {
+            Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachments().stream()
+                    .collect(Collectors.groupingBy(
+                            UpdatePostAttachmentCommand::getAttachmentType,
+                            Collectors.mapping(UpdatePostAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
+                    ));
+            Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
+
+            // Attachment 도메인 엔티티 생성 후 db에 저장
+            List<Attachment> newAttachments = new ArrayList<>();
+            attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
+                    attachments.add(Attachment.withoutId(command.getPostId(), type, url))
+            ));
+            createAttachmentPort.createAttachments(newAttachments);
+        }
     }
 }

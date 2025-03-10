@@ -23,7 +23,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadAttachmentPort, CreateAttachmentPort, DeleteAttachmentPort, UpdateAttachmentPort {
+public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadAttachmentPort, CreateAttachmentPort, DeleteAttachmentPort {
 
     private final SpringDataAttachmentRepository attachmentRepository;
     private final SpringDataPostBaseRepository postBaseRepository;
@@ -115,10 +115,5 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
         for (AttachmentJpaEntity attachment : attachments) {
             attachment.softDelete();
         }
-    }
-
-    @Override
-    public void updateAllAttachments(List<Attachment> attachments) {
-
     }
 }

@@ -82,7 +82,4 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                 )
                 .build();
     }
-
-
-
 }

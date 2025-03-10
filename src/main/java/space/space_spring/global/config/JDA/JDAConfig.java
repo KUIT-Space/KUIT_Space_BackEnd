@@ -35,7 +35,10 @@ public class JDAConfig {
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.DIRECT_MESSAGES,
                 GatewayIntent.MESSAGE_CONTENT,
-                GatewayIntent.GUILD_MEMBERS);
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS
+
+        );
 
         // 등록된 모든 이벤트 리스너 추가
         if(eventListeners.isEmpty()){

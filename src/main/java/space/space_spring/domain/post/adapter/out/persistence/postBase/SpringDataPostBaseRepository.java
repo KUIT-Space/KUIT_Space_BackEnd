@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface SpringDataPostBaseRepository extends JpaRepository<PostBaseJpaEntity, Long> {
     Optional<PostBaseJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);
+    Optional<PostBaseJpaEntity> findByDiscordIdAndStatus(Long discordId,BaseStatusType baseStatusType);
 }

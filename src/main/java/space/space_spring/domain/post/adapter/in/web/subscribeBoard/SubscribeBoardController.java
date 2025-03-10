@@ -26,9 +26,9 @@ public class SubscribeBoardController {
 
     private final SubscribeBoardUseCase subscribeBoardUseCase;
 
-    @Operation(summary = "게시판 구독 등록/취소", description = """
+    @Operation(summary = "게시판 구독 등록", description = """
         
-        사용자가 게시판을 구독하거나 구독을 취소합니다.
+        사용자가 게시판을 구독합니다.
         
         """)
     @PostMapping("/board/subscribe")
@@ -42,7 +42,27 @@ public class SubscribeBoardController {
                 .boardId(request.getBoardId())
                 .tagName(request.getTagName())
                 .build();
-        subscribeBoardUseCase.changeSubscription(subscribeBoardCommand);
+        subscribeBoardUseCase.subscribeBoard(subscribeBoardCommand);
+        return new BaseResponse<>(new SuccessResponse(true));
+    }
+
+    @Operation(summary = "게시판 구독 취소", description = """
+        
+        사용자가 게시판 구독을 취소합니다.
+        
+        """)
+    @PostMapping("/board/unsubscribe")
+    public BaseResponse<SuccessResponse> unsubscribeEvent(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(INVALID_BOARD_SUBSCRIBE);
+        }
+
+        SubscribeBoardCommand subscribeBoardCommand = SubscribeBoardCommand.builder()
+                .spaceMemberId(spaceMemberId)
+                .boardId(request.getBoardId())
+                .tagName(request.getTagName())
+                .build();
+        subscribeBoardUseCase.unsubscribeBoard(subscribeBoardCommand);
         return new BaseResponse<>(new SuccessResponse(true));
     }
 }

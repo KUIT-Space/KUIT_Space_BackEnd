@@ -4,6 +4,8 @@ import space.space_spring.domain.post.application.port.in.loadBoard.SubscribeBoa
 
 public interface SubscribeBoardUseCase {
 
-    void changeSubscription(SubscribeBoardCommand subscribeBoardCommand);
+    void subscribeBoard(SubscribeBoardCommand subscribeBoardCommand);
+
+    void unsubscribeBoard(SubscribeBoardCommand subscribeBoardCommand);
 
 }

@@ -1,5 +1,7 @@
 package space.space_spring.domain.post.application.service;
 
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
+
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Subscription;
 import space.space_spring.domain.post.domain.Tag;
 import space.space_spring.global.common.entity.BaseInfo;
+import space.space_spring.global.exception.CustomException;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +31,7 @@ public class SubscribeBoardService implements SubscribeBoardUseCase {
 
     @Transactional
     @Override
-    public void changeSubscription(SubscribeBoardCommand subscribeBoardCommand) {
+    public void subscribeBoard(SubscribeBoardCommand subscribeBoardCommand) {
         Long spaceMemberId = subscribeBoardCommand.getSpaceMemberId();
         Long boardId = subscribeBoardCommand.getBoardId();
 
@@ -38,17 +41,32 @@ public class SubscribeBoardService implements SubscribeBoardUseCase {
         Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByInfos(spaceMemberId, boardId, tag.getId());
 
         if (savedSubscription.isPresent()) {
-            // ACTIVE면 INACTIVE로, INACTIVE면 ACTIVE로
-            if (savedSubscription.get().isActive()) {
-                updateSubscriptionPort.inactivate(savedSubscription.get());
-                return;
-            }
+            if (savedSubscription.get().isActive()) throw new CustomException(SUBSCRIPTION_ALREADY_EXIST);
             updateSubscriptionPort.activate(savedSubscription.get());
             return;
         }
 
-        // 구독 내역이 없다면 생성
         Subscription subscription = Subscription.withoutId(spaceMemberId, boardId, tag.getId(), BaseInfo.ofEmpty());
         createSubscriptionPort.createSubscription(subscription);
+    }
+
+    @Transactional
+    @Override
+    public void unsubscribeBoard(SubscribeBoardCommand subscribeBoardCommand) {
+        Long spaceMemberId = subscribeBoardCommand.getSpaceMemberId();
+        Long boardId = subscribeBoardCommand.getBoardId();
+
+        Board board = loadBoardPort.loadById(boardId);
+        Tag tag = loadTagPort.loadByBoardAndName(board, subscribeBoardCommand.getTagName());
+
+        Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByInfos(spaceMemberId, boardId, tag.getId());
+
+        if (savedSubscription.isPresent()) {
+            if (savedSubscription.get().isActive()) {
+                updateSubscriptionPort.inactivate(savedSubscription.get());
+                return;
+            }
+        }
+        throw new CustomException(SUBSCRIPTION_NOT_EXIST);
     }
 }

@@ -2,14 +2,16 @@ package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.application.port.in.deletePost.DeletePostCommand;
 import space.space_spring.domain.post.application.port.in.deletePost.DeletePostUseCase;
-import space.space_spring.domain.post.application.port.out.DeletePostPort;
-import space.space_spring.domain.post.application.port.out.LoadBoardPort;
-import space.space_spring.domain.post.application.port.out.LoadPostPort;
+import space.space_spring.domain.post.application.port.out.*;
+import space.space_spring.domain.post.domain.Attachment;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
+
+import java.util.List;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.UNAUTHORIZED_USER;
@@ -20,25 +22,40 @@ public class DeletePostService implements DeletePostUseCase {
 
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
+    private final LoadAttachmentPort loadAttachmentPort;
     private final DeletePostPort deletePostPort;
+    private final DeleteAttachmentPort deleteAttachmentPort;
 
     @Override
+    @Transactional
     public void deletePostFromWeb(DeletePostCommand command) {
-
         // 1. Board 조회
         Board board = loadBoardPort.loadById(command.getBoardId());
 
         // 2. Post 조회
         Post post = loadPostPort.loadById(command.getPostId());
 
-        // 3. validate
+        // 3. Attachment 조회
+        List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
+
+        // 4. validate
         validate(board, post, command);
 
-        // 4. 댓글 삭제
+        // 5. S3에서 첨부파일 삭제
+        List<String> attachmentUrls = attachments.stream()
+                .map(Attachment::getAttachmentUrl)
+                .toList();
+        deleteAttachmentPort.deleteAllAttachments(attachmentUrls);
+
+        // 6. 댓글 삭제
+
+
+        // 7. 게시글 삭제
         deletePostPort.deletePost(command.getPostId());
     }
 
     @Override
+    @Transactional
     public void deletePostFromDiscord(DeletePostCommand command) {
         /**
          * TODO : 디스코드에서 게시글 삭제 로직

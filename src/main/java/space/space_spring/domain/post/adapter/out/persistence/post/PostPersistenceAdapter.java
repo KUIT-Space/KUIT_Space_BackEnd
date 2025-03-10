@@ -99,6 +99,5 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
 
         // jpa entity를 INACTIVE 상태로 변경
         postJpaEntity.getPostBase().updateToInactive();
-
     }
 }

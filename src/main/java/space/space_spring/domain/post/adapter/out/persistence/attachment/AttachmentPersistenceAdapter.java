@@ -3,6 +3,8 @@ package space.space_spring.domain.post.adapter.out.persistence.attachment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
+import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
@@ -14,10 +16,7 @@ import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.S3Uploader;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -30,7 +29,6 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
     private final SpringDataPostBaseRepository postBaseRepository;
     private final S3Uploader s3Uploader;
     private final AttachmentMapper attachmentMapper;
-    private final PostBaseMapper postBaseMapper;
 
     @Override
     public Map<Long, String> findFirstImageByPostIds(List<Long> postIds) {
@@ -41,6 +39,17 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
                         AttachmentSummary::getAttachmentUrl,
                         (existing, replacement) -> existing     // 중복된 postId 중 첫 번째만 유지
                 ));
+    }
+
+    @Override
+    public List<Attachment> loadById(Long postId) {
+        // 1. DB에서 ACTIVE 상태의 첨부파일 조회
+        List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findByIdAndStatus(postId, BaseStatusType.ACTIVE);
+
+        // 2. JPA 엔티티 → 도메인 엔티티로 변환하여 반환
+        return attachmentJpaEntities.stream()
+                .map(attachmentMapper::toDomainEntity)
+                .toList();
     }
 
     @Override
@@ -78,7 +87,7 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
     public void createAttachments(List<Attachment> attachments) {
         List<AttachmentJpaEntity> attachmentJpaEntities = new ArrayList<>();
         for (Attachment attachment : attachments) {
-            PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(attachment.getTargetId(), BaseStatusType.ACTIVE)
+            PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByIdAndStatus(attachment.getPostId(), BaseStatusType.ACTIVE)
                     .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
 
             attachmentJpaEntities.add(attachmentMapper.toJpaEntity(postBaseJpaEntity, attachment));
@@ -89,8 +98,22 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
 
     @Override
     public void deleteAllAttachments(List<String> attachmentUrls) {
+        // 1. S3에서 파일 삭제
         for (String attachmentUrl : attachmentUrls) {
-            s3Uploader.deleteFileByUrl(attachmentUrl);
+            s3Uploader.deleteFileByUrl(attachmentUrl); // S3 에서 삭제
+        }
+
+        // 2. DB에서 ACTIVE 상태의 첨부파일만 조회
+        List<AttachmentJpaEntity> attachments = attachmentRepository
+                .findByAttachmentUrlInAndStatus(attachmentUrls);
+
+        if (attachments.isEmpty()) {
+            return; // 삭제할 파일이 없으면 그대로 종료
+        }
+
+        // 3. DB에서 Soft Delete 수행
+        for (AttachmentJpaEntity attachment : attachments) {
+            attachment.softDelete();
         }
     }
 

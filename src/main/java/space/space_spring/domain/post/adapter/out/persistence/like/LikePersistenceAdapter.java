@@ -32,7 +32,7 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
 
     @Override
     public Map<Long, NaturalNumber> countLikesByPostIds(List<Long> postIds) {
-        List<PostLikeCount> results = likeRepository.countLikesByPostIds(postIds);
+        List<PostLikeCount> results = likeRepository.countLikesByPostIds(postIds, BaseStatusType.ACTIVE);
         return results.stream()
                 .collect(Collectors.toMap(
                         PostLikeCount::getPostId,

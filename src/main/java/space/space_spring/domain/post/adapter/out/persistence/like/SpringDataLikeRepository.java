@@ -28,5 +28,5 @@ public interface SpringDataLikeRepository extends JpaRepository<LikeJpaEntity, L
      */
     Optional<LikeJpaEntity> findBySpaceMemberIdAndPostBaseIdAndStatus(Long spaceMemberId, Long postBaseId, BaseStatusType status);
 
-    int countByPostBaseIdAndLikedAndStatus(Long targetId, boolean isLiked, BaseStatusType status);
+    int countByPostBaseIdAndIsLikedAndStatus(Long targetId, boolean isLiked, BaseStatusType status);
 }

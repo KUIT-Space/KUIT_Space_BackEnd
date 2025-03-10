@@ -42,7 +42,7 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
 
     @Override
     public NaturalNumber countLikeByPostId(Long postId) {
-        int likeCountOfTarget = likeRepository.countByPostBaseIdAndLikedAndStatus(postId, true, BaseStatusType.ACTIVE);
+        int likeCountOfTarget = likeRepository.countByPostBaseIdAndIsLikedAndStatus(postId, true, BaseStatusType.ACTIVE);
         return NaturalNumber.of(likeCountOfTarget);
     }
 

@@ -17,9 +17,12 @@ import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataS
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.NaturalNumber;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -36,10 +39,13 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
     private final PostBaseMapper postBaseMapper;
 
     @Override
-    public Map<Long, Long> countCommentsByPostIds(List<Long> postIds) {
+    public Map<Long, NaturalNumber> countCommentsByPostIds(List<Long> postIds) {
         List<PostCommentCount> results = postCommentRepository.countCommentsByPostIds(postIds);
         return results.stream()
-                .collect(Collectors.toMap(PostCommentCount::getPostId, PostCommentCount::getCommentCount));
+                .collect(Collectors.toMap(
+                        PostCommentCount::getPostId,
+                        postCommentCount -> NaturalNumber.of(postCommentCount.getCommentCount().intValue())
+                ));
     }
 
     @Override
@@ -106,5 +112,22 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
         // jpa entity 를 INACTIVE 상태로 변경
         postCommentJpaEntity.getPostBase().updateToInactive();
+    }
+
+    /**
+     * status 상관없이 post에 달린 모든 comment 들 조회
+     */
+    @Override
+    public List<Comment> loadByPostIdWithoutStatusFilter(Long postId) {
+        Optional<List<PostCommentJpaEntity>> allByPostId = postCommentRepository.findAllByPostId(postId);
+
+        if (allByPostId.isEmpty()) return new ArrayList<>();
+
+        List<Comment> comments = new ArrayList<>();
+        for (PostCommentJpaEntity postCommentJpaEntity : allByPostId.get()) {
+            comments.add(commentMapper.toDomainEntity(postCommentJpaEntity));
+        }
+
+        return comments;
     }
 }

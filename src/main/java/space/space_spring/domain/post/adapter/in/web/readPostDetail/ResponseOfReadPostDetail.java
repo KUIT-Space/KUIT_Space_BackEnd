@@ -15,6 +15,8 @@ public class ResponseOfReadPostDetail {
 
     private String createdAt;
 
+    private String lastModifiedAt;
+
     private String title;
 
     private String content;
@@ -28,12 +30,13 @@ public class ResponseOfReadPostDetail {
     private List<ResponseOfCommentDetail> responseOfCommentDetails;
 
     @Builder
-    private ResponseOfReadPostDetail(String creatorName, String creatorProfileImageUrl, String createdAt, String title,
-                                     String content, List<String> attachmentUrls, int likeCount, boolean isLiked,
+    private ResponseOfReadPostDetail(String creatorName, String creatorProfileImageUrl, String createdAt, String lastModifiedAt,
+                                     String title, String content, List<String> attachmentUrls, int likeCount, boolean isLiked,
                                      List<ResponseOfCommentDetail> responseOfCommentDetails) {
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.createdAt = createdAt;
+        this.lastModifiedAt = lastModifiedAt;
         this.title = title;
         this.content = content;
         this.attachmentUrls = attachmentUrls;
@@ -47,6 +50,7 @@ public class ResponseOfReadPostDetail {
                 .creatorName(result.getCreatorName())
                 .creatorProfileImageUrl(result.getCreatorProfileImageUrl())
                 .createdAt(result.getCreatedAt())
+                .lastModifiedAt(result.getLastModifiedAt())
                 .title(result.getTitle())
                 .content(result.getContent().getValue())
                 .attachmentUrls(result.getAttachmentUrls())

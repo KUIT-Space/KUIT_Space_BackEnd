@@ -16,7 +16,6 @@ import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -34,7 +33,7 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort {
     @Override
     public Long createPost (Post post) {
         // 1. SpaceMember 조회
-        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(post.getSpaceMemberId())
+        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(post.getPostCreatorId())
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
         // 2. Board 조회

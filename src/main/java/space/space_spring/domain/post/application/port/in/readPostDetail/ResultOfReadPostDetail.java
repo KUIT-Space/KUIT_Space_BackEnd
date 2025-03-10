@@ -16,6 +16,8 @@ public class ResultOfReadPostDetail {
 
     private String createdAt;
 
+    private String lastModifiedAt;
+
     private String title;
 
     private Content content;
@@ -29,11 +31,12 @@ public class ResultOfReadPostDetail {
     private List<InfoOfCommentDetail> infoOfCommentDetails;
 
     @Builder
-    public ResultOfReadPostDetail(String creatorName, String creatorProfileImageUrl, String createdAt, String title, Content content,
+    public ResultOfReadPostDetail(String creatorName, String creatorProfileImageUrl, String createdAt, String lastModifiedAt, String title, Content content,
                                   List<String> attachmentUrls, NaturalNumber likeCount, boolean isLiked, List<InfoOfCommentDetail> infoOfCommentDetails) {
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.createdAt = createdAt;
+        this.lastModifiedAt = lastModifiedAt;
         this.title = title;
         this.content = content;
         this.attachmentUrls = attachmentUrls;

@@ -57,6 +57,10 @@ public class MoveMessageEventListener extends ListenerAdapter {
         // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔
         List<ActionRow> rows = buttonUtil.partitionButtons(channelButtons);
 
+        if(loadBoardCacheUseCase.findByDiscordId(event.getChannelIdLong()).isPresent()){
+            rows.add(ActionRow.of(Button.primary("check:move-current-message","현재 채널")));
+        }
+
         event.reply("이 채널의 글을 이동 시킬 게시판(채널)을 선택 해주세요"+
                         "\n이 채널의 메세지가 디스코드와 space web 모두 메세지가 복사됩니다.")
                 .setEphemeral(true)

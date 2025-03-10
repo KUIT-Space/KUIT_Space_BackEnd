@@ -74,7 +74,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
         }
 
         if(!hasButton) {
-            event.reply("알수 없는 버튼 요청입니다.").setEphemeral(true).queue();
+            event.reply("알수 없는 버튼 요청입니다.(input="+buttonId+")").setEphemeral(true).queue();
         }
 
 

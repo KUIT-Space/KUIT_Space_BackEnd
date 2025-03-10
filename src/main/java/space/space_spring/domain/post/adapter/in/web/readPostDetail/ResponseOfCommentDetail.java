@@ -13,7 +13,7 @@ public class ResponseOfCommentDetail {
 
     private boolean isPostOwner;
 
-    private String content;
+    private String content;         // 댓글 내용은 String (Content X)
 
     private String createdAt;
 
@@ -41,7 +41,7 @@ public class ResponseOfCommentDetail {
                 .creatorName(info.getCreatorName())
                 .creatorProfileImageUrl(info.getCreatorProfileImageUrl())
                 .isPostOwner(info.isPostOwner())
-                .content(info.getContent().getValue())
+                .content(info.getContent())
                 .createdAt(info.getCreatedAt())
                 .lastModifiedAt(info.getLastModifiedAt())
                 .likeCount(info.getLikeCount().getNumber())

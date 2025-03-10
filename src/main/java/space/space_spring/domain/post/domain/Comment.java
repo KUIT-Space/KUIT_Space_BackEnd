@@ -16,13 +16,13 @@ public class Comment {
 
     private Long commentCreatorId;
 
-    private Content content;
+    private String content;         // 댓글 내용은 String (Content 아님)
 
     private boolean isAnonymous;
 
     private BaseInfo baseInfo;
 
-    private Comment(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous, BaseInfo baseInfo) {
+    private Comment(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, String content, boolean isAnonymous, BaseInfo baseInfo) {
         this.id = id;
         this.boardId = boardId;
         this.discordId = discordId;
@@ -33,14 +33,14 @@ public class Comment {
         this.baseInfo = baseInfo;
     }
 
-    public static Comment create(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous, BaseInfo baseInfo) {
+    public static Comment create(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, String content, boolean isAnonymous, BaseInfo baseInfo) {
         return new Comment(id, boardId, discordId, postId, commentCreatorId, content, isAnonymous, baseInfo);
     }
 
     /**
      * 처음 Domain Entity 생성 시 사용하는 정적 펙토리 메서드
      */
-    public static Comment withoutId(Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous) {
+    public static Comment withoutId(Long boardId, Long discordId, Long postId, Long commentCreatorId, String content, boolean isAnonymous) {
         return new Comment(null, boardId, discordId, postId, commentCreatorId, content, isAnonymous, BaseInfo.ofEmpty());
     }
 
@@ -48,7 +48,7 @@ public class Comment {
         return commentCreatorId.equals(spaceMemberId);
     }
 
-    public void changeContent(Content content) {
+    public void changeContent(String content) {
         this.content = content;
     }
 

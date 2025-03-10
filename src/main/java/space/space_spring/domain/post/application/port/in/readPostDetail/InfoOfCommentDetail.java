@@ -2,7 +2,6 @@ package space.space_spring.domain.post.application.port.in.readPostDetail;
 
 import lombok.Builder;
 import lombok.Getter;
-import space.space_spring.domain.post.domain.Content;
 import space.space_spring.global.util.NaturalNumber;
 
 @Getter
@@ -14,7 +13,7 @@ public class InfoOfCommentDetail {
 
     private boolean isPostOwner;
 
-    private Content content;
+    private String content;
 
     private String createdAt;
 
@@ -25,7 +24,7 @@ public class InfoOfCommentDetail {
     private boolean isLiked;
 
     @Builder
-    public InfoOfCommentDetail(String creatorName, String creatorProfileImageUrl, boolean isPostOwner, Content content, String createdAt, String lastModifiedAt, NaturalNumber likeCount, boolean isLiked) {
+    public InfoOfCommentDetail(String creatorName, String creatorProfileImageUrl, boolean isPostOwner, String content, String createdAt, String lastModifiedAt, NaturalNumber likeCount, boolean isLiked) {
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.isPostOwner = isPostOwner;

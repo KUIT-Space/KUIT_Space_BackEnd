@@ -27,7 +27,7 @@ public class CommentMapper {
                 jpaEntity.getPostBase().getDiscordId(),
                 jpaEntity.getPost().getId(),
                 jpaEntity.getPostBase().getSpaceMember().getId(),
-                Content.of(jpaEntity.getPostBase().getContent()),
+                jpaEntity.getPostBase().getContent(),
                 jpaEntity.isAnonymous(),
                 baseInfo
         );

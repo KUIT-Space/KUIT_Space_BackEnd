@@ -41,12 +41,12 @@ public class CreateDiscordWebHookMessageAdapter implements CreateDiscordWebHookM
 
         CompletableFuture<Long> future = new CompletableFuture<>();
 
-        client.sendMessage(command.getMessageContent())
+        client.sendMessage(command.getTitleAndContent())
                 .setAvatarUrl(command.getAvatarUrl())
                 .setUsername(command.getName()).queue(
                         obj->{
                             if(obj instanceof Message message) {
-                                client.sendMessage("msg ID:"+message.getId()).queue();
+                                //client.sendMessage("msg ID:"+message.getId()).queue();
                                 future.complete(message.getIdLong());
                             }else{
                                 future.completeExceptionally(new RuntimeException("Webhook의 return 값이 message 타입이 아닙니다"));

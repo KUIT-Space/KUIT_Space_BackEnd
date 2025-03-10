@@ -28,4 +28,20 @@ public class MessageInputFromDiscordCommand {
                 "spaceDiscordId"+spaceDiscordId+"\n"+
                 "MessageDiscordId"+MessageDiscordId;
     }
+
+    public String getContentNotBlank(){
+        if(content.isBlank()||content.isEmpty()){
+            return title;
+        }
+        return content;
+    }
+
+    //content 혹은 title 이 20 자가 넘는지 확인 합니다.
+    public boolean validateContentLength(){
+        if(getContentNotBlank().length()>20){
+            return true;
+        }
+        return false;
+    }
+
 }

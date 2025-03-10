@@ -9,7 +9,9 @@ import space.space_spring.domain.post.application.port.out.DeleteBoardCachePort;
 import space.space_spring.domain.post.application.port.out.LoadBoardCachePort;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,16 +29,41 @@ public class BoardCacheAdapter implements CreateBoardCachePort, LoadBoardCachePo
         return Optional.ofNullable(toLong(redisTemplate.opsForValue().get(CHANNEL_PREFIX+ discordId)));
     }
 
+    @Override
+    public List<Long> findAllChannel(){
+        return redisTemplate.keys(CHANNEL_PREFIX + "*").stream()
+                .map(string->string.split(":")[1])
+                .map(string->toLong(string)).toList();
+    }
+
     public boolean deleteByDiscordId(Long discordId) {
 
         return Boolean.TRUE.equals(redisTemplate.delete(CHANNEL_PREFIX + discordId));
     }
+    public int deleteAllChannel(){
+        Set<String> keys =redisTemplate.keys(CHANNEL_PREFIX + "*");
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);  // 조회된 키 삭제
+
+            System.out.println("Deleted keys: " + keys);
+            return keys.size();
+        } else {
+            System.out.println("No matching keys found for pattern: channel:*");
+            return 0;
+        }
+    }
 
     private String toString(Long value){
+        if(value==null){
+            return null;
+        }
         return String.valueOf(value);
     }
 
     private Long toLong(String value){
+        if(value==null){
+            return null;
+        }
         return Long.valueOf(value);
     }
 

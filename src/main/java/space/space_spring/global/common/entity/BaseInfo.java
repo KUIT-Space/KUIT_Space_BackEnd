@@ -27,4 +27,8 @@ public class BaseInfo {
     public static BaseInfo ofEmpty() {
         return new BaseInfo(null, null, null);
     }
+
+    public boolean isActive() {
+        return status == BaseStatusType.ACTIVE;
+    }
 }

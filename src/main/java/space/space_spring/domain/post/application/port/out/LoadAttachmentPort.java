@@ -6,4 +6,6 @@ import java.util.Map;
 public interface LoadAttachmentPort {
 
     Map<Long, String> findFirstImageByPostIds(List<Long> postIds);
+
+    List<String> loadAttachmentUrlByTargetId(Long targetId);
 }

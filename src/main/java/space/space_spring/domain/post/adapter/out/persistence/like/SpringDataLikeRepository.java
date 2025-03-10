@@ -16,9 +16,9 @@ public interface SpringDataLikeRepository extends JpaRepository<LikeJpaEntity, L
             "FROM LikeJpaEntity l " +
             "WHERE l.postBase.id IN :postIds " +
             "AND l.isLiked = true " +
-            "AND l.status = space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE " +
+            "AND l.status = :status " +
             "GROUP BY l.postBase.id")
-    List<PostLikeCount> countLikesByPostIds(@Param("postIds") List<Long> postIds);
+    List<PostLikeCount> countLikesByPostIds(@Param("postIds") List<Long> postIds, @Param("status") BaseStatusType status);
 
     /**
      * findBySpaceMemberIdAndPostBaseIdAndStatus(Long spaceMemberId, Long postBaseId, BaseStatusType status),
@@ -27,4 +27,6 @@ public interface SpringDataLikeRepository extends JpaRepository<LikeJpaEntity, L
      * -> 이렇게 3가지 모두 가능
      */
     Optional<LikeJpaEntity> findBySpaceMemberIdAndPostBaseIdAndStatus(Long spaceMemberId, Long postBaseId, BaseStatusType status);
+
+    int countByPostBaseIdAndIsLikedAndStatus(Long targetId, boolean isLiked, BaseStatusType status);
 }

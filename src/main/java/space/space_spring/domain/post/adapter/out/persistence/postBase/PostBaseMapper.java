@@ -30,7 +30,7 @@ public class PostBaseMapper {
                 domain.getDiscordId(),
                 board,
                 spaceMember,
-                domain.getContent().getValue(),
+                domain.getContent(),
                 domain.getBaseInfo().getCreatedAt(),
                 domain.getBaseInfo().getLastModifiedAt(),
                 domain.getBaseInfo().getStatus()

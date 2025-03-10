@@ -13,6 +13,7 @@ import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
+import space.space_spring.global.util.NaturalNumber;
 
 import java.util.List;
 import java.util.Map;
@@ -40,14 +41,14 @@ public class ReadPostListService implements ReadPostListUseCase {
                 .toList();
 
         // 3. 좋아요 수 조회
-        Map<Long, Long> likeCounts = loadLikePort.countLikesByPostIds(postIds);
+        Map<Long, NaturalNumber> likeCounts = loadLikePort.countLikesByPostIds(postIds);
 
         // 4. 댓글 수 조회
-        Map<Long, Long> commentCounts = loadCommentPort.countCommentsByPostIds(postIds);
+        Map<Long, NaturalNumber> commentCounts = loadCommentPort.countCommentsByPostIds(postIds);
 
         // 5. spaceMemberId 리스트 추출
         List<Long> spaceMemberIds = posts.stream()
-                .map(Post::getSpaceMemberId)
+                .map(Post::getPostCreatorId)
                 .toList();
 
         // 6. 작성자 닉네임 조회
@@ -63,10 +64,10 @@ public class ReadPostListService implements ReadPostListUseCase {
                         post.getId(),
                         post.getTitle(),
                         post.getContent(),
-                        likeCounts.getOrDefault(post.getId(), 0L).intValue(),
-                        commentCounts.getOrDefault(post.getId(), 0L).intValue(),
+                        likeCounts.getOrDefault(post.getId(), NaturalNumber.of(0)).getNumber(),
+                        commentCounts.getOrDefault(post.getId(), NaturalNumber.of(0)).getNumber(),
                         post.getBaseInfo().getCreatedAt(),
-                        creatorNicknames.getOrDefault(post.getSpaceMemberId(), "알 수 없음"),
+                        creatorNicknames.getOrDefault(post.getPostCreatorId(), "알 수 없음"),
                         thumbnailImages.getOrDefault(post.getId(), null)
                 )).toList();
 

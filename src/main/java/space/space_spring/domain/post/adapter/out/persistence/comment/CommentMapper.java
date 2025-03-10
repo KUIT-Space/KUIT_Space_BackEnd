@@ -11,7 +11,7 @@ import space.space_spring.global.common.entity.BaseInfo;
 public class CommentMapper {
 
     public PostCommentJpaEntity toJpaEntity(PostBaseJpaEntity postBaseJpaEntity, PostJpaEntity postJpaEntity, Comment comment) {
-        return PostCommentJpaEntity.create(postBaseJpaEntity, postJpaEntity, comment.isAnonymous());
+        return PostCommentJpaEntity.create(postBaseJpaEntity, postJpaEntity, comment.getIsAnonymous());
     }
 
     public Comment toDomainEntity(PostCommentJpaEntity jpaEntity) {
@@ -27,7 +27,7 @@ public class CommentMapper {
                 jpaEntity.getPostBase().getDiscordId(),
                 jpaEntity.getPost().getId(),
                 jpaEntity.getPostBase().getSpaceMember().getId(),
-                Content.of(jpaEntity.getPostBase().getContent()),
+                jpaEntity.getPostBase().getContent(),
                 jpaEntity.isAnonymous(),
                 baseInfo
         );

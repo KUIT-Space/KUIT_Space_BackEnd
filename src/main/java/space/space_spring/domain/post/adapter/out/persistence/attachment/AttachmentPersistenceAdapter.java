@@ -14,10 +14,7 @@ import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.S3Uploader;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -41,6 +38,22 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
                         AttachmentSummary::getAttachmentUrl,
                         (existing, replacement) -> existing     // 중복된 postId 중 첫 번째만 유지
                 ));
+    }
+
+    @Override
+    public List<String> loadAttachmentUrlByTargetId(Long targetId) {
+        Optional<List<AttachmentJpaEntity>> allByPostBaseIdAndStatus = attachmentRepository.findAllByPostBaseIdAndStatus(targetId, BaseStatusType.ACTIVE);
+
+        if (allByPostBaseIdAndStatus.isPresent()) {
+            return new ArrayList<>();
+        }
+
+        List<String> attachmentUrls = new ArrayList<>();
+        for (AttachmentJpaEntity attachment : allByPostBaseIdAndStatus.get()) {
+            attachmentUrls.add(attachment.getAttachmentUrl());
+        }
+
+        return attachmentUrls;
     }
 
     @Override

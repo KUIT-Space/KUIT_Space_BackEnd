@@ -32,7 +32,7 @@ public class SubscribeBoardController {
         
         """)
     @PostMapping("/board/subscribe")
-    public BaseResponse<SuccessResponse> subscribeEvent(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> subscribeBoard(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_BOARD_SUBSCRIBE);
         }
@@ -52,7 +52,7 @@ public class SubscribeBoardController {
         
         """)
     @PostMapping("/board/unsubscribe")
-    public BaseResponse<SuccessResponse> unsubscribeEvent(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> unsubscribeBoard(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_BOARD_SUBSCRIBE);
         }

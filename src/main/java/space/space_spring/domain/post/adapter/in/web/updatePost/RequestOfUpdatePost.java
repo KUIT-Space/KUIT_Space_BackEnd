@@ -23,6 +23,6 @@ public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
     @Nullable
     private List<RequestOfUpdatePostAttachment> attachments;
 
-    @NotBlank(message = "게시글의 익명/비익명 여부는 공백일 수 없습니다.")
+    @NotNull(message = "게시글의 익명/비익명 여부는 공백일 수 없습니다.")
     private Boolean isAnonymous; // 질문일 경우만 사용
 }

@@ -1,6 +1,7 @@
 package space.space_spring.domain.post.adapter.in.web.updatePost;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,6 @@ public class RequestOfUpdatePostAttachment extends SelfValidating<RequestOfUpdat
     @NotBlank(message = "첨부파일의 유형은 공백일 수 없습니다.")
     private String valueOfAttachmentType;
 
-    @NotBlank(message = "첨부파일은 공백일 수 없습니다.")
+    @NotNull(message = "첨부파일은 공백일 수 없습니다.")
     private MultipartFile attachment;
 }

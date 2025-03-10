@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,7 @@ public class SubscribeBoardController {
         
         """)
     @PostMapping("/board/subscribe")
-    public BaseResponse<SuccessResponse> subscribeBoard(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> subscribeBoard(@JwtLoginAuth Long spaceMemberId, @PathVariable String spaceId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_BOARD_SUBSCRIBE);
         }
@@ -52,7 +53,7 @@ public class SubscribeBoardController {
         
         """)
     @PostMapping("/board/unsubscribe")
-    public BaseResponse<SuccessResponse> unsubscribeBoard(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
+    public BaseResponse<SuccessResponse> unsubscribeBoard(@JwtLoginAuth Long spaceMemberId, @PathVariable String spaceId, @Validated @RequestBody SubscribeBoardRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_BOARD_SUBSCRIBE);
         }

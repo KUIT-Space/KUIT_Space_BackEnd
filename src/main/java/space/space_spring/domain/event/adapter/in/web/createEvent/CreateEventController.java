@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +36,7 @@ public class CreateEventController {
         
         """)
     @PostMapping("/event")
-    public BaseResponse<CreateEventResponse> createEvent(@JwtLoginAuth Long spaceMemberId, @Validated @ModelAttribute CreateEventRequest request, BindingResult bindingResult) {
+    public BaseResponse<CreateEventResponse> createEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId, @Validated @ModelAttribute CreateEventRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_EVENT_CREATE);
         }

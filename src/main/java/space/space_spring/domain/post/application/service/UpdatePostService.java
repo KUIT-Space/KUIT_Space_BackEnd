@@ -47,13 +47,16 @@ public class UpdatePostService implements UpdatePostUseCase {
         // 3. SpaceMember 조회
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(command.getPostCreatorId());
 
+        // 4. Attachment 조회
+        List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
+
         // 4. validate
         validate(board, post, spaceMember, command);
 
         // 5. 이미지 수정
-        updateAttachments(command);
+        updateAttachments(attachments, command);
 
-        // 6. 디스코드로 게시글 수정 정보 전송
+        // 6. TODO:디스코드로 게시글 수정 정보 전송
 
         // 7. 게시글 update
         post.updatePost(command.getTitle(), command.getContent(), command.getIsAnonymous());
@@ -96,29 +99,24 @@ public class UpdatePostService implements UpdatePostUseCase {
          */
     }
 
-    private void updateAttachments(UpdatePostCommand command) {
-        // 1. Attachment 조회
-        List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
+    private void updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {
+        // 1. 기존 첨부파일 삭제
+        deleteAttachmentPort.deleteAllAttachments(existingAttachments);
 
-        // 2. S3에서 기존 첨부파일 삭제
-        List<String> attachmentUrls = attachments.stream()
-                .map(Attachment::getAttachmentUrl)
-                .toList();
-        deleteAttachmentPort.deleteAllAttachments(attachmentUrls);
-
-        // 3. 새로운 첨부파일 업데이트
+        // 2. 새로운 첨부파일 업로드
         if (!command.getAttachments().isEmpty()) {
             Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachments().stream()
                     .collect(Collectors.groupingBy(
                             UpdatePostAttachmentCommand::getAttachmentType,
                             Collectors.mapping(UpdatePostAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
                     ));
+            // S3에 업로드
             Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
 
             // Attachment 도메인 엔티티 생성 후 db에 저장
             List<Attachment> newAttachments = new ArrayList<>();
             attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
-                    attachments.add(Attachment.withoutId(command.getPostId(), type, url))
+                    newAttachments.add(Attachment.withoutId(command.getPostId(), type, url))
             ));
             createAttachmentPort.createAttachments(newAttachments);
         }

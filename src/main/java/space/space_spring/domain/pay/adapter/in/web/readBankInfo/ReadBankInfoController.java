@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.pay.application.port.in.readBankInfo.ReadBankInfoUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
@@ -22,7 +23,7 @@ public class ReadBankInfoController {
             
             """)
     @GetMapping("/space/{spaceId}/pay/bank")
-    public BaseResponse<ResponseOfBankInfo> showBankInfo(@JwtLoginAuth Long spaceMemberId) {
+    public BaseResponse<ResponseOfBankInfo> showBankInfo(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId) {
         return new BaseResponse<>(ResponseOfBankInfo.of(readBankInfoUseCase.readBankInfo(spaceMemberId)));
     }
 }

@@ -24,7 +24,7 @@ public class ReadPayHomeController {
             
             """)
     @GetMapping("/space/{spaceId}/pay")
-    public BaseResponse<ResponseOfReadPayHome> showHomeView(@JwtLoginAuth Long spaceMemberId) {
+    public BaseResponse<ResponseOfReadPayHome> showHomeView(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId) {
         return new BaseResponse<>(ResponseOfReadPayHome.of(readPayHomeUseCase.readPayHome(spaceMemberId)));
     }
 }

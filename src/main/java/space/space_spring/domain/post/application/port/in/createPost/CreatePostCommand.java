@@ -2,6 +2,7 @@ package space.space_spring.domain.post.application.port.in.createPost;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.adapter.in.web.createPost.AttachmentOfCreate;
 import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
@@ -26,28 +27,20 @@ public class CreatePostCommand {
 
     private Content content;
 
-    private List<AttachmentOfCreateCommand> attachments;
+    private List<MultipartFile> attachments;
 
     private Boolean isAnonymous;
 
     @Builder
-    public CreatePostCommand(Long spaceId, Long boardId, List<Long> tagIds, Long postCreatorId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
+    public CreatePostCommand(Long spaceId, Long boardId, List<Long> tagIds, Long postCreatorId, String title, String content, List<MultipartFile> attachments, Boolean isAnonymous) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.tagIds = Optional.ofNullable(tagIds);
         this.postCreatorId = postCreatorId;
         this.title = title;
         this.content = Content.of(content);
-        this.attachments = mapToInputModel(attachments);
+        this.attachments = attachments;
         this.isAnonymous = isAnonymous;
-    }
-
-    private static List<AttachmentOfCreateCommand> mapToInputModel(List<AttachmentOfCreate> attachments) {
-        List<AttachmentOfCreateCommand> result = new ArrayList<>();
-        for (AttachmentOfCreate attachment : attachments) {
-            result.add(AttachmentOfCreateCommand.create(attachment.getValueOfAttachmentType(), attachment.getAttachment()));
-        }
-        return result;
     }
 
     public Post toPostDomainEntity(Long discordMessageId) {

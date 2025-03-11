@@ -4,5 +4,5 @@ import space.space_spring.domain.post.domain.Like;
 
 public interface ChangeLikeStatePort {
 
-    void changeLikeState(Long targetId, Long spaceMemberId);
+    void changeLikeState(Long targetId, Long spaceMemberId, boolean changeTo);
 }

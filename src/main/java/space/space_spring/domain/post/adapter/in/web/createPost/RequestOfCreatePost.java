@@ -15,7 +15,7 @@ import java.util.List;
 public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
 
     @Nullable
-    private Long tagId;
+    private List<Long> tagIds;
 
     @NotBlank(message = "게시글 제목은 공백일 수 없습니다.")
     private String title;
@@ -31,8 +31,8 @@ public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
     private Boolean isAnonymous; // 질문일 경우만 사용
 
 
-    public RequestOfCreatePost(Long tagId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
-        this.tagId = tagId;
+    public RequestOfCreatePost(List<Long> tagIds, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
+        this.tagIds = tagIds;
         this.title = title;
         this.content = content;
         this.attachments = attachments;

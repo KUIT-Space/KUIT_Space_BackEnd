@@ -9,6 +9,8 @@ import space.space_spring.domain.post.adapter.out.persistence.tag.TagJpaEntity;
 import space.space_spring.domain.post.application.port.out.CreatePostTagPort;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.List;
+
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.POST_BASE_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
 
@@ -21,17 +23,18 @@ public class PostTagPersistenceAdapter implements CreatePostTagPort {
     private final SpringDataPostTagRepository postTagRepository;
 
     @Override
-    public void createPostTag(Long postId, Long tagId) {
+    public void createPostTag(Long postId, List<Long> tagIds) {
         // 1. Tag 조회
-        TagJpaEntity tagJpaEntity = tagRepository.findById(tagId)
-                .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
+        List<TagJpaEntity> tagJpaEntities = tagRepository.findAllById(tagIds);
 
         // 2. PostBase 조회
         PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
 
         // 3. PostTag 저장
-        PostTagJpaEntity postTagJpaEntity = PostTagJpaEntity.create(postBaseJpaEntity, tagJpaEntity);
-        postTagRepository.save(postTagJpaEntity);
+        List<PostTagJpaEntity> postTagJpaEntities = tagJpaEntities.stream()
+                .map(tag -> PostTagJpaEntity.create(postBaseJpaEntity, tag))
+                .toList();
+        postTagRepository.saveAll(postTagJpaEntities);
     }
 }

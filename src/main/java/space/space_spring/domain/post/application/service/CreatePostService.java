@@ -68,8 +68,8 @@ public class CreatePostService implements CreatePostUseCase {
         Long postId = createPostPort.createPost(post);
 
         // 7. 태그 저장
-        if (command.getTagId() != null) {
-            createPostTagPort.createPostTag(postId, command.getTagId());
+        if (command.getTagIds().isPresent()) {
+            createPostTagPort.createPostTag(postId, command.getTagIds().get());
         }
 
         // 8. Attachment 도메인 엔티티 생성 후 db에 저장

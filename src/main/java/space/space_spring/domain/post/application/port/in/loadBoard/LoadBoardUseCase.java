@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface LoadBoardUseCase {
     Board findById(Long boardId);
     Optional<BoardType> getBoardTypeById(Long boardId);
+    Optional<Board> findByDiscordId(Long discordId);
 }

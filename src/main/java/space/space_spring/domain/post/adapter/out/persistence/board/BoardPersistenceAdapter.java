@@ -8,6 +8,7 @@ import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.domain.space.adapter.out.persistence.SpringDataSpace;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.Optional;
@@ -36,7 +37,6 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
     }
     @Override
     public Optional<Board> load(Long boardId){
-
         return boardRepository.findById(boardId).map(boardMapper::toDomainEntity);
     }
 
@@ -53,9 +53,23 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
     public List<Board> loadByType(BoardType type){
         return boardRepository.findByBoardType(type).stream().map(boardMapper::toDomainEntity).toList();
     }
+
+    @Override
+    public List<Board> loadBySpaceId(Long spaceId) {
+        return boardRepository.findBySpaceIdAndStatus(spaceId, BaseStatusType.ACTIVE).stream()
+                .map(boardMapper::toDomainEntity)
+                .toList();
+    }
+
     @Override
     public List<Board> findAll(){
         return boardRepository.findAll().stream().map(boardMapper::toDomainEntity).toList();
+    }
 
+    @Override
+    public Optional<Board> loadByDiscordId(Long discordId){
+        BoardJpaEntity boardJpaEntity = boardRepository.findByDiscordIdAndStatus(discordId, BaseStatusType.ACTIVE)
+                .orElseGet(null);
+        return Optional.of(boardMapper.toDomainEntity(boardJpaEntity));
     }
 }

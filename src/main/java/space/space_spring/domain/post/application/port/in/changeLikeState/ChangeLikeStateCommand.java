@@ -14,11 +14,14 @@ public class ChangeLikeStateCommand {
 
     private Long spaceMemberId;
 
+    private Boolean changeTo;
+
     @Builder
-    public ChangeLikeStateCommand(Long spaceId, Long boardId, Long targetId, Long spaceMemberId) {
+    public ChangeLikeStateCommand(Long spaceId, Long boardId, Long targetId, Long spaceMemberId, Boolean changeTo) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.targetId = targetId;
         this.spaceMemberId = spaceMemberId;
+        this.changeTo = changeTo;
     }
 }

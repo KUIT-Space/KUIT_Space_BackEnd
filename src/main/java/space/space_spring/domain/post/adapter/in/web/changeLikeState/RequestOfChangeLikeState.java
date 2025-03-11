@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class RequestOfChangeLikeState {
 
     @NotNull(message = "좋아요 changeTo는 null 일 수 없습니다.")
-    private boolean changeTo;       // true -> 좋아요 on, false -> 좋아요 off
+    private Boolean changeTo;       // true -> 좋아요 on, false -> 좋아요 off
 
     public RequestOfChangeLikeState(boolean changeTo) {
         this.changeTo = changeTo;

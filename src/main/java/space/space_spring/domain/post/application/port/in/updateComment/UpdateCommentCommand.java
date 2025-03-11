@@ -46,12 +46,4 @@ public class UpdateCommentCommand {
                         attachment.getAttachment()))
                 .toList();
     }
-
-    private static List<PreviousAttachmentInfo> mapToPreviousAttachmentInfo(List<RequestOfPreviousAttachment> attachments) {
-        return attachments.stream()
-                .map(attachment -> PreviousAttachmentInfo.of(
-                        attachment.getAttachmentId(),
-                        attachment.getAttachmentUrl()))
-                .toList();
-    }
 }

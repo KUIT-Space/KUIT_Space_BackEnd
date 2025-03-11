@@ -17,6 +17,9 @@ import java.util.Optional;
 public interface SpringDataBoardRepository extends JpaRepository<BoardJpaEntity, Long> {
 
     Optional<BoardJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);
-  List<BoardJpaEntity> findByBoardType(BoardType boardType);
+
+    List<BoardJpaEntity> findByBoardType(BoardType boardType);
+
+    List<BoardJpaEntity> findBySpaceIdAndStatus(Long spaceId, BaseStatusType status);
 
 }

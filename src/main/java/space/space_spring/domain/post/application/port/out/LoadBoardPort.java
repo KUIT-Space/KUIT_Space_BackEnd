@@ -17,6 +17,7 @@ public interface LoadBoardPort {
     Board loadById(Long id);
     List<Board> loadByType(BoardType type);
 
+    List<Board> loadBySpaceId(Long spaceId);
 
     List<Board> findAll();
 

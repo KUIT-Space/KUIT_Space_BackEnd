@@ -2,6 +2,7 @@ package space.space_spring.domain.post.application.port.in.updatePost;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.adapter.in.web.updatePost.RequestOfUpdatePostAttachment;
 import space.space_spring.domain.post.domain.Content;
 
@@ -22,27 +23,19 @@ public class UpdatePostCommand {
 
     private Content content;
 
-    private List<UpdatePostAttachmentCommand> attachments;
+    private List<MultipartFile> attachments;
 
     private Boolean isAnonymous;
 
     @Builder
-    public UpdatePostCommand(Long spaceId, Long boardId, Long postId, Long postCreatorId, String title, String content, List<RequestOfUpdatePostAttachment> attachments, boolean isAnonymous) {
+    public UpdatePostCommand(Long spaceId, Long boardId, Long postId, Long postCreatorId, String title, String content, List<MultipartFile> attachments, Boolean isAnonymous) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.postId = postId;
         this.postCreatorId = postCreatorId;
         this.title = title;
         this.content = Content.of(content);
-        this.attachments = mapToUpdateAttachmentCommand(attachments);
+        this.attachments = attachments;
         this.isAnonymous = isAnonymous;
-    }
-
-    private static List<UpdatePostAttachmentCommand> mapToUpdateAttachmentCommand(List<RequestOfUpdatePostAttachment> attachments) {
-        return attachments.stream()
-                .map(attachment -> UpdatePostAttachmentCommand.of(
-                        attachment.getValueOfAttachmentType(),
-                        attachment.getAttachment()))
-                .toList();
     }
 }

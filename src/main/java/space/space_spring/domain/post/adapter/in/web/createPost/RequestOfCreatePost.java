@@ -26,7 +26,6 @@ public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
     @NotBlank(message = "게시글 내용은 공백일 수 없습니다.")
     private String content;
 
-    @Valid
     @Nullable
     private List<MultipartFile> attachments;
 

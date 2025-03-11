@@ -12,5 +12,9 @@ public interface LoadCommentPort {
 
     Comment loadById(Long commentId);
 
+<<<<<<< HEAD
     List<Comment> loadByPostIdWithoutStatusFilter(Long postId);     // status 값 상관없이 모든 댓글들을 조회
+=======
+    List<Comment> loadAllComments(Long postId);
+>>>>>>> abfef65ee4c972223c0dfdb09738866f87be5401
 }

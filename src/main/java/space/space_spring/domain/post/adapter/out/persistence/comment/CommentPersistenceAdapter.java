@@ -62,6 +62,14 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
     }
 
     @Override
+    public List<Comment> loadAllComments(Long postId) {
+        List<PostCommentJpaEntity> commentJpaEntities = postCommentRepository.findByPostBaseId(postId);
+        return commentJpaEntities.stream()
+                .map(commentMapper::toDomainEntity)
+                .toList();
+    }
+
+    @Override
     public Long createComment(Comment comment) {
         // Post 에 해당하는 jpa entity 찾기
         PostJpaEntity postJpaEntity = postRepository.findById(comment.getPostId())
@@ -129,5 +137,23 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
         }
 
         return comments;
+
+    }
+
+    @Override
+    public void deleteAllComments(List<Comment> comments) {
+        if (comments.isEmpty()) {
+            return;
+        }
+
+        List<Long> commentIds = comments.stream()
+                .map(Comment::getId)
+                .toList();
+
+        List<PostCommentJpaEntity> commentEntities = postCommentRepository.findAllById(commentIds);
+
+        for (PostCommentJpaEntity comment : commentEntities) {
+            comment.getPostBase().updateToInactive(); // Soft Delete 적용
+        }
     }
 }

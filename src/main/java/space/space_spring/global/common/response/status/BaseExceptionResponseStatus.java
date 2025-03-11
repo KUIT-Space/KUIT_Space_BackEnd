@@ -100,8 +100,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_POST_CREATE(11001, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
     BOARD_NOT_FOUND(11002, HttpStatus.NOT_FOUND, "존재하지 않는 게시판 id입니다."),
     POST_BASE_NOT_FOUND(11003, HttpStatus.NOT_FOUND, "존재하지 않는 post base id입니다."),
+    INVALID_POST_UPDATE(11004, HttpStatus.BAD_REQUEST, "게시글 수정 요청에서 잘못된 값이 존재합니다."),
 
-    POST_NOT_EXIST(11001, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 id입니다."),
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),
@@ -128,6 +128,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
   
     PAY_BOARD_NOT_FOUND(11018,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
+    INVALID_BOARD_SUBSCRIBE(11019, HttpStatus.BAD_REQUEST, "게시판 구독 등록/취소 요청에서 잘못된 값이 존재합니다."),
+    TAG_NOT_FOUND(11020, HttpStatus.NOT_FOUND, "태그를 찾지 못했습니다."),
+    SUBSCRIPTION_NOT_EXIST(11021, HttpStatus.BAD_REQUEST, "해당 사용자가 구독하지 않은 게시판입니다."),
+    SUBSCRIPTION_ALREADY_EXIST(11022, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 구독한 게시판입니다."),
 
     LIKE_NOT_FOUND(11019, HttpStatus.NOT_FOUND, "존재하지 않는 좋아요 입니다."),
 

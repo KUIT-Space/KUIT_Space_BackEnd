@@ -1,5 +1,6 @@
 package space.space_spring.domain.post.adapter.out.persistence.tag;
 
+import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
 
@@ -19,20 +20,17 @@ import java.util.List;
 public class TagPersistenceAdapter implements LoadTagPort {
 
     private final SpringDataBoardRepository boardRepository;
-    private final SpringDataTagRepository tagRepository;
+    private final SpringDataTagRepository springDataTagRepository;
     private final TagMapper tagMapper;
 
     @Override
-    public Tag loadByBoardAndName(Board board, String name) {
-        BoardJpaEntity boardJpaEntity = boardRepository.findById(board.getId())
-                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-
-        return tagRepository.findByBoardIdAndTagName(boardJpaEntity, name).map(tagMapper::toDomainEntity)
+    public Tag loadByIdAndBoard(Long tagId, Long boardId) {
+        return springDataTagRepository.findByIdAndBoardIdAndStatus(tagId, boardId, ACTIVE).map(tagMapper::toDomainEntity)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
     }
 
     @Override
     public List<Tag> loadTagsByBoardIds(List<Long> boardIds) {
-        return tagRepository.findTagsByBoardIds(boardIds).stream().map(tagMapper::toDomainEntity).toList();
+        return springDataTagRepository.findTagsByBoardIds(boardIds).stream().map(tagMapper::toDomainEntity).toList();
     }
 }

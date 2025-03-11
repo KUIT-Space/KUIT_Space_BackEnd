@@ -10,12 +10,12 @@ public class SubscribeBoardCommand {
 
     private Long boardId;
 
-    private String tagName;
+    private Long tagId;
 
     @Builder
-    public SubscribeBoardCommand(Long spaceMemberId, Long boardId, String tagName) {
+    public SubscribeBoardCommand(Long spaceMemberId, Long boardId, Long tagId) {
         this.spaceMemberId = spaceMemberId;
         this.boardId = boardId;
-        this.tagName = tagName;
+        this.tagId = tagId;
     }
 }

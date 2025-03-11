@@ -11,6 +11,8 @@ import space.space_spring.global.common.enumStatus.BaseStatusType;
 public interface SpringDataTagRepository extends JpaRepository<TagJpaEntity, Long>, TagRepositoryCustom {
     Optional<TagJpaEntity> findByIdAndStatus(Long tagId, BaseStatusType status);
 
+    Optional<TagJpaEntity> findByIdAndBoardIdAndStatus(Long tagId, Long boardId, BaseStatusType status);
+
     @Query("SELECT t FROM TagJpaEntity t WHERE t.board.id IN :boardIds")
     List<TagJpaEntity> findTagsByBoardIds(@Param("boardIds") List<Long> boardIds);
 }

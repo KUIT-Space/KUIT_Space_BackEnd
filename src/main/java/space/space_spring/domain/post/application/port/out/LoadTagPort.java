@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LoadTagPort {
 
-    Tag loadByBoardAndName(Board board, String name);
+    Tag loadByIdAndBoard(Long tagId, Long boardId);
 
     List<Tag> loadTagsByBoardIds(List<Long> boardIds);
 

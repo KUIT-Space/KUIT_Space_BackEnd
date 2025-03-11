@@ -27,12 +27,19 @@ public class CreateDiscordWebHookMessageCommand {
         if(content.isBlank()||content.isEmpty()){
             return getTitleAndContent();
         }
-        return content+"\n\n"+attachmentsUrl.stream().collect(Collectors.joining("\n"));
+
+        return content+"\n\n"+getAttachmentUrlInContent();
     }
 
     public String getTitleAndContent(){
 
-        return title+"\n"+content+"\n\n"+attachmentsUrl.stream().collect(Collectors.joining("\n"));
+        return title+"\n"+content+"\n\n"+getAttachmentUrlInContent();
+    }
+    private String getAttachmentUrlInContent(){
+        if(this.attachmentsUrl.isEmpty()||this.attachmentsUrl==null){
+            return " ";
+        }
+        return attachmentsUrl.stream().collect(Collectors.joining("\n"));
     }
 
 }

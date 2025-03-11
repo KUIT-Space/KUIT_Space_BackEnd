@@ -5,7 +5,9 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
 
+import java.util.List;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
@@ -38,6 +40,11 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
         return subscriptionRepository.findBySpaceMemberAndBoardIdAndTagId(spaceMember, boardId, tagId)
                 .filter(subscription -> subscription.getStatus() == ACTIVE)
                 .map(subscriptionMapper::toDomainEntity);
+    }
+
+    @Override
+    public List<Long> loadSubscribedBoardIds(Long spaceMemberId) {
+        return subscriptionRepository.findSubscribedBoardIdsBySpaceMemberId(spaceMemberId);
     }
 
     @Override

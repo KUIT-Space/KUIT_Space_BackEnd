@@ -10,13 +10,16 @@ public class ResponseOfBoardInfo {
 
     private String boardName;
 
+    private Long tagId;
+
     private String tagName;
 
     private Boolean isSubscribed;
 
-    private ResponseOfBoardInfo(Long boardId, String boardName, String tagName, boolean isSubscribed) {
+    private ResponseOfBoardInfo(Long boardId, String boardName, Long tagId, String tagName, boolean isSubscribed) {
         this.boardId = boardId;
         this.boardName = boardName;
+        this.tagId = tagId;
         this.tagName = tagName;
         this.isSubscribed = isSubscribed;
     }
@@ -25,6 +28,7 @@ public class ResponseOfBoardInfo {
         return new ResponseOfBoardInfo(
                 boardInfo.getBoardId(),
                 boardInfo.getBoardName(),
+                boardInfo.getTagId(),
                 boardInfo.getTagName(),
                 boardInfo.isSubscribed()
         );

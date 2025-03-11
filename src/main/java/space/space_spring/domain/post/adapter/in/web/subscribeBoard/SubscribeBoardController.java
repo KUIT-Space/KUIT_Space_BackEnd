@@ -41,7 +41,7 @@ public class SubscribeBoardController {
         SubscribeBoardCommand subscribeBoardCommand = SubscribeBoardCommand.builder()
                 .spaceMemberId(spaceMemberId)
                 .boardId(request.getBoardId())
-                .tagName(request.getTagName())
+                .tagId(request.getTagId())
                 .build();
         subscribeBoardUseCase.subscribeBoard(subscribeBoardCommand);
         return new BaseResponse<>(new SuccessResponse(true));
@@ -61,7 +61,7 @@ public class SubscribeBoardController {
         SubscribeBoardCommand subscribeBoardCommand = SubscribeBoardCommand.builder()
                 .spaceMemberId(spaceMemberId)
                 .boardId(request.getBoardId())
-                .tagName(request.getTagName())
+                .tagId(request.getTagId())
                 .build();
         subscribeBoardUseCase.unsubscribeBoard(subscribeBoardCommand);
         return new BaseResponse<>(new SuccessResponse(true));

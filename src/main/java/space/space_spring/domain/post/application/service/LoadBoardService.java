@@ -26,4 +26,9 @@ public class LoadBoardService implements LoadBoardUseCase {
         return Optional.of(board.getBoardType());
     }
 
+    @Override
+    public Optional<Board> findByDiscordId(Long discordId){
+        return loadBoardPort.loadByDiscordId(discordId);
+    }
+
 }

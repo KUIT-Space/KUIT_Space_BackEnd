@@ -17,7 +17,7 @@ public interface LoadBoardPort {
     Board loadById(Long id);
     List<Board> loadByType(BoardType type);
 
-
+    Optional<Board> loadByDiscordId(Long discordId);
     List<Board> findAll();
 
 }

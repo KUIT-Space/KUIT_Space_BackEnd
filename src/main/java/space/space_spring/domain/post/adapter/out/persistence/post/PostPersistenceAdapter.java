@@ -2,6 +2,7 @@ package space.space_spring.domain.post.adapter.out.persistence.post;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
@@ -18,6 +19,7 @@ import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -46,6 +48,8 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
         PostBaseJpaEntity postBaseJpaEntity = postBaseMapper.toJpaEntity(spaceMemberJpaEntity, boardJpaEntity, post);
         PostBaseJpaEntity savedPostBase = postBaseRepository.save(postBaseJpaEntity);
 
+        System.out.println("postBaseId:"+savedPostBase.getId());
+
         // 4. PostJpaEntity 생성 및 저장
         PostJpaEntity postJpaEntity = postMapper.toJpaEntity(savedPostBase, post);
 
@@ -73,6 +77,13 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
     }
 
     @Override
+    public Optional<Post> loadByDiscordId(Long discordId){
+        PostJpaEntity postJpaEntity = postRepository.findByDiscordId(discordId,BaseStatusType.ACTIVE);
+        if(postJpaEntity==null){
+            return Optional.empty();
+        }
+        return Optional.of(postMapper.toDomainEntity(postJpaEntity));
+  }
     public void updatePost(Post post) {
         // Post에 해당하는 jpa entity 찾기
         PostJpaEntity postJpaEntity = postRepository.findById(post.getId())

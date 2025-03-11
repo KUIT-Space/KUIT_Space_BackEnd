@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
 
-    @NotNull(message = "태그 아이디는 필수입니다.")
+    @Nullable
     private Long tagId;
 
     @NotBlank(message = "게시글 제목은 공백일 수 없습니다.")

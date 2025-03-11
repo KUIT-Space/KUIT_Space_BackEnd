@@ -33,6 +33,7 @@ public class CreatePostService implements CreatePostUseCase {
     private final CreatePostTagPort createPostTagPort;
     private final LoadBoardPort loadBoardPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
+    private final LoadTagPort loadTagPort;
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreatePostInDiscordUseCase createPostInDiscordUseCase;
     private final CreateAttachmentPort createAttachmentPort;
@@ -67,7 +68,9 @@ public class CreatePostService implements CreatePostUseCase {
         Long postId = createPostPort.createPost(post);
 
         // 7. 태그 저장
-        createPostTagPort.createPostTag(postId, command.getTagId());
+        if (command.getTagId() != null) {
+            createPostTagPort.createPostTag(postId, command.getTagId());
+        }
 
         // 8. Attachment 도메인 엔티티 생성 후 db에 저장
         List<Attachment> attachments = new ArrayList<>();

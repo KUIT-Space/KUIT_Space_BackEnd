@@ -27,7 +27,7 @@ public class TagJpaEntity extends BaseJpaEntity {
     @NotNull
     private String tagName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     @NotNull
     private BoardJpaEntity board;

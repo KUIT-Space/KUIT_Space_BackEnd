@@ -24,7 +24,7 @@ public class CompletePayController {
             
             """)
     @PatchMapping("/space/{spaceId}/pay/{payRequestTargetId}/complete")
-    public BaseResponse<SuccessResponse> completeForRequestedPay(@JwtLoginAuth Long spaceMemberId, @PathVariable("payRequestTargetId") Long payRequestTargetId) {
+    public BaseResponse<SuccessResponse> completeForRequestedPay(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId, @PathVariable("payRequestTargetId") Long payRequestTargetId) {
         completePayUseCase.completeForRequestedPay(spaceMemberId, payRequestTargetId);
         return new BaseResponse<>(new SuccessResponse(true));
     }

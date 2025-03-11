@@ -12,9 +12,11 @@ import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataS
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.util.NaturalNumber;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -29,17 +31,34 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
     private final LikeMapper likeMapper;
 
     @Override
-    public Map<Long, Long> countLikesByPostIds(List<Long> postIds) {
-        List<PostLikeCount> results = likeRepository.countLikesByPostIds(postIds);
-        return results.stream().collect(Collectors.toMap(PostLikeCount::getPostId, PostLikeCount::getLikeCount));
+    public Map<Long, NaturalNumber> countLikesByPostIds(List<Long> postIds) {
+        List<PostLikeCount> results = likeRepository.countLikesByPostIds(postIds, BaseStatusType.ACTIVE);
+        return results.stream()
+                .collect(Collectors.toMap(
+                        PostLikeCount::getPostId,
+                        postLikeCount -> NaturalNumber.of(postLikeCount.getLikeCount().intValue())
+                ));
     }
 
     @Override
-    public void changeLikeState(Long spaceMemberId, Long targetId) {
+    public NaturalNumber countLikeByPostId(Long postId) {
+        int likeCountOfTarget = likeRepository.countByPostBaseIdAndIsLikedAndStatus(postId, true, BaseStatusType.ACTIVE);
+        return NaturalNumber.of(likeCountOfTarget);
+    }
+
+    @Override
+    public boolean hasSpaceMemberLiked(Long spaceMemberId, Long targetId) {
+        Optional<LikeJpaEntity> likeJpaEntity = likeRepository.findBySpaceMemberIdAndPostBaseIdAndStatus(spaceMemberId, targetId, BaseStatusType.ACTIVE);
+
+        return likeJpaEntity.isPresent();
+    }
+
+    @Override
+    public void changeLikeState(Long spaceMemberId, Long targetId, boolean changeTo) {
         LikeJpaEntity likeJpaEntity = likeRepository.findBySpaceMemberIdAndPostBaseIdAndStatus(spaceMemberId, targetId, BaseStatusType.ACTIVE)
                 .orElseThrow(() -> new CustomException(LIKE_NOT_FOUND));
 
-        likeJpaEntity.changeLikeState();
+        likeJpaEntity.changeLikeState(changeTo);
     }
 
     @Override

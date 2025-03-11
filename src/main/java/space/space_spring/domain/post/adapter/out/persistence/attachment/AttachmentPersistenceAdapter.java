@@ -42,6 +42,22 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
     }
 
     @Override
+    public List<String> loadAttachmentUrlByTargetId(Long targetId) {
+        Optional<List<AttachmentJpaEntity>> allByPostBaseIdAndStatus = attachmentRepository.findAllByPostBaseIdAndStatus(targetId, BaseStatusType.ACTIVE);
+
+        if (allByPostBaseIdAndStatus.isPresent()) {
+            return new ArrayList<>();
+        }
+
+        List<String> attachmentUrls = new ArrayList<>();
+        for (AttachmentJpaEntity attachment : allByPostBaseIdAndStatus.get()) {
+            attachmentUrls.add(attachment.getAttachmentUrl());
+        }
+
+        return attachmentUrls;
+    }
+
+    @Override
     public List<Attachment> loadById(Long postId) {
         // 1. DB에서 ACTIVE 상태의 첨부파일 조회
         List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findByPostBaseIdAndStatus(postId, BaseStatusType.ACTIVE);

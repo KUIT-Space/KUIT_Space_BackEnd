@@ -35,7 +35,6 @@ public class PostCommentJpaEntity {
     private boolean isAnonymous;
 
     private PostCommentJpaEntity(PostBaseJpaEntity postBase, PostJpaEntity post, boolean isAnonymous) {
-        this.id = postBase.getId();     // PostBaseJpaEntity 의 식별자가 이미 있어야 한다
         this.postBase = postBase;
         this.post = post;
         this.isAnonymous = isAnonymous;

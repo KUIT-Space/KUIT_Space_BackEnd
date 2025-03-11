@@ -16,4 +16,8 @@ public class Tag {
         this.tagName = tagName;
         this.boardId = boardId;
     }
+
+    public static Tag create(Long id, String tagName, Long boardId) {
+        return new Tag(id, tagName, boardId);
+    }
 }

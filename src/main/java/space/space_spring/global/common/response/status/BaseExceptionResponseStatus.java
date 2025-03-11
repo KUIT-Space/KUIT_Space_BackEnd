@@ -128,6 +128,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
   
     PAY_BOARD_NOT_FOUND(11018,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
+    INVALID_BOARD_SUBSCRIBE(11019, HttpStatus.BAD_REQUEST, "게시판 구독 등록/취소 요청에서 잘못된 값이 존재합니다."),
+    TAG_NOT_FOUND(11020, HttpStatus.NOT_FOUND, "태그를 찾지 못했습니다."),
+    SUBSCRIPTION_NOT_EXIST(11021, HttpStatus.BAD_REQUEST, "해당 사용자가 구독하지 않은 게시판입니다."),
+    SUBSCRIPTION_ALREADY_EXIST(11022, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 구독한 게시판입니다."),
 
     LIKE_NOT_FOUND(11019, HttpStatus.NOT_FOUND, "존재하지 않는 좋아요 입니다."),
 

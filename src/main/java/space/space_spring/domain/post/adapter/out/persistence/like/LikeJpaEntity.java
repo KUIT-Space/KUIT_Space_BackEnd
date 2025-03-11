@@ -45,4 +45,8 @@ public class LikeJpaEntity extends BaseJpaEntity {
     public static LikeJpaEntity create(PostBaseJpaEntity postBase, SpaceMemberJpaEntity spaceMember, boolean isLiked) {
         return new LikeJpaEntity(postBase, spaceMember, isLiked);
     }
+
+    public void changeLikeState(boolean state) {
+        isLiked = state;
+    }
 }

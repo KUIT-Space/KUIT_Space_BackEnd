@@ -35,7 +35,7 @@ public class CreateEventController {
         관리자가 새로운 행사를 생성합니다.
         
         """)
-    @PostMapping("/event")
+    @PostMapping(value = "/event", consumes = "multipart/form-data")
     public BaseResponse<CreateEventResponse> createEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId, @Validated @ModelAttribute CreateEventRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_EVENT_CREATE);

@@ -41,6 +41,7 @@ public class CreatePostController {
         CreatePostCommand command = CreatePostCommand.builder()
                 .spaceId(spaceId)
                 .boardId(boardId)
+                .tagId(request.getTagId())
                 .postCreatorId(spaceMemberId)
                 .title(request.getTitle())
                 .content(request.getContent())

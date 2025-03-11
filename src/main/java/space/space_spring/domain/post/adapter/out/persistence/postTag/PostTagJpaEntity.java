@@ -30,4 +30,13 @@ public class PostTagJpaEntity extends BaseJpaEntity {
     @JoinColumn(name = "post_base_id")
     @NotNull
     private PostBaseJpaEntity postBase;
+
+    private PostTagJpaEntity(PostBaseJpaEntity postBase, TagJpaEntity tag) {
+        this.postBase = postBase;
+        this.tag = tag;
+    }
+
+    public static PostTagJpaEntity create(PostBaseJpaEntity postBase, TagJpaEntity tag) {
+        return new PostTagJpaEntity(postBase, tag);
+    }
 }

@@ -17,6 +17,8 @@ public class CreatePostCommand {
 
     private Long boardId;
 
+    private Long tagId;
+
     private Long postCreatorId;
 
     private String title;
@@ -28,9 +30,10 @@ public class CreatePostCommand {
     private Boolean isAnonymous;
 
     @Builder
-    public CreatePostCommand(Long spaceId, Long boardId, Long postCreatorId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
+    public CreatePostCommand(Long spaceId, Long boardId, Long tagId, Long postCreatorId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
         this.spaceId = spaceId;
         this.boardId = boardId;
+        this.tagId = tagId;
         this.postCreatorId = postCreatorId;
         this.title = title;
         this.content = Content.of(content);

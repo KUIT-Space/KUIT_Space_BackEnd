@@ -2,9 +2,7 @@ package space.space_spring.domain.post.application.port.in.updateComment;
 
 import lombok.Builder;
 import lombok.Getter;
-import space.space_spring.domain.post.adapter.in.web.updateComment.RequestOfPreviousAttachment;
 import space.space_spring.domain.post.adapter.in.web.updateComment.RequestOfUpdateAttachment;
-import space.space_spring.domain.post.domain.Content;
 
 import java.util.List;
 

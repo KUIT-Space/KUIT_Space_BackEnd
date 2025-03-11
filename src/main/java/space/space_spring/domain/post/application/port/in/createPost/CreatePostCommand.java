@@ -3,12 +3,10 @@ package space.space_spring.domain.post.application.port.in.createPost;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.domain.post.adapter.in.web.createPost.AttachmentOfCreate;
 import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.common.entity.BaseInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

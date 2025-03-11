@@ -3,7 +3,6 @@ package space.space_spring.domain.post.application.port.in.updatePost;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.domain.post.adapter.in.web.updatePost.RequestOfUpdatePostAttachment;
 import space.space_spring.domain.post.domain.Content;
 
 import java.util.List;

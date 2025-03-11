@@ -27,12 +27,12 @@ public class CreatePostController {
             스페이스 멤버가 게시글(=일반 게시글, 질문, Tip)을 생성합니다.
             
             """)
-    @PostMapping("/space/{spaceId}/board/{boardId}/post")
+    @PostMapping(value = "/space/{spaceId}/board/{boardId}/post", consumes = "multipart/form-data")
     public BaseResponse<Long> createPost(
             @JwtLoginAuth Long spaceMemberId,
             @PathVariable Long spaceId,
             @PathVariable Long boardId,
-            @Validated @RequestBody RequestOfCreatePost request,
+            @Validated @ModelAttribute RequestOfCreatePost request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_POST_CREATE, getErrorMessage(bindingResult));
@@ -41,6 +41,7 @@ public class CreatePostController {
         CreatePostCommand command = CreatePostCommand.builder()
                 .spaceId(spaceId)
                 .boardId(boardId)
+                .tagIds(request.getTagIds())
                 .postCreatorId(spaceMemberId)
                 .title(request.getTitle())
                 .content(request.getContent())

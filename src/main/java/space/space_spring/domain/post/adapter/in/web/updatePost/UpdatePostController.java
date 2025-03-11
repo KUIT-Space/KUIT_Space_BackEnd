@@ -32,7 +32,7 @@ public class UpdatePostController {
             
             """)
 
-    @PutMapping("/space/{spaceId}/board/{boardId}/post/{postId}")
+    @PutMapping(value = "/space/{spaceId}/board/{boardId}/post/{postId}", consumes = "multipart/form-data")
     public BaseResponse<SuccessResponse> updatePost(@JwtLoginAuth Long spaceMemberId,
                                                     @PathVariable Long spaceId,
                                                     @PathVariable Long boardId,

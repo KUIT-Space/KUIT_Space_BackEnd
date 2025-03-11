@@ -21,10 +21,10 @@ public class UpdateCommentCommand {
 
     private String content;        // 댓글 내용
 
-    private boolean isAnonymous;        // 익명 댓글 여부
+    private Boolean isAnonymous;        // 익명 댓글 여부
 
     @Builder
-    public UpdateCommentCommand(Long commentId, Long spaceId, Long boardId, Long postId, Long commentCreatorId, String content, boolean isAnonymous) {
+    public UpdateCommentCommand(Long commentId, Long spaceId, Long boardId, Long postId, Long commentCreatorId, String content, Boolean isAnonymous) {
         this.commentId = commentId;
         this.spaceId = spaceId;
         this.boardId = boardId;

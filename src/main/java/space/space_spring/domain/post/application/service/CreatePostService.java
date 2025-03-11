@@ -1,6 +1,7 @@
 package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,31 +11,33 @@ import space.space_spring.domain.post.application.port.in.createPost.AttachmentI
 import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
-import space.space_spring.domain.post.application.port.out.CreateAttachmentPort;
-import space.space_spring.domain.post.application.port.out.CreatePostPort;
-import space.space_spring.domain.post.application.port.out.LoadBoardPort;
-import space.space_spring.domain.post.application.port.out.UploadAttachmentPort;
+import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.validator.AllowedDocumentFileExtensions;
+import space.space_spring.global.validator.AllowedImageFileExtensions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CreatePostService implements CreatePostUseCase {
 
     private final CreatePostPort createPostPort;
+    private final CreatePostTagPort createPostTagPort;
     private final LoadBoardPort loadBoardPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
+    private final LoadTagPort loadTagPort;
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreatePostInDiscordUseCase createPostInDiscordUseCase;
     private final CreateAttachmentPort createAttachmentPort;
@@ -53,22 +56,33 @@ public class CreatePostService implements CreatePostUseCase {
 
         // 4. S3에 게시글 첨부파일 upload
         Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachments().stream()
-                .collect(Collectors.groupingBy(
-                        AttachmentOfCreateCommand::getAttachmentType,
-                        Collectors.mapping(AttachmentOfCreateCommand::getAttachment, Collectors.toUnmodifiableList())
-                ));
+                .collect(Collectors.groupingBy(file -> {
+                    if (isImageFile(file)) {
+                        return AttachmentType.IMAGE; // 만약 BoardType.Image가 필요하다면 해당 enum으로 변경하세요.
+                    } else if (isDocumentFile(file)) {
+                        return AttachmentType.FILE; // 마찬가지로 BoardType.File로 변경 가능.
+                    } else {
+                        throw new CustomException(UNSUPPORTED_FILE_TYPE); // 지원하지 않는 파일 형식일 경우 예외 처리
+                    }
+                }));
+
         Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
 
-        // 4. 디스코드로 게시글 정보 전송
+        // 5. 디스코드로 게시글 정보 전송
         List<AttachmentInDiscordCommand> discordAttachments = new ArrayList<>();
         attachmentUrlsMap.forEach((type, urls) -> urlsToAttachmentCommands(type, urls, discordAttachments));
         Long discordIdForPost = createPostInDiscordUseCase.CreateMessageInDiscord(mapToDiscordCommand(command, discordAttachments));
 
-        // 5. Post 도메인 엔티티 생성 후 db에 저장
+        // 6. Post 도메인 엔티티 생성 후 db에 저장
         Post post = command.toPostDomainEntity(discordIdForPost);
         Long postId = createPostPort.createPost(post);
 
-        // 6. Attachment 도메인 엔티티 생성 후 db에 저장
+        // 7. 태그 저장
+        if (command.getTagIds().isPresent()) {
+            createPostTagPort.createPostTag(postId, command.getTagIds().get());
+        }
+
+        // 8. Attachment 도메인 엔티티 생성 후 db에 저장
         List<Attachment> attachments = new ArrayList<>();
         attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
                 attachments.add(Attachment.withoutId(postId, type, url))
@@ -127,5 +141,25 @@ public class CreatePostService implements CreatePostUseCase {
 
     private void urlsToAttachmentCommands(AttachmentType attachmentType, List<String> attachmentUrls, List<AttachmentInDiscordCommand> commands) {
         attachmentUrls.forEach(url -> commands.add(AttachmentInDiscordCommand.create(attachmentType.name(), url)));
+    }
+
+    // MultipartFile이 지원하는 이미지 파일 형식인지 검증
+    private boolean isImageFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        log.info("extension : {}", extension);
+
+        return AllowedImageFileExtensions.contains(extension);
+    }
+
+    // MultipartFile이 지원하는 문서 파일 형식인지 검증
+    private boolean isDocumentFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        log.info("extension : {}", extension);
+
+        return AllowedDocumentFileExtensions.contains(extension);
     }
 }

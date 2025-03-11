@@ -1,12 +1,18 @@
 package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.discord.application.port.in.createComment.CreateCommentInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.createComment.CreateCommentInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
+import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.global.exception.CustomException;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -16,9 +22,12 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Transactional(readOnly = true)
 public class CreateCommentService implements CreateCommentUseCase {
 
+    private static final Logger log = LoggerFactory.getLogger(CreateCommentService.class);
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final CreateCommentPort createCommentPort;
+    private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
+    private final CreateCommentInDiscordUseCase createCommentInDiscordUseCase;
 
     @Override
     @Transactional
@@ -51,7 +60,18 @@ public class CreateCommentService implements CreateCommentUseCase {
 //        createAttachmentPort.createAttachments(attachments);
 
         // 4. discord 로 보내기
-        Long discordId = 0L;        // 상준님과 협의
+        NicknameAndProfileImage nicknameAndProfileImage = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(command.getCommentCreatorId());
+        String creatorNickname = nicknameAndProfileImage.getNickname();
+        String creatorProfileImageUrl = nicknameAndProfileImage.getProfileImageUrl();
+
+        log.info("anonymous : {}", command.getIsAnonymous());
+
+        if (command.getIsAnonymous()) {
+            creatorNickname = "익명 스페이서 " + command.getPostId() * 10 + command.getCommentCreatorId();
+            creatorProfileImageUrl = null;
+        }
+
+        Long discordId = createCommentInDiscordUseCase.send(CreateCommentInDiscordCommand.of(command, creatorNickname, creatorProfileImageUrl));
 
         // 5. db에 comment 저장
         return createCommentPort.createComment(command.toDomainEntity(discordId));
@@ -72,7 +92,7 @@ public class CreateCommentService implements CreateCommentUseCase {
             throw new CustomException(POST_IS_NOT_IN_BOARD);
         }
 
-        if (board.getBoardType() != BoardType.QUESTION && command.isAnonymous()) {      // 질문 게시글이 아닌데 게시글 작성자가 익명이라면
+        if (board.getBoardType() != BoardType.QUESTION && command.getIsAnonymous()) {      // 질문 게시글이 아닌데 게시글 작성자가 익명이라면
             throw new CustomException(CAN_NOT_BE_ANONYMOUS);
         }
     }

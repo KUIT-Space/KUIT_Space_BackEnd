@@ -35,19 +35,30 @@ public class SubscribeBoardService implements SubscribeBoardUseCase {
         Long spaceMemberId = subscribeBoardCommand.getSpaceMemberId();
         Long boardId = subscribeBoardCommand.getBoardId();
 
-        Board board = loadBoardPort.loadById(boardId);
-        Tag tag = loadTagPort.loadByBoardAndName(board, subscribeBoardCommand.getTagName());
+        Subscription newSubscription;
+        if (subscribeBoardCommand.getTagId() == null) {
+            // tag 없으면 -> 보드로만 구독 찾음
+            Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByBoardId(boardId);
 
-        Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByInfos(spaceMemberId, boardId, tag.getId());
+            if (savedSubscription.isPresent()) {
+                if (savedSubscription.get().isActive()) throw new CustomException(SUBSCRIPTION_ALREADY_EXIST);
+                updateSubscriptionPort.activate(savedSubscription.get());
+                return;
+            }
+            newSubscription = Subscription.withoutIdAndTag(spaceMemberId, boardId, BaseInfo.ofEmpty());
+        } else {
+            // tag 있으면 -> 태그 + 보드로 구독 찾음
+            Tag tag = loadTagPort.loadByIdAndBoard(subscribeBoardCommand.getTagId(), boardId);
+            Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByInfos(spaceMemberId, boardId, tag.getId());
 
-        if (savedSubscription.isPresent()) {
-            if (savedSubscription.get().isActive()) throw new CustomException(SUBSCRIPTION_ALREADY_EXIST);
-            updateSubscriptionPort.activate(savedSubscription.get());
-            return;
+            if (savedSubscription.isPresent()) {
+                if (savedSubscription.get().isActive()) throw new CustomException(SUBSCRIPTION_ALREADY_EXIST);
+                updateSubscriptionPort.activate(savedSubscription.get());
+                return;
+            }
+            newSubscription = Subscription.withoutId(spaceMemberId, boardId, tag.getId(), BaseInfo.ofEmpty());
         }
-
-        Subscription subscription = Subscription.withoutId(spaceMemberId, boardId, tag.getId(), BaseInfo.ofEmpty());
-        createSubscriptionPort.createSubscription(subscription);
+        createSubscriptionPort.createSubscription(newSubscription);
     }
 
     @Transactional
@@ -56,10 +67,15 @@ public class SubscribeBoardService implements SubscribeBoardUseCase {
         Long spaceMemberId = subscribeBoardCommand.getSpaceMemberId();
         Long boardId = subscribeBoardCommand.getBoardId();
 
-        Board board = loadBoardPort.loadById(boardId);
-        Tag tag = loadTagPort.loadByBoardAndName(board, subscribeBoardCommand.getTagName());
-
-        Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByInfos(spaceMemberId, boardId, tag.getId());
+        Optional<Subscription> savedSubscription;
+        if (subscribeBoardCommand.getTagId() == null) {
+            // tag 없으면 -> 보드로만 구독 찾음
+            savedSubscription = loadSubscriptionPort.loadByBoardId(boardId);
+        } else {
+            // tag 있으면 -> 태그 + 보드로 구독 찾음
+            Tag tag = loadTagPort.loadByIdAndBoard(subscribeBoardCommand.getTagId(), boardId);
+            savedSubscription = loadSubscriptionPort.loadByInfos(spaceMemberId, boardId, tag.getId());
+        }
 
         if (savedSubscription.isPresent()) {
             if (savedSubscription.get().isActive()) {

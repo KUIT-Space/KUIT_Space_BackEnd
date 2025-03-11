@@ -15,9 +15,12 @@ public class ReadPostListController {
 
     private final ReadPostListUseCase readPostListUseCase;
 
-    @GetMapping("/space/{spaceId}/board/{boardId}/post")
-    public BaseResponse<ResponseOfReadPostList> readPostList(@PathVariable Long boardId) {
-        ListOfPostSummary postSummaries = readPostListUseCase.readPostList(boardId);
+    @GetMapping("/space/{spaceId}/board/{boardId}/post/tag/{tagId}")
+    public BaseResponse<ResponseOfReadPostList> readPostList(
+            @PathVariable Long spaceId,
+            @PathVariable Long boardId,
+            @PathVariable Long tagId) {
+        ListOfPostSummary postSummaries = readPostListUseCase.readPostList(boardId, tagId);
         return new BaseResponse<>(ResponseOfReadPostList.of(postSummaries));
     }
 }

@@ -53,9 +53,16 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
     }
 
     @Override
-    public List<Post> loadPostList(Long boardId) {
-        // 1. 게시글 리스트 조회
-        List<PostJpaEntity> postJpaEntities = postRepository.findPostsByBoardId(boardId, BaseStatusType.ACTIVE);
+    public List<Post> loadPostList(Long boardId, Long tagId) {
+        // 1. 특정 태그가 포함된 PostBaseJpaEntity 조회
+        List<PostBaseJpaEntity> postBaseJpaEntities = postBaseRepository.findPostsByTagId(boardId, tagId, BaseStatusType.ACTIVE);
+
+        // 2. PostJpaEntity 조회
+        List<Long> postBaseIds = postBaseJpaEntities.stream()
+                .map(PostBaseJpaEntity::getId)
+                .toList();
+        List<PostJpaEntity> postJpaEntities = postRepository.findAllById(postBaseIds);
+
         return postJpaEntities.stream().map(postMapper::toDomainEntity).toList();
     }
 

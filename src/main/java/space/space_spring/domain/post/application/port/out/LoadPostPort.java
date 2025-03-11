@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LoadPostPort {
 
-    List<Post> loadPostList(Long boardId);
+    List<Post> loadPostList(Long boardId, Long tagId);
 
     Post loadById(Long postId);
 }

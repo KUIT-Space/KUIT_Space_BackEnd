@@ -31,9 +31,9 @@ public class ReadPostListService implements ReadPostListUseCase {
     private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
 
     @Override
-    public ListOfPostSummary readPostList(Long boardId) {
+    public ListOfPostSummary readPostList(Long boardId, Long tagId) {
         // 1. Post 도메인 객체 리스트 가져오기
-        List<Post> posts = loadPostPort.loadPostList(boardId);
+        List<Post> posts = loadPostPort.loadPostList(boardId, tagId);
 
         // 2. postId 리스트 추출(postId = postBaseId)
         List<Long> postIds = posts.stream()
@@ -53,7 +53,6 @@ public class ReadPostListService implements ReadPostListUseCase {
 
         // 6. 작성자 닉네임 조회
         Map<Long, String> creatorNicknames = loadSpaceMemberInfoPort.loadNicknamesByIds(spaceMemberIds);
-
 
         // 7. 게시글 썸네일 이미지 조회
         Map<Long, String> thumbnailImages = loadAttachmentPort.findFirstImageByPostIds(postIds);

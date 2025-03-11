@@ -10,10 +10,7 @@ import space.space_spring.domain.post.application.port.in.createPost.AttachmentI
 import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
-import space.space_spring.domain.post.application.port.out.CreateAttachmentPort;
-import space.space_spring.domain.post.application.port.out.CreatePostPort;
-import space.space_spring.domain.post.application.port.out.LoadBoardPort;
-import space.space_spring.domain.post.application.port.out.UploadAttachmentPort;
+import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
@@ -33,8 +30,10 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class CreatePostService implements CreatePostUseCase {
 
     private final CreatePostPort createPostPort;
+    private final CreatePostTagPort createPostTagPort;
     private final LoadBoardPort loadBoardPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
+    private final LoadTagPort loadTagPort;
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreatePostInDiscordUseCase createPostInDiscordUseCase;
     private final CreateAttachmentPort createAttachmentPort;
@@ -59,16 +58,21 @@ public class CreatePostService implements CreatePostUseCase {
                 ));
         Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
 
-        // 4. 디스코드로 게시글 정보 전송
+        // 5. 디스코드로 게시글 정보 전송
         List<AttachmentInDiscordCommand> discordAttachments = new ArrayList<>();
         attachmentUrlsMap.forEach((type, urls) -> urlsToAttachmentCommands(type, urls, discordAttachments));
         Long discordIdForPost = createPostInDiscordUseCase.CreateMessageInDiscord(mapToDiscordCommand(command, discordAttachments));
 
-        // 5. Post 도메인 엔티티 생성 후 db에 저장
+        // 6. Post 도메인 엔티티 생성 후 db에 저장
         Post post = command.toPostDomainEntity(discordIdForPost);
         Long postId = createPostPort.createPost(post);
 
-        // 6. Attachment 도메인 엔티티 생성 후 db에 저장
+        // 7. 태그 저장
+        if (command.getTagIds().isPresent()) {
+            createPostTagPort.createPostTag(postId, command.getTagIds().get());
+        }
+
+        // 8. Attachment 도메인 엔티티 생성 후 db에 저장
         List<Attachment> attachments = new ArrayList<>();
         attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
                 attachments.add(Attachment.withoutId(postId, type, url))

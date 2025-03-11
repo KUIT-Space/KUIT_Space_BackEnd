@@ -24,7 +24,7 @@ public class DeletePayController {
             
             """)
     @DeleteMapping("/space/{spaceId}/pay/{payRequestId}")
-    public BaseResponse<SuccessResponse> deletePay(@JwtLoginAuth Long spaceMemberId, @PathVariable("payRequestId") Long payRequestId) {
+    public BaseResponse<SuccessResponse> deletePay(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId, @PathVariable("payRequestId") Long payRequestId) {
         deletePayUseCase.deletePay(spaceMemberId, payRequestId);
         return new BaseResponse<>(new SuccessResponse(true));
     }

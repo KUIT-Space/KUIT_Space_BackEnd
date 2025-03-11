@@ -22,4 +22,6 @@ public interface SpringDataBoardRepository extends JpaRepository<BoardJpaEntity,
 
     List<BoardJpaEntity> findBySpaceIdAndStatus(Long spaceId, BaseStatusType status);
 
+  Optional<BoardJpaEntity> findByDiscordIdAndStatus(Long discordId, BaseStatusType baseStatusType);
+
 }

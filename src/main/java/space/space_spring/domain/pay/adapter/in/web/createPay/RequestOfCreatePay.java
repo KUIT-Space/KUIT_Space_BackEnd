@@ -2,6 +2,7 @@ package space.space_spring.domain.pay.adapter.in.web.createPay;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class RequestOfCreatePay extends SelfValidating<RequestOfCreatePay> {
      * 웹 어댑터의 입력 모델 -> 입력 유효성 검사
      */
 
-    @NotBlank(message = "총 정산 요청 금액은 공백일 수 없습니다.")
+    @NotNull(message = "총 정산 요청 금액은 공백일 수 없습니다.")
     @Positive(message = "총 정산 요청 금액은 양수이어야 합니다.")
     private int totalAmount;
 

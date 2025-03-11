@@ -1,5 +1,6 @@
 package space.space_spring.domain.post.adapter.out.persistence.subscription;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class SubscriptionJpaEntity extends BaseJpaEntity {
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
-    @NotNull
+    @Nullable
     private TagJpaEntity tag;
 
     @Builder

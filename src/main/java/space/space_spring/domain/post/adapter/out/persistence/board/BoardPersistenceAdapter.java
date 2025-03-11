@@ -65,4 +65,11 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
     public List<Board> findAll(){
         return boardRepository.findAll().stream().map(boardMapper::toDomainEntity).toList();
     }
+
+    @Override
+    public Optional<Board> loadByDiscordId(Long discordId){
+        BoardJpaEntity boardJpaEntity = boardRepository.findByDiscordIdAndStatus(discordId, BaseStatusType.ACTIVE)
+                .orElseGet(null);
+        return Optional.of(boardMapper.toDomainEntity(boardJpaEntity));
+    }
 }

@@ -12,12 +12,14 @@ import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Tag;
 import space.space_spring.global.exception.CustomException;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class TagPersistenceAdapter implements LoadTagPort {
 
     private final SpringDataBoardRepository boardRepository;
-    private final SpringDataTagRepository springDataTagRepository;
+    private final SpringDataTagRepository tagRepository;
     private final TagMapper tagMapper;
 
     @Override
@@ -25,7 +27,12 @@ public class TagPersistenceAdapter implements LoadTagPort {
         BoardJpaEntity boardJpaEntity = boardRepository.findById(board.getId())
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
-        return springDataTagRepository.findByBoardIdAndTagName(boardJpaEntity, name).map(tagMapper::toDomainEntity)
+        return tagRepository.findByBoardIdAndTagName(boardJpaEntity, name).map(tagMapper::toDomainEntity)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
+    }
+
+    @Override
+    public List<Tag> loadTagsByBoardIds(List<Long> boardIds) {
+        return tagRepository.findTagsByBoardIds(boardIds).stream().map(tagMapper::toDomainEntity).toList();
     }
 }

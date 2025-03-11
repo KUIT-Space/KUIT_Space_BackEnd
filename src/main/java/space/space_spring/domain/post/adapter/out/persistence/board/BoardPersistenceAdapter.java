@@ -37,7 +37,6 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
     }
     @Override
     public Optional<Board> load(Long boardId){
-
         return boardRepository.findById(boardId).map(boardMapper::toDomainEntity);
     }
 
@@ -54,10 +53,17 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
     public List<Board> loadByType(BoardType type){
         return boardRepository.findByBoardType(type).stream().map(boardMapper::toDomainEntity).toList();
     }
+
+    @Override
+    public List<Board> loadBySpaceId(Long spaceId) {
+        return boardRepository.findBySpaceIdAndStatus(spaceId, BaseStatusType.ACTIVE).stream()
+                .map(boardMapper::toDomainEntity)
+                .toList();
+    }
+
     @Override
     public List<Board> findAll(){
         return boardRepository.findAll().stream().map(boardMapper::toDomainEntity).toList();
-
     }
 
     @Override

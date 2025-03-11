@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +37,7 @@ public class TokenController {
         
         """)
     @PostMapping("/new-token")
-    public BaseResponse<SuccessResponse> updateAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    public BaseResponse<SuccessResponse> updateAccessToken(@PathVariable Long spaceId, HttpServletRequest request, HttpServletResponse response) {
         TokenPair newTokenPair = tokenUseCase.updateTokenPair(parseTokenPair(request));
 
         response.setHeader(ACCESS_TOKEN_HEADER, TOKEN_PREFIX + newTokenPair.getAccessToken());

@@ -32,7 +32,7 @@ public class PostJpaEntity {
     private Boolean isAnonymous;
 
     private PostJpaEntity(PostBaseJpaEntity postBase, String title, Boolean isAnonymous) {
-        this.id = postBase.getId();     // PostBaseJpaEntity 의 식별자가 이미 있어야 한다
+        //this.id = postBase.getId();     // PostBaseJpaEntity 의 식별자가 이미 있어야 한다
         this.postBase = postBase;
         this.title = title;
         this.isAnonymous = isAnonymous;

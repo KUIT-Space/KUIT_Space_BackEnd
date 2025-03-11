@@ -28,7 +28,7 @@ public class CreatePayController {
             
             """)
     @PostMapping("/space/{spaceId}/pay/create")
-    public BaseResponse<ResponseOfCreatePay> createPay(@JwtLoginAuth Long spaceMemberId, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
+    public BaseResponse<ResponseOfCreatePay> createPay(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId, @Validated @RequestBody RequestOfCreatePay request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_PAY_CREATE, getErrorMessage(bindingResult));
         }

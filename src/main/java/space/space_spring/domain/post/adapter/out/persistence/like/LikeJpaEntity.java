@@ -46,8 +46,7 @@ public class LikeJpaEntity extends BaseJpaEntity {
         return new LikeJpaEntity(postBase, spaceMember, isLiked);
     }
 
-    public void changeLikeState() {
-        if (isLiked) isLiked = false;
-        else isLiked = true;
+    public void changeLikeState(boolean state) {
+        isLiked = state;
     }
 }

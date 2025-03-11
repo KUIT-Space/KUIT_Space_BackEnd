@@ -135,6 +135,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
     LIKE_NOT_FOUND(11019, HttpStatus.NOT_FOUND, "존재하지 않는 좋아요 입니다."),
 
+    INVALID_CHANGE_LIKE_STATE_REQUEST(11020, HttpStatus.BAD_REQUEST, "좋아요 on/off 요청에서 잘못된 값이 존재합니다."),
 
     /**
      * 12000 : Pay 오류

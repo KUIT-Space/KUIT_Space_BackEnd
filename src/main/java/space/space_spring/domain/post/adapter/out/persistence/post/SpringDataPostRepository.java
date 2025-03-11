@@ -15,5 +15,10 @@ public interface SpringDataPostRepository extends JpaRepository<PostJpaEntity, L
             "AND pb.status = :status")
     List<PostJpaEntity> findPostsByBoardId(@Param("boardId") Long boardId,
                                            @Param("status") BaseStatusType status);
-
+    @Query("SELECT p FROM PostJpaEntity p " +
+            "JOIN FETCH p.postBase pb " +
+            "WHERE pb.discordId = :discordId " +
+            "AND pb.status = :status")
+    PostJpaEntity findByDiscordId(@Param("discordId") Long discordId,
+                                      @Param("status") BaseStatusType status);
 }

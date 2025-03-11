@@ -26,7 +26,7 @@ public class DeleteEventController {
         
         """)
     @DeleteMapping("/event/{eventId}")
-    public BaseResponse<SuccessResponse> deleteEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId) {
+    public BaseResponse<SuccessResponse> deleteEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId, @PathVariable Long eventId) {
         return new BaseResponse<>(new SuccessResponse(deleteEventUseCase.deleteEvent(spaceMemberId, eventId)));
     }
 }

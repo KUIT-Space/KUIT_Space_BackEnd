@@ -9,6 +9,7 @@ import space.space_spring.global.common.entity.BaseInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 public class CreatePostCommand {
@@ -16,6 +17,8 @@ public class CreatePostCommand {
     private Long spaceId;
 
     private Long boardId;
+
+    private Optional<List<Long>> tagIds;
 
     private Long postCreatorId;
 
@@ -28,9 +31,10 @@ public class CreatePostCommand {
     private Boolean isAnonymous;
 
     @Builder
-    public CreatePostCommand(Long spaceId, Long boardId, Long postCreatorId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
+    public CreatePostCommand(Long spaceId, Long boardId, List<Long> tagIds, Long postCreatorId, String title, String content, List<AttachmentOfCreate> attachments, Boolean isAnonymous) {
         this.spaceId = spaceId;
         this.boardId = boardId;
+        this.tagIds = Optional.ofNullable(tagIds);
         this.postCreatorId = postCreatorId;
         this.title = title;
         this.content = Content.of(content);

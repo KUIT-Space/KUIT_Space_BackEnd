@@ -29,12 +29,12 @@ public class PostBaseJpaEntity extends BaseJpaEntity {
     @NotNull
     private Long discordId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     @NotNull
     private BoardJpaEntity board;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "space_member_id")
     @NotNull
     private SpaceMemberJpaEntity spaceMember;

@@ -17,7 +17,7 @@ import space.space_spring.global.exception.CustomException;
 public class TagPersistenceAdapter implements LoadTagPort {
 
     private final SpringDataBoardRepository boardRepository;
-    private final TagRepository tagRepository;
+    private final SpringDataTagRepository springDataTagRepository;
     private final TagMapper tagMapper;
 
     @Override
@@ -25,7 +25,7 @@ public class TagPersistenceAdapter implements LoadTagPort {
         BoardJpaEntity boardJpaEntity = boardRepository.findById(board.getId())
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
-        return tagRepository.findByBoardIdAndTagName(boardJpaEntity, name).map(tagMapper::toDomainEntity)
+        return springDataTagRepository.findByBoardIdAndTagName(boardJpaEntity, name).map(tagMapper::toDomainEntity)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
     }
 }

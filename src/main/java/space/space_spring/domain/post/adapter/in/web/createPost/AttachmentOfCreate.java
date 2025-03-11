@@ -1,6 +1,7 @@
 package space.space_spring.domain.post.adapter.in.web.createPost;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,7 @@ public class AttachmentOfCreate extends SelfValidating<AttachmentOfCreate> {
     @NotBlank(message = "첨부파일의 유형은 공백일 수 없습니다.")
     private String valueOfAttachmentType;
 
-    @NotBlank(message = "첨부파일은 공백일 수 없습니다.")
+    @NotNull(message = "첨부파일은 필수입니다.")
     private MultipartFile attachment;
 
 }

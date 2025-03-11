@@ -102,6 +102,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     POST_BASE_NOT_FOUND(11003, HttpStatus.NOT_FOUND, "존재하지 않는 post base id입니다."),
     INVALID_POST_UPDATE(11004, HttpStatus.BAD_REQUEST, "게시글 수정 요청에서 잘못된 값이 존재합니다."),
 
+    TAG_IS_REQUIRED_FOR_THIS_BOARD(11005, HttpStatus.BAD_REQUEST, "해당 게시판의 태그는 필수입니다."),
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),
@@ -173,7 +174,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     SEND_MESSAGE_FAIL(14000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
     DISCORD_THREAD_CREATE_FAIL(14001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
     DISCORD_CHANNEL_NOT_FOUND(14002,HttpStatus.NOT_FOUND,"discord channel을 찾지 못했습니다"),
-    DISCORD_GUILD_NOT_FOUND(14003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습ㄴ디ㅏ"),
+    DISCORD_GUILD_NOT_FOUND(14003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습니다"),
     DISCORD_CHANNEL_TYPE_WRONG(14004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다");
     ;
 

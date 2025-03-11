@@ -12,6 +12,6 @@ public class TagMapper {
 //    }
 
     public Tag toDomainEntity(TagJpaEntity tagJpaEntity) {
-        return Tag.create(tagJpaEntity.getId(), tagJpaEntity.getTagName(), tagJpaEntity.getBoard().getId());
+        return Tag.create(tagJpaEntity.getId(), tagJpaEntity.getDiscordId(), tagJpaEntity.getTagName(), tagJpaEntity.getBoard().getId());
     }
 }

@@ -16,7 +16,6 @@ public interface SpringDataPostBaseRepository extends JpaRepository<PostBaseJpaE
             "JOIN FETCH PostTagJpaEntity pt ON pt.postBase.id = pb.id " +
             "WHERE pt.tag.id = :tagId " +
             "AND pb.status = :status")
-    List<PostBaseJpaEntity> findPostsByTagId(@Param("boardId") Long boardId,
-                                             @Param("tagId") Long tagId,
+    List<PostBaseJpaEntity> findPostsByTagId(@Param("tagId") Long tagId,
                                              @Param("status") BaseStatusType status);
 }

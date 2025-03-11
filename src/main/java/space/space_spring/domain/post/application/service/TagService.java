@@ -22,7 +22,7 @@ public class TagService implements CreateTagUseCase {
             log.info("tags is empty");
             return null;
         }
-        return tags.getTagsWithoutId(boardId);
+        return createTagPort.save(tags.getTagsWithoutId(boardId));
 
 
     }

@@ -1,6 +1,7 @@
 package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.application.port.in.Tag.CreateTagUseCase;
@@ -9,12 +10,16 @@ import space.space_spring.domain.post.application.port.in.createBoard.CreateBoar
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
 import space.space_spring.domain.post.application.port.out.CreateBoardPort;
 import space.space_spring.domain.post.domain.Board;
+import space.space_spring.domain.post.domain.Tag;
 import space.space_spring.global.exception.CustomException;
+
+import java.util.List;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class CreateBoardService implements CreateBoardUseCase {
 
@@ -34,7 +39,8 @@ public class CreateBoardService implements CreateBoardUseCase {
 
         //Tag 추가
         if(!command.getTags().isEmpty()) {
-            createTagUseCase.create(command.getTags(), boardId);
+            List<Tag> tags= createTagUseCase.create(command.getTags(), boardId);
+            log.info(String.join("\n",tags.stream().map(Tag::getTagName).toList()));
         }
 
         return boardId;

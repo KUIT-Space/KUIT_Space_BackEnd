@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.discord.adapter.in.discord.ButtonInteraction.ButtonInteractionProcessor;
 import space.space_spring.domain.discord.adapter.in.discord.DiscordUtil;
 import space.space_spring.domain.discord.domain.ChannelCommand;
@@ -25,6 +26,7 @@ import static space.space_spring.domain.post.domain.BoardType.PAY;
 import static space.space_spring.domain.post.domain.BoardType.POST;
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
     private final CreateBoardUseCase createBoardUseCase;
     private final LoadBoardCacheUseCase loadBoardCacheUseCase;

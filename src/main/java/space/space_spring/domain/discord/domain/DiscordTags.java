@@ -1,7 +1,10 @@
 package space.space_spring.domain.discord.domain;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import space.space_spring.domain.post.domain.Tag;
 
@@ -9,6 +12,7 @@ import java.util.List;
 
 @Builder
 @Getter
+@Slf4j
 public class DiscordTags {
     private List<DiscordTag> tags;
 
@@ -17,7 +21,13 @@ public class DiscordTags {
         if(forumTags==null|| forumTags.isEmpty()){
             return new DiscordTags(List.of());
         }
-
+//        forumTags.stream()
+//                .peek(tag->{
+//                    if(tag.getIdLong()==null){
+//                        log.error("discord give me null in tag id");
+//                        log.info("discord give me null in tag id");
+//                    }
+//                })
         return new DiscordTags(forumTags.stream().map(tag->{
             return new DiscordTag(tag.getIdLong(),tag.getName());
         }).toList());
@@ -42,8 +52,10 @@ public class DiscordTags {
 
     private static class DiscordTag{
         @Getter
+        @NotNull
         private Long discordId;
         @Getter
+        @NotNull
         private String name;
         public DiscordTag(Long discordId, String name){
             this.discordId = discordId;

@@ -47,11 +47,11 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
     }
 
     private void validateTagOnSameBoard(List<Tag> tags){
-        if( tags.stream()
+        if( !(tags.stream()
                 .map(Tag::getBoardId)
                 .distinct()
                 .limit(2)
-                .count()<=1
+                .count()<=1)
         ){
             throw new CustomException(TAGS_IS_WORNG);
         }

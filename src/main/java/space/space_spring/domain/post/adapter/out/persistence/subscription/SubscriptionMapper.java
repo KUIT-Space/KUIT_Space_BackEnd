@@ -2,6 +2,8 @@ package space.space_spring.domain.post.adapter.out.persistence.subscription;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.tag.TagJpaEntity;
 import space.space_spring.domain.post.domain.Subscription;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.entity.BaseInfo;
@@ -10,11 +12,11 @@ import space.space_spring.global.common.entity.BaseInfo;
 @RequiredArgsConstructor
 public class SubscriptionMapper {
 
-    public SubscriptionJpaEntity toJpaEntity(Subscription subscription, SpaceMemberJpaEntity spaceMemberJpaEntity) {
+    public SubscriptionJpaEntity toJpaEntity(Subscription subscription, BoardJpaEntity boardJpaEntity, TagJpaEntity tagJpaEntity, SpaceMemberJpaEntity spaceMemberJpaEntity) {
         return SubscriptionJpaEntity.create(
                 spaceMemberJpaEntity,
-                subscription.getBoardId(),
-                subscription.getTagId(),
+                boardJpaEntity,
+                tagJpaEntity,
                 subscription.getBaseInfo().getCreatedAt(),
                 subscription.getBaseInfo().getLastModifiedAt(),
                 subscription.getBaseInfo().getStatus());
@@ -26,8 +28,8 @@ public class SubscriptionMapper {
         return Subscription.create(
                 subscriptionJpaEntity.getId(),
                 subscriptionJpaEntity.getSpaceMember().getId(),
-                subscriptionJpaEntity.getBoardId(),
-                subscriptionJpaEntity.getTagId(),
+                subscriptionJpaEntity.getBoard().getId(),
+                subscriptionJpaEntity.getTag().getId(),
                 baseInfo);
     }
 

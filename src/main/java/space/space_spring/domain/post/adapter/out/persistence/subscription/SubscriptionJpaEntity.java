@@ -13,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.tag.TagJpaEntity;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.entity.BaseJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
@@ -33,27 +35,29 @@ public class SubscriptionJpaEntity extends BaseJpaEntity {
     @NotNull
     private SpaceMemberJpaEntity spaceMember;
 
-    @Column(name = "board_id")
+    @ManyToOne
+    @JoinColumn(name = "board_id")
     @NotNull
-    private Long boardId;
+    private BoardJpaEntity board;
 
-    @Column(name = "tag_id")
+    @ManyToOne
+    @JoinColumn(name = "tag_id")
     @NotNull
-    private Long tagId;
+    private TagJpaEntity tag;
 
     @Builder
-    private SubscriptionJpaEntity(SpaceMemberJpaEntity spaceMember, Long boardId, Long tagId, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+    private SubscriptionJpaEntity(SpaceMemberJpaEntity spaceMember, BoardJpaEntity board, TagJpaEntity tag, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
         super(createdAt, lastModifiedAt, baseStatus);
         this.spaceMember = spaceMember;
-        this.boardId = boardId;
-        this.tagId = tagId;
+        this.board = board;
+        this.tag = tag;
     }
 
-    public static SubscriptionJpaEntity create(SpaceMemberJpaEntity spaceMember, Long boardId, Long tagId, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+    public static SubscriptionJpaEntity create(SpaceMemberJpaEntity spaceMember, BoardJpaEntity board, TagJpaEntity tag, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
         return SubscriptionJpaEntity.builder()
                 .spaceMember(spaceMember)
-                .boardId(boardId)
-                .tagId(tagId)
+                .board(board)
+                .tag(tag)
                 .createdAt(createdAt)
                 .lastModifiedAt(lastModifiedAt)
                 .baseStatus(baseStatus)

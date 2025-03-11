@@ -16,5 +16,5 @@ public interface SpringDataPostCommentRepository extends JpaRepository<PostComme
             "GROUP BY pc.postBase.id")
     List<PostCommentCount> countCommentsByPostIds(@Param("postIds") List<Long> postIds);
 
-    Optional<PostCommentJpaEntity> findByPostBaseId(Long postBaseId);
+    List<PostCommentJpaEntity> findByPostBaseId(Long postBaseId);
 }

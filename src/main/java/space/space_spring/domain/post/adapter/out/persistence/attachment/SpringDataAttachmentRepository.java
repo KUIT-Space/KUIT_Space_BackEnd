@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import space.space_spring.domain.post.domain.AttachmentType;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.util.List;
 
@@ -16,4 +17,9 @@ public interface SpringDataAttachmentRepository extends JpaRepository<Attachment
             "ORDER BY a.createdAt ASC")
     List<AttachmentSummary> findImagesByPostIds(@Param("postIds") List<Long> postIds,
                                                 @Param("type")AttachmentType type);
+
+    @Query("SELECT a FROM AttachmentJpaEntity a WHERE a.status = 'ACTIVE' AND a.attachmentUrl IN :attachmentUrls")
+    List<AttachmentJpaEntity> findByAttachmentUrlInAndStatus(List<String> attachmentUrls);
+
+    List<AttachmentJpaEntity> findByPostBaseIdAndStatus(Long postId, BaseStatusType type);
 }

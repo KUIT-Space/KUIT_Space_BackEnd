@@ -1,47 +1,58 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
+import space.space_spring.global.common.entity.BaseInfo;
 
 @Getter
 public class Comment {
 
-    private Long id; // postBaseId
+    private Long id;
 
     private Long boardId;
 
     private Long discordId;
 
-    private Long targetId; // post, question의 postBaseId
+    private Long postId;
 
-    private Long spaceMemberId;
+    private Long commentCreatorId;
 
-    private String content;
+    private Content content;
 
     private boolean isAnonymous;
 
-    private Comment(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content, boolean isAnonymous) {
+    private BaseInfo baseInfo;
+
+    private Comment(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous, BaseInfo baseInfo) {
         this.id = id;
         this.boardId = boardId;
         this.discordId = discordId;
-        this.targetId = targetId;
-        this.spaceMemberId = spaceMemberId;
+        this.postId = postId;
+        this.commentCreatorId = commentCreatorId;
         this.content = content;
         this.isAnonymous = isAnonymous;
+        this.baseInfo = baseInfo;
     }
 
-    public static Comment createForPost(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content) {
-        return new Comment(id, boardId, discordId, targetId, spaceMemberId, content, false);
+    public static Comment create(Long id, Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous, BaseInfo baseInfo) {
+        return new Comment(id, boardId, discordId, postId, commentCreatorId, content, isAnonymous, baseInfo);
     }
 
-    public static Comment createForQuestion(Long id, Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content, boolean isAnonymous) {
-        return new Comment(id, boardId, discordId, targetId, spaceMemberId, content, isAnonymous);
+    /**
+     * 처음 Domain Entity 생성 시 사용하는 정적 펙토리 메서드
+     */
+    public static Comment withoutId(Long boardId, Long discordId, Long postId, Long commentCreatorId, Content content, boolean isAnonymous) {
+        return new Comment(null, boardId, discordId, postId, commentCreatorId, content, isAnonymous, BaseInfo.ofEmpty());
     }
 
-    public static Comment withoutIdForPost(Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content) {
-        return new Comment(null, boardId, discordId, targetId, spaceMemberId, content, false);
+    public boolean isCommentCreator(Long spaceMemberId) {
+        return commentCreatorId.equals(spaceMemberId);
     }
 
-    public static Comment withoutIdForQuestion(Long boardId, Long discordId, Long targetId, Long spaceMemberId, String content, boolean isAnonymous) {
-        return new Comment(null, boardId, discordId, targetId, spaceMemberId, content, isAnonymous);
+    public void changeContent(Content content) {
+        this.content = content;
+    }
+
+    public void changeAnonymous(boolean isAnonymous) {
+        this.isAnonymous = isAnonymous;
     }
 }

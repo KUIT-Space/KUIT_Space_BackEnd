@@ -14,7 +14,8 @@ public class PostMapper {
     PostJpaEntity toJpaEntity(PostBaseJpaEntity postBase, Post domain) {
         return PostJpaEntity.create(
                 postBase,
-                domain.getTitle()
+                domain.getTitle(),
+                domain.getIsAnonymous()
         );
     }
 
@@ -35,7 +36,9 @@ public class PostMapper {
                 postBase.getSpaceMember().getId(),
                 jpaEntity.getTitle(),
                 Content.of(postBase.getContent()),
-                baseInfo
+                baseInfo,
+                jpaEntity.getIsAnonymous()
+
         );
     }
 }

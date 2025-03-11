@@ -15,7 +15,7 @@ public class RequestOfUpdateComment {
     private String content;     // 작성할 댓글 내용
 
     @NotNull(message = "댓글의 익명/비익명 여부는 공백일 수 없습니다.")
-    private boolean isAnonymous;        // 작성할 댓글의 익명/비익명 여부
+    private Boolean isAnonymous;        // 작성할 댓글의 익명/비익명 여부
 
 
     /**

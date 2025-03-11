@@ -42,13 +42,13 @@ public class CreateCommentInDiscordService implements CreateCommentInDiscordUseC
         Board board = loadBoardPort.loadById(command.getBoardId());
         Post post = loadPostPort.loadById(command.getOriginPostId());
         return CreateDiscordMessageOnThreadCommand.builder()
-                .threadChannelDiscordId(command.getOriginPostId())
+                .threadChannelDiscordId(post.getDiscordId())
                 .guildDiscordId(loadSpacePort.loadSpaceById(command.getSpaceId()).get().getDiscordId())
                 .avatarUrl(command.getProfileUrl())
                 .userName(command.getUserName())
                 .webHookUrl(board.getWebhookUrl())
                 .content(command.getContent())
-                .originPostId(post.getDiscordId())
+                .originPostId(command.getOriginPostId())
                 .originChannelId(board.getDiscordId())
                 .build();
     }

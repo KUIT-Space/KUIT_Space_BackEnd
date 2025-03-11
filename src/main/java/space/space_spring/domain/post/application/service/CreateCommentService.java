@@ -1,6 +1,8 @@
 package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.discord.application.port.in.createComment.CreateCommentInDiscordCommand;
@@ -20,6 +22,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Transactional(readOnly = true)
 public class CreateCommentService implements CreateCommentUseCase {
 
+    private static final Logger log = LoggerFactory.getLogger(CreateCommentService.class);
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final CreateCommentPort createCommentPort;
@@ -60,7 +63,10 @@ public class CreateCommentService implements CreateCommentUseCase {
         NicknameAndProfileImage nicknameAndProfileImage = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(command.getCommentCreatorId());
         String creatorNickname = nicknameAndProfileImage.getNickname();
         String creatorProfileImageUrl = nicknameAndProfileImage.getProfileImageUrl();
-        if (command.isAnonymous()) {
+
+        log.info("anonymous : {}", command.getIsAnonymous());
+
+        if (command.getIsAnonymous()) {
             creatorNickname = "익명 스페이서 " + command.getPostId() * 10 + command.getCommentCreatorId();
             creatorProfileImageUrl = null;
         }
@@ -86,7 +92,7 @@ public class CreateCommentService implements CreateCommentUseCase {
             throw new CustomException(POST_IS_NOT_IN_BOARD);
         }
 
-        if (board.getBoardType() != BoardType.QUESTION && command.isAnonymous()) {      // 질문 게시글이 아닌데 게시글 작성자가 익명이라면
+        if (board.getBoardType() != BoardType.QUESTION && command.getIsAnonymous()) {      // 질문 게시글이 아닌데 게시글 작성자가 익명이라면
             throw new CustomException(CAN_NOT_BE_ANONYMOUS);
         }
     }

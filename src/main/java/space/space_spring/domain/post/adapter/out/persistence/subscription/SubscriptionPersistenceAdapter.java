@@ -35,16 +35,18 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
         SpaceMemberJpaEntity spaceMember = spaceMemberRepository.findByIdAndStatus(spaceMemberId, ACTIVE)
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
 
-        return subscriptionRepository.findBySpaceMemberAndBoardIdAndTagId(spaceMember, boardId, tagId).map(subscriptionMapper::toDomainEntity);
+        return subscriptionRepository.findBySpaceMemberAndBoardIdAndTagId(spaceMember, boardId, tagId)
+                .filter(subscription -> subscription.getStatus() == ACTIVE)
+                .map(subscriptionMapper::toDomainEntity);
     }
 
     @Override
     public Subscription createSubscription(Subscription subscription) {
         SpaceMemberJpaEntity spaceMember = spaceMemberRepository.findByIdAndStatus(subscription.getSpaceMemberId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
-        BoardJpaEntity boardJpaEntity = boardRepository.findById(subscription.getBoardId())
+        BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(subscription.getBoardId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-        TagJpaEntity tagJpaEntity = tagRepository.findById(subscription.getTagId())
+        TagJpaEntity tagJpaEntity = tagRepository.findByIdAndStatus(subscription.getTagId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
 
         SubscriptionJpaEntity subscriptionJpaEntity = subscriptionMapper.toJpaEntity(subscription, boardJpaEntity, tagJpaEntity, spaceMember);
@@ -57,9 +59,9 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
     public void activate(Subscription subscription) {
         SpaceMemberJpaEntity spaceMember = spaceMemberRepository.findByIdAndStatus(subscription.getSpaceMemberId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
-        BoardJpaEntity boardJpaEntity = boardRepository.findById(subscription.getBoardId())
+        BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(subscription.getBoardId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-        TagJpaEntity tagJpaEntity = tagRepository.findById(subscription.getTagId())
+        TagJpaEntity tagJpaEntity = tagRepository.findByIdAndStatus(subscription.getTagId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
 
         subscriptionRepository.updateActive(subscriptionMapper.toJpaEntity(subscription, boardJpaEntity, tagJpaEntity, spaceMember));
@@ -69,9 +71,9 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
     public void inactivate(Subscription subscription) {
         SpaceMemberJpaEntity spaceMember = spaceMemberRepository.findByIdAndStatus(subscription.getSpaceMemberId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
-        BoardJpaEntity boardJpaEntity = boardRepository.findById(subscription.getBoardId())
+        BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(subscription.getBoardId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-        TagJpaEntity tagJpaEntity = tagRepository.findById(subscription.getTagId())
+        TagJpaEntity tagJpaEntity = tagRepository.findByIdAndStatus(subscription.getTagId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
 
         subscriptionRepository.softDelete(subscriptionMapper.toJpaEntity(subscription, boardJpaEntity, tagJpaEntity, spaceMember));

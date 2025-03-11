@@ -6,12 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.global.common.validation.SelfValidating;
 
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
 

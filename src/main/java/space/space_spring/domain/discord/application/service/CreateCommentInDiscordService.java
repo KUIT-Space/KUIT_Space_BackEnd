@@ -14,8 +14,11 @@ import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
 import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
+import space.space_spring.global.exception.CustomException;
 
 import java.util.concurrent.CompletableFuture;
+
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SEND_MESSAGE_FAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +28,13 @@ public class CreateCommentInDiscordService implements CreateCommentInDiscordUseC
     private final LoadSpacePort loadSpacePort;
     private final LoadPostPort loadPostPort;
     @Override
-    public CompletableFuture<Long> send(CreateCommentInDiscordCommand command){
+    public Long send(CreateCommentInDiscordCommand command){
 
-        return createDiscordMessageOnThreadPort.sendToThread(mapToDiscordOnThread(command));
+        try {
+            return createDiscordMessageOnThreadPort.sendToThread(mapToDiscordOnThread(command)).get();
+        } catch (Exception e) {
+            throw new CustomException(SEND_MESSAGE_FAIL, SEND_MESSAGE_FAIL.getMessage() + e.getMessage());
+        }
 
     }
 

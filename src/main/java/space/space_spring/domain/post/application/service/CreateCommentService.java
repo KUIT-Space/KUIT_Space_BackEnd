@@ -3,10 +3,14 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.discord.application.port.in.createComment.CreateCommentInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.createComment.CreateCommentInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
+import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.global.exception.CustomException;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -19,6 +23,8 @@ public class CreateCommentService implements CreateCommentUseCase {
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final CreateCommentPort createCommentPort;
+    private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
+    private final CreateCommentInDiscordUseCase createCommentInDiscordUseCase;
 
     @Override
     @Transactional
@@ -51,7 +57,15 @@ public class CreateCommentService implements CreateCommentUseCase {
 //        createAttachmentPort.createAttachments(attachments);
 
         // 4. discord 로 보내기
-        Long discordId = 0L;        // 상준님과 협의
+        NicknameAndProfileImage nicknameAndProfileImage = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(command.getCommentCreatorId());
+        String creatorNickname = nicknameAndProfileImage.getNickname();
+        String creatorProfileImageUrl = nicknameAndProfileImage.getProfileImageUrl();
+        if (command.isAnonymous()) {
+            creatorNickname = "익명 스페이서 " + command.getPostId() * 10 + command.getCommentCreatorId();
+            creatorProfileImageUrl = null;
+        }
+
+        Long discordId = createCommentInDiscordUseCase.send(CreateCommentInDiscordCommand.of(command, creatorNickname, creatorProfileImageUrl));
 
         // 5. db에 comment 저장
         return createCommentPort.createComment(command.toDomainEntity(discordId));

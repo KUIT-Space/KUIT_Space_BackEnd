@@ -19,9 +19,13 @@ public class TagJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue
-    @Column(name="tag_id")
+    @Column(name = "tag_id")
     @NotNull
     private Long id;
+
+    @Column(name = "discord_id")
+    @NotNull
+    private Long discordId;
 
     @Column(name = "tag_name")
     @NotNull

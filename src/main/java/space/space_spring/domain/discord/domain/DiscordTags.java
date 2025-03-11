@@ -3,6 +3,7 @@ package space.space_spring.domain.discord.domain;
 import lombok.Builder;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
+import space.space_spring.domain.post.domain.Tag;
 
 import java.util.List;
 
@@ -10,8 +11,6 @@ import java.util.List;
 @Getter
 public class DiscordTags {
     private List<DiscordTag> tags;
-
-
 
     public static DiscordTags from(List<ForumTag> forumTags){
 
@@ -24,8 +23,21 @@ public class DiscordTags {
         }).toList());
     }
 
+    public boolean isEmpty(){
+        if(tags==null||tags.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
     private DiscordTags(List<DiscordTag> tags){
         this.tags=tags;
+    }
+
+    public List<Tag> getTagsWithoutId(Long boardId){
+        return tags.stream().map(tag->{
+            return Tag.create(null,tag.getDiscordId(),tag.getName(),boardId);
+        }).toList();
     }
 
     private static class DiscordTag{

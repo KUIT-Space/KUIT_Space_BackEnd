@@ -3,6 +3,7 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.post.application.port.in.Tag.CreateTagUseCase;
 import space.space_spring.domain.post.application.port.in.boardCache.AddBoardCacheUseCase;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
@@ -19,6 +20,7 @@ public class CreateBoardService implements CreateBoardUseCase {
 
     private final CreateBoardPort createBoardPort;
     private final AddBoardCacheUseCase addBoardCacheUseCase;
+    private final CreateTagUseCase createTagUseCase;
     @Override
     @Transactional
     public Long createBoard(CreateBoardCommand command) {
@@ -28,6 +30,11 @@ public class CreateBoardService implements CreateBoardUseCase {
         Long boardId = createBoardPort.createBoard(board);
         if(!addBoardCacheUseCase.add(boardId)){
             throw new CustomException(BOARD_NOT_FOUND, BOARD_NOT_FOUND.getMessage()+": redis 저장과정에서 찾을 수 없습니다");
+        }
+
+        //Tag 추가
+        if(!command.getTags().isEmpty()) {
+            createTagUseCase.create(command.getTags(), boardId);
         }
 
         return boardId;

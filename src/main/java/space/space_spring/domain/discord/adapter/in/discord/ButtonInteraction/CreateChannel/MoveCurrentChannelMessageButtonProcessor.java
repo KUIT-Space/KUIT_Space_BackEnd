@@ -66,7 +66,7 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
                 .filter(message->loadPostPort.loadByDiscordId(message.getIdLong()).isEmpty())
                 .map(message -> {
                     return CompletableFuture.runAsync(()->{
-                            inputMessageFromDiscordUseCase.put(mapToServer(message, boardId));
+                            inputMessageFromDiscordUseCase.putPost(mapToServer(message, boardId));
                     });
                 })
                 .collect(Collectors.toList());

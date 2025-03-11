@@ -67,7 +67,7 @@ public class MoveMessageButtonProcessor implements ButtonInteractionProcessor {
         // 각 메시지에 대해 비동기 작업 수행
         List<CompletableFuture<Void>> futures = messages.stream()
                 .map(message -> createDiscordWebHookMessagePort.send(mapToDiscord(message, webHookUrl,targetChannelId))
-                        .thenAccept(messageId -> inputMessageFromDiscordUseCase.put(mapToServer(message, messageId))))
+                        .thenAccept(messageId -> inputMessageFromDiscordUseCase.putPost(mapToServer(message, messageId))))
                 .collect(Collectors.toList());
 
         // 모든 메시지 처리가 완료될 때까지 기다림

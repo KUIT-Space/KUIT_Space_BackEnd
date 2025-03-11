@@ -5,6 +5,6 @@ import space.space_spring.domain.post.domain.Tag;
 
 public interface LoadTagPort {
 
-    Tag loadByBoardAndName(Board board, String name);
+    Tag loadByIdAndBoard(Long tagId, Long boardId);
 
 }

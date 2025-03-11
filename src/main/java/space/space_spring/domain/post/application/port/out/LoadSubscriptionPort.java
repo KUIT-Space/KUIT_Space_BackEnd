@@ -7,4 +7,5 @@ public interface LoadSubscriptionPort {
 
     Optional<Subscription> loadByInfos(Long spaceMemberId, Long boardId, Long tagId);
 
+    Optional<Subscription> loadByBoardId(Long boardId);
 }

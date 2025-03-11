@@ -72,7 +72,7 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                 .avatarUrl(userInfo.getProfileImageUrl())
                 .webHookUrl(board.getWebhookUrl())
                 .title(command.getTitle())
-                .content(command.getTitle())
+                .content(command.getContent().getValue())
                 .guildDiscordId(guildDiscordId)
                 .channelDiscordId(board.getDiscordId())
                 .attachmentsUrl(

@@ -5,7 +5,9 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
 
+import java.util.List;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
@@ -41,6 +43,16 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
     }
 
     @Override
+    public List<Long> loadSubscribedBoardIds(Long spaceMemberId) {
+        return subscriptionRepository.findSubscribedBoardIdsBySpaceMemberId(spaceMemberId);
+    }
+
+    @Override
+    public Optional<Subscription> loadByBoardId(Long boardId) {
+        return subscriptionRepository.findByBoardIdAndStatus(boardId, ACTIVE).map(subscriptionMapper::toDomainEntity);
+    }
+
+    @Override
     public Subscription createSubscription(Subscription subscription) {
         SpaceMemberJpaEntity spaceMember = spaceMemberRepository.findByIdAndStatus(subscription.getSpaceMemberId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
@@ -61,6 +73,12 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
         BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(subscription.getBoardId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+
+        if (subscription.getTagId() == null) {
+            subscriptionRepository.updateActive(subscriptionMapper.toJpaEntity(subscription, boardJpaEntity, null, spaceMember));
+            return;
+        }
+
         TagJpaEntity tagJpaEntity = springDataTagRepository.findByIdAndStatus(subscription.getTagId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
 
@@ -73,6 +91,12 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
                 .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
         BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(subscription.getBoardId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+
+        if (subscription.getTagId() == null) {
+            subscriptionRepository.softDelete(subscriptionMapper.toJpaEntity(subscription, boardJpaEntity, null, spaceMember));
+            return;
+        }
+
         TagJpaEntity tagJpaEntity = springDataTagRepository.findByIdAndStatus(subscription.getTagId(), ACTIVE)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
 

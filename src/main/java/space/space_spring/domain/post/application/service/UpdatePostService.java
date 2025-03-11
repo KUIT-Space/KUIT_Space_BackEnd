@@ -1,6 +1,7 @@
 package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,8 @@ import space.space_spring.domain.post.domain.*;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.global.exception.CustomException;
+import space.space_spring.global.validator.AllowedDocumentFileExtensions;
+import space.space_spring.global.validator.AllowedImageFileExtensions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -106,10 +110,16 @@ public class UpdatePostService implements UpdatePostUseCase {
         // 2. 새로운 첨부파일 업로드
         if (!command.getAttachments().isEmpty()) {
             Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachments().stream()
-                    .collect(Collectors.groupingBy(
-                            UpdatePostAttachmentCommand::getAttachmentType,
-                            Collectors.mapping(UpdatePostAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
-                    ));
+                    .collect(Collectors.groupingBy(file -> {
+                        if (isImageFile(file)) {
+                            return AttachmentType.IMAGE; // 만약 BoardType.Image가 필요하다면 해당 enum으로 변경하세요.
+                        } else if (isDocumentFile(file)) {
+                            return AttachmentType.FILE; // 마찬가지로 BoardType.File로 변경 가능.
+                        } else {
+                            throw new CustomException(UNSUPPORTED_FILE_TYPE); // 지원하지 않는 파일 형식일 경우 예외 처리
+                        }
+                    }));
+
             // S3에 업로드
             Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
 
@@ -120,5 +130,25 @@ public class UpdatePostService implements UpdatePostUseCase {
             ));
             createAttachmentPort.createAttachments(newAttachments);
         }
+    }
+
+    // MultipartFile이 지원하는 이미지 파일 형식인지 검증
+    private boolean isImageFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        log.info("extension : {}", extension);
+
+        return AllowedImageFileExtensions.contains(extension);
+    }
+
+    // MultipartFile이 지원하는 문서 파일 형식인지 검증
+    private boolean isDocumentFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        log.info("extension : {}", extension);
+
+        return AllowedDocumentFileExtensions.contains(extension);
     }
 }

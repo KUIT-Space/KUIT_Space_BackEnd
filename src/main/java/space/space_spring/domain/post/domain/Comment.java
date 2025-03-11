@@ -52,7 +52,7 @@ public class Comment {
         this.content = content;
     }
 
-    public void changeAnonymous(boolean isAnonymous) {
+    public void changeAnonymous(Boolean isAnonymous) {
         this.isAnonymous = isAnonymous;
     }
 }

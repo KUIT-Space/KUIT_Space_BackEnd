@@ -72,7 +72,7 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
                 .channelDiscordId(targetChannelId)
                 .channelName(channelName)
 
-                .webhookUrl(webHookPort.getOrCreate(Long.parseLong(channelId)))
+                .webhookUrl(webHookPort.getOrCreate(targetChannelId))
 
                 .spaceId(spaceId)
                 .tags(getTags(event.getJDA(),targetChannelId))

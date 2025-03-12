@@ -6,11 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.global.common.validation.SelfValidating;
 
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
 
@@ -20,9 +23,8 @@ public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
     @NotBlank(message = "게시글 내용은 공백일 수 없습니다.")
     private String content;
 
-    @Valid
     @Nullable
-    private List<RequestOfUpdatePostAttachment> attachments;
+    private List<MultipartFile> attachments;
 
     @NotNull(message = "게시글의 익명/비익명 여부는 공백일 수 없습니다.")
     private Boolean isAnonymous; // 질문일 경우만 사용

@@ -47,7 +47,7 @@ public class UpdateCommentController {
                 .postId(postId)
                 .commentCreatorId(spaceMemberId)
                 .content(request.getContent())
-                .isAnonymous(request.isAnonymous())
+                .isAnonymous(request.getIsAnonymous())
                 .build();
 
         updateCommentUseCase.updateComment(command);

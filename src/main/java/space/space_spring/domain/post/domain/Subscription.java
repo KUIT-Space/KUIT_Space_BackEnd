@@ -47,6 +47,14 @@ public class Subscription {
                 .build();
     }
 
+    public static Subscription withoutIdAndTag(Long spaceMemberId, Long boardId, BaseInfo baseInfo) {
+        return Subscription.builder()
+                .spaceMemberId(spaceMemberId)
+                .boardId(boardId)
+                .baseInfo(baseInfo)
+                .build();
+    }
+
     public boolean isActive() {
         return this.baseInfo.getStatus().equals(ACTIVE);
     }

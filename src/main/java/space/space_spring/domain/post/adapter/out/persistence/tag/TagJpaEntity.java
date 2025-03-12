@@ -19,33 +19,39 @@ public class TagJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue
-    @Column(name="tag_id")
+    @Column(name = "tag_id")
     @NotNull
     private Long id;
+
+    @Column(name = "discord_id")
+    @NotNull
+    private Long discordId;
 
     @Column(name = "tag_name")
     @NotNull
     private String tagName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     @NotNull
     private BoardJpaEntity board;
 
     @Builder
-    private TagJpaEntity(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+    private TagJpaEntity(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt,Long discordId, BaseStatusType baseStatus) {
         super(createdAt, lastModifiedAt, baseStatus);
+        this.discordId=discordId;
         this.tagName = tagName;
         this.board = board;
     }
 
-    public static TagJpaEntity create(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+    public static TagJpaEntity create(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt,Long discordId, BaseStatusType baseStatus) {
         return TagJpaEntity.builder()
                 .tagName(tagName)
                 .board(board)
                 .createdAt(createdAt)
                 .lastModifiedAt(lastModifiedAt)
                 .baseStatus(baseStatus)
+                .discordId(discordId)
                 .build();
     }
 

@@ -43,7 +43,7 @@ public class ChangeLikeStateController {
                 .boardId(boardId)
                 .targetId(targetId)
                 .spaceMemberId(spaceMemberId)
-                .changeTo(request.isChangeTo())
+                .changeTo(request.getChangeTo())
                 .build();
 
         changeLikeStateUseCase.changeLikeState(command);

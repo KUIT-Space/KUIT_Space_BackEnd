@@ -27,8 +27,10 @@ public class CreatePostInDiscordCommand {
 
     private List<AttachmentInDiscordCommand> attachments;
 
+    private List<Long> tagIds;
+
     @Builder
-    public CreatePostInDiscordCommand(Long spaceId, Long boardId, Long postCreatorId, String userName, String profileUrl, String title, Content content, List<AttachmentInDiscordCommand> attachments) {
+    public CreatePostInDiscordCommand(Long spaceId, Long boardId, Long postCreatorId, String userName, String profileUrl, String title, Content content, List<AttachmentInDiscordCommand> attachments, List<Long> tagIds) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.postCreatorId = postCreatorId;
@@ -37,6 +39,7 @@ public class CreatePostInDiscordCommand {
         this.title = title;
         this.content = content;
         this.attachments = attachments;
+        this.tagIds = tagIds;
     }
 
     public static CreatePostInDiscordCommand of (CreatePostCommand command, String creatorNickname, String creatorProfileImageUrl, List<AttachmentInDiscordCommand> attachments){
@@ -49,6 +52,7 @@ public class CreatePostInDiscordCommand {
                 .title(command.getTitle())
                 .content(command.getContent())
                 .attachments(attachments)
+                .tagIds(command.getTagIds())
                 .build();
     }
 }

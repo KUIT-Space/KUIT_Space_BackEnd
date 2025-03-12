@@ -79,6 +79,7 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                                 .sorted(Comparator.comparing(a -> a.getAttachmentType().equals(AttachmentType.IMAGE) ? 0 : 1)) // image 우선 정렬
                                 .map(attachment->attachment.getAttachmentUrl()).toList()
                 )
+                .tags(command.getTagIds())
                 .build();
     }
 }

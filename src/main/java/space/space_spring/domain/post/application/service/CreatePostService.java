@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.createPost.AttachmentInDiscordCommand;
-import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
@@ -22,7 +21,6 @@ import space.space_spring.global.validator.AllowedDocumentFileExtensions;
 import space.space_spring.global.validator.AllowedImageFileExtensions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

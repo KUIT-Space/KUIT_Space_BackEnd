@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentFromDiscordCommand;
+import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardCachePort;
 
 import java.util.Optional;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class MessageUpdateEventListener extends ListenerAdapter {
     private final DiscordUtil discordUtil;
     private final LoadBoardCachePort loadBoardCachePort;
+    private final UpdateCommentUseCase updateCommentUseCase;
     @Override
     public void onMessageUpdate(MessageUpdateEvent event){
         if(event.getAuthor().isBot()){
@@ -43,7 +46,11 @@ public class MessageUpdateEventListener extends ListenerAdapter {
         if(isComment(event.getChannel())){
             //Todo map comment update command
             //Todo update comment UseCase call
-
+            UpdateCommentFromDiscordCommand command = UpdateCommentFromDiscordCommand.builder()
+                    .discordMessageId(event.getMessageIdLong())
+                    .Content(event.getMessage().getContentRaw())
+                    .build();
+            updateCommentUseCase.updateCommentFromDiscord(command);
         }
 
         //Todo map post update command

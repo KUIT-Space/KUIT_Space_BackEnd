@@ -44,6 +44,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
 
     //private final CreateSpaceUseCase createSpaceUseCase;
     private final CreateDiscordMessageOnThreadPort createDiscordMessageOnThreadPort;
+    private final WebHookPort webHookPort;
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -107,11 +108,11 @@ public class TestTextCommandEventListener extends ListenerAdapter {
 
 
                 if (msg.getContentRaw().equals("!threadping")) {
-                    Webhook webhook = event.getChannel().asTextChannel().createWebhook("made by server").complete();
+
                     CreateDiscordThreadCommand command = CreateDiscordThreadCommand.builder()
                             .channelDiscordId(event.getChannel().getIdLong())
                             .guildDiscordId(event.getGuild().getIdLong())
-                            .webHookUrl(webhook.getUrl())
+                            .webHookUrl(webHookPort.getOrCreate(event.getChannel().getIdLong()))
                             .contentMessage("spring server thread test success")
                             .threadName("test thread name 12")
                             .startMessage("start message 12")
@@ -162,7 +163,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .title("message")
                             .content("content")
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
-                            .webHookUrl(event.getChannel().asTextChannel().createWebhook("space").complete().getUrl())
+                            .webHookUrl(webHookPort.getOrCreate(event.getChannel().getIdLong()))
                             .guildDiscordId(event.getGuild().getIdLong())
                             .channelDiscordId(event.getChannel().getIdLong())
                             .name(event.getMember().getEffectiveName())
@@ -181,12 +182,17 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     return;
                 }
 
-                if(msg.getContentRaw().startsWith("!edit:")){
-                    String[] commands = msg.getContentRaw().split(":");
-                    Long msgId = Long.parseLong(commands[1]);
-                    event.getChannel().editMessageById(msgId,"this message edit").queue();
-                    //Todo apply WebHook to edit webHook Message
-                }
+
+            if(msg.getContentRaw().startsWith("!edit:")){
+                String[] commands = msg.getContentRaw().split(":");
+                Long msgId = Long.parseLong(commands[1]);
+                event.getGuildChannel().asTextChannel().retrieveWebhooks().complete().stream().filter(webhook->{
+                    return webhook.getName().equals("Space_WebHook");
+                }).findFirst().get().editMessageById(msgId,"edit success").queue();
+                return;
+            }
+
+
 
                 if (msg.getContentRaw().startsWith("!comment:")) {
                     String[] commands = msg.getContentRaw().split(":");
@@ -198,9 +204,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .originChannelId(channelId)
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
                             .webHookUrl(
-                                    event.getGuild().getGuildChannelById(channelId).getType() == ChannelType.TEXT ?
-                                            event.getGuild().getChannelById(TextChannel.class, channelId).createWebhook("space").complete().getUrl()
-                                            : event.getGuild().getChannelById(ForumChannel.class, channelId).createWebhook("space").complete().getUrl())
+                                    webHookPort.getOrCreate(event.getChannel().getIdLong()))
                             .userName(event.getMember().getEffectiveName())
                             .threadChannelDiscordId(msgId)
                             .content("reply success")

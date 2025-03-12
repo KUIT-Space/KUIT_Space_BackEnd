@@ -10,7 +10,12 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.discord.adapter.in.discord.ButtonInteraction.ButtonInteractionProcessor;
+
+import space.space_spring.domain.discord.adapter.out.DiscordWebHookAdapter;
+import space.space_spring.domain.discord.application.port.out.WebHookPort;
+
 import space.space_spring.domain.discord.adapter.in.discord.DiscordUtil;
+
 import space.space_spring.domain.discord.domain.ChannelCommand;
 import space.space_spring.domain.discord.domain.DiscordTags;
 import space.space_spring.domain.post.application.port.in.boardCache.LoadBoardCacheUseCase;
@@ -20,7 +25,10 @@ import space.space_spring.domain.post.domain.Tag;
 import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 
+import java.util.Optional;
+
 import java.util.List;
+
 
 import static space.space_spring.domain.post.domain.BoardType.PAY;
 import static space.space_spring.domain.post.domain.BoardType.POST;
@@ -31,7 +39,9 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
     private final CreateBoardUseCase createBoardUseCase;
     private final LoadBoardCacheUseCase loadBoardCacheUseCase;
     private final LoadSpaceUseCase loadSpaceUseCase;
+    private final WebHookPort webHookPort;
     private final DiscordUtil discordUtil;
+
     @Override
     public boolean supports(String buttonId){
         if (buttonId.startsWith("create-channel:")){
@@ -61,7 +71,9 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
         ChannelCommand command=ChannelCommand.builder()
                 .channelDiscordId(targetChannelId)
                 .channelName(channelName)
-                .webhookUrl(getWebHookUrl(guild,targetChannelIdStr))
+
+                .webhookUrl(webHookPort.getOrCreate(targetChannelId))
+
                 .spaceId(spaceId)
                 .tags(getTags(event.getJDA(),targetChannelId))
                 .build();
@@ -141,18 +153,6 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
     }
 
 
-    //ToDo Webhook adapter 로 책임 분리 예정
-    private String getWebHookUrl(Guild guild,String channelId){
-        TextChannel textChannel = guild.getChannelById(TextChannel.class,channelId);
-        if(textChannel!=null){
-            return textChannel.createWebhook("space-webhook").complete().getUrl();
-        }
-        ForumChannel forumChannel = guild.getChannelById(ForumChannel.class,channelId);
-        if(forumChannel !=null){
-            return forumChannel.createWebhook("space-webhook").complete().getUrl();
-        }
-        return null;
-    }
 
 
     private boolean isExistBoard(Long channelId){

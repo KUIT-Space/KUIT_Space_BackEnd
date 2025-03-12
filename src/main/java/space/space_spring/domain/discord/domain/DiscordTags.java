@@ -33,12 +33,19 @@ public class DiscordTags {
         }).toList());
     }
 
+
+    public static DiscordTags empty(){
+        return new DiscordTags(List.of());
+    }
+
+
     public boolean isEmpty(){
         if(tags==null||tags.isEmpty()){
             return true;
         }
         return false;
     }
+
 
     private DiscordTags(List<DiscordTag> tags){
         this.tags=tags;

@@ -93,6 +93,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
     IS_NOT_DOCUMENT_FILE(9002, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 문서 파일의 형식이 아닙니다."),
 
+    UNSUPPORTED_FILE_TYPE(9003, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 첨부파일 형식이 아닙니다."),
+
     /**
      * 11000: Post 오류
      */

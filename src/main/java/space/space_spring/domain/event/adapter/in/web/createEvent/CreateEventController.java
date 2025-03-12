@@ -5,13 +5,14 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.event.application.port.in.CreateEventCommand;
@@ -52,9 +53,9 @@ public class CreateEventController {
         CreateEventCommand createEventCommand = CreateEventCommand.builder()
                 .name(request.getName())
                 .image(eventImgUrl)
-                .date(request.getDate())
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
+                .date(Instant.parse(request.getDate()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+                .startTime(Instant.parse(request.getStartTime()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+                .endTime(Instant.parse(request.getEndTime()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
                 .build();
 
         Long eventId = createEventUseCase.createEvent(spaceMemberId, createEventCommand);

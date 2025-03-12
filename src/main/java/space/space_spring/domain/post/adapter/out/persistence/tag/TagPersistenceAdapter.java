@@ -1,5 +1,9 @@
 package space.space_spring.domain.post.adapter.out.persistence.tag;
 
+
+import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
@@ -11,9 +15,11 @@ import space.space_spring.domain.post.domain.Tag;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -24,13 +30,11 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
     private final TagMapper tagMapper;
 
     @Override
-    public Tag loadByBoardAndName(Board board, String name) {
-        BoardJpaEntity boardJpaEntity = boardRepository.findById(board.getId())
-                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-
-        return springDataTagRepository.findByBoardIdAndTagName(boardJpaEntity, name).map(tagMapper::toDomainEntity)
+    public Tag loadByIdAndBoard(Long tagId, Long boardId) {
+        return springDataTagRepository.findByIdAndBoardIdAndStatus(tagId, boardId, ACTIVE).map(tagMapper::toDomainEntity)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
     }
+
 
 
     public List<Tag> save(List<Tag> tags){
@@ -55,5 +59,10 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
         ){
             throw new CustomException(TAGS_IS_WORNG);
         }
+    }
+    @Override
+    public List<Tag> loadTagsByBoardIds(List<Long> boardIds) {
+        return springDataTagRepository.findTagsByBoardIds(boardIds).stream().map(tagMapper::toDomainEntity).toList();
+
     }
 }

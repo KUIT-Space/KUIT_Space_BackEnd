@@ -5,6 +5,7 @@ import space.space_spring.global.util.NaturalNumber;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface LoadCommentPort {
     
@@ -15,4 +16,5 @@ public interface LoadCommentPort {
     List<Comment> loadByPostIdWithoutStatusFilter(Long postId);     // status 값 상관없이 모든 댓글들을 조회
 
     List<Comment> loadAllComments(Long postId);
+
 }

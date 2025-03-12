@@ -77,7 +77,7 @@ public class MessageReactionEventListener extends ListenerAdapter {
                         }))
                         .spaceId(spaceId)
                         .spaceMemberId(spaceMemberId)
-                        .targetId(loadPostBasePort.loadByDiscordId(event.getMessageIdLong()))
+                        .targetId(loadPostBasePort.loadByDiscordId(event.getMessageIdLong()).orElseThrow())
                         .build()
         );
 
@@ -113,7 +113,7 @@ public class MessageReactionEventListener extends ListenerAdapter {
                         }))
                         .spaceId(spaceId)
                         .spaceMemberId(spaceMemberId)
-                        .targetId(loadPostBasePort.loadByDiscordId(event.getMessageIdLong()))
+                        .targetId(loadPostBasePort.loadByDiscordId(event.getMessageIdLong()).orElseThrow())
                         .build()
         );
     }

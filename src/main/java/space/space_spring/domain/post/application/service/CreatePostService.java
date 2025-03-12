@@ -13,7 +13,9 @@ import space.space_spring.domain.post.application.port.in.createPost.CreatePostC
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.validator.AllowedDocumentFileExtensions;
@@ -37,7 +39,7 @@ public class CreatePostService implements CreatePostUseCase {
     private final CreatePostTagPort createPostTagPort;
     private final LoadBoardPort loadBoardPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
-    private final LoadTagPort loadTagPort;
+    private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreatePostInDiscordUseCase createPostInDiscordUseCase;
     private final CreateAttachmentPort createAttachmentPort;
@@ -69,9 +71,19 @@ public class CreatePostService implements CreatePostUseCase {
         Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
 
         // 5. 디스코드로 게시글 정보 전송
+        NicknameAndProfileImage nicknameAndProfileImage = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(command.getPostCreatorId());
+        String creatorNickname = nicknameAndProfileImage.getNickname();
+        String creatorProfileImageUrl = nicknameAndProfileImage.getProfileImageUrl();
+
+        if (command.getIsAnonymous()) {
+            creatorNickname = "익명 스페이서";
+            creatorProfileImageUrl = null;
+        }
+
         List<AttachmentInDiscordCommand> discordAttachments = new ArrayList<>();
         attachmentUrlsMap.forEach((type, urls) -> urlsToAttachmentCommands(type, urls, discordAttachments));
-        Long discordIdForPost = createPostInDiscordUseCase.CreateMessageInDiscord(mapToDiscordCommand(command, discordAttachments));
+
+        Long discordIdForPost = createPostInDiscordUseCase.CreateMessageInDiscord(CreatePostInDiscordCommand.of(command, creatorNickname, creatorProfileImageUrl, discordAttachments));
 
         // 6. Post 도메인 엔티티 생성 후 db에 저장
         Post post = command.toPostDomainEntity(discordIdForPost);
@@ -106,19 +118,6 @@ public class CreatePostService implements CreatePostUseCase {
         createAttachmentPort.createAttachments(attachments);
 
         return postId;
-    }
-
-
-    private CreatePostInDiscordCommand mapToDiscordCommand(CreatePostCommand command, List<AttachmentInDiscordCommand> attachments) {
-        return CreatePostInDiscordCommand.builder()
-                .spaceId(command.getSpaceId())
-                .boardId(command.getBoardId())
-                .postCreatorId(command.getPostCreatorId())
-                .title(command.getTitle())
-                .content(command.getContent())
-                .attachments(attachments)
-                .isAnonymous(command.getIsAnonymous())
-                .build();
     }
 
     private void validateBoardAndSpaceMember(Board board, SpaceMember spaceMember, CreatePostCommand command) {

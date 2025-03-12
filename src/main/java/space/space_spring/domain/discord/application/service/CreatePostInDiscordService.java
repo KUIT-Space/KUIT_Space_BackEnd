@@ -64,12 +64,11 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                 .build();
     }
     private CreateDiscordWebHookMessageCommand mapToWebHookMessage(CreatePostInDiscordCommand command){
-        NicknameAndProfileImage userInfo = loadSpaceMemberinfoPort.loadNicknameAndProfileImageById(command.getPostCreatorId());
         Long guildDiscordId = loadSpacePort.loadSpaceById(command.getSpaceId()).get().getDiscordId();
         Board board=loadBoardPort.load(command.getBoardId()).orElseThrow(()->new CustomException(BOARD_NOT_EXIST));
         return CreateDiscordWebHookMessageCommand.builder()
-                .name(userInfo.getNickname())
-                .avatarUrl(userInfo.getProfileImageUrl())
+                .name(command.getUserName())
+                .avatarUrl(command.getProfileUrl())
                 .webHookUrl(board.getWebhookUrl())
                 .title(command.getTitle())
                 .content(command.getContent().getValue())

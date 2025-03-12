@@ -12,11 +12,11 @@ public class Like {
 
     private Long spaceMemberId;
 
-    private boolean isLiked;
+    private Boolean isLiked;
 
     private BaseInfo baseInfo;
 
-    private Like(Long id, Long targetId, Long spaceMemberId, boolean isLiked, BaseInfo baseInfo) {
+    private Like(Long id, Long targetId, Long spaceMemberId, Boolean isLiked, BaseInfo baseInfo) {
         this.id = id;
         this.targetId = targetId;
         this.spaceMemberId = spaceMemberId;
@@ -24,11 +24,11 @@ public class Like {
         this.baseInfo = baseInfo;
     }
 
-    public static Like of(Long id, Long targetId, Long spaceMemberId, boolean isLiked, BaseInfo baseInfo) {
+    public static Like of(Long id, Long targetId, Long spaceMemberId, Boolean isLiked, BaseInfo baseInfo) {
         return new Like(id, targetId, spaceMemberId, isLiked, baseInfo);
     }
 
-    public static Like withoutId(Long targetId, Long spaceMemberId, boolean isLiked) {
+    public static Like withoutId(Long targetId, Long spaceMemberId, Boolean isLiked) {
         return new Like(null, targetId, spaceMemberId, isLiked, BaseInfo.ofEmpty());
     }
 }

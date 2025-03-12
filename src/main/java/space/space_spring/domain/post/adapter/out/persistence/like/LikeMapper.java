@@ -20,7 +20,7 @@ public class LikeMapper {
                 jpaEntity.getId(),
                 jpaEntity.getPostBase().getId(),
                 jpaEntity.getSpaceMember().getId(),
-                jpaEntity.isLiked(),
+                jpaEntity.getIsLiked(),
                 baseInfo
         );
     }
@@ -29,7 +29,7 @@ public class LikeMapper {
         return LikeJpaEntity.create(
                 postBaseJpaEntity,
                 spaceMemberJpaEntity,
-                domain.isLiked()
+                domain.getIsLiked()
         );
     }
 }

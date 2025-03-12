@@ -17,7 +17,7 @@ public class CreatePostCommand {
 
     private Long boardId;
 
-    private Optional<List<Long>> tagIds;
+    private List<Long> tagIds;
 
     private Long postCreatorId;
 
@@ -33,7 +33,7 @@ public class CreatePostCommand {
     public CreatePostCommand(Long spaceId, Long boardId, List<Long> tagIds, Long postCreatorId, String title, String content, List<MultipartFile> attachments, Boolean isAnonymous) {
         this.spaceId = spaceId;
         this.boardId = boardId;
-        this.tagIds = Optional.ofNullable(tagIds);
+        this.tagIds = tagIds;
         this.postCreatorId = postCreatorId;
         this.title = title;
         this.content = Content.of(content);

@@ -158,7 +158,10 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
     }
 
     private DiscordTags getTags(JDA jda,Long channelId){
-        return DiscordTags.from(jda.getForumChannelById(channelId).getAvailableTags());
+        if(discordUtil.isForumChannel(channelId)) {
+            return DiscordTags.from(jda.getForumChannelById(channelId).getAvailableTags());
+        }
+        return DiscordTags.empty();
     }
 
 

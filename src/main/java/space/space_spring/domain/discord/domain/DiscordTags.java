@@ -24,6 +24,20 @@ public class DiscordTags {
         }).toList());
     }
 
+<<<<<<< Updated upstream
+=======
+    public static DiscordTags empty(){
+        return new DiscordTags(List.of());
+    }
+
+    public boolean isEmpty(){
+        if(tags==null||tags.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
+>>>>>>> Stashed changes
     private DiscordTags(List<DiscordTag> tags){
         this.tags=tags;
     }

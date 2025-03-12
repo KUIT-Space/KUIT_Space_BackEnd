@@ -21,7 +21,7 @@ public class CreateDiscordWebHookMessageCommand {
 
     private List<String> attachmentsUrl;
 
-    //private List<Tag> tags;
+    private List<Long> tags;
 
     public String getMessageContent(){
         if(content.isBlank()||content.isEmpty()){

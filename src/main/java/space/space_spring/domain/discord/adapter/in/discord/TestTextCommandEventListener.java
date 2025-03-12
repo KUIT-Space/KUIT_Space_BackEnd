@@ -181,6 +181,23 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     return;
                 }
 
+
+            if(msg.getContentRaw().startsWith("!edit:")){
+                String[] commands = msg.getContentRaw().split(":");
+                Long msgId = Long.parseLong(commands[1]);
+                event.getGuildChannel().asTextChannel().retrieveWebhooks().complete().stream().filter(webhook->{
+                    return webhook.getName().equals("Space_WebHook");
+                }).findFirst().get().editMessageById(msgId,"edit success").queue();
+                return;
+            }
+
+        if(msg.getContentRaw().startsWith("!pay")){
+
+            return;
+        }
+
+
+
                 if (msg.getContentRaw().startsWith("!comment:")) {
                     String[] commands = msg.getContentRaw().split(":");
                     Long msgId = Long.parseLong(commands[1]);

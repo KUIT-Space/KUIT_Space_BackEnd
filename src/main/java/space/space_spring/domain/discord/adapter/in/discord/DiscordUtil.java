@@ -24,5 +24,11 @@ public class DiscordUtil {
         }
     }
 
+    public boolean isForumChannel(Long channelId){
+        if(jda.getForumChannelById(channelId)==null){
+            return false;
+        }
+        return true;
+    }
 
 }

@@ -37,19 +37,21 @@ public class TagJpaEntity extends BaseJpaEntity {
     private BoardJpaEntity board;
 
     @Builder
-    private TagJpaEntity(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+    private TagJpaEntity(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt,Long discordId, BaseStatusType baseStatus) {
         super(createdAt, lastModifiedAt, baseStatus);
+        this.discordId=discordId;
         this.tagName = tagName;
         this.board = board;
     }
 
-    public static TagJpaEntity create(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt, BaseStatusType baseStatus) {
+    public static TagJpaEntity create(String tagName, BoardJpaEntity board, LocalDateTime createdAt, LocalDateTime lastModifiedAt,Long discordId, BaseStatusType baseStatus) {
         return TagJpaEntity.builder()
                 .tagName(tagName)
                 .board(board)
                 .createdAt(createdAt)
                 .lastModifiedAt(lastModifiedAt)
                 .baseStatus(baseStatus)
+                .discordId(discordId)
                 .build();
     }
 

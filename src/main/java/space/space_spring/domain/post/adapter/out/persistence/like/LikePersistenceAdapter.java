@@ -32,6 +32,7 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
 
     @Override
     public Map<Long, NaturalNumber> countLikesByPostIds(List<Long> postIds) {
+        // Like 테이블에서 못찾은 경우(= 해당 postId에 좋아요가 달리지 않은 경우) -> 해당 게시물(or 댓글)에 해당하는 PostLikeCount 객체는 존재하지 않는다
         List<PostLikeCount> results = likeRepository.countLikesByPostIds(postIds, BaseStatusType.ACTIVE);
         return results.stream()
                 .collect(Collectors.toMap(
@@ -42,7 +43,11 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
 
     @Override
     public NaturalNumber countLikeByPostId(Long postId) {
+        // Like 테이블에서 못찾은 경우(= 해당 postId에 좋아요가 달리지 않은 경우) -> likeCountOfTarget의 값은 0이다 (= defaultValue)
         int likeCountOfTarget = likeRepository.countByPostBaseIdAndIsLikedAndStatus(postId, true, BaseStatusType.ACTIVE);
+
+//        System.out.println("likeCountOfTarget = " + likeCountOfTarget);
+
         return NaturalNumber.of(likeCountOfTarget);
     }
 

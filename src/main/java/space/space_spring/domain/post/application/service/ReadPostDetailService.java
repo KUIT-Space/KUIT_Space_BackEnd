@@ -121,7 +121,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
                 .content(comment.getContent())
                 .createdAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getCreatedAt()))
                 .lastModifiedAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getLastModifiedAt()))
-                .likeCount(commentLikeCountMap.get(comment.getId()))
+                .likeCount(commentLikeCountMap.getOrDefault(comment.getId(), NaturalNumber.of(0)))
                 .isLiked(hasSpaceMemberLikedToComment)
                 .isActiveComment(isActiveComment)
                 .build();

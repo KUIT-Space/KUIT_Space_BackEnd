@@ -11,6 +11,9 @@ import java.util.Optional;
 public interface SpringDataPostBaseRepository extends JpaRepository<PostBaseJpaEntity, Long> {
     Optional<PostBaseJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);
 
+    Optional<PostBaseJpaEntity> findByDiscordIdAndStatus(Long discordId,BaseStatusType baseStatusType);
+
+
     @Query("SELECT pb FROM PostBaseJpaEntity pb " +
             "JOIN FETCH PostJpaEntity p ON p.postBase.id = pb.id " +
             "JOIN FETCH PostTagJpaEntity pt ON pt.postBase.id = pb.id " +
@@ -18,4 +21,5 @@ public interface SpringDataPostBaseRepository extends JpaRepository<PostBaseJpaE
             "AND pb.status = :status")
     List<PostBaseJpaEntity> findPostsByTagId(@Param("tagId") Long tagId,
                                              @Param("status") BaseStatusType status);
+
 }

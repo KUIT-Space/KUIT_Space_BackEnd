@@ -17,6 +17,7 @@ public class Tag {
         this.id = id;
         this.tagName = tagName;
         this.boardId = boardId;
+        this.discordId = discordId;
     }
 
     public static Tag create(Long id, Long discordId, String tagName, Long boardId) {

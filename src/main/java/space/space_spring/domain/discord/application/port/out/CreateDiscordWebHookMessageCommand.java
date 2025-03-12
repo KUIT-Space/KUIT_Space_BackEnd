@@ -21,9 +21,25 @@ public class CreateDiscordWebHookMessageCommand {
 
     private List<String> attachmentsUrl;
 
-    //private List<Tag> tags;
+    private List<Long> tags;
 
     public String getMessageContent(){
-        return content+"\n\n"+attachmentsUrl.stream().collect(Collectors.joining("\n"));
+        if(content.isBlank()||content.isEmpty()){
+            return getTitleAndContent();
+        }
+
+        return content+"\n\n"+getAttachmentUrlInContent();
     }
+
+    public String getTitleAndContent(){
+
+        return title+"\n"+content+"\n\n"+getAttachmentUrlInContent();
+    }
+    private String getAttachmentUrlInContent(){
+        if(this.attachmentsUrl.isEmpty()||this.attachmentsUrl==null){
+            return " ";
+        }
+        return attachmentsUrl.stream().collect(Collectors.joining("\n"));
+    }
+
 }

@@ -28,7 +28,7 @@ public class ReadRequestedPayListController {
             
             """)
     @GetMapping("/space/{spaceId}/pay/requested")
-    public BaseResponse<ResponseOfReadRequestedPayList> showRequestedPayList(@JwtLoginAuth Long spaceMemberId) {
+    public BaseResponse<ResponseOfReadRequestedPayList> showRequestedPayList(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId) {
         return new BaseResponse<>(ResponseOfReadRequestedPayList.of(readRequestedPayListUseCase.readRequestedPayList(spaceMemberId)));
     }
 

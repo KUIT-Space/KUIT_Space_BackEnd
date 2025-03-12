@@ -28,7 +28,7 @@ public class ReadSinglePayController {
             
             """)
     @GetMapping("/space/{spaceId}/pay/{payRequestId}")
-    public BaseResponse<ResponseOfReadPayDetail> showPayDetail(@JwtLoginAuth Long spaceMemberId, @PathVariable("payRequestId") Long payRequestId) {
+    public BaseResponse<ResponseOfReadPayDetail> showPayDetail(@JwtLoginAuth Long spaceMemberId, @PathVariable("spaceId") Long spaceId, @PathVariable("payRequestId") Long payRequestId) {
         return new BaseResponse<>(ResponseOfReadPayDetail.of(readPayDetailUseCase.readPayDetail(spaceMemberId, payRequestId)));
     }
 }

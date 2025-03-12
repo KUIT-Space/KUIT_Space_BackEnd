@@ -26,7 +26,7 @@ public class JoinEventController {
         
         """)
     @PostMapping("/event/{eventId}/join")
-    public BaseResponse<SuccessResponse> joinEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long eventId) {
+    public BaseResponse<SuccessResponse> joinEvent(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId, @PathVariable Long eventId) {
         boolean isJoinSuccess = joinEventUseCase.joinEvent(spaceMemberId, eventId);
         return new BaseResponse<>(new SuccessResponse(isJoinSuccess));
     }

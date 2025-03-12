@@ -93,17 +93,17 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             });
 
         }
-                if (msg.getContentRaw().startsWith("!member:")) {
-                    System.out.println("\n\n\nmembertext\n\n\n");
-                    System.out.println("mem:" + msg.getGuild().getMembers().size());
-                    Long spaceId = Long.parseLong(msg.getContentRaw().split(":")[1]);
-                    loadSpaceMemberPort.loadSpaceMemberBySpaceId(spaceId).stream().forEach(spaceMember -> {
-                        msg.getChannel().sendMessage(
-                                "\n" + spaceMember.getNickname() + ":" + spaceMember.getId() + ":Manager:" + spaceMember.isManager()).queue();
+            if (msg.getContentRaw().startsWith("!member:")) {
+                System.out.println("\n\n\nmembertext\n\n\n");
+                System.out.println("mem:" + msg.getGuild().getMembers().size());
+                Long spaceId = Long.parseLong(msg.getContentRaw().split(":")[1]);
+                loadSpaceMemberPort.loadSpaceMemberBySpaceId(spaceId).stream().forEach(spaceMember -> {
+                    msg.getChannel().sendMessage(
+                            "\n" + spaceMember.getNickname() + ":" + spaceMember.getId() + ":Manager:" + spaceMember.isManager()).queue();
 
-                    });
-                    return;
-                }
+                });
+                return;
+            }
 
 
                 if (msg.getContentRaw().equals("!threadping")) {
@@ -182,6 +182,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                 }
 
 
+
             if(msg.getContentRaw().startsWith("!edit:")){
                 String[] commands = msg.getContentRaw().split(":");
                 Long msgId = Long.parseLong(commands[1]);
@@ -196,6 +197,14 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             return;
         }
 
+
+
+                if(msg.getContentRaw().startsWith("!edit:")){
+                    String[] commands = msg.getContentRaw().split(":");
+                    Long msgId = Long.parseLong(commands[1]);
+                    event.getChannel().editMessageById(msgId,"this message edit").queue();
+                    //Todo apply WebHook to edit webHook Message
+                }
 
 
                 if (msg.getContentRaw().startsWith("!comment:")) {

@@ -34,7 +34,7 @@ public class DiscordPayMessage {
         String BankInfo = Bank+"  "+accountNumber;
         String content="";
         if(this.payType==PayType.EQUAL_SPLIT){
-            content +="총 금액 " +total.toString()
+            content +="총 금액 " +total.getAmountInInteger()
                     + "\n";
             String mentionSet=targetMembers.keySet().stream()
                     .map(this::asMention)
@@ -45,7 +45,7 @@ public class DiscordPayMessage {
             content +="총 금액 " +total.toString()
                     + "\n";
             String mentionSet=targetMembers.entrySet().stream()
-                    .map(entry->asMention(entry.getKey())+":"+entry.getValue().toString()+"원")
+                    .map(entry->asMention(entry.getKey())+":"+entry.getValue().getAmountInInteger()+"원")
                     .collect(Collectors.joining("\n"));
             content+=mentionSet;
         }
@@ -61,6 +61,7 @@ public class DiscordPayMessage {
                 .userName(this.creator.getNickname())
                 .threadName(this.payTitle)
                 .contentMessage(content)
+                .startMessage(this.payTitle)
                 .build();
     }
 

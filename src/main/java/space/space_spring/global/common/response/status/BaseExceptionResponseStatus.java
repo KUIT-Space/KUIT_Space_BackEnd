@@ -159,6 +159,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_CREATOR_MISMATCH(12012, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
 
 
+    NOTICE_NOT_FOUND(11020, HttpStatus.NOT_FOUND, "공지사항 게시판을 찾을 수 없습니다."),
 
     /**
      * 13000 : Event 오류

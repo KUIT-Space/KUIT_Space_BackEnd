@@ -11,6 +11,7 @@ import space.space_spring.domain.discord.application.port.in.discord.MessageInpu
 import space.space_spring.domain.post.application.port.in.Tag.LoadTagUseCase;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
+import space.space_spring.domain.post.application.port.in.createPost.CreatePostFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
 import space.space_spring.domain.post.application.port.out.CreatePostPort;
 import space.space_spring.domain.post.application.service.CreateCommentService;
@@ -57,7 +58,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
         }
 
         createPostUseCase.createPostFromDiscord(
-                CreatePostCommand.builder()
+                CreatePostFromDiscordCommand.builder()
                         .attachments(List.of())
                         .title(command.getTitle())
                         .spaceId(spaceId)

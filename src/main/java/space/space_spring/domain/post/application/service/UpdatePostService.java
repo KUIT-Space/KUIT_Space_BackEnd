@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostCommand;
+import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
@@ -20,6 +21,7 @@ import space.space_spring.global.validator.AllowedImageFileExtensions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -99,12 +101,27 @@ public class UpdatePostService implements UpdatePostUseCase {
         }
     }
 
-    @Override
     @Transactional
-    public void updatePostFromDiscord(UpdatePostCommand command, Long discordId) {
-        /**
-         * TODO : 디스코드에서 게시글 수정 로직
-         */
+    @Override
+    public void updatePostFromDiscord(UpdatePostFromDiscordCommand command) {
+        // 1. discordId 로 수정할 post 찾기
+        Optional<Post> optionalPost = loadPostPort.loadByDiscordId(command.getDiscordId());
+        if (!optionalPost.isPresent()) {
+            throw new CustomException(POST_NOT_FOUND);
+        }
+
+        // 2. post update
+        Post post = optionalPost.get();
+        post.updateTitle(command.getNewTitle());
+        post.updateContent(command.getNewContent());
+
+        // 3. 게시글에 달린 첨부파일 update
+        // -> 이거 가능한건지???
+        // TODO 로 남겨놓겠습니다
+
+        // 4. db에 post 변경사항 반영
+        updatePostPort.updatePost(post);
+
     }
 
     private List<String> updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {

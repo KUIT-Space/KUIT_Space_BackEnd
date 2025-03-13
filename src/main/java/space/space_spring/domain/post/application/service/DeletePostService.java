@@ -3,6 +3,8 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.discord.application.port.in.deletePost.DeletePostInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.deletePost.DeletePostInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.deletePost.DeletePostCommand;
 import space.space_spring.domain.post.application.port.in.deletePost.DeletePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
@@ -13,6 +15,7 @@ import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.UNAUTHORIZED_USER;
@@ -28,6 +31,7 @@ public class DeletePostService implements DeletePostUseCase {
     private final DeletePostPort deletePostPort;
     private final DeleteCommentPort deleteCommentPort;
     private final DeleteAttachmentPort deleteAttachmentPort;
+    private final DeletePostInDiscordUseCase deletePostInDiscordUseCase;
 
     @Override
     @Transactional
@@ -47,15 +51,22 @@ public class DeletePostService implements DeletePostUseCase {
         // 4. validate
         validate(board, post, command);
 
-        // 5. 첨부파일 삭제
+        // 5. 디스코드에서 해당 게시글 & 모든 댓글들 삭제
+        deletePostInDiscordUseCase.deletePost(DeletePostInDiscordCommand.builder()
+                .discordIdOfBoard(board.getDiscordId())
+                .discordIdOfPost(post.getDiscordId())
+                .discordIdOfComments(comments.stream().map(Comment::getDiscordId).toList())
+                .build());
+
+        // 6. 첨부파일 삭제
         deleteAttachmentPort.deleteAllAttachments(attachments);
 
-        // 6. 댓글 삭제
+        // 7. 댓글 삭제
         if (!comments.isEmpty()) {
             deleteCommentPort.deleteAllComments(comments);
         }
 
-        // 7. 게시글 삭제
+        // 8. 게시글 삭제
         deletePostPort.deletePost(command.getPostId());
     }
 

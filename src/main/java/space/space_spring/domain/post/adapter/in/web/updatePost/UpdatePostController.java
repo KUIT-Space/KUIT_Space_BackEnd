@@ -50,6 +50,7 @@ public class UpdatePostController {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .attachments(request.getAttachments())
+                .tagIds(request.getTagIds())
                 .build();
 
         updatePostUseCase.updatePostFromWeb(command);

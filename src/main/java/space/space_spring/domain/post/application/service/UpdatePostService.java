@@ -73,6 +73,10 @@ public class UpdatePostService implements UpdatePostUseCase {
         ));
         createAttachmentPort.createAttachments(newAttachments);
 
+        // tag 수정
+        updatePostTagPort.updatePostTag(post.getId(), command.getTagIds());
+        List<Tag> tags = loadTagPort.loadById(command.getTagIds());
+
         // 6. TODO:디스코드로 게시글 수정 정보 전송
         List<String> newAttachmentUrls = new ArrayList<>();
         for (Attachment attachment : newAttachments) {
@@ -85,6 +89,7 @@ public class UpdatePostService implements UpdatePostUseCase {
                         .newTitle(command.getTitle())
                         .newContent(command.getContent())
                         .newAttachmentUrls(newAttachmentUrls)
+                        .newDiscordIdOfTags(tags.stream().map(Tag::getDiscordId).toList())
                         .build());
 
         // 7. 게시글 update

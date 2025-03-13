@@ -26,4 +26,7 @@ public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
 
     @Nullable
     private List<MultipartFile> attachments = new ArrayList<>();
+
+    @Nullable
+    private List<Long> tagIds = new ArrayList<>();
 }

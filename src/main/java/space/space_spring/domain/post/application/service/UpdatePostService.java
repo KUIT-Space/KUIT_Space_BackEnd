@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordUseCase;
+import space.space_spring.domain.post.application.port.in.createPost.AttachmentInDiscordCommand;
 import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostAttachmentCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostCommand;
@@ -18,6 +21,7 @@ import space.space_spring.global.validator.AllowedDocumentFileExtensions;
 import space.space_spring.global.validator.AllowedImageFileExtensions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,6 +42,7 @@ public class UpdatePostService implements UpdatePostUseCase {
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreateAttachmentPort createAttachmentPort;
     private final UpdatePostPort updatePostPort;
+    private final UpdatePostInDiscordUseCase updatePostInDiscordUseCase;
 
     @Override
     @Transactional
@@ -58,12 +63,20 @@ public class UpdatePostService implements UpdatePostUseCase {
         validate(board, post, spaceMember, command);
 
         // 5. 이미지 수정
-        updateAttachments(attachments, command);
+        List<String> newAttachmentUrls = updateAttachments(attachments, command);
 
         // 6. TODO:디스코드로 게시글 수정 정보 전송
+        updatePostInDiscordUseCase.updateMessageInDiscord(UpdatePostInDiscordCommand.builder()
+                        .discordIdOfBoard(board.getDiscordId())
+                        .discordIdOfPost(post.getDiscordId())
+                        .newTitle(command.getTitle())
+                        .newContent(command.getContent())
+                        .newAttachmentUrls(newAttachmentUrls)
+                        .build());
 
         // 7. 게시글 update
-        post.updatePost(command.getTitle(), command.getContent(), command.getIsAnonymous());
+        post.updateTitle(command.getTitle());
+        post.updateContent(command.getContent());
         updatePostPort.updatePost(post);
     }
 
@@ -78,18 +91,13 @@ public class UpdatePostService implements UpdatePostUseCase {
             throw new CustomException(POST_IS_NOT_IN_BOARD);
         }
 
-        // 3. 질문 게시판이 아닌 게시판의 익명 여부가 FALSE인지
-        if (board.getBoardType() != BoardType.QUESTION && command.getIsAnonymous()) {
-            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
-        }
-
-        // 4. 공지사항, 기수별 공지사항의 작성자가 운영진인지
+        // 3. 공지사항, 기수별 공지사항의 작성자가 운영진인지
         if ((board.getBoardType() == BoardType.NOTICE || board.getBoardType() == BoardType.SEASON_NOTICE)
                 && !spaceMember.isManager()) {
             throw new CustomException(UNAUTHORIZED_USER);
         }
 
-        // 5. 게시글 작성자가 본인이 맞는지
+        // 4. 게시글 작성자가 본인이 맞는지
         if (!post.isPostCreator(command.getPostCreatorId())) {
             throw new CustomException(UNAUTHORIZED_USER);
         }
@@ -103,11 +111,13 @@ public class UpdatePostService implements UpdatePostUseCase {
          */
     }
 
-    private void updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {
+    private List<String> updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {
         // 1. 기존 첨부파일 삭제
         deleteAttachmentPort.deleteAllAttachments(existingAttachments);
 
         // 2. 새로운 첨부파일 업로드
+        List<String> newAttachmentUrls = new ArrayList<>();
+
         if (!command.getAttachments().isEmpty()) {
             Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachments().stream()
                     .collect(Collectors.groupingBy(file -> {
@@ -122,6 +132,9 @@ public class UpdatePostService implements UpdatePostUseCase {
 
             // S3에 업로드
             Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
+            for (AttachmentType type : attachmentUrlsMap.keySet()) {
+                newAttachmentUrls.addAll(attachmentUrlsMap.get(type));
+            }
 
             // Attachment 도메인 엔티티 생성 후 db에 저장
             List<Attachment> newAttachments = new ArrayList<>();
@@ -130,6 +143,8 @@ public class UpdatePostService implements UpdatePostUseCase {
             ));
             createAttachmentPort.createAttachments(newAttachments);
         }
+
+        return newAttachmentUrls;
     }
 
     // MultipartFile이 지원하는 이미지 파일 형식인지 검증

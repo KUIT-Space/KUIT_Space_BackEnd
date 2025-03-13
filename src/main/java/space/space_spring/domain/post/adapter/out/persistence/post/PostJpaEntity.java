@@ -42,8 +42,7 @@ public class PostJpaEntity {
         return new PostJpaEntity(postBase, title, isAnonymous);
     }
 
-    public void updatePost(String title, boolean isAnonymous) {
+    public void updateTitle(String title) {
         this.title = title;
-        this.isAnonymous = isAnonymous;
     }
 }

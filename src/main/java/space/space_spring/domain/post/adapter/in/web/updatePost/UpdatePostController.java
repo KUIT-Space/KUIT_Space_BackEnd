@@ -50,7 +50,6 @@ public class UpdatePostController {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .attachments(request.getAttachments())
-                .isAnonymous(request.getIsAnonymous())
                 .build();
 
         updatePostUseCase.updatePostFromWeb(command);

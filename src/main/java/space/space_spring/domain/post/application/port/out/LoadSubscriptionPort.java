@@ -11,4 +11,6 @@ public interface LoadSubscriptionPort {
     Optional<Subscription> loadByBoardId(Long boardId);
     // 사용자가 구독한 게시판 ID 목록 조회
     List<Long> loadSubscribedBoardIds(Long spaceMemberId);
+
+    List<Subscription> loadBySpaceMember(Long spaceMemberId);
 }

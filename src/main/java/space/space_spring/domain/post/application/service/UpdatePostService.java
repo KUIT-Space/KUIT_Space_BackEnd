@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostAttachmentCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostCommand;
+import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
@@ -20,6 +21,7 @@ import space.space_spring.global.validator.AllowedImageFileExtensions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -38,6 +40,7 @@ public class UpdatePostService implements UpdatePostUseCase {
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreateAttachmentPort createAttachmentPort;
     private final UpdatePostPort updatePostPort;
+    private final LoadPostBasePort loadPostBasePort;
 
     @Override
     @Transactional
@@ -97,10 +100,27 @@ public class UpdatePostService implements UpdatePostUseCase {
 
     @Override
     @Transactional
-    public void updatePostFromDiscord(UpdatePostCommand command, Long discordId) {
+    public void updatePostFromDiscord(UpdatePostFromDiscordCommand command) {
         /**
          * TODO : 디스코드에서 게시글 수정 로직
          */
+
+
+        Optional<Long> postId =loadPostBasePort.loadByDiscordId(command.getPostDiscordId());
+        if(postId.isEmpty()){
+            /*
+             * 해당하는 디스코드 Id가 없는 경우도 고려해야합니다.
+             * */
+            return;
+        }
+        Post post=loadPostPort.loadById(postId.get());
+        post.updatePost(command.getTitle(), command.getContent(), command.getIsAnonymous());
+        updatePostPort.updatePost(post);
+
+        //Todo Attachment 수정
+
+        //Todo Tag 수정
+
     }
 
     private void updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {

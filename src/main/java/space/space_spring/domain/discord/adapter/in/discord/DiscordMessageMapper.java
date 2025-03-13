@@ -4,10 +4,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
+import space.space_spring.domain.post.domain.AttachmentType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -70,6 +75,21 @@ public class DiscordMessageMapper {
         return input.split(separator)[0];
     }
 
+    public static Map<String, AttachmentType> getAttachments(Message message){
+        if(message.getAttachments()==null){
+            return Map.of();
+        }
+        Map<String,AttachmentType> attachments = new HashMap<>();
+        message.getAttachments().stream().forEach(att->{
+            attachments.put(att.getUrl(),getAttachmentType(att.getContentType()));
+        });
+        return attachments;
+    }
 
-
+    public static AttachmentType getAttachmentType(String type){
+        if(type.contains("image")){
+            return AttachmentType.IMAGE;
+        }
+        return AttachmentType.FILE;
+    }
 }

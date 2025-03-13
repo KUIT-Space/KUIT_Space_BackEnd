@@ -22,6 +22,8 @@ public class UpdatePostFromDiscordCommand {
      */
     private Map<AttachmentType, List<String>> newAttachmentUrlMap;        // 수정한 첨부파일들
 
+    private List<Long> discordIdOfTag;      // 수정한 post의 tag의 discordId 값들 -> 없는 경우 빈 리스트로 주십셔
+
     @Builder
     public UpdatePostFromDiscordCommand(Long discordId, String newTitle, Content newContent, Map<AttachmentType, List<String>> newAttachmentUrlMap) {
         this.discordId = discordId;

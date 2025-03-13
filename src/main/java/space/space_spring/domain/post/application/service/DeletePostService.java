@@ -15,7 +15,6 @@ import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.UNAUTHORIZED_USER;
@@ -52,7 +51,7 @@ public class DeletePostService implements DeletePostUseCase {
         validate(board, post, command);
 
         // 5. 디스코드에서 해당 게시글 & 모든 댓글들 삭제
-        deletePostInDiscordUseCase.deletePost(DeletePostInDiscordCommand.builder()
+        deletePostInDiscordUseCase.deletePostInDiscord(DeletePostInDiscordCommand.builder()
                 .discordIdOfBoard(board.getDiscordId())
                 .discordIdOfPost(post.getDiscordId())
                 .discordIdOfComments(comments.stream().map(Comment::getDiscordId).toList())

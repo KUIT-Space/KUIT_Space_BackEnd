@@ -7,9 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordUseCase;
-import space.space_spring.domain.post.application.port.in.createPost.AttachmentInDiscordCommand;
-import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
-import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostAttachmentCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
@@ -21,7 +18,6 @@ import space.space_spring.global.validator.AllowedDocumentFileExtensions;
 import space.space_spring.global.validator.AllowedImageFileExtensions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,7 +62,7 @@ public class UpdatePostService implements UpdatePostUseCase {
         List<String> newAttachmentUrls = updateAttachments(attachments, command);
 
         // 6. TODO:디스코드로 게시글 수정 정보 전송
-        updatePostInDiscordUseCase.updateMessageInDiscord(UpdatePostInDiscordCommand.builder()
+        updatePostInDiscordUseCase.updatePostInDiscord(UpdatePostInDiscordCommand.builder()
                         .discordIdOfBoard(board.getDiscordId())
                         .discordIdOfPost(post.getDiscordId())
                         .newTitle(command.getTitle())

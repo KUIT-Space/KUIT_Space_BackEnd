@@ -3,6 +3,9 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordUseCase;
+import space.space_spring.domain.discord.application.service.UpdatePostInDiscordService;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
@@ -21,6 +24,7 @@ public class UpdateCommentService implements UpdateCommentUseCase {
     private final LoadPostPort loadPostPort;
     private final LoadCommentPort loadCommentPort;
     private final UpdateCommentPort updateCommentPort;
+    private final UpdateCommentInDiscordUseCase updateCommentInDiscordUseCase;
 
     @Override
     @Transactional
@@ -33,11 +37,20 @@ public class UpdateCommentService implements UpdateCommentUseCase {
         // 2. validation
         validate(board, post, comment, command);
 
+        // 3. 디스코드로 수정된 댓글 정보 보내기
+        updateCommentInDiscordUseCase.updateCommentInDiscord(UpdateCommentInDiscordCommand.builder()
+                .discordIdOfBoard(board.getDiscordId())
+                .discordIdOfPost(post.getDiscordId())
+                .discordIdOfComment(comment.getDiscordId())
+                .build());
+
         // 3. 댓글 update
         comment.changeContent(command.getContent());
         comment.changeAnonymous(command.getIsAnonymous());
         updateCommentPort.updateComment(comment);
     }
+
+    @Transactional
     @Override
     public void updateCommentFromDiscord(UpdateCommentFromDiscordCommand command){
 

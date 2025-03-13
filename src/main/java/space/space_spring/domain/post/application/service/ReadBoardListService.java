@@ -14,6 +14,7 @@ import space.space_spring.domain.post.domain.Tag;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -48,6 +49,16 @@ public class ReadBoardListService implements ReadBoardListUseCase {
         List<ReadBoardInfoCommand> boardInfoCommands = boardList.stream()
                 .flatMap(board -> {
                     List<Tag> tags = tagMap.getOrDefault(board.getId(), Collections.emptyList());
+                    if (tags.isEmpty()) {
+                        // 태그가 없는 경우 응답 생성
+                        return Stream.of(ReadBoardInfoCommand.of(
+                                board.getId(),
+                                board.getBoardName(),
+                                null,
+                                null,
+                                subscribedBoardIds.contains(board.getId())
+                        ));
+                    }
                     return tags.stream()
                             .map(tag -> ReadBoardInfoCommand.of(
                                     board.getId(),

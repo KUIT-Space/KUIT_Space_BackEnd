@@ -4,13 +4,17 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
+import space.space_spring.domain.post.domain.AttachmentType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -53,7 +57,9 @@ public class DiscordMessageMapper {
 
         }
 
+        Map<String, AttachmentType> attachments = new HashMap<>();
 
+        event.getMessage().getAttachments().forEach(attachment -> attachments.put(attachment.getUrl(),getAttachmentType(attachment.getContentType())));
 
 
         return MessageInputFromDiscordCommand.builder()
@@ -65,9 +71,11 @@ public class DiscordMessageMapper {
                 .title(title)
                 .tagDiscordIds(tagDiscordIds)
                 .content(content)
+                .attachments(attachments)
                 .build();
 
     }
+
 
     public static String removeFirstRow(String input,String separator) {
         int index = input.indexOf(separator); // 첫 번째 "\n"의 위치 찾기
@@ -77,6 +85,11 @@ public class DiscordMessageMapper {
         return input.split(separator)[0];
     }
 
-
+    public static AttachmentType getAttachmentType(String mediaName){
+        if(mediaName.contains("image")){
+            return AttachmentType.IMAGE;
+        }
+        return AttachmentType.FILE;
+    }
 
 }

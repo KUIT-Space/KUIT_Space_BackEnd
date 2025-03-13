@@ -30,7 +30,6 @@ import java.util.List;
 @Slf4j
 public class MessageInputFromDiscordService implements InputMessageFromDiscordUseCase {
 
-    private final CreatePostPort createPostPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final LoadSpaceUseCase loadSpaceUseCase;
     private final CreateCommentService createCommentService;
@@ -59,7 +58,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
 
         createPostUseCase.createPostFromDiscord(
                 CreatePostFromDiscordCommand.builder()
-                        .attachments(List.of())
+                        .attachments(command.getAttachments())
                         .title(command.getTitle())
                         .spaceId(spaceId)
                         .content(command.getContentNotBlank())

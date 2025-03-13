@@ -10,7 +10,7 @@ import space.space_spring.global.common.entity.BaseInfo;
 
 import java.util.List;
 import java.util.Map;
-@Builder
+
 @Getter
 public class CreatePostFromDiscordCommand {
 
@@ -30,7 +30,7 @@ public class CreatePostFromDiscordCommand {
     private Boolean isAnonymous;
 
     @Builder
-    public CreatePostFromDiscordCommand(Long spaceId, Long boardId, List<Long> tagIds, Long postCreatorId, String title, String content, List<MultipartFile> attachments, Boolean isAnonymous) {
+    public CreatePostFromDiscordCommand(Long spaceId, Long boardId, List<Long> tagIds, Long postCreatorId, String title, String content, Map<String, AttachmentType> attachments, Boolean isAnonymous) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.tagIds = tagIds;

@@ -4,6 +4,8 @@ import jdk.jfr.BooleanFlag;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class MessageInputFromDiscordCommand {
@@ -12,7 +14,7 @@ public class MessageInputFromDiscordCommand {
     private String title;
     private String content;
 
-    //private List<Tag> tag;
+    private List<Long> tagDiscordIds;
     private Long creatorDiscordId;
     private boolean isComment;
     private Long spaceDiscordId;

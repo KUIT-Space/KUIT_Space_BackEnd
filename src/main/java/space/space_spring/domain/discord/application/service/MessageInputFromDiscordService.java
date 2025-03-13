@@ -32,6 +32,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
     private final LoadSpaceUseCase loadSpaceUseCase;
     private final CreateCommentService createCommentService;
     private final CreatePostUseCase createPostUseCase;
+    
     @Override
     @Transactional
     public void putPost(MessageInputFromDiscordCommand command){

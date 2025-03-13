@@ -102,7 +102,6 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
         // jpa entity 필드 속성 update
         postCommentJpaEntity.getPostBase().changeContent(comment.getContent());
-        postCommentJpaEntity.changeAnonymous(comment.getIsAnonymous());
     }
 
     /**

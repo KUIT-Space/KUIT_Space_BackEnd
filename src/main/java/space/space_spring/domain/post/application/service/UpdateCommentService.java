@@ -46,7 +46,6 @@ public class UpdateCommentService implements UpdateCommentUseCase {
 
         // 3. 댓글 update
         comment.changeContent(command.getContent());
-        comment.changeAnonymous(command.getIsAnonymous());
         updateCommentPort.updateComment(comment);
     }
 
@@ -63,10 +62,6 @@ public class UpdateCommentService implements UpdateCommentUseCase {
 
         if (!post.isInBoard(board.getId())) {       // post가 보드에 속하는지 검증
             throw new CustomException(POST_IS_NOT_IN_BOARD);
-        }
-
-        if (board.getBoardType() != BoardType.QUESTION && command.getIsAnonymous()) {      // 질문 게시글이 아닌데 댓글 작성자가 익명이라면
-            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
         }
 
         if (!comment.isCommentCreator(command.getCommentCreatorId())) {     // 댓글 작성자가 본인이 맞는지

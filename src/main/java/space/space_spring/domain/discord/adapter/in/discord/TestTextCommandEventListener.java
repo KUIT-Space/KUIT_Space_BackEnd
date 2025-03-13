@@ -157,13 +157,23 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     return;
 
                 }
+                if(msg.getContentRaw().equals("!getWebHook")){
+//                    Webhook webHook = msg.getChannel().asTextChannel().retrieveWebhooks().complete().stream().filter(webhook->{
+//                                return webhook.getName().equals("Space_WebHook");
+//                            })
+//                            //.map(webhook -> webhook.getUrl())
+//                            .findFirst().get();
+                    msg.reply(webHookPort.getOrCreate(msg.getChannelIdLong())).queue();
+
+                }
+
 
                 if (msg.getContentRaw().equals("!send")) {
                     CreateDiscordWebHookMessageCommand command = CreateDiscordWebHookMessageCommand.builder()
                             .title("message")
                             .content("content")
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
-                            .webHookUrl(webHookPort.getOrCreate(event.getChannel().getIdLong()))
+                            .webHookUrl("https://discord.com/api/v10/webhooks/1349376360942010369")
                             .guildDiscordId(event.getGuild().getIdLong())
                             .channelDiscordId(event.getChannel().getIdLong())
                             .name(event.getMember().getEffectiveName())

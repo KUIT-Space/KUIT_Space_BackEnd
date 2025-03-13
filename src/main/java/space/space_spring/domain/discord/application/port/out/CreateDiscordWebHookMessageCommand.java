@@ -36,7 +36,7 @@ public class CreateDiscordWebHookMessageCommand {
         return title+"\n"+content+"\n\n"+getAttachmentUrlInContent();
     }
     private String getAttachmentUrlInContent(){
-        if(this.attachmentsUrl.isEmpty()||this.attachmentsUrl==null){
+        if(this.attachmentsUrl==null||this.attachmentsUrl.isEmpty()){
             return " ";
         }
         return attachmentsUrl.stream().collect(Collectors.joining("\n"));

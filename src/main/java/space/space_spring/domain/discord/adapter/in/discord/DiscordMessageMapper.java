@@ -9,6 +9,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -20,6 +23,7 @@ public class DiscordMessageMapper {
         String content="";
         String rowContent =event.getMessage().getContentRaw();
         boolean isComment=false;
+        List<Long> tagDiscordIds= new ArrayList();
         ChannelType channelType=event.getChannelType();
         if(event.isFromThread()){
 
@@ -28,7 +32,9 @@ public class DiscordMessageMapper {
                 title=event.getChannel().getName();
                 content=rowContent;
                 isComment=false;
-
+                tagDiscordIds.addAll( event.getChannel().asThreadChannel().getAppliedTags().stream().map(
+                        tag->{return tag.getIdLong();}
+                ).toList());
 
             }else{
                 // Thread 에 달린 댓글
@@ -57,6 +63,7 @@ public class DiscordMessageMapper {
                 .creatorDiscordId(event.getMember().getIdLong())
                 .spaceDiscordId(event.getGuild().getIdLong())
                 .title(title)
+                .tagDiscordIds(tagDiscordIds)
                 .content(content)
                 .build();
 

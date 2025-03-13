@@ -15,4 +15,6 @@ public interface SpringDataTagRepository extends JpaRepository<TagJpaEntity, Lon
 
     @Query("SELECT t FROM TagJpaEntity t WHERE t.board.id IN :boardIds")
     List<TagJpaEntity> findTagsByBoardIds(@Param("boardIds") List<Long> boardIds);
+
+    List<TagJpaEntity> findByDiscordIdInAndStatus(List<Long> discordIds, BaseStatusType status);
 }

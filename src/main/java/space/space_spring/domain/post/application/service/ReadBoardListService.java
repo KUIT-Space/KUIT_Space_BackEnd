@@ -42,10 +42,24 @@ public class ReadBoardListService implements ReadBoardListUseCase {
         Map<Long, List<Tag>> tagMap = tagList.stream()
                 .collect(Collectors.groupingBy(Tag::getBoardId));
 
-        // 4. 사용자가 구독한 게시판 id 조회
-        Set<Long> subscribedBoardIds = new HashSet<>(loadSubscriptionPort.loadSubscribedBoardIds(spaceMemberId));
+        // 4. 사용자가 구독한 게시판+태그 조회
+        List<Map.Entry<Long, Long>> subscribedBoardTagPairs = loadSubscriptionPort.loadSubscribedBoardTagPairs(spaceMemberId);
 
-        // 5. 게시판 목록 리스트 생성
+        // 5. 구독한 게시판과 태그를 구분하여 저장
+        Set<Long> subscribedBoardIds = new HashSet<>();
+        Set<Long> subscribedTagIds = new HashSet<>();
+
+        for(Map.Entry<Long, Long> entry : subscribedBoardTagPairs) {
+            Long boardId = entry.getKey();
+            Long tagId = entry.getValue();
+            if(tagId == null) {
+                subscribedBoardIds.add(boardId);
+            } else {
+                subscribedTagIds.add(tagId);
+            }
+        }
+
+        // 6. 게시판 목록 리스트 생성
         List<ReadBoardInfoCommand> boardInfoCommands = boardList.stream()
                 .flatMap(board -> {
                     List<Tag> tags = tagMap.getOrDefault(board.getId(), Collections.emptyList());
@@ -65,7 +79,7 @@ public class ReadBoardListService implements ReadBoardListUseCase {
                                     board.getBoardName(),
                                     tag.getId(),
                                     tag.getTagName(),
-                                    subscribedBoardIds.contains(board.getId())
+                                    subscribedTagIds.contains(tag.getId())
                             ));
                 }).toList();
 

@@ -4,5 +4,5 @@ public interface CreatePostUseCase {
 
     Long createPostFromWeb(CreatePostCommand command);
 
-    Long createPostFromDiscord(CreatePostCommand command, Long discordId);
+    Long createPostFromDiscord(CreatePostFromDiscordCommand command, Long discordId);
 }

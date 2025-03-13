@@ -11,4 +11,6 @@ public interface LoadTagPort {
 
     List<Tag> loadTagsByBoardIds(List<Long> boardIds);
 
+    List<Tag> loadTagsByDiscordIds(List<Long> discordIds);
+
 }

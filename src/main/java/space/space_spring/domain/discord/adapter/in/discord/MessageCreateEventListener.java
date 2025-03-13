@@ -3,6 +3,8 @@ package space.space_spring.domain.discord.adapter.in.discord;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -30,12 +32,13 @@ public class MessageCreateEventListener extends ListenerAdapter {
     private final CreateBoardUseCase createBoardUseCase;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event){
-
         if(event.getAuthor().isBot()){
             //log.info("bot message. ignore");
             return;
         }
-
+        if(event.getMessage().getType().equals(MessageType.THREAD_STARTER_MESSAGE)){
+            return;
+        }
         MessageChannelUnion channel=event.getChannel();
 
         if(!isAvailableChannelType(channel))
@@ -55,9 +58,20 @@ public class MessageCreateEventListener extends ListenerAdapter {
         }
         MessageInputFromDiscordCommand command = discordMessageMapper.mapToCommand(event,boardId.get());
         //log.info(command.toString());
-        inputMessageFromDiscordUseCase.putPost(command);
+        if(!event.isFromThread()){
+            //input from TEXT Channel
+            inputMessageFromDiscordUseCase.putPost(command);
+            return;
+        }
+
+        if(isThreadStartMessage(event.getMessage())){
+            //input from FORUM Channel
+            inputMessageFromDiscordUseCase.putPost(command);
+            return;
+        }
+
         inputMessageFromDiscordUseCase.putComment(command,boardId.get());
-        //ToDo 채널 분류 후 useCase 호출
+
 
     }
 
@@ -70,6 +84,11 @@ public class MessageCreateEventListener extends ListenerAdapter {
             default:
                 return false;
         }
+    }
+
+
+    private boolean isThreadStartMessage(Message message){
+        return message.getChannel().getId().equals(message.getId());
     }
 
 

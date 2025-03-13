@@ -3,6 +3,10 @@ package space.space_spring.domain.discord.application.port.in.discord;
 import jdk.jfr.BooleanFlag;
 import lombok.Builder;
 import lombok.Getter;
+import space.space_spring.domain.post.domain.AttachmentType;
+
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -12,11 +16,12 @@ public class MessageInputFromDiscordCommand {
     private String title;
     private String content;
 
-    //private List<Tag> tag;
+    private List<Long> tagDiscordIds;
     private Long creatorDiscordId;
     private boolean isComment;
     private Long spaceDiscordId;
     private Long MessageDiscordId;
+    private Map<String, AttachmentType> attachments;
 
     @Override
     public String toString(){

@@ -12,6 +12,7 @@ import space.space_spring.domain.post.application.port.out.CreateTagPort;
 import space.space_spring.domain.post.application.port.out.LoadTagPort;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Tag;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
@@ -64,5 +65,10 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
     public List<Tag> loadTagsByBoardIds(List<Long> boardIds) {
         return springDataTagRepository.findTagsByBoardIds(boardIds).stream().map(tagMapper::toDomainEntity).toList();
 
+    }
+
+    @Override
+    public List<Tag> loadTagsByDiscordIds(List<Long> tagDiscordIds){
+        return springDataTagRepository.findByDiscordIdInAndStatus(tagDiscordIds, ACTIVE).stream().map(tagMapper::toDomainEntity).toList();
     }
 }

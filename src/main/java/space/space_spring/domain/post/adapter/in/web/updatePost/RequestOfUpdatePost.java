@@ -25,8 +25,10 @@ public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
     private String content;
 
     @Nullable
-    private List<MultipartFile> attachments = new ArrayList<>();
+    private List<MultipartFile> attachments;
+
 
     @NotNull(message = "게시글의 익명/비익명 여부는 공백일 수 없습니다.")
     private Boolean isAnonymous; // 질문일 경우만 사용
+
 }

@@ -11,6 +11,6 @@ public interface LoadAttachmentPort {
 
     List<String> loadAttachmentUrlByTargetId(Long targetId);
 
-    List<Attachment> loadById(Long postId);
+    List<Attachment> loadByPostId(Long postId);
 
 }

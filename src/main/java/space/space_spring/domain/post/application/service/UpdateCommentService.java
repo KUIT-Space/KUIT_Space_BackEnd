@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordUseCase;
-import space.space_spring.domain.discord.application.service.UpdatePostInDiscordService;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
@@ -51,8 +50,17 @@ public class UpdateCommentService implements UpdateCommentUseCase {
 
     @Transactional
     @Override
-    public void updateCommentFromDiscord(UpdateCommentFromDiscordCommand command){
+    public void updateCommentFromDiscord(UpdateCommentFromDiscordCommand command) {
+        /**
+         * Comment 도메인 엔티티를 조회하지 말고, 그냥 바로 update port로 보내는게 더 좋은건가??
+         * -> 어차피 db 한번 찔러서 CommentJpaEntity 만드는건 똑같긴하다
+         */
+        // 1. discordId로 수정할 comment 찾기
+        Comment comment = loadCommentPort.loadByDiscordId(command.getDiscordMessageId());
 
+        // 2. comment update
+        comment.changeContent(command.getContent());
+        updateCommentPort.updateComment(comment);
     }
 
     private void validate(Board board, Post post, Comment comment, UpdateCommentCommand command) {

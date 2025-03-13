@@ -201,6 +201,11 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                 }).findFirst().get().editMessageById(msgId,"edit success").queue();
                 return;
             }
+        if(msg.getContentRaw().startsWith("!editThreadName")){
+            event.getChannel().asThreadChannel().getManager().setName("바보").queue();
+
+            return;
+        }
 
         if(msg.getContentRaw().startsWith("!pay")){
 

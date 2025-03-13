@@ -49,7 +49,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:5173/KUIT-Space-Front/", "https://localhost:5173/KUIT-Space-Front/",
                         "https://kuit-space.github.io/", "https://kuit-space-front.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
-                .exposedHeaders("location", "Authorization")
+                .exposedHeaders("location", "Authorization", "Authorization-refresh")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

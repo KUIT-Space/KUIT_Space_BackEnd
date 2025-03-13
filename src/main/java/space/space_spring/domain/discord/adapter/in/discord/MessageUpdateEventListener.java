@@ -1,36 +1,25 @@
 package space.space_spring.domain.discord.adapter.in.discord;
 
-import jakarta.validation.constraints.NotNull;
+import jdk.jfr.Registered;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
-import space.space_spring.domain.discord.application.port.in.discord.InputMessageFromDiscordUseCase;
-import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
-import space.space_spring.domain.discord.application.service.MessageInputFromDiscordService;
-import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
-import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
+import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentFromDiscordCommand;
+import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardCachePort;
-import space.space_spring.domain.post.domain.BoardType;
 
 import java.util.Optional;
-
 @Component
 @RequiredArgsConstructor
-@Slf4j
-public class MessageCreateEventListener extends ListenerAdapter {
-    private final LoadBoardCachePort loadBoardCachePort;
+public class MessageUpdateEventListener extends ListenerAdapter {
     private final DiscordUtil discordUtil;
-    private final InputMessageFromDiscordUseCase inputMessageFromDiscordUseCase;
-    private final DiscordMessageMapper discordMessageMapper;
-    private final CreateBoardUseCase createBoardUseCase;
+    private final LoadBoardCachePort loadBoardCachePort;
+    private final UpdateCommentUseCase updateCommentUseCase;
     @Override
-    public void onMessageReceived(@NotNull MessageReceivedEvent event){
-
+    public void onMessageUpdate(MessageUpdateEvent event){
         if(event.getAuthor().isBot()){
             //log.info("bot message. ignore");
             return;
@@ -53,12 +42,30 @@ public class MessageCreateEventListener extends ListenerAdapter {
             //log.info("not in cache. ignore");
             return;
         }
-        MessageInputFromDiscordCommand command = discordMessageMapper.mapToCommand(event,boardId.get());
-        //log.info(command.toString());
-        inputMessageFromDiscordUseCase.putPost(command);
-        inputMessageFromDiscordUseCase.putComment(command,boardId.get());
-        //ToDo 채널 분류 후 useCase 호출
 
+        if(isComment(event.getChannel())){
+            //Todo map comment update command
+            //Todo update comment UseCase call
+            UpdateCommentFromDiscordCommand command = UpdateCommentFromDiscordCommand.builder()
+                    .discordMessageId(event.getMessageIdLong())
+                    .Content(event.getMessage().getContentRaw())
+                    .build();
+            updateCommentUseCase.updateCommentFromDiscord(command);
+        }
+
+        //Todo map post update command
+        //Todo update post UseCase call
+
+
+
+
+
+
+
+    }
+
+    private boolean isComment(MessageChannelUnion channel){
+        return channel.getType().equals(ChannelType.GUILD_PUBLIC_THREAD);
     }
 
     private boolean isAvailableChannelType(MessageChannelUnion channel){
@@ -71,6 +78,4 @@ public class MessageCreateEventListener extends ListenerAdapter {
                 return false;
         }
     }
-
-
 }

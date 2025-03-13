@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentCommand;
+import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
@@ -36,6 +37,13 @@ public class UpdateCommentService implements UpdateCommentUseCase {
         comment.changeContent(command.getContent());
         comment.changeAnonymous(command.getIsAnonymous());
         updateCommentPort.updateComment(comment);
+    }
+    @Override
+    public void updateCommentFromDiscord(UpdateCommentFromDiscordCommand command){
+
+        //Todo discord에서 수정된 댓글 수정
+
+        return;
     }
 
     private void validate(Board board, Post post, Comment comment, UpdateCommentCommand command) {

@@ -192,6 +192,20 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                 return;
             }
 
+        if(msg.getContentRaw().startsWith("!pay")){
+
+            return;
+        }
+
+
+
+                if(msg.getContentRaw().startsWith("!edit:")){
+                    String[] commands = msg.getContentRaw().split(":");
+                    Long msgId = Long.parseLong(commands[1]);
+                    event.getChannel().editMessageById(msgId,"this message edit").queue();
+                    //Todo apply WebHook to edit webHook Message
+                }
+
 
 
                 if (msg.getContentRaw().startsWith("!comment:")) {

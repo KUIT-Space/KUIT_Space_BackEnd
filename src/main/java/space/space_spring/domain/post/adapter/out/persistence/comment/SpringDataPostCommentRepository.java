@@ -19,5 +19,5 @@ public interface SpringDataPostCommentRepository extends JpaRepository<PostComme
 
     Optional<List<PostCommentJpaEntity>> findAllByPostId(Long postId);
 
-    List<PostCommentJpaEntity> findByPostBaseId(Long postBaseId);
+    List<PostCommentJpaEntity> findByPostId(Long postId);
 }

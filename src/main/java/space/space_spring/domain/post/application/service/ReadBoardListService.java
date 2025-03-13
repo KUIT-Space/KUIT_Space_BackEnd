@@ -14,6 +14,8 @@ import space.space_spring.domain.post.domain.Tag;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,21 +39,49 @@ public class ReadBoardListService implements ReadBoardListUseCase {
         List<Tag> tagList = loadTagPort.loadTagsByBoardIds(boardIds);
 
         // 3. 태그를 boardId 기준으로 매핑
-        Map<Long, Tag> tagMap = tagList.stream()
-                .collect(Collectors.toMap(Tag::getBoardId, tag -> tag));
+        Map<Long, List<Tag>> tagMap = tagList.stream()
+                .collect(Collectors.groupingBy(Tag::getBoardId));
 
-        // 4. 사용자가 구독한 게시판 id 조회
-        Set<Long> subscribedBoardIds = new HashSet<>(loadSubscriptionPort.loadSubscribedBoardIds(spaceMemberId));
+        // 4. 사용자가 구독한 게시판+태그 조회
+        List<Map.Entry<Long, Long>> subscribedBoardTagPairs = loadSubscriptionPort.loadSubscribedBoardTagPairs(spaceMemberId);
 
-        // 5. 게시판 목록 리스트 생성
+        // 5. 구독한 게시판과 태그를 구분하여 저장
+        Set<Long> subscribedBoardIds = new HashSet<>();
+        Set<Long> subscribedTagIds = new HashSet<>();
+
+        for(Map.Entry<Long, Long> entry : subscribedBoardTagPairs) {
+            Long boardId = entry.getKey();
+            Long tagId = entry.getValue();
+            if(tagId == null) {
+                subscribedBoardIds.add(boardId);
+            } else {
+                subscribedTagIds.add(tagId);
+            }
+        }
+
+        // 6. 게시판 목록 리스트 생성
         List<ReadBoardInfoCommand> boardInfoCommands = boardList.stream()
-                .map(board -> ReadBoardInfoCommand.of(
-                        board.getId(),
-                        board.getBoardName(),
-                        tagMap.get(board.getId()) != null ? tagMap.get(board.getId()).getId() : null,
-                        tagMap.get(board.getId()) != null ? tagMap.get(board.getId()).getTagName() : null,
-                        subscribedBoardIds.contains(board.getId())
-                )).toList();
+                .flatMap(board -> {
+                    List<Tag> tags = tagMap.getOrDefault(board.getId(), Collections.emptyList());
+                    if (tags.isEmpty()) {
+                        // 태그가 없는 경우 응답 생성
+                        return Stream.of(ReadBoardInfoCommand.of(
+                                board.getId(),
+                                board.getBoardName(),
+                                null,
+                                null,
+                                subscribedBoardIds.contains(board.getId())
+                        ));
+                    }
+                    return tags.stream()
+                            .map(tag -> ReadBoardInfoCommand.of(
+                                    board.getId(),
+                                    board.getBoardName(),
+                                    tag.getId(),
+                                    tag.getTagName(),
+                                    subscribedTagIds.contains(tag.getId())
+                            ));
+                }).toList();
 
         return ReadBoardListCommand.of(boardInfoCommands);
     }

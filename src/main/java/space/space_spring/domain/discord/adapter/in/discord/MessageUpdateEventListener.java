@@ -1,6 +1,5 @@
 package space.space_spring.domain.discord.adapter.in.discord;
 
-import jdk.jfr.Registered;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -55,7 +54,7 @@ public class MessageUpdateEventListener extends ListenerAdapter {
             //Todo update comment UseCase call
             UpdateCommentFromDiscordCommand command = UpdateCommentFromDiscordCommand.builder()
                     .discordMessageId(event.getMessageIdLong())
-                    .Content(event.getMessage().getContentRaw())
+                    .content(event.getMessage().getContentRaw())
                     .build();
             updateCommentUseCase.updateCommentFromDiscord(command);
         }

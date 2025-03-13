@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.space_spring.domain.discord.application.port.in.deleteMessageFromDiscordUseCase.DeleteMessageUseCase;
 import space.space_spring.domain.post.application.port.in.deleteComment.DeleteCommentUseCase;
-import space.space_spring.domain.post.application.port.out.LoadCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadPostBasePort;
-import space.space_spring.domain.post.application.port.out.LoadPostPort;
-import space.space_spring.domain.post.application.service.DeleteCommentService;
 
 import java.util.Optional;
 
@@ -23,6 +20,6 @@ public class DeleteMessageFromDiscordService implements DeleteMessageUseCase {
         if (postBaseId.isEmpty()) {
             return;
         }
-        deleteCommentUseCase.deleteComment(postBaseId.get());
+        deleteCommentUseCase.deleteCommentFromDiscord(postBaseId.get());
     }
 }

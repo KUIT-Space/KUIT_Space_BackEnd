@@ -8,6 +8,7 @@ import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity
 import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
+import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
 import space.space_spring.domain.post.application.port.out.CreateCommentPort;
 import space.space_spring.domain.post.application.port.out.DeleteCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadCommentPort;
@@ -35,6 +36,7 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataPostCommentRepository postCommentRepository;
     private final SpringDataPostRepository postRepository;
+    private final SpringDataPostBaseRepository postBaseRepository;
     private final CommentMapper commentMapper;
     private final PostBaseMapper postBaseMapper;
 
@@ -63,10 +65,27 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
     @Override
     public List<Comment> loadAllComments(Long postId) {
-        List<PostCommentJpaEntity> commentJpaEntities = postCommentRepository.findByPostBaseId(postId);
-        return commentJpaEntities.stream()
-                .map(commentMapper::toDomainEntity)
-                .toList();
+        List<PostCommentJpaEntity> commentJpaEntities = postCommentRepository.findByPostId(postId);
+
+        List<Comment> comments = new ArrayList<>();
+        for (PostCommentJpaEntity postCommentJpaEntity : commentJpaEntities) {
+            if (postCommentJpaEntity.getPostBase().isActive()) {
+                comments.add(commentMapper.toDomainEntity(postCommentJpaEntity));
+            }
+        }
+
+        return comments;
+    }
+
+    @Override
+    public Comment loadByDiscordId(Long discordMessageId) {
+        PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByDiscordIdAndStatus(discordMessageId, BaseStatusType.ACTIVE)
+                .orElseThrow(() -> new CustomException(POST_BASE_NOT_FOUND));
+
+        PostCommentJpaEntity postCommentJpaEntity = postCommentRepository.findById(postBaseJpaEntity.getId())
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+        return commentMapper.toDomainEntity(postCommentJpaEntity);
     }
 
     @Override
@@ -102,7 +121,6 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
         // jpa entity 필드 속성 update
         postCommentJpaEntity.getPostBase().changeContent(comment.getContent());
-        postCommentJpaEntity.changeAnonymous(comment.getIsAnonymous());
     }
 
     /**

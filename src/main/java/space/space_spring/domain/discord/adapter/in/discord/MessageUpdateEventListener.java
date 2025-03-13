@@ -87,15 +87,15 @@ public class MessageUpdateEventListener extends ListenerAdapter {
 
     private UpdatePostFromDiscordCommand mapToUpdatePost(MessageUpdateEvent event){
         return UpdatePostFromDiscordCommand.builder()
-                .tags(getTagIdList(event))
-                .title(event.isFromThread() ?
+                .discordIdOfTag(getTagIdList(event))
+                .newTitle(event.isFromThread() ?
                         event.getChannel().asThreadChannel().getName()
                         :DiscordMessageMapper.getFirstRow(event.getMessage().getContentRaw(),"\n"))
-                .attachments(DiscordMessageMapper.getAttachments(event.getMessage()))
-
-                .postDiscordId(event.getMessageIdLong())
-                .isAnonymous(false)
-                .content(Content.of(
+                //.newAttachmentUrlMap(DiscordMessageMapper.getAttachments(event.getMessage()))
+                .discordIdOfTag(getTagIdList(event))
+                .discordId(event.getMessageIdLong())
+                //.isAnonymous(false)
+                .newContent(Content.of(
                         event.isFromThread() ?
                         event.getMessage().getContentRaw()
                         :DiscordMessageMapper.removeFirstRow(event.getMessage().getContentRaw(),"\n")

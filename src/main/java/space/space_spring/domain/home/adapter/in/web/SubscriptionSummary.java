@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SubscriptionSummary {
 
+    private Long boardId;
+
     private String boardName;
 
     private String boardTitle;

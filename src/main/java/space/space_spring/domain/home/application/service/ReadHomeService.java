@@ -77,7 +77,7 @@ public class ReadHomeService implements ReadHomeUseCase {
             Board board = loadBoardPort.loadById(subscription.getBoardId());
             List<Post> posts = loadPostPort.loadPostListByBoardId(board.getId());
             for (Post post : posts) {
-                subscriptions.add(new SubscriptionSummary(board.getBoardName(), post.getTitle()));
+                subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), post.getTitle()));
             }
         }
         result.addSubscription(subscriptions);

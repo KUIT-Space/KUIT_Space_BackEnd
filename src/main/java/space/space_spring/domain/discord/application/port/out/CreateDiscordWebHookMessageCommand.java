@@ -1,5 +1,6 @@
 package space.space_spring.domain.discord.application.port.out;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,9 +21,15 @@ public class CreateDiscordWebHookMessageCommand {
     private String content;
 
     private List<String> attachmentsUrl;
-
+    @Getter(AccessLevel.NONE)
     private List<Long> tags;
 
+    public List<Long> getTags(){
+        if(tags==null){
+            return List.of();
+        }
+        return tags;
+    }
     public String getMessageContent(){
         if(content.isBlank()||content.isEmpty()){
             return getTitleAndContent();

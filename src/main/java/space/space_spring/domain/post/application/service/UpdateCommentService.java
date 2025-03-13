@@ -54,9 +54,6 @@ public class UpdateCommentService implements UpdateCommentUseCase {
     @Override
     public void updateCommentFromDiscord(UpdateCommentFromDiscordCommand command){
 
-        //Todo discord에서 수정된 댓글 수정
-
-        return;
     }
 
     private void validate(Board board, Post post, Comment comment, UpdateCommentCommand command) {

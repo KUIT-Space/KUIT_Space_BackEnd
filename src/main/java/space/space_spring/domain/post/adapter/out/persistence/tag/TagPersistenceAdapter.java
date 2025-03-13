@@ -10,13 +10,11 @@ import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEnti
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.application.port.out.CreateTagPort;
 import space.space_spring.domain.post.application.port.out.LoadTagPort;
-import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Tag;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
-
-import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -26,12 +24,12 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
 
     private final SpringDataBoardRepository boardRepository;
-    private final SpringDataTagRepository springDataTagRepository;
+    private final SpringDataTagRepository tagRepository;
     private final TagMapper tagMapper;
 
     @Override
     public Tag loadByIdAndBoard(Long tagId, Long boardId) {
-        return springDataTagRepository.findByIdAndBoardIdAndStatus(tagId, boardId, ACTIVE).map(tagMapper::toDomainEntity)
+        return tagRepository.findByIdAndBoardIdAndStatus(tagId, boardId, ACTIVE).map(tagMapper::toDomainEntity)
                 .orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
     }
 
@@ -45,7 +43,7 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
         BoardJpaEntity boardJpaEntity = boardRepository.findById(tags.get(0).getBoardId()).orElseThrow(()-> {
             throw new CustomException(BOARD_NOT_FOUND);}
         );
-        List<TagJpaEntity> tagJpaEntities = springDataTagRepository.saveAll(tags.stream().map(tag->tagMapper.toJpaEntity(tag,boardJpaEntity)).toList());
+        List<TagJpaEntity> tagJpaEntities = tagRepository.saveAll(tags.stream().map(tag->tagMapper.toJpaEntity(tag,boardJpaEntity)).toList());
 
         return tagJpaEntities.stream().map(tagMapper::toDomainEntity).toList();
     }
@@ -62,7 +60,21 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
     }
     @Override
     public List<Tag> loadTagsByBoardIds(List<Long> boardIds) {
-        return springDataTagRepository.findTagsByBoardIds(boardIds).stream().map(tagMapper::toDomainEntity).toList();
+        return tagRepository.findTagsByBoardIds(boardIds).stream().map(tagMapper::toDomainEntity).toList();
 
+    }
+
+    @Override
+    public List<Tag> loadByDiscordId(List<Long> discordIdOfTag) {
+        List<TagJpaEntity> allByIdAndStatus = tagRepository.findAllByDiscordIdAndStatus(discordIdOfTag, ACTIVE);
+
+        return allByIdAndStatus.stream().map(tagMapper::toDomainEntity).toList();
+    }
+
+    @Override
+    public List<Tag> loadById(List<Long> tagIds) {
+        List<TagJpaEntity> allByIdAndStatus = tagRepository.findAllByIdAndStatus(tagIds, ACTIVE);
+
+        return allByIdAndStatus.stream().map(tagMapper::toDomainEntity).toList();
     }
 }

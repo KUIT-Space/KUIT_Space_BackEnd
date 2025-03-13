@@ -3,7 +3,9 @@ package space.space_spring.domain.discord.adapter.out.EditDiscordMessage;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.WebhookClient;
+import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.adapter.in.discord.DiscordUtil;
 
 import java.util.List;
 
@@ -11,12 +13,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EditDiscordMessageAdapter {
     private final JDA jda;
+    private final DiscordUtil discordUtil;
 
-
-    public void editMessage(String webHookUrl , Long messageDiscordId, String content, List<Long> tags){
+    public void editMessage(String webHookUrl , Long boardDiscordId,Long messageDiscordId, String content, List<Long> tags){
         WebhookClient.createClient(jda,webHookUrl).editMessageById(messageDiscordId,content)
-                .queue(()->{
-                    
-                });
+                .queue(m->{
+                    if(discordUtil.isForumChannel(boardDiscordId)){
+                        List<ForumTag> allTags = jda.getForumChannelById(messageDiscordId).getAvailableTags();
+
+                        jda.getThreadChannelById(messageDiscordId).getManager().setAppliedTags(
+                                allTags.stream().filter(tag->tags.contains(tag.getIdLong()))
+                                        .toList()).complete();
+
+                    }
+
+                    }
+                );
     }
 }

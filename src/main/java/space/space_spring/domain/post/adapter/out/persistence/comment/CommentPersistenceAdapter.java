@@ -65,10 +65,16 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
 
     @Override
     public List<Comment> loadAllComments(Long postId) {
-        List<PostCommentJpaEntity> commentJpaEntities = postCommentRepository.findByPostBaseId(postId);
-        return commentJpaEntities.stream()
-                .map(commentMapper::toDomainEntity)
-                .toList();
+        List<PostCommentJpaEntity> commentJpaEntities = postCommentRepository.findByPostId(postId);
+
+        List<Comment> comments = new ArrayList<>();
+        for (PostCommentJpaEntity postCommentJpaEntity : commentJpaEntities) {
+            if (postCommentJpaEntity.getPostBase().isActive()) {
+                comments.add(commentMapper.toDomainEntity(postCommentJpaEntity));
+            }
+        }
+
+        return comments;
     }
 
     @Override

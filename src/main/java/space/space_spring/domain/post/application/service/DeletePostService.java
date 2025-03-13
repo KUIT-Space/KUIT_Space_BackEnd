@@ -15,6 +15,7 @@ import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.UNAUTHORIZED_USER;
@@ -41,40 +42,57 @@ public class DeletePostService implements DeletePostUseCase {
         // 2. Post 조회
         Post post = loadPostPort.loadById(command.getPostId());
 
-        // 3. Attachment 조회
-        List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
-
-        // 4. Comment 조회
-        List<Comment> comments = loadCommentPort.loadAllComments(command.getPostId());
-
-        // 4. validate
+        // validate
         validate(board, post, command);
 
-        // 5. 디스코드에서 해당 게시글 & 모든 댓글들 삭제
+        // Attachment 조회
+        List<Attachment> attachments = loadAttachmentPort.loadByPostId(command.getPostId());
+
+        // Comment 조회
+        List<Comment> comments = loadCommentPort.loadAllComments(command.getPostId());
+
+        // Like 조회
+        // TODO -> 해당 게시글에 관련된 좋아요도 soft delete 처리 하긴 해야함
+        // BUT 해당 게시글의 postBase만 inactive로 바꿔주면 사실상 attachment들, comment들, like들 모두
+        // db에서 soft delete 된 상태이든지 아니든지 상관없긴 함
+
+        // 디스코드에서 해당 게시글 & 모든 댓글들 삭제
         deletePostInDiscordUseCase.deletePostInDiscord(DeletePostInDiscordCommand.builder()
                 .discordIdOfBoard(board.getDiscordId())
                 .discordIdOfPost(post.getDiscordId())
                 .discordIdOfComments(comments.stream().map(Comment::getDiscordId).toList())
                 .build());
 
-        // 6. 첨부파일 삭제
+        // 첨부파일 삭제
         deleteAttachmentPort.deleteAllAttachments(attachments);
 
-        // 7. 댓글 삭제
-        if (!comments.isEmpty()) {
-            deleteCommentPort.deleteAllComments(comments);
-        }
+        // 댓글 삭제
+        deleteCommentPort.deleteAllComments(comments);
 
-        // 8. 게시글 삭제
+        // 게시글 삭제
         deletePostPort.deletePost(command.getPostId());
     }
 
     @Override
     @Transactional
-    public void deletePostFromDiscord(DeletePostCommand command) {
-        /**
-         * TODO : 디스코드에서 게시글 삭제 로직
-         */
+    public void deletePostFromDiscord(Long targetDiscordId) {
+        // 제거할 post 조회
+        Optional<Post> optionalPost = loadPostPort.loadByDiscordId(targetDiscordId);
+        if (!optionalPost.isPresent()) {
+            throw new CustomException(POST_NOT_FOUND);
+        }
+
+        Post post = optionalPost.get();
+
+        // post와 연관된 attachment, like, comment 조회 & 삭제
+        List<Attachment> attachments = loadAttachmentPort.loadByPostId(post.getId());
+        List<Comment> comments = loadCommentPort.loadAllComments(post.getId());
+        // 좋아요는 일단 생략
+
+        // 삭제
+        deleteAttachmentPort.deleteAllAttachments(attachments);
+        deleteCommentPort.deleteAllComments(comments);
+        deletePostPort.deletePost(post.getId());
     }
 
     private void validate(Board board, Post post, DeletePostCommand command) {

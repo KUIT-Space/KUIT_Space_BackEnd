@@ -55,7 +55,7 @@ public class UpdatePostService implements UpdatePostUseCase {
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(command.getPostCreatorId());
 
         // 4. Attachment 조회
-        List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
+        List<Attachment> attachments = loadAttachmentPort.loadByPostId(command.getPostId());
 
         // 4. validate
         validate(board, post, spaceMember, command);

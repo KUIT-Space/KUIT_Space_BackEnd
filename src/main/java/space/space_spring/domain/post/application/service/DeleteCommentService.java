@@ -39,6 +39,11 @@ public class DeleteCommentService implements DeleteCommentUseCase {
         deleteCommentPort.deleteComment(command.getCommentId());
     }
 
+    @Override
+    public void deleteComment(Long commentId){
+        deleteCommentPort.deleteComment(commentId);
+    }
+
     private void validate(Board board, Post post, Comment comment, DeleteCommentCommand command) {
         if (!board.isInSpace(command.getSpaceId())) {       // board가 스페이스에 속하는지 검증
             throw new CustomException(BOARD_IS_NOT_IN_SPACE);

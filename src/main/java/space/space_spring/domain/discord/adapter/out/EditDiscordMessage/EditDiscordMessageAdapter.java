@@ -6,12 +6,13 @@ import net.dv8tion.jda.api.entities.WebhookClient;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.adapter.in.discord.DiscordUtil;
+import space.space_spring.domain.discord.application.port.out.updateMessage.UpdateMessageInDiscordPort;
 
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class EditDiscordMessageAdapter {
+public class EditDiscordMessageAdapter implements UpdateMessageInDiscordPort {
     private final JDA jda;
     private final DiscordUtil discordUtil;
 

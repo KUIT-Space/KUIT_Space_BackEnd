@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.global.common.validation.SelfValidating;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,5 +25,5 @@ public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
     private String content;
 
     @Nullable
-    private List<MultipartFile> attachments;
+    private List<MultipartFile> attachments = new ArrayList<>();
 }

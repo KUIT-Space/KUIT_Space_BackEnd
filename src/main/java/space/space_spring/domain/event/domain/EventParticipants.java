@@ -1,5 +1,7 @@
 package space.space_spring.domain.event.domain;
 
+import space.space_spring.global.util.NaturalNumber;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,4 +29,25 @@ public class EventParticipants {
         return Collections.unmodifiableList(ids);
     }
 
+    public boolean isSpaceMemberIn(Long spaceMemberId) {
+        for (EventParticipant eventParticipant : this.participants) {
+            if (eventParticipant.getSpaceMemberId().equals(spaceMemberId)) return true;
+        }
+        return false;
+    }
+
+    public boolean isSpaceMemberNotIn(Long spaceMemberId) {
+        for (EventParticipant eventParticipant : this.participants) {
+            if (eventParticipant.getSpaceMemberId().equals(spaceMemberId)) return false;
+        }
+        return true;
+    }
+
+    public boolean isEmpty() {
+        return this.participants.isEmpty();
+    }
+
+    public NaturalNumber getTotalNumberOfParticipants() {
+        return NaturalNumber.of(participants.size());
+    }
 }

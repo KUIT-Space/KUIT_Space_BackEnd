@@ -1,35 +1,34 @@
 package space.space_spring.domain.post.domain;
 
 import lombok.Getter;
+import space.space_spring.global.common.entity.BaseInfo;
 
 @Getter
 public class Like {
 
     private Long id;
 
-    private Long postId;
+    private Long targetId;          // 좋아요 표시의 target(= 게시글, 댓글)
 
-    private Long questionId;
+    private Long spaceMemberId;
 
-    private Like(Long id, Long postId, Long questionId) {
+    private Boolean isLiked;
+
+    private BaseInfo baseInfo;
+
+    private Like(Long id, Long targetId, Long spaceMemberId, Boolean isLiked, BaseInfo baseInfo) {
         this.id = id;
-        this.postId = postId;
-        this.questionId = questionId;
+        this.targetId = targetId;
+        this.spaceMemberId = spaceMemberId;
+        this.isLiked = isLiked;
+        this.baseInfo = baseInfo;
     }
 
-    public static Like createForPost(Long id, Long postId) {
-        return new Like(id, postId, null);
+    public static Like of(Long id, Long targetId, Long spaceMemberId, Boolean isLiked, BaseInfo baseInfo) {
+        return new Like(id, targetId, spaceMemberId, isLiked, baseInfo);
     }
 
-    public static Like withoutIdForPost(Long postId) {
-        return new Like(null, postId, null);
-    }
-
-    public static Like createForQuestion(Long id, Long questionId) {
-        return new Like(id, null, questionId);
-    }
-
-    public static Like withoutIdForQuestion(Long questionId) {
-        return new Like(null, null, questionId);
+    public static Like withoutId(Long targetId, Long spaceMemberId, Boolean isLiked) {
+        return new Like(null, targetId, spaceMemberId, isLiked, BaseInfo.ofEmpty());
     }
 }

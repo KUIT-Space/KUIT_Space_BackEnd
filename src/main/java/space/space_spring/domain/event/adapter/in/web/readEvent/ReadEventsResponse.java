@@ -3,9 +3,12 @@ package space.space_spring.domain.event.adapter.in.web.readEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
+import space.space_spring.domain.event.application.port.in.ResultOfEventPreviewInfo;
 import space.space_spring.domain.event.domain.Event;
 import space.space_spring.domain.event.domain.Events;
 
+@Getter
 public class ReadEventsResponse {
 
     private final List<EventInfoResponse> events;
@@ -14,11 +17,11 @@ public class ReadEventsResponse {
         this.events = Collections.unmodifiableList(events);
     }
 
-    public static ReadEventsResponse create(Events events) {
+    public static ReadEventsResponse create(List<ResultOfEventPreviewInfo> resultOfEventPreviewInfos) {
         List<EventInfoResponse> eventsResponse = new ArrayList<>();
 
-        for (Event event : events.getEvents()) {
-            eventsResponse.add(EventInfoResponse.create(event));
+        for (ResultOfEventPreviewInfo result : resultOfEventPreviewInfos) {
+            eventsResponse.add(EventInfoResponse.create(result));
         }
 
         return new ReadEventsResponse(eventsResponse);

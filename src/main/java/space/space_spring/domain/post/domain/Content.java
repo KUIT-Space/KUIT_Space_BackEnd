@@ -3,6 +3,8 @@ package space.space_spring.domain.post.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
 import lombok.Getter;
+import space.space_spring.global.common.response.status.BaseExceptionResponseStatus;
+import space.space_spring.global.exception.CustomException;
 
 @Getter
 public class Content {
@@ -14,15 +16,15 @@ public class Content {
     @Column(nullable = false)
     private String value;
 
-    private Content(String value) {
+    public Content(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("Content는 비어있을 수 없습니다.");
+            throw new CustomException(BaseExceptionResponseStatus.BAD_REQUEST, "Content는 비어있을 수 없습니다.");
         }
         if (value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("Content의 길이는 최대 " + MAX_LENGTH + "자까지 가능합니다.");
+            throw new CustomException(BaseExceptionResponseStatus.BAD_REQUEST, "Content의 길이는 최대 " + MAX_LENGTH + "자까지 가능합니다.");
         }
         if (value.length() < MIN_LENGTH) {
-            throw new IllegalArgumentException("Content의 길이는 최소 " + MIN_LENGTH + "자이어야 합니다.");
+            throw new CustomException(BaseExceptionResponseStatus.BAD_REQUEST, "Content의 길이는 최소 " + MIN_LENGTH + "자이어야 합니다.");
         }
         this.value = value;
     }

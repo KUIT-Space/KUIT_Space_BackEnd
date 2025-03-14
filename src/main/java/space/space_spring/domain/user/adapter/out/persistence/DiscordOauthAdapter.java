@@ -46,10 +46,18 @@ public class DiscordOauthAdapter implements DiscordOauthPort {
 
     @Override
     public String getAccessToken(String code) throws JsonProcessingException {
+        log.info("---env value for debugging---");
+        log.info("client_id: " + DISCORD_CLIENT_ID);
+        log.info("client_secret: " + DISCORD_CLIENT_SECRET);
+        log.info("grant_type: " + GRANT_TYPE);
+        log.info("code: " + code);
+        log.info("redirect_uri: " + DISCORD_REDIRECT_URI);
+        log.info("scope: " + SCOPE);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+
         body.add("client_id", DISCORD_CLIENT_ID);
         body.add("client_secret", DISCORD_CLIENT_SECRET);
         body.add("grant_type", GRANT_TYPE);

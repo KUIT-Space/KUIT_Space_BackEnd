@@ -8,24 +8,27 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuthHandlerArgumentResolver;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtAuthorizationArgumentResolver;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtSpaceIdArgumentResolver;
 import space.space_spring.global.config.interceptorURL.JwtLoginInterceptorURL;
-import space.space_spring.global.interceptor.jwtLogin.JwtLoginAuthInterceptor;
+import space.space_spring.global.interceptor.jwtLogin.JwtAuthInterceptor;
 
 
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final JwtLoginAuthInterceptor jwtLoginAuthInterceptor;
+    private final JwtAuthInterceptor jwtAuthInterceptor;
 
-    private final JwtLoginAuthHandlerArgumentResolver jwtLoginAuthHandlerArgumentResolver;
+    private final JwtAuthorizationArgumentResolver jwtAuthorizationArgumentResolver;
+
+    private final JwtSpaceIdArgumentResolver jwtSpaceIdArgumentResolver;
 
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration registration =
-                registry.addInterceptor(jwtLoginAuthInterceptor)
+                registry.addInterceptor(jwtAuthInterceptor)
                 .order(1);
 
         for (JwtLoginInterceptorURL interceptorURL : JwtLoginInterceptorURL.values()) {
@@ -35,7 +38,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(jwtLoginAuthHandlerArgumentResolver);
+        argumentResolvers.add(jwtAuthorizationArgumentResolver);
+        argumentResolvers.add(jwtSpaceIdArgumentResolver);
     }
 
     @Override
@@ -45,7 +49,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:5173/KUIT-Space-Front/", "https://localhost:5173/KUIT-Space-Front/",
                         "https://kuit-space.github.io/", "https://kuit-space-front.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
-                .exposedHeaders("location", "Authorization")
+                .exposedHeaders("location", "Authorization", "Authorization-refresh")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

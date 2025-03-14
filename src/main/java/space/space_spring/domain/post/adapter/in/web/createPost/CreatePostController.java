@@ -1,12 +1,11 @@
 package space.space_spring.domain.post.adapter.in.web.createPost;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
@@ -18,29 +17,39 @@ import static space.space_spring.global.util.bindingResult.BindingResultUtils.ge
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Post", description = "게시글 관련 API")
 public class CreatePostController {
 
     private final CreatePostUseCase createPostUseCase;
 
-    @PostMapping("/board/{boardId}/post")
+    @Operation(summary = "게시글 생성", description = """
+            
+            스페이스 멤버가 게시글(=일반 게시글, 질문, Tip)을 생성합니다.
+            
+            """)
+    @PostMapping(value = "/space/{spaceId}/board/{boardId}/post", consumes = "multipart/form-data")
     public BaseResponse<Long> createPost(
-            @JwtLoginAuth Long id,
-            @RequestParam Long boardId,
-            @Validated @RequestBody RequestOfCreatePost request,
+            @JwtLoginAuth Long spaceMemberId,
+            @PathVariable Long spaceId,
+            @PathVariable Long boardId,
+            @Validated @ModelAttribute RequestOfCreatePost request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_POST_CREATE, getErrorMessage(bindingResult));
         }
 
         CreatePostCommand command = CreatePostCommand.builder()
-                .postCreatorId(id)
+                .spaceId(spaceId)
                 .boardId(boardId)
+                .tagIds(request.getTagIds())
+                .postCreatorId(spaceMemberId)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .attachments(request.getAttachments())
+                .isAnonymous(request.getIsAnonymous())
                 .build();
 
-        return new BaseResponse<>(createPostUseCase.createPost(command));
+        return new BaseResponse<>(createPostUseCase.createPostFromWeb(command));
 
     }
 }

@@ -2,16 +2,35 @@ package space.space_spring.domain.event.adapter.in.web.readEvent;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
 import space.space_spring.domain.event.domain.Event;
 import space.space_spring.domain.event.domain.EventParticipantInfo;
 import space.space_spring.domain.event.domain.EventParticipantInfos;
 
-public class ReadEventInfoResponse extends EventInfoResponse {
+@Getter
+public class ReadEventInfoResponse {
+
+    private Long id;
+
+    private String name;
+
+    private String image;
+
+    private LocalDateTime date;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 
     private List<EventParticipantInfo> participants;
 
-    private ReadEventInfoResponse(Long id, String name, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, List<EventParticipantInfo> participants) {
-        super(id, name, date, startTime, endTime);
+    private ReadEventInfoResponse(Long id, String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, List<EventParticipantInfo> participants) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.participants = participants;
     }
 
@@ -19,6 +38,7 @@ public class ReadEventInfoResponse extends EventInfoResponse {
         return new ReadEventInfoResponse(
                 event.getId(),
                 event.getName(),
+                event.getImage(),
                 event.getDate(),
                 event.getStartTime(),
                 event.getEndTime(),

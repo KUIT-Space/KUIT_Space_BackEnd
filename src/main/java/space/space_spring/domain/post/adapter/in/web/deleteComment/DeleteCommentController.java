@@ -28,7 +28,7 @@ public class DeleteCommentController {
     public BaseResponse<SuccessResponse> deleteComment(@JwtLoginAuth Long spaceMemberId,
                                                        @PathVariable("spaceId") Long spaceId, @PathVariable("boardId") Long boardId, @PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId) {
 
-        deleteCommentUseCase.deleteComment(DeleteCommentCommand.of(spaceId, boardId, postId, commentId, spaceMemberId));
+        deleteCommentUseCase.deleteCommentFromWeb(DeleteCommentCommand.of(spaceId, boardId, postId, commentId, spaceMemberId));
 
         return new BaseResponse<>(new SuccessResponse(true));
     }

@@ -19,7 +19,7 @@ import java.util.List;
 public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
 
     @Nullable
-    private List<Long> tagIds;
+    private List<Long> tagIds = new ArrayList<>();
 
     @NotBlank(message = "게시글 제목은 공백일 수 없습니다.")
     private String title;

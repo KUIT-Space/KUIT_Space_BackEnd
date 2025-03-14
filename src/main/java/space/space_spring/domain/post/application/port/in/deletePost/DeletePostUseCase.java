@@ -4,5 +4,5 @@ public interface DeletePostUseCase {
 
     void deletePostFromWeb(DeletePostCommand command);
 
-    void deletePostFromDiscord(DeletePostCommand command);
+    void deletePostFromDiscord(Long targetDiscordId);
 }

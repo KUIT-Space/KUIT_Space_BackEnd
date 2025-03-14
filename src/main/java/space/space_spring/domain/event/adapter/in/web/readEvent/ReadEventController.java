@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.event.application.port.in.ReadEventParticipantUseCase;
 import space.space_spring.domain.event.application.port.in.ReadEventUseCase;
+import space.space_spring.domain.event.application.port.in.ResultOfEventPreviewInfo;
 import space.space_spring.domain.event.domain.Event;
 import space.space_spring.domain.event.domain.EventParticipantInfos;
 import space.space_spring.domain.event.domain.Events;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.global.common.response.BaseResponse;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,8 +34,8 @@ public class ReadEventController {
         """)
     @GetMapping("/events")
     public BaseResponse<ReadEventsResponse> readEvents(@JwtLoginAuth Long spaceMemberId, @PathVariable Long spaceId) {
-        Events events = readEventUseCase.readEvents(spaceMemberId);
-        return new BaseResponse<>(ReadEventsResponse.create(events));
+        List<ResultOfEventPreviewInfo> resultOfEventPreviewInfos = readEventUseCase.readEvents(spaceMemberId);
+        return new BaseResponse<>(ReadEventsResponse.create(resultOfEventPreviewInfos));
     }
 
     @Operation(summary = "행사 단건 조회", description = """

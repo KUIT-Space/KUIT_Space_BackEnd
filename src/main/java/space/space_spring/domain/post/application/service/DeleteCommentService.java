@@ -2,6 +2,9 @@ package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.discord.application.port.in.deleteComment.DeleteCommentInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.deleteComment.DeleteCommentInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.deleteComment.DeleteCommentCommand;
 import space.space_spring.domain.post.application.port.in.deleteComment.DeleteCommentUseCase;
 import space.space_spring.domain.post.application.port.out.DeleteCommentPort;
@@ -24,9 +27,11 @@ public class DeleteCommentService implements DeleteCommentUseCase {
     private final LoadPostPort loadPostPort;
     private final LoadCommentPort loadCommentPort;
     private final DeleteCommentPort deleteCommentPort;
+    private final DeleteCommentInDiscordUseCase deleteCommentInDiscordUseCase;
 
+    @Transactional
     @Override
-    public void deleteComment(DeleteCommentCommand command) {
+    public void deleteCommentFromWeb(DeleteCommentCommand command) {
         // 1. Board, Post 조회
         Board board = loadBoardPort.loadById(command.getBoardId());
         Post post = loadPostPort.loadById(command.getPostId());
@@ -35,12 +40,19 @@ public class DeleteCommentService implements DeleteCommentUseCase {
         // 2. validation
         validate(board, post, comment, command);
 
-        // 3. 댓글 삭제
+        // 3. 삭제할 댓글 디스코드에 반영
+        deleteCommentInDiscordUseCase.deleteCommentInDiscord(DeleteCommentInDiscordCommand.builder()
+                        .discordIdOfBoard(board.getDiscordId())
+                        .discordIdOfPost(post.getDiscordId())
+                        .discordIdOfComment(comment.getDiscordId()).build());
+
+        // 4. 댓글 삭제
         deleteCommentPort.deleteComment(command.getCommentId());
     }
 
+    @Transactional
     @Override
-    public void deleteComment(Long commentId){
+    public void deleteCommentFromDiscord(Long commentId){
         deleteCommentPort.deleteComment(commentId);
     }
 

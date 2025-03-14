@@ -40,9 +40,12 @@ public class UpdatePostService implements UpdatePostUseCase {
     private final UploadAttachmentPort uploadAttachmentPort;
     private final CreateAttachmentPort createAttachmentPort;
     private final UpdatePostPort updatePostPort;
+
+    private final LoadPostBasePort loadPostBasePort;
     private final UpdatePostTagPort updatePostTagPort;
     private final LoadTagPort loadTagPort;
     private final UpdatePostInDiscordUseCase updatePostInDiscordUseCase;
+
 
     @Override
     @Transactional
@@ -104,7 +107,8 @@ public class UpdatePostService implements UpdatePostUseCase {
         // 1. discordId 로 수정할 post 찾기
         Optional<Post> optionalPost = loadPostPort.loadByDiscordId(command.getDiscordId());
         if (!optionalPost.isPresent()) {
-            throw new CustomException(POST_NOT_FOUND);
+            log.info("edit discord message not in DB");
+            return;
         }
 
         // 2. post update
@@ -165,6 +169,38 @@ public class UpdatePostService implements UpdatePostUseCase {
         // 4. 게시글 작성자가 본인이 맞는지
         if (!post.isPostCreator(command.getPostCreatorId())) {
             throw new CustomException(UNAUTHORIZED_USER);
+        }
+    }
+
+
+
+
+    private void updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {
+        // 1. 기존 첨부파일 삭제
+        deleteAttachmentPort.deleteAllAttachments(existingAttachments);
+
+        // 2. 새로운 첨부파일 업로드
+        if (!command.getAttachments().isEmpty()) {
+            Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachments().stream()
+                    .collect(Collectors.groupingBy(file -> {
+                        if (isImageFile(file)) {
+                            return AttachmentType.IMAGE; // 만약 BoardType.Image가 필요하다면 해당 enum으로 변경하세요.
+                        } else if (isDocumentFile(file)) {
+                            return AttachmentType.FILE; // 마찬가지로 BoardType.File로 변경 가능.
+                        } else {
+                            throw new CustomException(UNSUPPORTED_FILE_TYPE); // 지원하지 않는 파일 형식일 경우 예외 처리
+                        }
+                    }));
+
+            // S3에 업로드
+            Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
+
+            // Attachment 도메인 엔티티 생성 후 db에 저장
+            List<Attachment> newAttachments = new ArrayList<>();
+            attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
+                    newAttachments.add(Attachment.withoutId(command.getPostId(), type, url))
+            ));
+            createAttachmentPort.createAttachments(newAttachments);
         }
     }
 

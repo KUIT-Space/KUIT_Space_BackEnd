@@ -3,6 +3,7 @@ package space.space_spring.domain.discord.adapter.in.discord;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -55,9 +56,18 @@ public class MessageCreateEventListener extends ListenerAdapter {
         }
         MessageInputFromDiscordCommand command = discordMessageMapper.mapToCommand(event,boardId.get());
         //log.info(command.toString());
-        inputMessageFromDiscordUseCase.putPost(command);
+        if(!event.isFromThread()){
+            inputMessageFromDiscordUseCase.putPost(command);
+            return;
+        }
+
+        if(isThreadStartMessage(event.getMessage())){
+            inputMessageFromDiscordUseCase.putPost(command);
+            return;
+        }
+
         inputMessageFromDiscordUseCase.putComment(command,boardId.get());
-        //ToDo 채널 분류 후 useCase 호출
+
 
     }
 
@@ -70,6 +80,11 @@ public class MessageCreateEventListener extends ListenerAdapter {
             default:
                 return false;
         }
+    }
+
+
+    private boolean isThreadStartMessage(Message message){
+        return message.getChannel().getId().equals(message.getId());
     }
 
 

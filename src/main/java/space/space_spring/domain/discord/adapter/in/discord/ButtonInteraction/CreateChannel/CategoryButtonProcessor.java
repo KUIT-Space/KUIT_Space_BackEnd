@@ -51,6 +51,7 @@ public class CategoryButtonProcessor implements ButtonInteractionProcessor {
         event.reply(boardType.getKrName()+"으로 사용할 채널을 선택할 카테고리를 선택해주세요."
                         +"\n버튼을 누르면 해당 카테고리에 속하는 채널들을 선택할 수 있습니다.")
                 .addComponents(rows)
+                .setEphemeral(true)
                 .queue();
     }
 }

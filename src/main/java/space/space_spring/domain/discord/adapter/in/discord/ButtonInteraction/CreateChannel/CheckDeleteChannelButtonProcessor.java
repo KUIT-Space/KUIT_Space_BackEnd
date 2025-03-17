@@ -48,7 +48,9 @@ public class CheckDeleteChannelButtonProcessor implements ButtonInteractionProce
                 .addActionRow(
                         Button.primary(returnString, " 예 "),
                         Button.primary("cancel", "아니오")
-                ).queue();
+                )
+                .setEphemeral(true)
+                .queue();
     }
 
 }

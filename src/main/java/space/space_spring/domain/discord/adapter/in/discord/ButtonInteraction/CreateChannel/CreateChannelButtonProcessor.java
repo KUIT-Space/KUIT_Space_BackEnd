@@ -59,6 +59,7 @@ public class CreateChannelButtonProcessor implements ButtonInteractionProcessor 
         BoardType boardType= BoardType.fromString(boardTypeString);
         event.reply(boardType.getKrName()+"으로 사용할 채널을 선택하세요"+"\n"+boardType.getDetail()+
                         "\n\n"+categoryName)
+                .setEphemeral(true)
                 .addComponents(rows)
                 .queue();
 

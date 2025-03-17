@@ -43,7 +43,9 @@ public class ChannelSettingEventListener extends ListenerAdapter {
             event.reply("설정하고 싶은 게시판 종류를 선택하세요.(포럼과 텍스트 채널만 가능)")
                     .addComponents(
                             partitionButtons(getChannelSettingButtons())
-                    ).queue();
+                    )
+                    .setEphemeral(true)
+                    .queue();
         }
     }
 

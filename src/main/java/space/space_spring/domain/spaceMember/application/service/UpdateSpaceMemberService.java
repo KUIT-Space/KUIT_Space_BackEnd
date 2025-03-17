@@ -37,7 +37,11 @@ public class UpdateSpaceMemberService implements UpdateSpaceMemberUseCase {
     }
 
     @Override
-    public void updateManager(Long spaceMemberDiscordId,boolean isManger){
-        
+    public void updateManager(Long discordGuildId,Long spaceMemberDiscordId,boolean isManger){
+        SpaceMember spaceMember=loadSpaceMemberPort.loadByDiscord(discordGuildId,spaceMemberDiscordId);
+        if(spaceMember.isManager()==isManger){
+            return;
+        }
+        updateSpaceMemberPort.updateManager(spaceMember.getId(),isManger);
     }
 }

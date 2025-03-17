@@ -7,5 +7,5 @@ import space.space_spring.domain.spaceMember.domian.SpaceMembers;
 public interface UpdateSpaceMemberUseCase {
     SpaceMember update(SpaceMember spaceMember);
     boolean CheckChangeOrUpdate(GuildMember guildMember);
-    void updateManager(Long spaceMemberDiscordId,boolean isManager);
+    void updateManager(Long discordGuildId,Long spaceMemberDiscordId,boolean isManager);
 }

@@ -51,7 +51,7 @@ public class ChannelSettingEventListener extends ListenerAdapter {
     private List<Button> getChannelSettingButtons(){
         List<Button> buttons = new ArrayList<>();
         for(BoardType boardType:BoardType.values()){
-            buttons.add(Button.primary("create-board:"+boardType.getName(),
+            buttons.add(Button.primary("channel-category:"+boardType.getName(),
                     boardType.getKrName()));
         }
 

@@ -21,7 +21,7 @@ public class CategoryButtonProcessor implements ButtonInteractionProcessor {
     private final ButtonUtil buttonUtil;
     @Override
     public boolean supports(String buttonId){
-        if (buttonId.startsWith("create-channel:")){
+        if (buttonId.startsWith("channel-category:")){
             return true;
         }
         return false;
@@ -41,7 +41,7 @@ public class CategoryButtonProcessor implements ButtonInteractionProcessor {
         List<Category> categories = guild.getCategories();
         List<Button> channelButtons = categories.stream()
                 //.filter(channel->channel.getType()== ChannelType.FORUM||channel.getType()==ChannelType.TEXT)
-                .map(category -> Button.secondary("check:create-channel:" + boardTypeString + ":" + category.getId()+":"+category.getName(), category.getName()))
+                .map(category -> Button.secondary("create-board:" + boardTypeString + ":" + category.getId()+":"+category.getName(), category.getName()))
                 .collect(Collectors.toList());
 
         // Discord API 제한: 한 번에 최대 5개의 버튼만 지원되므로 여러 줄로 나눔

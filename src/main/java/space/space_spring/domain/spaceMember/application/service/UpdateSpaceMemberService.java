@@ -35,4 +35,9 @@ public class UpdateSpaceMemberService implements UpdateSpaceMemberUseCase {
                 (spaceMemberId
                         ,newSpaceMember.getSpaceId(),newSpaceMember.getUserId(), newSpaceMember.getDiscordId(), newSpaceMember.getNickname(), newSpaceMember.getProfileImageUrl(), newSpaceMember.isManager());
     }
+
+    @Override
+    public void updateManager(Long spaceMemberDiscordId,boolean isManger){
+        
+    }
 }

@@ -24,7 +24,7 @@ public class EditDiscordMessageAdapter implements UpdateMessageInDiscordPort {
 
                     if(discordUtil.isForumChannel(boardDiscordId)){
                         ThreadChannelManager manager = jda.getThreadChannelById(messageDiscordId).getManager();
-                        if(m.getChannel().getIdLong()==messageDiscordId){
+                        if(m.getChannel().getIdLong()==boardDiscordId){
                             manager.setName(title).queue();
                         }
                         List<ForumTag> allTags = jda.getForumChannelById(messageDiscordId).getAvailableTags();

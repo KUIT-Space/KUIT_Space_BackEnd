@@ -138,7 +138,7 @@ public class SpaceMemberPersistenceAdapter
 
     @Override
     public SpaceMember updateManager(Long spaceMemberId, boolean isManager){
-           SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findById(spaceMemberId).orElseThrow();
+           SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findByIdAndStatus(spaceMemberId,BaseStatusType.ACTIVE).orElseThrow();
            if(spaceMemberJpaEntity.isManager()==isManager){
                return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
            }
@@ -146,15 +146,16 @@ public class SpaceMemberPersistenceAdapter
     }
     @Override
     public SpaceMember loadByDiscord(Long spaceDiscordId , Long spaceMemberDiscordId){
-        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByDiscordId(spaceDiscordId).orElseThrow(()->new CustomException(SPACE_NOT_FOUND));
-        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findBySpaceIdAndDiscordId(spaceJpaEntity.getId(),spaceMemberDiscordId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
+        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByDiscordIdAndStatus(spaceDiscordId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_NOT_FOUND));
+        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findBySpaceIdAndDiscordIdAndStatus(spaceJpaEntity.getId(),spaceMemberDiscordId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
     }
 
     @Override
     public boolean delete(Long spaceId){
         //ToDo change to soft delete
-        spaceMemberRepository.delete(spaceMemberRepository.findById(spaceId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
-
+        //spaceMemberRepository.delete();
+        spaceMemberRepository.findByIdAndStatus(spaceId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND))
+                .updateToInactive();
         return true;
     }
 }

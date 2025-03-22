@@ -35,4 +35,13 @@ public class UpdateSpaceMemberService implements UpdateSpaceMemberUseCase {
                 (spaceMemberId
                         ,newSpaceMember.getSpaceId(),newSpaceMember.getUserId(), newSpaceMember.getDiscordId(), newSpaceMember.getNickname(), newSpaceMember.getProfileImageUrl(), newSpaceMember.isManager());
     }
+
+    @Override
+    public void updateManager(Long discordGuildId,Long spaceMemberDiscordId,boolean isManger){
+        SpaceMember spaceMember=loadSpaceMemberPort.loadByDiscord(discordGuildId,spaceMemberDiscordId);
+        if(spaceMember.isManager()==isManger){
+            return;
+        }
+        updateSpaceMemberPort.updateManager(spaceMember.getId(),isManger);
+    }
 }

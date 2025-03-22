@@ -79,7 +79,8 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
                 .build();
 
         if(isExistBoard(targetChannelId)){
-            event.reply("이미 게시판으로 등록된 채널입니다").queue();
+            event.reply("이미 게시판으로 등록된 채널입니다")
+                    .setEphemeral(true).queue();
             return;
         }
 
@@ -114,7 +115,8 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
                 return;
         }
 
-        event.reply("`" + menuType + "` 기능이 `" + targetChannelIdStr + "` 채널에서 실행되었습니다.").queue();
+        event.reply("`" + menuType + "` 기능이 `" + targetChannelIdStr + "` 채널에서 실행되었습니다.")
+                .setEphemeral(true).queue();
 
     }
 

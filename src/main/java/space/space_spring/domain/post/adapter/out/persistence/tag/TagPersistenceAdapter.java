@@ -64,7 +64,7 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
 
     }
 
-    @Override
+
     public List<Tag> loadByDiscordId(List<Long> discordIdOfTag) {
         List<TagJpaEntity> allByIdAndStatus = tagRepository.findAllByDiscordIdAndStatus(discordIdOfTag, ACTIVE);
 
@@ -76,5 +76,6 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
         List<TagJpaEntity> allByIdAndStatus = tagRepository.findAllByIdAndStatus(tagIds, ACTIVE);
 
         return allByIdAndStatus.stream().map(tagMapper::toDomainEntity).toList();
+
     }
 }

@@ -5,8 +5,11 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -58,6 +61,17 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
     @Override
     public Optional<Subscription> loadByBoardId(Long boardId) {
         return subscriptionRepository.findByBoardIdAndStatus(boardId, ACTIVE).map(subscriptionMapper::toDomainEntity);
+    }
+
+    @Override
+    public List<Map.Entry<Long, Long>> loadSubscribedBoardTagPairs(Long spaceMemberId) {
+        List<Object[]> results = subscriptionRepository.findSubscribedBoardTagPairs(spaceMemberId);
+
+        return results.stream()
+                .map(result -> new AbstractMap.SimpleEntry<>(
+                        (Long) result[0],
+                        result[1] != null ? (Long) result[1] : null
+                )).collect(Collectors.toList());
     }
 
     @Override

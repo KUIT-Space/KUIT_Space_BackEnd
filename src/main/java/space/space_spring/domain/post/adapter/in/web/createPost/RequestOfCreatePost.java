@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.global.common.validation.SelfValidating;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,7 +19,7 @@ import java.util.List;
 public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
 
     @Nullable
-    private List<Long> tagIds;
+    private List<Long> tagIds = new ArrayList<>();
 
     @NotBlank(message = "게시글 제목은 공백일 수 없습니다.")
     private String title;
@@ -27,7 +28,7 @@ public class RequestOfCreatePost extends SelfValidating<RequestOfCreatePost> {
     private String content;
 
     @Nullable
-    private List<MultipartFile> attachments;
+    private List<MultipartFile> attachments = new ArrayList<>();
 
     @NotNull(message = "게시글의 익명/비익명 여부는 공백일 수 없습니다.")
     private Boolean isAnonymous; // 질문일 경우만 사용

@@ -34,6 +34,8 @@ public class CheckBoardCreateButtonProcessor implements ButtonInteractionProcess
                 .addActionRow(
                         Button.primary(returnString, " 예 "),
                         Button.primary("cancel", "아니오")
-                ).queue();
+                )
+                .setEphemeral(true)
+                .queue();
     }
 }

@@ -58,7 +58,7 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
     }
 
     @Override
-    public List<Attachment> loadById(Long postId) {
+    public List<Attachment> loadByPostId(Long postId) {
         // 1. DB에서 ACTIVE 상태의 첨부파일 조회
         List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findByPostBaseIdAndStatus(postId, BaseStatusType.ACTIVE);
 

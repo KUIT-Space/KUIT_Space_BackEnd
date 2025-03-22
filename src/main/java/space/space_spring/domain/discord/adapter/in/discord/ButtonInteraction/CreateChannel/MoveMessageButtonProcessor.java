@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import org.hibernate.mapping.Collection;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.adapter.in.discord.ButtonInteraction.ButtonInteractionProcessor;
+import space.space_spring.domain.discord.adapter.in.discord.DiscordMessageMapper;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordUseCase;
 import space.space_spring.domain.discord.application.port.in.discord.InputMessageFromDiscordUseCase;
@@ -15,12 +16,11 @@ import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHo
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessagePort;
 import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
+import space.space_spring.domain.post.domain.AttachmentType;
+import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,6 +33,7 @@ public class MoveMessageButtonProcessor implements ButtonInteractionProcessor {
     private final InputMessageFromDiscordUseCase inputMessageFromDiscordUseCase;
     private final LoadSpaceUseCase loadSpaceUseCase;
     private final LoadBoardUseCase loadBoardUseCase;
+    private final DiscordMessageMapper discordMessageMapper;
     @Override
     public boolean supports(String buttonId){
         if (buttonId.startsWith("move-message:")){
@@ -55,7 +56,8 @@ public class MoveMessageButtonProcessor implements ButtonInteractionProcessor {
         List<Message> messageHistory = history.getRetrievedHistory();
 
         Long spaceId = loadSpaceUseCase.loadByDiscordId(event.getGuild().getIdLong()).getId();
-        String webHookUrl = loadBoardUseCase.findById(boardId).getWebhookUrl();
+        Board board = loadBoardUseCase.findById(boardId);
+        String webHookUrl = board.getWebhookUrl();
 
         //message 순서 뒤집기
         List<Message> messages = IntStream.range(0, messageHistory.size())
@@ -67,7 +69,7 @@ public class MoveMessageButtonProcessor implements ButtonInteractionProcessor {
         // 각 메시지에 대해 비동기 작업 수행
         List<CompletableFuture<Void>> futures = messages.stream()
                 .map(message -> createDiscordWebHookMessagePort.send(mapToDiscord(message, webHookUrl,targetChannelId))
-                        .thenAccept(messageId -> inputMessageFromDiscordUseCase.putPost(mapToServer(message, messageId))))
+                        .thenAccept(messageId -> inputMessageFromDiscordUseCase.putPost(mapToServer(message,board.getId()))))
                 .collect(Collectors.toList());
 
         // 모든 메시지 처리가 완료될 때까지 기다림
@@ -108,6 +110,8 @@ public class MoveMessageButtonProcessor implements ButtonInteractionProcessor {
 
     private MessageInputFromDiscordCommand mapToServer(Message message,Long boardId){
         TitleContent titleContent = parseTitleAndContent(message.getContentRaw());
+        Map<String, AttachmentType> attachments = new HashMap<>();
+        message.getAttachments().forEach(attachment -> attachments.put(attachment.getUrl(),discordMessageMapper.getAttachmentType(attachment.getContentType())));
         return MessageInputFromDiscordCommand.builder()
                 .boardId(boardId)
                 .MessageDiscordId(message.getIdLong())
@@ -116,6 +120,8 @@ public class MoveMessageButtonProcessor implements ButtonInteractionProcessor {
                 .spaceDiscordId(message.getGuildIdLong())
                 .title(titleContent.title())
                 .content(titleContent.content())
+                .attachments(attachments)
+                .tagDiscordIds(List.of())
                 .build();
     }
 

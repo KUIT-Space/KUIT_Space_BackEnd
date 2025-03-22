@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import space.space_spring.domain.post.application.port.in.createPost.AttachmentOfCreateCommand;
-import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostAttachmentCommand;
+import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.updatePost.UpdatePostInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostCommand;
+import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.updatePost.UpdatePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
@@ -20,6 +21,7 @@ import space.space_spring.global.validator.AllowedImageFileExtensions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
@@ -39,6 +41,12 @@ public class UpdatePostService implements UpdatePostUseCase {
     private final CreateAttachmentPort createAttachmentPort;
     private final UpdatePostPort updatePostPort;
 
+    private final LoadPostBasePort loadPostBasePort;
+    private final UpdatePostTagPort updatePostTagPort;
+    private final LoadTagPort loadTagPort;
+    private final UpdatePostInDiscordUseCase updatePostInDiscordUseCase;
+
+
     @Override
     @Transactional
     public void updatePostFromWeb(UpdatePostCommand command) {
@@ -52,19 +60,93 @@ public class UpdatePostService implements UpdatePostUseCase {
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(command.getPostCreatorId());
 
         // 4. Attachment 조회
-        List<Attachment> attachments = loadAttachmentPort.loadById(command.getPostId());
+        List<Attachment> attachments = loadAttachmentPort.loadByPostId(command.getPostId());
 
         // 4. validate
         validate(board, post, spaceMember, command);
 
         // 5. 이미지 수정
-        updateAttachments(attachments, command);
+        deleteAttachmentPort.deleteAllAttachments(attachments);
+        Map<AttachmentType, List<MultipartFile>> attachmentMap = makeAttachmentMap(command.getAttachments());
+        Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentMap, "post");
+
+        List<Attachment> newAttachments = new ArrayList<>();
+        attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
+                newAttachments.add(Attachment.withoutId(command.getPostId(), type, url))
+        ));
+        createAttachmentPort.createAttachments(newAttachments);
+
+        // tag 수정
+        updatePostTagPort.updatePostTag(post.getId(), command.getTagIds());
+        List<Tag> tags = loadTagPort.loadById(command.getTagIds());
 
         // 6. TODO:디스코드로 게시글 수정 정보 전송
+        List<String> newAttachmentUrls = new ArrayList<>();
+        for (Attachment attachment : newAttachments) {
+            newAttachmentUrls.add(attachment.getAttachmentUrl());
+        }
+
+        updatePostInDiscordUseCase.updatePostInDiscord(UpdatePostInDiscordCommand.builder()
+                        .discordIdOfBoard(board.getDiscordId())
+                        .discordIdOfPost(post.getDiscordId())
+                        .newTitle(command.getTitle())
+                        .newContent(command.getContent())
+                        .newAttachmentUrls(newAttachmentUrls)
+                        .newDiscordIdOfTags(tags.stream().map(Tag::getDiscordId).toList())
+                        .build());
 
         // 7. 게시글 update
-        post.updatePost(command.getTitle(), command.getContent(), command.getIsAnonymous());
+        post.updateTitle(command.getTitle());
+        post.updateContent(command.getContent());
         updatePostPort.updatePost(post);
+    }
+
+    @Transactional
+    @Override
+    public void updatePostFromDiscord(UpdatePostFromDiscordCommand command) {
+        // 1. discordId 로 수정할 post 찾기
+        Optional<Post> optionalPost = loadPostPort.loadByDiscordId(command.getDiscordId());
+        if (!optionalPost.isPresent()) {
+            log.info("edit discord message not in DB");
+            return;
+        }
+
+        // 2. post update
+        Post post = optionalPost.get();
+        post.updateTitle(command.getNewTitle());
+        post.updateContent(command.getNewContent());
+
+        // 3. 게시글에 달린 첨부파일 update
+        List<Attachment> attachments = loadAttachmentPort.loadByPostId(post.getId());
+        deleteAttachmentPort.deleteAllAttachments(attachments);
+
+        List<Attachment> newAttachments = new ArrayList<>();
+        command.getNewAttachmentUrlMap().forEach((type, urls) -> urls.forEach(url ->
+                newAttachments.add(Attachment.withoutId(post.getId(), type, url))
+        ));
+
+        createAttachmentPort.createAttachments(newAttachments);
+
+        // 4. 게시글 tag들 정보 수정
+        List<Tag> tags = loadTagPort.loadByDiscordId(command.getDiscordIdOfTag());
+        updatePostTagPort.updatePostTag(post.getId(), tags.stream().map(Tag::getId).toList());
+
+        // 5. db에 post 변경사항 반영
+        updatePostPort.updatePost(post);
+    }
+
+    private Map<AttachmentType, List<MultipartFile>> makeAttachmentMap(List<MultipartFile> multipartFiles) {
+
+        return multipartFiles.stream()
+                .collect(Collectors.groupingBy(file -> {
+                    if (isImageFile(file)) {
+                        return AttachmentType.IMAGE; // 만약 BoardType.Image가 필요하다면 해당 enum으로 변경하세요.
+                    } else if (isDocumentFile(file)) {
+                        return AttachmentType.FILE; // 마찬가지로 BoardType.File로 변경 가능.
+                    } else {
+                        throw new CustomException(UNSUPPORTED_FILE_TYPE); // 지원하지 않는 파일 형식일 경우 예외 처리
+                    }
+                }));
     }
 
     private void validate(Board board, Post post, SpaceMember spaceMember, UpdatePostCommand command) {
@@ -78,30 +160,20 @@ public class UpdatePostService implements UpdatePostUseCase {
             throw new CustomException(POST_IS_NOT_IN_BOARD);
         }
 
-        // 3. 질문 게시판이 아닌 게시판의 익명 여부가 FALSE인지
-        if (board.getBoardType() != BoardType.QUESTION && command.getIsAnonymous()) {
-            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
-        }
-
-        // 4. 공지사항, 기수별 공지사항의 작성자가 운영진인지
+        // 3. 공지사항, 기수별 공지사항의 작성자가 운영진인지
         if ((board.getBoardType() == BoardType.NOTICE || board.getBoardType() == BoardType.SEASON_NOTICE)
                 && !spaceMember.isManager()) {
             throw new CustomException(UNAUTHORIZED_USER);
         }
 
-        // 5. 게시글 작성자가 본인이 맞는지
+        // 4. 게시글 작성자가 본인이 맞는지
         if (!post.isPostCreator(command.getPostCreatorId())) {
             throw new CustomException(UNAUTHORIZED_USER);
         }
     }
 
-    @Override
-    @Transactional
-    public void updatePostFromDiscord(UpdatePostCommand command, Long discordId) {
-        /**
-         * TODO : 디스코드에서 게시글 수정 로직
-         */
-    }
+
+
 
     private void updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {
         // 1. 기존 첨부파일 삭제

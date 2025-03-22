@@ -17,4 +17,5 @@ public interface LoadCommentPort {
 
     List<Comment> loadAllComments(Long postId);
 
+    Comment loadByDiscordId(Long discordMessageId);
 }

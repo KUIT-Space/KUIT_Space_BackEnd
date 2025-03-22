@@ -14,6 +14,9 @@ public interface SubscriptionRepository extends JpaRepository<SubscriptionJpaEnt
 
     Optional<SubscriptionJpaEntity> findByBoardIdAndStatus(Long boardId, BaseStatusType baseStatusType);
 
+    // 특정 사용자가 구독한 게시판+태그 조회
+    @Query("SELECT s.board.id, s.tag.id FROM SubscriptionJpaEntity s WHERE s.spaceMember.id = :spaceMemberId")
+    List<Object[]> findSubscribedBoardTagPairs(@Param("spaceMemberId") Long spaceMemberId);
 
     // 특정 사용자가 구독한 게시판 ID 조회
     @Query("SELECT s.board.id FROM SubscriptionJpaEntity s WHERE s.spaceMember.id = :spaceMemberId")

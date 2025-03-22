@@ -9,6 +9,7 @@ import space.space_spring.domain.discord.application.port.in.createPost.CreatePo
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.createPost.AttachmentInDiscordCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostCommand;
+import space.space_spring.domain.post.application.port.in.createPost.CreatePostFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
@@ -101,7 +102,7 @@ public class CreatePostService implements CreatePostUseCase {
 
     @Override
     @Transactional
-    public Long createPostFromDiscord(CreatePostCommand command, Long discordId) {
+    public Long createPostFromDiscord(CreatePostFromDiscordCommand command, Long discordId) {
         // 1. Post 도메인 엔티티 생성 후 db에 저장
         Post post = command.toPostDomainEntity(discordId);
         Long postId = createPostPort.createPost(post);
@@ -110,7 +111,15 @@ public class CreatePostService implements CreatePostUseCase {
         /**
          * TODO : 게시글 생성 Discord Input, attachment 파일 형식 정해진 후 리팩토링
          */
+        // 7. 태그 저장
+        if (!command.getTagIds().isEmpty()) {
+            createPostTagPort.createPostTag(postId, command.getTagIds());
+        }
+        // 8. Attachment 도메인 엔티티 생성 후 db에 저장
         List<Attachment> attachments = new ArrayList<>();
+        command.getAttachments().forEach((url,type ) ->
+                attachments.add(Attachment.withoutId(postId, type, url))
+        );
         createAttachmentPort.createAttachments(attachments);
 
         return postId;

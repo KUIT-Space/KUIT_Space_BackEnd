@@ -12,6 +12,8 @@ import space.space_spring.domain.discord.application.port.in.discord.MessageInpu
 import space.space_spring.domain.post.domain.AttachmentType;
 
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -25,6 +27,7 @@ public class DiscordMessageMapper {
         String content="";
         String rowContent =event.getMessage().getContentRaw();
         boolean isComment=false;
+        List<Long> tagDiscordIds= new ArrayList();
         ChannelType channelType=event.getChannelType();
         if(event.isFromThread()){
 
@@ -33,7 +36,9 @@ public class DiscordMessageMapper {
                 title=event.getChannel().getName();
                 content=rowContent;
                 isComment=false;
-
+                tagDiscordIds.addAll( event.getChannel().asThreadChannel().getAppliedTags().stream().map(
+                        tag->{return tag.getIdLong();}
+                ).toList());
 
             }else{
                 // Thread 에 달린 댓글
@@ -52,7 +57,9 @@ public class DiscordMessageMapper {
 
         }
 
+        Map<String, AttachmentType> attachments = new HashMap<>();
 
+        event.getMessage().getAttachments().forEach(attachment -> attachments.put(attachment.getUrl(),getAttachmentType(attachment.getContentType())));
 
 
         return MessageInputFromDiscordCommand.builder()
@@ -62,10 +69,13 @@ public class DiscordMessageMapper {
                 .creatorDiscordId(event.getMember().getIdLong())
                 .spaceDiscordId(event.getGuild().getIdLong())
                 .title(title)
+                .tagDiscordIds(tagDiscordIds)
                 .content(content)
+                .attachments(attachments)
                 .build();
 
     }
+
 
     public static String removeFirstRow(String input,String separator) {
         int index = input.indexOf(separator); // 첫 번째 "\n"의 위치 찾기
@@ -92,4 +102,5 @@ public class DiscordMessageMapper {
         }
         return AttachmentType.FILE;
     }
+
 }

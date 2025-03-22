@@ -3,6 +3,7 @@ package space.space_spring.domain.event.adapter.in.web.readEvent;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import space.space_spring.domain.event.application.port.in.ResultOfEventPreviewInfo;
 import space.space_spring.domain.event.domain.Event;
 
 @Getter
@@ -21,7 +22,16 @@ public class EventInfoResponse {
 
     private LocalDateTime endTime;
 
-    public static EventInfoResponse create(Event event) {
-        return new EventInfoResponse(event.getId(), event.getName(), event.getImage(), event.getDate(), event.getStartTime(), event.getEndTime());
+    private int totalNumberOfParticipants;
+
+    public static EventInfoResponse create(ResultOfEventPreviewInfo result) {
+        return new EventInfoResponse(
+                result.getId(),
+                result.getName(),
+                result.getImage(),
+                result.getDate(),
+                result.getStartTime(),
+                result.getEndTime(),
+                result.getTotalNumberOfParticipants().getNumber());
     }
 }

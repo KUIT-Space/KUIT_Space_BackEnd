@@ -1,5 +1,7 @@
 package space.space_spring.domain.event.domain;
 
+import space.space_spring.global.util.NaturalNumber;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,5 +45,9 @@ public class EventParticipants {
 
     public boolean isEmpty() {
         return this.participants.isEmpty();
+    }
+
+    public NaturalNumber getTotalNumberOfParticipants() {
+        return NaturalNumber.of(participants.size());
     }
 }

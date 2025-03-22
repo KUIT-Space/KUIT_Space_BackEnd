@@ -24,10 +24,10 @@ public class UpdatePostCommand {
 
     private List<MultipartFile> attachments;
 
-    private Boolean isAnonymous;
+    private List<Long> tagIds;
 
     @Builder
-    public UpdatePostCommand(Long spaceId, Long boardId, Long postId, Long postCreatorId, String title, String content, List<MultipartFile> attachments, Boolean isAnonymous) {
+    public UpdatePostCommand(Long spaceId, Long boardId, Long postId, Long postCreatorId, String title, String content, List<MultipartFile> attachments, List<Long> tagIds) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.postId = postId;
@@ -35,6 +35,6 @@ public class UpdatePostCommand {
         this.title = title;
         this.content = Content.of(content);
         this.attachments = attachments;
-        this.isAnonymous = isAnonymous;
+        this.tagIds = tagIds;
     }
 }

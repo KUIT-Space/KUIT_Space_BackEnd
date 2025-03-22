@@ -31,7 +31,7 @@ public class TagService implements CreateTagUseCase, LoadTagUseCase {
     @Override
     public List<Tag> findByDiscordId(List<Long> discordIds){
 
-        return loadTagPort.loadTagsByDiscordIds(discordIds);
+        return loadTagPort.loadByDiscordId(discordIds);
 
     }
 }

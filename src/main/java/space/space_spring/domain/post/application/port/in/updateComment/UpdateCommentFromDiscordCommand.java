@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class UpdateCommentFromDiscordCommand {
     private Long discordMessageId;
-    private String Content;
+    private String content;
 
 }

@@ -49,10 +49,11 @@ public class Post {
         return this.postCreatorId.equals(spaceMemberId);
     }
 
-
-    public void updatePost(String title, Content content, boolean isAnonymous) {
+    public void updateTitle(String title) {
         this.title = title;
+    }
+
+    public void updateContent(Content content) {
         this.content = content;
-        this.isAnonymous = isAnonymous;
     }
 }

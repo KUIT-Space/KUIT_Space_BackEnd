@@ -4,5 +4,5 @@ public interface UpdatePostUseCase {
 
     void updatePostFromWeb(UpdatePostCommand command);
 
-    void updatePostFromDiscord(UpdatePostCommand command, Long discordId);
+    void updatePostFromDiscord(UpdatePostFromDiscordCommand command);
 }

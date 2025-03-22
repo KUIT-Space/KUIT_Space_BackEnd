@@ -110,7 +110,7 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
         }
 
         postJpaEntity.getPostBase().changeContent(post.getContent().getValue());
-        postJpaEntity.updatePost(post.getTitle(), postJpaEntity.getIsAnonymous());
+        postJpaEntity.updateTitle(post.getTitle());
     }
 
     @Override

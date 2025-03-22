@@ -21,13 +21,15 @@ public class UpdatePostInDiscordCommand {
 
     private List<Long> discordIdOfTags;         // 새로 수정한 tag 의 디스코드 id 값들
 
+    private String webHookUrl;
     @Builder
-    public UpdatePostInDiscordCommand(Long discordIdOfBoard, Long discordIdOfPost, String newTitle, Content newContent, List<String> newAttachmentUrls, List<Long> newDiscordIdOfTags) {
+    public UpdatePostInDiscordCommand(Long discordIdOfBoard, Long discordIdOfPost, String newTitle, Content newContent, List<String> newAttachmentUrls, List<Long> newDiscordIdOfTags,String webHookUrl) {
         this.discordIdOfBoard = discordIdOfBoard;
         this.discordIdOfPost = discordIdOfPost;
         this.title = newTitle;
         this.content = newContent;
         this.attachmentUrls = newAttachmentUrls;
         this.discordIdOfTags = newDiscordIdOfTags;
+        this.webHookUrl=webHookUrl;
     }
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import space.space_spring.domain.post.domain.AttachmentType;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,9 @@ public class MessageInputFromDiscordCommand {
     private Long spaceDiscordId;
     private Long MessageDiscordId;
     private Map<String, AttachmentType> attachments;
+
+    private OffsetDateTime createdTime;
+    private OffsetDateTime lastModifiedAt;
 
     @Override
     public String toString(){

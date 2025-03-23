@@ -66,6 +66,8 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                         .postCreatorId(spaceMemberId)
                         .isAnonymous(false)
                         .tagIds(tagIds)
+                        .createdAt(command.getCreatedTime())
+                        .lastModifiedAt(command.getLastModifiedAt())
                         .build()
                 , command.getMessageDiscordId()
         );

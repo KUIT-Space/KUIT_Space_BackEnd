@@ -7,6 +7,7 @@ import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.common.entity.BaseInfo;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -55,10 +56,11 @@ public class CreatePostFromDiscordCommand {
         this.attachments = attachments;
         this.isAnonymous = isAnonymous;
         this.createdAt = createdAt.toLocalDateTime();
-        this.lastModifiedAt = lastModifiedAt.toLocalDateTime();
+        this.lastModifiedAt = lastModifiedAt==null? createdAt.toLocalDateTime() : lastModifiedAt.toLocalDateTime();
     }
 
     public Post toPostDomainEntity(Long discordMessageId) {
-        return Post.withoutId(discordMessageId, boardId, postCreatorId, title, content, BaseInfo.ofEmpty(), isAnonymous);
+        return Post.withoutId(discordMessageId, boardId, postCreatorId, title, content,
+                BaseInfo.of(createdAt,lastModifiedAt, BaseStatusType.ACTIVE), isAnonymous);
     }
 }

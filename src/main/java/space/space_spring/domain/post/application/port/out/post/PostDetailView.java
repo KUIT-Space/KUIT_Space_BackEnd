@@ -24,7 +24,23 @@ public class PostDetailView {
 
     private List<String> attachmentUrls;
 
-    private int likeCount;
+    private Long likeCount;
 
     private Boolean isLiked;
+
+    // Querydsl에서 사용할 생성자
+    public PostDetailView(String creatorName, String creatorProfileImageUrl,
+                          LocalDateTime createdAt, LocalDateTime lastModifiedAt,
+                          String title, String content, List<String> attachmentUrls,
+                          Long likeCount, Boolean isLiked) {
+        this.creatorName = creatorName;
+        this.creatorProfileImageUrl = creatorProfileImageUrl;
+        this.createdAt = createdAt;
+        this.lastModifiedAt = lastModifiedAt;
+        this.title = title;
+        this.content = content;
+        this.attachmentUrls = attachmentUrls;
+        this.likeCount = likeCount;
+        this.isLiked = isLiked;
+    }
 }

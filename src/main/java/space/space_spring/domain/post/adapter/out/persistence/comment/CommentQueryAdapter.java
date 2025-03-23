@@ -36,11 +36,11 @@ public class CommentQueryAdapter implements CommentDetailQueryPort {
                         Projections.constructor(CommentDetailView.class,
                                 // 댓글 작성자 이름 : 익명 여부에 따라 결정 -> 익명 댓글인 경우 NULL, 아니면 실제 닉네임
                                 Expressions.stringTemplate(
-                                        "CASE WHEN {0} = true THEN NULL ELSE {1}",
+                                        "CASE WHEN {0} = true THEN NULL ELSE {1} END",
                                         comment.isAnonymous, commentBase.spaceMember.nickname),
                                 // 댓글 작성자 프로필 이미지 URL : 익명 여부에 따라 결정 -> 익명 댓글인 경우 NULL, 아니면 실제 프로필 이미지 URL
                                 Expressions.stringTemplate(
-                                        "CASE WHEN {0} = true THEN NULL ELSE {1}",
+                                        "CASE WHEN {0} = true THEN NULL ELSE {1} END",
                                         comment.isAnonymous, commentBase.spaceMember.profileImageUrl),
                                 // 게시글 작성자와 댓글 작성자 비교
                                 Expressions.booleanTemplate(
@@ -67,8 +67,8 @@ public class CommentQueryAdapter implements CommentDetailQueryPort {
                                         .exists(),
                                 // 댓글의 상태 -> 삭제된 댓글인지 아닌지
                                 Expressions.booleanTemplate(
-                                        "CASE WHEN {0} = {1} THEN true ELSE false",
-                                        commentBase.status, Expressions.constant(BaseStatusType.ACTIVE.name()))
+                                        "CASE WHEN {0} = {1} THEN true ELSE false END",
+                                        commentBase.status, Expressions.constant(BaseStatusType.ACTIVE))
                         )
                 )
                 .from(comment)

@@ -53,4 +53,10 @@ public class MessageInputFromDiscordCommand {
         return false;
     }
 
+    public List<Long> getTagDiscordIds(){
+        if(this.tagDiscordIds==null){
+            return List.of();
+        }
+        return this.tagDiscordIds;
+    }
 }

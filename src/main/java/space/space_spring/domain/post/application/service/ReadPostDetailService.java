@@ -9,6 +9,7 @@ import space.space_spring.domain.post.application.port.in.readPostDetail.ReadPos
 import space.space_spring.domain.post.application.port.in.readPostDetail.ResultOfReadPostDetail;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.application.port.out.comment.CommentDetailQueryPort;
+import space.space_spring.domain.post.application.port.out.comment.CommentDetailView;
 import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
 import space.space_spring.domain.post.application.port.out.post.PostDetailQueryPort;
 import space.space_spring.domain.post.application.port.out.post.PostDetailView;
@@ -51,11 +52,12 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         validate(board, post, command);
 
         // 3. 해당 게시글의 상세 정보 조회
-        PostDetailView postDetailView = loadPostDetailPort.loadPostDetail(post.getId());
+        PostDetailView postDetailView = loadPostDetailPort.loadPostDetail(post.getId(), command.getSpaceMemberId());
 
         // 4. 해당 게시글에 달린 댓글 정보 조회
+        List<CommentDetailView> commentDetailViews = loadCommentDetailPort.loadCommentDetail(post.getId(), command.getSpaceMemberId());
 
-
+        // 5. return
 
 
 

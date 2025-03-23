@@ -14,6 +14,8 @@ public class CreateDiscordMessageOnThreadCommand {
     //thread를 달고 싶은 message의 postId
     private Long originPostId;
     //thread를 달고 싶은 message가 속한 원래 channel id. parentChannelId
+    private String originPostTitle;
+
     private Long originChannelId;
     private Long guildDiscordId;
 

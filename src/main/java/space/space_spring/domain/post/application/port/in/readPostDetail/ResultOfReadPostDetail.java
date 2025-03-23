@@ -8,6 +8,7 @@ import space.space_spring.global.util.NaturalNumber;
 import java.util.List;
 
 @Getter
+@Builder
 public class ResultOfReadPostDetail {
 
     private String creatorName;
@@ -20,28 +21,13 @@ public class ResultOfReadPostDetail {
 
     private String title;
 
-    private Content content;
+    private String content;
 
     private List<String> attachmentUrls;
 
-    private NaturalNumber likeCount;
+    private int likeCount;
 
-    private boolean isLiked;
+    private Boolean isLiked;
 
     private List<InfoOfCommentDetail> infoOfCommentDetails;
-
-    @Builder
-    public ResultOfReadPostDetail(String creatorName, String creatorProfileImageUrl, String createdAt, String lastModifiedAt, String title, Content content,
-                                  List<String> attachmentUrls, NaturalNumber likeCount, boolean isLiked, List<InfoOfCommentDetail> infoOfCommentDetails) {
-        this.creatorName = creatorName;
-        this.creatorProfileImageUrl = creatorProfileImageUrl;
-        this.createdAt = createdAt;
-        this.lastModifiedAt = lastModifiedAt;
-        this.title = title;
-        this.content = content;
-        this.attachmentUrls = attachmentUrls;
-        this.likeCount = likeCount;
-        this.isLiked = isLiked;
-        this.infoOfCommentDetails = infoOfCommentDetails;
-    }
 }

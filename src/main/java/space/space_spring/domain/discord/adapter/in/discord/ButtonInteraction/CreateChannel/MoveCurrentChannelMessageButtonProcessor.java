@@ -127,7 +127,7 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
                 .spaceDiscordId(message.getGuildIdLong())
                 .title(titleContent.title())
                 .content(titleContent.content())
-                .createdTime(message.getTimeCreated())
+                .createdAt(message.getTimeCreated())
                 .lastModifiedAt(message.getTimeEdited())
                 .build();
     }

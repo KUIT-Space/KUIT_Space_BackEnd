@@ -41,6 +41,9 @@ public class UpdatePostFromDiscordCommand {
 
     public Map<AttachmentType,List<String>> getNewAttachmentUrlMap(){
         // 변환 실행
+        if(newAttachmentUrlMap==null){
+            return Map.of();
+        }
         return newAttachmentUrlMap.entrySet()
                 .stream()
                 .collect(Collectors.groupingBy(

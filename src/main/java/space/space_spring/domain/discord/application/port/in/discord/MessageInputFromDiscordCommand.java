@@ -24,7 +24,7 @@ public class MessageInputFromDiscordCommand {
     private Long MessageDiscordId;
     private Map<String, AttachmentType> attachments;
 
-    private OffsetDateTime createdTime;
+    private OffsetDateTime createdAt;
     private OffsetDateTime lastModifiedAt;
 
     @Override

@@ -46,7 +46,8 @@ public class DeleteChannelButtonProcessor implements ButtonInteractionProcessor 
                 .collect(Collectors.toList());
 
         if(channelButtons.isEmpty()||channelButtons==null){
-            event.reply("현재 등록된 게시판이 없습니다").queue();
+            event.reply("현재 등록된 게시판이 없습니다")
+                    .setEphemeral(true).queue();
             return;
         }
 

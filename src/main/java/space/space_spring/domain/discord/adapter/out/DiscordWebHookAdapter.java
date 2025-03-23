@@ -31,7 +31,7 @@ public class DiscordWebHookAdapter implements WebHookPort {
     public Optional<String> getSpaceWebHook(Long channelDiscordId){
         return getChannel(channelDiscordId).retrieveWebhooks().complete().stream().filter(webhook->{
             return webhook.getName().equals(SPACE_WEBHOOK_NAME);
-        })
+        }).filter(webhook -> webhook.getOwner().getId().equals(webhook.getGuild().getSelfMember().getId()))
             .map(webhook -> webhook.getUrl())
             .findFirst();
     }

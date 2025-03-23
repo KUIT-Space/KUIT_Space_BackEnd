@@ -59,7 +59,7 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
     }
 
     @Override
-    public void changeLikeState(Long spaceMemberId, Long targetId, boolean changeTo) {
+    public void changeLikeState(Long targetId, Long spaceMemberId, boolean changeTo) {
         LikeJpaEntity likeJpaEntity = likeRepository.findBySpaceMemberIdAndPostBaseIdAndStatus(spaceMemberId, targetId, BaseStatusType.ACTIVE)
                 .orElseThrow(() -> new CustomException(LIKE_NOT_FOUND));
 

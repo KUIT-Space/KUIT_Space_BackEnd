@@ -119,9 +119,6 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
     private MessageInputFromDiscordCommand mapToServer(Message message, Long boardId){
         TitleContent titleContent = parseTitleAndContent(message.getContentRaw());
 
-        //Todo 생성 시간 주입
-        message.getTimeCreated();
-
         return MessageInputFromDiscordCommand.builder()
                 .boardId(boardId)
                 .MessageDiscordId(message.getIdLong())
@@ -130,6 +127,8 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
                 .spaceDiscordId(message.getGuildIdLong())
                 .title(titleContent.title())
                 .content(titleContent.content())
+                .createdTime(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
                 .build();
     }
 }

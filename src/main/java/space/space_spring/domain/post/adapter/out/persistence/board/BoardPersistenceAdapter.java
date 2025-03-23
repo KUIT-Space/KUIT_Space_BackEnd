@@ -35,6 +35,7 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
         BoardJpaEntity boardJpaEntity = boardMapper.toJpaEntity(spaceJpaEntity, board);
         return boardRepository.save(boardJpaEntity).getId();
     }
+
     @Override
     public Optional<Board> load(Long boardId){
         return boardRepository.findById(boardId).map(boardMapper::toDomainEntity);

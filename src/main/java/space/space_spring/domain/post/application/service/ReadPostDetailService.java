@@ -2,15 +2,15 @@ package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.application.port.in.readPostDetail.InfoOfCommentDetail;
 import space.space_spring.domain.post.application.port.in.readPostDetail.ReadPostDetailCommand;
 import space.space_spring.domain.post.application.port.in.readPostDetail.ReadPostDetailUseCase;
 import space.space_spring.domain.post.application.port.in.readPostDetail.ResultOfReadPostDetail;
-import space.space_spring.domain.post.application.port.out.LoadAttachmentPort;
-import space.space_spring.domain.post.application.port.out.LoadBoardPort;
-import space.space_spring.domain.post.application.port.out.LoadCommentPort;
-import space.space_spring.domain.post.application.port.out.LoadPostPort;
+import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
+import space.space_spring.domain.post.application.port.out.post.PostDetailQueryPort;
+import space.space_spring.domain.post.application.port.out.post.PostDetailView;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Comment;
 import space.space_spring.domain.post.domain.Post;
@@ -27,7 +27,10 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReadPostDetailService implements ReadPostDetailUseCase {
+
+    private final PostDetailQueryPort loadPostDetailPort;
 
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
@@ -45,12 +48,19 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         // 2. validation
         validate(board, post, command);
 
-        // 3. comment 조회 -> status 상관없이 모든 댓글들 조회 -> 삭제된 댓글은
+        // 3. 해당 게시글의 상세 정보 조회
+        PostDetailView postDetailView = loadPostDetailPort.loadPostDetail(post.getId());
+
+
+
+
+
+
+
+        // 3. comment 조회 -> status 상관없이 모든 댓글들 조회
         List<Comment> comments = loadCommentPort.loadByPostIdWithoutStatusFilter(post.getId());
 
         // 4. post, comment 들의 좋아요 개수 계산
-        // -> 이거 매번 db 조회 ??
-        // 일단 경민이가 만들어둔 메서드 사용
         NaturalNumber postLikeCount = loadLikePort.countLikeByPostId(post.getId());
         Map<Long, NaturalNumber> commentLikeCountMap = loadLikePort.countLikesByPostIds(comments.stream().map(Comment::getId).toList());
 

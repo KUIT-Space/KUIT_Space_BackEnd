@@ -12,16 +12,17 @@ import space.space_spring.domain.post.application.port.out.comment.CommentDetail
 import space.space_spring.domain.post.application.port.out.comment.CommentDetailView;
 import space.space_spring.domain.post.application.port.out.post.PostDetailQueryPort;
 import space.space_spring.domain.post.application.port.out.post.PostDetailView;
+import space.space_spring.domain.post.application.service.strategy.AnonymousCommentProcessingStrategy;
+import space.space_spring.domain.post.application.service.strategy.CommentDetailProcessingStrategy;
+import space.space_spring.domain.post.application.service.strategy.InactiveCommentProcessingStrategy;
+import space.space_spring.domain.post.application.service.strategy.NormalCommentProcessingStrategy;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.post.ConvertCreatedDate;
 
-import java.lang.management.ManagementPermission;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -29,9 +30,6 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReadPostDetailService implements ReadPostDetailUseCase {
-
-    private static final String ANONYMOUS_COMMENT_CREATOR_NICKNAME = "익명 스페이서";
-    private static final String INACTIVE_COMMENT_CONTENT = "삭제된 댓글입니다.";
 
     private final PostDetailQueryPort loadPostDetailPort;
     private final CommentDetailQueryPort loadCommentDetailPort;
@@ -50,56 +48,9 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         // 3. 해당 게시글의 상세 정보 조회
         PostDetailView postDetailView = loadPostDetailPort.loadPostDetail(post.getId(), command.getSpaceMemberId());
 
-        // 4. 해당 게시글에 달린 댓글 정보 조회
+        // 4. 해당 게시글에 달린 댓글 정보 조회 및 후처리
         List<CommentDetailView> rawCommentDetailViews = loadCommentDetailPort.loadCommentDetail(post.getId(), command.getSpaceMemberId());
-
-        // 5. 후처리: 익명 댓글 및 삭제된 댓글 처리
-        List<CommentDetailView> processedCommentDetailViews = new ArrayList<>();
-        Map<Long, String> anonymousNicknameMap = new HashMap<>();
-        int anonymousCount = 1;
-        for (CommentDetailView view : rawCommentDetailViews) {
-            if (!view.getIsActiveComment()) { // 삭제된 댓글인 경우
-                processedCommentDetailViews.add(CommentDetailView.builder()
-                        .creatorId(view.getCreatorId())
-                        .creatorName(null)
-                        .creatorProfileImageUrl(null)
-                        .isPostOwner(view.getIsPostOwner())
-                        .content(INACTIVE_COMMENT_CONTENT)
-                        .createdAt(view.getCreatedAt())
-                        .lastModifiedAt(view.getLastModifiedAt())
-                        .likeCount(view.getLikeCount())
-                        .isLiked(view.getIsLiked())
-                        .isActiveComment(view.getIsActiveComment())
-                        .isAnonymousComment(view.getIsAnonymousComment())
-                        .build());
-            } else if (view.getIsAnonymousComment()) { // 익명 댓글인 경우
-                Long creatorId = view.getCreatorId();
-                String nickname;
-                if (anonymousNicknameMap.containsKey(creatorId)) {
-                    nickname = anonymousNicknameMap.get(creatorId);
-                } else {
-                    nickname = ANONYMOUS_COMMENT_CREATOR_NICKNAME + " " + anonymousCount;
-                    anonymousNicknameMap.put(creatorId, nickname);
-                    anonymousCount++;
-                }
-
-                processedCommentDetailViews.add(CommentDetailView.builder()
-                        .creatorId(view.getCreatorId())
-                        .creatorName(nickname)
-                        .creatorProfileImageUrl(null)
-                        .isPostOwner(view.getIsPostOwner())
-                        .content(view.getContent())
-                        .createdAt(view.getCreatedAt())
-                        .lastModifiedAt(view.getLastModifiedAt())
-                        .likeCount(view.getLikeCount())
-                        .isLiked(view.getIsLiked())
-                        .isActiveComment(view.getIsActiveComment())
-                        .isAnonymousComment(view.getIsAnonymousComment())
-                        .build());
-            } else { // 정상 댓글은 그대로 추가
-                processedCommentDetailViews.add(view);
-            }
-        }
+        List<CommentDetailView> processedCommentDetailViews = processCommentDetails(rawCommentDetailViews);
 
         // 5. return
         return ResultOfReadPostDetail.builder()
@@ -112,20 +63,48 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
                 .attachmentUrls(postDetailView.getAttachmentUrls())
                 .likeCount(postDetailView.getLikeCount().intValue())
                 .isLiked(postDetailView.getIsLiked())
-                .infoOfCommentDetails(processedCommentDetailViews.stream()
-                        .map(commentDetailView -> InfoOfCommentDetail.builder()
-                                .creatorName(commentDetailView.getCreatorName())
-                                .creatorProfileImageUrl(commentDetailView.getCreatorProfileImageUrl())
-                                .isPostOwner(commentDetailView.getIsPostOwner())
-                                .content(commentDetailView.getContent())
-                                .createdAt(ConvertCreatedDate.setCreatedDate(commentDetailView.getCreatedAt()))
-                                .lastModifiedAt(ConvertCreatedDate.setCreatedDate(commentDetailView.getLastModifiedAt()))
-                                .likeCount(commentDetailView.getLikeCount().intValue())
-                                .isLiked(commentDetailView.getIsLiked())
-                                .isActiveComment(commentDetailView.getIsActiveComment())
-                                .build())
-                        .toList())
+                .infoOfCommentDetails(mapToInfoOfCommentDetails(processedCommentDetailViews))
                 .build();
+    }
+
+    private List<InfoOfCommentDetail> mapToInfoOfCommentDetails(List<CommentDetailView> commentDetailViews) {
+        List<InfoOfCommentDetail> result = new ArrayList<>();
+        for (CommentDetailView comment : commentDetailViews) {
+            result.add(InfoOfCommentDetail.builder()
+                    .creatorName(comment.getCreatorName())
+                    .creatorProfileImageUrl(comment.getCreatorProfileImageUrl())
+                    .isPostOwner(comment.getIsPostOwner())
+                    .content(comment.getContent())
+                    .createdAt(ConvertCreatedDate.setCreatedDate(comment.getCreatedAt()))
+                    .lastModifiedAt(ConvertCreatedDate.setCreatedDate(comment.getLastModifiedAt()))
+                    .likeCount(comment.getLikeCount().intValue())
+                    .isLiked(comment.getIsLiked())
+                    .isActiveComment(comment.getIsActiveComment())
+                    .build());
+        }
+        return result;
+    }
+
+    private List<CommentDetailView> processCommentDetails(List<CommentDetailView> rawCommentDetailViews) {
+        List<CommentDetailView> processed = new ArrayList<>();
+
+        // 전략 리스트
+        List<CommentDetailProcessingStrategy> strategies = List.of(
+                new InactiveCommentProcessingStrategy(),
+                new AnonymousCommentProcessingStrategy(),
+                new NormalCommentProcessingStrategy()
+        );
+
+        for (CommentDetailView view : rawCommentDetailViews) {
+            for (CommentDetailProcessingStrategy strategy : strategies) {
+                if (strategy.supports(view)) {
+                    processed.add(strategy.process(view));
+                    break;
+                }
+            }
+        }
+
+        return processed;
     }
 
     private void validate(Board board, Post post, ReadPostDetailCommand command) {

@@ -12,15 +12,19 @@ import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHo
 import space.space_spring.domain.post.application.port.in.boardCache.LoadBoardCacheUseCase;
 import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
+import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static space.space_spring.domain.discord.adapter.in.discord.DiscordMessageMapper.getAttachmentType;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
 
 @Component
@@ -64,6 +68,7 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
         // 각 메시지에 대해 비동기 작업 수행
         List<CompletableFuture<Void>> futures = messages.stream()
                 .filter(message->loadPostPort.loadByDiscordId(message.getIdLong()).isEmpty())
+                .filter(message->message.getMember()!=null)
                 .map(message -> {
                     return CompletableFuture.runAsync(()->{
                             inputMessageFromDiscordUseCase.putPost(mapToServer(message, boardId));
@@ -118,9 +123,9 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
 
     private MessageInputFromDiscordCommand mapToServer(Message message, Long boardId){
         TitleContent titleContent = parseTitleAndContent(message.getContentRaw());
+        Map<String, AttachmentType> attachments = new HashMap<>();
 
-        //Todo 생성 시간 주입
-        message.getTimeCreated();
+       message.getAttachments().forEach(attachment -> attachments.put(attachment.getUrl(),getAttachmentType(attachment.getContentType())));
 
         return MessageInputFromDiscordCommand.builder()
                 .boardId(boardId)
@@ -130,6 +135,9 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
                 .spaceDiscordId(message.getGuildIdLong())
                 .title(titleContent.title())
                 .content(titleContent.content())
+                .createdAt(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
+                .attachments(attachments)
                 .build();
     }
 }

@@ -17,8 +17,12 @@ import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.exception.CustomException;
 import space.space_spring.global.util.post.ConvertCreatedDate;
 
+import java.lang.management.ManagementPermission;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @Service
@@ -51,10 +55,12 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
 
         // 5. 후처리: 익명 댓글 및 삭제된 댓글 처리
         List<CommentDetailView> processedCommentDetailViews = new ArrayList<>();
+        Map<Long, String> anonymousNicknameMap = new HashMap<>();
         int anonymousCount = 1;
         for (CommentDetailView view : rawCommentDetailViews) {
             if (!view.getIsActiveComment()) { // 삭제된 댓글인 경우
                 processedCommentDetailViews.add(CommentDetailView.builder()
+                        .creatorId(view.getCreatorId())
                         .creatorName(null)
                         .creatorProfileImageUrl(null)
                         .isPostOwner(view.getIsPostOwner())
@@ -64,11 +70,23 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
                         .likeCount(view.getLikeCount())
                         .isLiked(view.getIsLiked())
                         .isActiveComment(view.getIsActiveComment())
+                        .isAnonymousComment(view.getIsAnonymousComment())
                         .build());
-            } else if (view.getCreatorName() == null) { // 익명 댓글인 경우
+            } else if (view.getIsAnonymousComment()) { // 익명 댓글인 경우
+                Long creatorId = view.getCreatorId();
+                String nickname;
+                if (anonymousNicknameMap.containsKey(creatorId)) {
+                    nickname = anonymousNicknameMap.get(creatorId);
+                } else {
+                    nickname = ANONYMOUS_COMMENT_CREATOR_NICKNAME + " " + anonymousCount;
+                    anonymousNicknameMap.put(creatorId, nickname);
+                    anonymousCount++;
+                }
+
                 processedCommentDetailViews.add(CommentDetailView.builder()
-                        .creatorName(ANONYMOUS_COMMENT_CREATOR_NICKNAME + " " + anonymousCount)
-                        .creatorProfileImageUrl(view.getCreatorProfileImageUrl())
+                        .creatorId(view.getCreatorId())
+                        .creatorName(nickname)
+                        .creatorProfileImageUrl(null)
                         .isPostOwner(view.getIsPostOwner())
                         .content(view.getContent())
                         .createdAt(view.getCreatedAt())
@@ -76,8 +94,8 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
                         .likeCount(view.getLikeCount())
                         .isLiked(view.getIsLiked())
                         .isActiveComment(view.getIsActiveComment())
+                        .isAnonymousComment(view.getIsAnonymousComment())
                         .build());
-                anonymousCount++;
             } else { // 정상 댓글은 그대로 추가
                 processedCommentDetailViews.add(view);
             }

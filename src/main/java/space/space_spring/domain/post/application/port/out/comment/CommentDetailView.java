@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Builder
 public class CommentDetailView {
 
+    private Long creatorId;     // 댓글 작성자의 spaceMemberId
+
     private String creatorName;
 
     private String creatorProfileImageUrl;
@@ -27,11 +29,14 @@ public class CommentDetailView {
 
     private Boolean isActiveComment;
 
+    private Boolean isAnonymousComment;
+
     // Querydsl에서 사용되는 생성자
-    public CommentDetailView(String creatorName, String creatorProfileImageUrl,
+    public CommentDetailView(Long creatorId, String creatorName, String creatorProfileImageUrl,
                              Boolean isPostOwner, String content,
                              LocalDateTime createdAt, LocalDateTime lastModifiedAt,
-                             Long likeCount, Boolean isLiked, Boolean isActiveComment) {
+                             Long likeCount, Boolean isLiked, Boolean isActiveComment, Boolean isAnonymousComment) {
+        this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.isPostOwner = isPostOwner;
@@ -41,5 +46,6 @@ public class CommentDetailView {
         this.likeCount = likeCount;
         this.isLiked = isLiked;
         this.isActiveComment = isActiveComment;
+        this.isAnonymousComment = isAnonymousComment;
     }
 }

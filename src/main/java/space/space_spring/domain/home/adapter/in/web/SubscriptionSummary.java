@@ -14,4 +14,6 @@ public class SubscriptionSummary {
     private String boardName;
 
     private String boardTitle;
+
+    private String tagName;
 }

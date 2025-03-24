@@ -7,6 +7,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +18,11 @@ import space.space_spring.domain.home.application.port.in.ReadHomeUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.application.port.out.LoadSubscriptionPort;
+import space.space_spring.domain.post.application.port.out.LoadTagPort;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Post;
 import space.space_spring.domain.post.domain.Subscription;
+import space.space_spring.domain.post.domain.Tag;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
@@ -35,6 +38,7 @@ public class ReadHomeService implements ReadHomeUseCase {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final LoadSpacePort loadSpacePort;
     private final LoadBoardPort loadBoardPort;
+    private final LoadTagPort loadTagPort;
     private final LoadPostPort loadPostPort;
     private final LoadSubscriptionPort loadSubscriptionPort;
 
@@ -75,9 +79,12 @@ public class ReadHomeService implements ReadHomeUseCase {
         List<Subscription> subscribedBoards = loadSubscriptionPort.loadBySpaceMember(spaceMemberId);
         for (Subscription subscription : subscribedBoards) {
             Board board = loadBoardPort.loadById(subscription.getBoardId());
+            Optional<Tag> tag = loadTagPort.loadByBoardId(board.getId());
             List<Post> posts = loadPostPort.loadPostListByBoardId(board.getId());
             for (Post post : posts) {
-                subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), post.getTitle()));
+                String tagName = "";
+                if (tag.isPresent()) tagName = tag.get().getTagName();
+                subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), post.getTitle(), tagName));
             }
         }
         result.addSubscription(subscriptions);

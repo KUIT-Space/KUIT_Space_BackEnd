@@ -20,8 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentQueryAdapter implements CommentDetailQueryPort {
 
-    private static final String ANONYMOUS_COMMENT_CREATOR_NICKNAME = "익명 스페이서";
-    private static final String INACTIVE_COMMENT_CONTENT = "삭제된 댓글입니다.";
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -32,7 +30,7 @@ public class CommentQueryAdapter implements CommentDetailQueryPort {
         QLikeJpaEntity commentLike = QLikeJpaEntity.likeJpaEntity;
         QPostBaseJpaEntity commentBase = QPostBaseJpaEntity.postBaseJpaEntity;
 
-        List<CommentDetailView> results =  queryFactory.select(
+        return queryFactory.select(
                         Projections.constructor(CommentDetailView.class,
                                 // 댓글 작성자 이름 : 익명 여부에 따라 결정 -> 익명 댓글인 경우 NULL, 아니면 실제 닉네임
                                 Expressions.stringTemplate(
@@ -79,40 +77,8 @@ public class CommentQueryAdapter implements CommentDetailQueryPort {
                 .orderBy(commentBase.createdAt.asc())
                 .fetch();
 
-        // 익명 댓글의 작성자 닉네임 후처리 작업
-        int anonymousCount = 1;
-        for (int i = 0; i < results.size(); i++) {
-            CommentDetailView view = results.get(i);
-            if (!view.getIsActiveComment()) {       // 삭제된 댓글인 경우
-                results.set(i, CommentDetailView.builder()
-                        .creatorName(null)
-                        .creatorProfileImageUrl(null)
-                        .isPostOwner(view.getIsPostOwner())
-                        .content(INACTIVE_COMMENT_CONTENT)
-                        .createdAt(view.getCreatedAt())
-                        .lastModifiedAt(view.getLastModifiedAt())
-                        .likeCount(view.getLikeCount())
-                        .isLiked(view.getIsLiked())
-                        .isActiveComment(view.getIsActiveComment())
-                        .build());
-            }
 
-            else if (view.getCreatorName() == null) {        // 유효한 댓글이면서 익명 댓글일 경우
-                results.set(i, CommentDetailView.builder()
-                        .creatorName(ANONYMOUS_COMMENT_CREATOR_NICKNAME + " " + anonymousCount)
-                        .creatorProfileImageUrl(view.getCreatorProfileImageUrl())
-                        .isPostOwner(view.getIsPostOwner())
-                        .content(view.getContent())
-                        .createdAt(view.getCreatedAt())
-                        .lastModifiedAt(view.getLastModifiedAt())
-                        .likeCount(view.getLikeCount())
-                        .isLiked(view.getIsLiked())
-                        .isActiveComment(view.getIsActiveComment())
-                        .build());
-                anonymousCount++;
-            }
-        }
-
-        return results;
+//
+//        return results;
     }
 }

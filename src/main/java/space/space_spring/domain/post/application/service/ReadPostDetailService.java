@@ -10,21 +10,15 @@ import space.space_spring.domain.post.application.port.in.readPostDetail.ResultO
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.application.port.out.comment.CommentDetailQueryPort;
 import space.space_spring.domain.post.application.port.out.comment.CommentDetailView;
-import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
 import space.space_spring.domain.post.application.port.out.post.PostDetailQueryPort;
 import space.space_spring.domain.post.application.port.out.post.PostDetailView;
 import space.space_spring.domain.post.domain.Board;
-import space.space_spring.domain.post.domain.Comment;
 import space.space_spring.domain.post.domain.Post;
-import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
-import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.global.exception.CustomException;
-import space.space_spring.global.util.NaturalNumber;
 import space.space_spring.global.util.post.ConvertCreatedDate;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
 @Service
@@ -32,15 +26,13 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Transactional(readOnly = true)
 public class ReadPostDetailService implements ReadPostDetailUseCase {
 
+    private static final String ANONYMOUS_COMMENT_CREATOR_NICKNAME = "익명 스페이서";
+    private static final String INACTIVE_COMMENT_CONTENT = "삭제된 댓글입니다.";
+
     private final PostDetailQueryPort loadPostDetailPort;
     private final CommentDetailQueryPort loadCommentDetailPort;
-
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
-//    private final LoadCommentPort loadCommentPort;
-//    private final LoadLikePort loadLikePort;
-//    private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
-//    private final LoadAttachmentPort loadAttachmentPort;
 
     @Override
     public ResultOfReadPostDetail readPostDetail(ReadPostDetailCommand command) {
@@ -55,7 +47,41 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         PostDetailView postDetailView = loadPostDetailPort.loadPostDetail(post.getId(), command.getSpaceMemberId());
 
         // 4. 해당 게시글에 달린 댓글 정보 조회
-        List<CommentDetailView> commentDetailViews = loadCommentDetailPort.loadCommentDetail(post.getId(), command.getSpaceMemberId());
+        List<CommentDetailView> rawCommentDetailViews = loadCommentDetailPort.loadCommentDetail(post.getId(), command.getSpaceMemberId());
+
+        // 5. 후처리: 익명 댓글 및 삭제된 댓글 처리
+        List<CommentDetailView> processedCommentDetailViews = new ArrayList<>();
+        int anonymousCount = 1;
+        for (CommentDetailView view : rawCommentDetailViews) {
+            if (!view.getIsActiveComment()) { // 삭제된 댓글인 경우
+                processedCommentDetailViews.add(CommentDetailView.builder()
+                        .creatorName(null)
+                        .creatorProfileImageUrl(null)
+                        .isPostOwner(view.getIsPostOwner())
+                        .content(INACTIVE_COMMENT_CONTENT)
+                        .createdAt(view.getCreatedAt())
+                        .lastModifiedAt(view.getLastModifiedAt())
+                        .likeCount(view.getLikeCount())
+                        .isLiked(view.getIsLiked())
+                        .isActiveComment(view.getIsActiveComment())
+                        .build());
+            } else if (view.getCreatorName() == null) { // 익명 댓글인 경우
+                processedCommentDetailViews.add(CommentDetailView.builder()
+                        .creatorName(ANONYMOUS_COMMENT_CREATOR_NICKNAME + " " + anonymousCount)
+                        .creatorProfileImageUrl(view.getCreatorProfileImageUrl())
+                        .isPostOwner(view.getIsPostOwner())
+                        .content(view.getContent())
+                        .createdAt(view.getCreatedAt())
+                        .lastModifiedAt(view.getLastModifiedAt())
+                        .likeCount(view.getLikeCount())
+                        .isLiked(view.getIsLiked())
+                        .isActiveComment(view.getIsActiveComment())
+                        .build());
+                anonymousCount++;
+            } else { // 정상 댓글은 그대로 추가
+                processedCommentDetailViews.add(view);
+            }
+        }
 
         // 5. return
         return ResultOfReadPostDetail.builder()
@@ -68,7 +94,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
                 .attachmentUrls(postDetailView.getAttachmentUrls())
                 .likeCount(postDetailView.getLikeCount().intValue())
                 .isLiked(postDetailView.getIsLiked())
-                .infoOfCommentDetails(commentDetailViews.stream()
+                .infoOfCommentDetails(processedCommentDetailViews.stream()
                         .map(commentDetailView -> InfoOfCommentDetail.builder()
                                 .creatorName(commentDetailView.getCreatorName())
                                 .creatorProfileImageUrl(commentDetailView.getCreatorProfileImageUrl())
@@ -82,40 +108,6 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
                                 .build())
                         .toList())
                 .build();
-
-
-
-//        // 3. comment 조회 -> status 상관없이 모든 댓글들 조회
-//        List<Comment> comments = loadCommentPort.loadByPostIdWithoutStatusFilter(post.getId());
-//
-//        // 4. post, comment 들의 좋아요 개수 계산
-//        NaturalNumber postLikeCount = loadLikePort.countLikeByPostId(post.getId());
-//        Map<Long, NaturalNumber> commentLikeCountMap = loadLikePort.countLikesByPostIds(comments.stream().map(Comment::getId).toList());
-//
-//        // 5. 댓글 상세 정보 생성
-//        List<InfoOfCommentDetail> infoOfCommentDetails = comments.stream()
-//                .map(comment -> buildCommentDetail(comment, post, command, commentLikeCountMap))
-//                .toList();
-//
-//        // 6. return
-//        NicknameAndProfileImage postCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(post.getPostCreatorId());
-//        List<String> attachmentUrls = loadAttachmentPort.loadAttachmentUrlByTargetId(post.getId());
-//        boolean hasSpaceMemberLikedToPost = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), post.getId());
-//
-//        String postCreatorNickname = post.getIsAnonymous() ? "익명 스페이서" : postCreator.getNickname();
-//
-//        return ResultOfReadPostDetail.builder()
-//                .creatorName(postCreatorNickname)
-//                .creatorProfileImageUrl(postCreator.getProfileImageUrl())
-//                .createdAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt()))
-//                .lastModifiedAt(ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getLastModifiedAt()))
-//                .title(post.getTitle())
-//                .content(post.getContent())
-//                .attachmentUrls(attachmentUrls)
-//                .likeCount(postLikeCount)
-//                .isLiked(hasSpaceMemberLikedToPost)
-//                .infoOfCommentDetails(infoOfCommentDetails)
-//                .build();
     }
 
     private void validate(Board board, Post post, ReadPostDetailCommand command) {
@@ -127,41 +119,4 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
             throw new CustomException(POST_IS_NOT_IN_BOARD);
         }
     }
-//
-//    private InfoOfCommentDetail buildCommentDetail(Comment comment, Post post, ReadPostDetailCommand command, Map<Long, NaturalNumber> commentLikeCountMap) {
-//        // 댓글 작성자 정보 조회
-//        NicknameAndProfileImage commentCreator = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(comment.getCommentCreatorId());
-//        String creatorNickname = commentCreator.getNickname();
-//        String creatorProfileImageUrl = commentCreator.getProfileImageUrl();
-//
-//        // 익명 댓글인 경우 이름 재정의
-//        // TODO : 익명인 댓글 작성자의 네이밍 알고리즘 개선
-//        if (comment.getIsAnonymous()) {
-//            creatorNickname = "익명 스페이서 " + (post.getId() * 10) + comment.getCommentCreatorId();
-//            creatorProfileImageUrl = null;      // 프론트에서 익명 디폴트 이미지 보여주기?? 아니면 s3에 익명 디폴트 이미지 저장 & 로드?
-//        }
-//
-//        // 댓글이 비활성화된 경우 내용 수정
-//        boolean isActiveComment = comment.getBaseInfo().isActive();
-//        if (!isActiveComment) {
-//            comment.changeContent("삭제된 댓글입니다.");
-//            creatorNickname = null;
-//            creatorProfileImageUrl = null;
-//        }
-//
-//        boolean hasSpaceMemberLikedToComment = loadLikePort.hasSpaceMemberLiked(command.getSpaceMemberId(), comment.getId());
-//        boolean isPostOwner = post.isPostCreator(comment.getCommentCreatorId());
-//
-//        return InfoOfCommentDetail.builder()
-//                .creatorName(creatorNickname)
-//                .creatorProfileImageUrl(creatorProfileImageUrl)
-//                .isPostOwner(isPostOwner)
-//                .content(comment.getContent())
-//                .createdAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getCreatedAt()))
-//                .lastModifiedAt(ConvertCreatedDate.setCreatedDate(comment.getBaseInfo().getLastModifiedAt()))
-//                .likeCount(commentLikeCountMap.getOrDefault(comment.getId(), NaturalNumber.of(0)))
-//                .isLiked(hasSpaceMemberLikedToComment)
-//                .isActiveComment(isActiveComment)
-//                .build();
-//    }
 }

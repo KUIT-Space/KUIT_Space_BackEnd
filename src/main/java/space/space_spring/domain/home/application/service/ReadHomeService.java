@@ -2,7 +2,6 @@ package space.space_spring.domain.home.application.service;
 
 import static space.space_spring.domain.post.domain.BoardType.NOTICE;
 import static space.space_spring.domain.post.domain.BoardType.SEASON_NOTICE;
-import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.NOTICE_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_NOT_FOUND;
 
 import java.util.ArrayList;
@@ -53,26 +52,24 @@ public class ReadHomeService implements ReadHomeUseCase {
         result.addMemberCnt(spaceMembers.size());
 
         // 전체 공지 + n기 공지 가져오기
-        List<Board> noticeBoard = loadBoardPort.loadByType(NOTICE);
-        List<Board> seasonNoticeBoard = loadBoardPort.loadByType(SEASON_NOTICE);
-        if (noticeBoard.isEmpty() || seasonNoticeBoard.isEmpty()) return result;
+        List<Long> noticeBoardIds = new ArrayList<>();
+        loadBoardPort.loadByType(NOTICE).forEach(board -> noticeBoardIds.add(board.getId()));
+        loadBoardPort.loadByType(SEASON_NOTICE).forEach(board -> noticeBoardIds.add(board.getId()));
 
-        List<Board> allNoticeBoard = new ArrayList<>();
-        allNoticeBoard.addAll(noticeBoard);
-        allNoticeBoard.addAll(seasonNoticeBoard);
+        if (!noticeBoardIds.isEmpty()) {
+            // 최신순 3개의 공지사항만 가져오기
+            List<Post> noticePosts = loadPostPort.loadLatestPostsByBoardIds(noticeBoardIds, 3);
 
-        List<NoticeSummary> notices = new ArrayList<>();
-        for (Board board : allNoticeBoard) {
-            List<Post> posts = loadPostPort.loadPostListByBoardId(board.getId());
-
-            for (Post post : posts) {
-                if (notices.size() >= 3) break;
-                notices.add(new NoticeSummary(post.getContent().getValue(), ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt())));
+            List<NoticeSummary> notices = new ArrayList<>();
+            for (Post post : noticePosts) {
+                notices.add(new NoticeSummary(
+                        post.getContent().getValue(),
+                        ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt())
+                ));
             }
 
-            if (notices.size() >= 3) break;
+            result.addNotice(notices);
         }
-        result.addNotice(notices);
 
         // 구독한 게시판 가져오기
         List<SubscriptionSummary> subscriptions = new ArrayList<>();

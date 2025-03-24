@@ -51,7 +51,7 @@ public class ReadHomeService implements ReadHomeUseCase {
         // 전체 공지 + n기 공지 가져오기
         List<Board> noticeBoard = loadBoardPort.loadByType(NOTICE);
         List<Board> seasonNoticeBoard = loadBoardPort.loadByType(SEASON_NOTICE);
-        if (noticeBoard.isEmpty() || seasonNoticeBoard.isEmpty()) throw new CustomException(NOTICE_NOT_FOUND);
+        if (noticeBoard.isEmpty() || seasonNoticeBoard.isEmpty()) return result;
 
         List<Board> allNoticeBoard = new ArrayList<>();
         allNoticeBoard.addAll(noticeBoard);

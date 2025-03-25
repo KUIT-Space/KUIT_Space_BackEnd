@@ -92,8 +92,8 @@ public class CommentQueryAdapter implements CommentDetailQueryPort, CommentCreat
 
         return queryFactory.select(
                         Projections.constructor(AnonymousCommentCreatorView.class,
-                                // 댓글 작성자 프로필 이미지 URL
-                                commentBase.spaceMember.profileImageUrl,
+                                // 댓글 작성자 id
+                                commentBase.spaceMember.id,
                                 // 게시글 작성자와 댓글 작성자 비교
                                 Expressions.booleanTemplate(
                                         "({0} = {1})",

@@ -14,7 +14,7 @@ public class TitleAndContentParser {
         this.content=content;
     }
 
-    public static TitleAndContentParser parser(String input){
+    public static TitleAndContentParser parse(String input){
         if (input == null || input.isBlank()) {
             //
             return new TitleAndContentParser("","");

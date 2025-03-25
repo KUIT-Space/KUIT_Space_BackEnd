@@ -74,6 +74,8 @@ public class CreateCommentService implements CreateCommentUseCase {
     }
 
     private String resolveAnonymousNickname(Long commentCreatorId, Post post) {
+        if (post.isPostCreator(commentCreatorId)) return POST_CREATOR_NICKNAME;
+
         List<AnonymousCommentCreatorView> anonymousViews = commentCreatorQueryPort.loadAnonymousCommentCreators(post.getId());
         Map<Long, String> anonymousNicknameMap = new HashMap<>();
         int anonymousIndex = 1;
@@ -85,11 +87,7 @@ public class CreateCommentService implements CreateCommentUseCase {
             }
         }
 
-        if (post.isPostCreator(commentCreatorId)) {
-            return POST_CREATOR_NICKNAME;
-        } else {
-            return anonymousNicknameMap.getOrDefault(commentCreatorId, ANONYMOUS_COMMENT_CREATOR + " " + anonymousIndex);
-        }
+        return anonymousNicknameMap.getOrDefault(commentCreatorId, ANONYMOUS_COMMENT_CREATOR + " " + anonymousIndex);
     }
 
     private void validateBoardAndPost(Board board, Post post, CreateCommentCommand command) {

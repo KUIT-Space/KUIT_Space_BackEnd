@@ -4,6 +4,8 @@ package space.space_spring.domain.post.adapter.out.persistence.tag;
 import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
+
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
@@ -77,5 +79,10 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
 
         return allByIdAndStatus.stream().map(tagMapper::toDomainEntity).toList();
 
+    }
+
+    @Override
+    public Optional<Tag> loadByBoardId(Long boardId) {
+        return tagRepository.findByBoardId(boardId).map(tagMapper::toDomainEntity);
     }
 }

@@ -44,6 +44,9 @@ public class UpdatePostFromDiscordCommand {
             return Map.of();
         }
         // 변환 실행
+        if(newAttachmentUrlMap==null){
+            return Map.of();
+        }
         return newAttachmentUrlMap.entrySet()
                 .stream()
                 .collect(Collectors.groupingBy(

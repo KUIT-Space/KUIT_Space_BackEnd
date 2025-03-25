@@ -25,8 +25,18 @@ import java.io.IOException;
 @RestControllerAdvice
 public class BaseExceptionControllerAdvice {
 
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public BaseErrorResponse handleNotFound(NoHandlerFoundException ex) {
+        // 에러 로그 간략화 - 잘못된 URL만 출력
+        log.warn("잘못된 API 요청: {}", ex.getRequestURL());
+
+        return new BaseErrorResponse(URL_NOT_FOUND);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
+    @ExceptionHandler({BadRequestException.class, TypeMismatchException.class})
     public BaseErrorResponse handle_BadRequest(Exception e) {
         log.error("[handle_BadRequest]", e);
         return new BaseErrorResponse(URL_NOT_FOUND);

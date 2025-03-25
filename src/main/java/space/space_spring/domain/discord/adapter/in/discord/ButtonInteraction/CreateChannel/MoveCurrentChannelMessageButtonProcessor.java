@@ -13,15 +13,19 @@ import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHo
 import space.space_spring.domain.post.application.port.in.boardCache.LoadBoardCacheUseCase;
 import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
+import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static space.space_spring.domain.discord.adapter.in.discord.DiscordMessageMapper.getAttachmentType;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
 
 @Component
@@ -67,6 +71,7 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
         List<CompletableFuture<Void>> futures = messages.stream()
                 .filter(message->message.getMember()!=null)
                 .filter(message->loadPostPort.loadByDiscordId(message.getIdLong()).isEmpty())
+                .filter(message->message.getMember()!=null)
                 .map(message -> {
                     return CompletableFuture.runAsync(()->{
                             inputMessageFromDiscordUseCase.putPost(discordMessageMapper.mapToPostCommandFromText(message, boardId));
@@ -94,5 +99,5 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
 
     }
 
-
+    
 }

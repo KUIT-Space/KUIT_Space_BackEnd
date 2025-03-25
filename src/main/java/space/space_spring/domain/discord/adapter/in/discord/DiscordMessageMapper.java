@@ -53,8 +53,11 @@ public class DiscordMessageMapper {
                 .title(title)
                 .tagDiscordIds(tagDiscordIds)
                 .content(content)
+
                 .attachments(
                         getAttachments(message))
+                .createdAt(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
                 .build();
     }
 

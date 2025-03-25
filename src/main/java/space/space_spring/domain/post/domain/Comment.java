@@ -55,4 +55,6 @@ public class Comment {
     public void changeAnonymous(Boolean isAnonymous) {
         this.isAnonymous = isAnonymous;
     }
+
+
 }

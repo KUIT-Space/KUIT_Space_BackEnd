@@ -46,6 +46,19 @@ public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, Cre
     }
 
     @Override
+    public List<Long> loadSubscribedBoardIds(Long spaceMemberId) {
+        return subscriptionRepository.findSubscribedBoardIdsBySpaceMemberId(spaceMemberId);
+    }
+
+    @Override
+    public List<Subscription> loadBySpaceMember(Long spaceMemberId) {
+        SpaceMemberJpaEntity spaceMember = spaceMemberRepository.findByIdAndStatus(spaceMemberId, ACTIVE)
+                .orElseThrow(() -> new CustomException(SPACE_MEMBER_NOT_FOUND));
+
+        return subscriptionRepository.findBySpaceMemberAndStatus(spaceMember, ACTIVE).stream().map(subscriptionMapper::toDomainEntity).toList();
+    }
+
+    @Override
     public Optional<Subscription> loadByBoardId(Long boardId) {
         return subscriptionRepository.findByBoardIdAndStatus(boardId, ACTIVE).map(subscriptionMapper::toDomainEntity);
     }

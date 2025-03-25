@@ -1,5 +1,7 @@
 package space.space_spring.domain.post.adapter.in.web.createPost;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -15,31 +17,39 @@ import static space.space_spring.global.util.bindingResult.BindingResultUtils.ge
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Post", description = "게시글 관련 API")
 public class CreatePostController {
 
     private final CreatePostUseCase createPostUseCase;
 
-    @PostMapping("/space/{spaceId}/board/{boardId}/create")
+    @Operation(summary = "게시글 생성", description = """
+            
+            스페이스 멤버가 게시글(=일반 게시글, 질문, Tip)을 생성합니다.
+            
+            """)
+    @PostMapping(value = "/space/{spaceId}/board/{boardId}/post", consumes = "multipart/form-data")
     public BaseResponse<Long> createPost(
             @JwtLoginAuth Long spaceMemberId,
             @PathVariable Long spaceId,
             @PathVariable Long boardId,
-            @Validated @RequestBody RequestOfCreatePost request,
+            @Validated @ModelAttribute RequestOfCreatePost request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_POST_CREATE, getErrorMessage(bindingResult));
         }
 
         CreatePostCommand command = CreatePostCommand.builder()
-                .postCreatorId(spaceMemberId)
+                .spaceId(spaceId)
                 .boardId(boardId)
+                .tagIds(request.getTagIds())
+                .postCreatorId(spaceMemberId)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .attachments(request.getAttachments())
                 .isAnonymous(request.getIsAnonymous())
                 .build();
 
-        return new BaseResponse<>(createPostUseCase.createPostFromWeb(spaceMemberId, spaceId, command));
+        return new BaseResponse<>(createPostUseCase.createPostFromWeb(command));
 
     }
 }

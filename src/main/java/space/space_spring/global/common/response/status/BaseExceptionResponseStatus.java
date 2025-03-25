@@ -16,7 +16,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 2000: Request 오류 (BAD_REQUEST)
      */
     BAD_REQUEST(2000, HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
-    URL_NOT_FOUND(2001, HttpStatus.BAD_REQUEST, "유효하지 않은 URL 입니다."),
+    URL_NOT_FOUND(2001, HttpStatus.NOT_FOUND, "유효하지 않은 URL 입니다."),
     METHOD_NOT_ALLOWED(2002, HttpStatus.METHOD_NOT_ALLOWED, "해당 URL에서는 지원하지 않는 HTTP Method 입니다."),
     HTTP_MESSAGE_NOT_READABLE(2003, HttpStatus.BAD_REQUEST,"request body 양식에 문제가 있습니다"),
     SPACE_ID_PATHVARIABLE_ERROR(2004,HttpStatus.BAD_REQUEST,"URL에 포함된 SPACE_ID 값이 잘못되었습니다."),
@@ -93,6 +93,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY(9001,HttpStatus.INTERNAL_SERVER_ERROR,"multipartFile memory 변환 과정에서 문제가 생겼습니다."),
     IS_NOT_DOCUMENT_FILE(9002, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 문서 파일의 형식이 아닙니다."),
 
+    UNSUPPORTED_FILE_TYPE(9003, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원되는 첨부파일 형식이 아닙니다."),
+
     /**
      * 11000: Post 오류
      */
@@ -100,8 +102,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_POST_CREATE(11001, HttpStatus.BAD_REQUEST, "게시글 생성 요청에서 잘못된 값이 존재합니다."),
     BOARD_NOT_FOUND(11002, HttpStatus.NOT_FOUND, "존재하지 않는 게시판 id입니다."),
     POST_BASE_NOT_FOUND(11003, HttpStatus.NOT_FOUND, "존재하지 않는 post base id입니다."),
+    INVALID_POST_UPDATE(11004, HttpStatus.BAD_REQUEST, "게시글 수정 요청에서 잘못된 값이 존재합니다."),
 
-    POST_NOT_EXIST(11001, HttpStatus.NOT_FOUND, "존재하지 않는 게시글 id입니다."),
+    TAG_IS_REQUIRED_FOR_THIS_BOARD(11005, HttpStatus.BAD_REQUEST, "해당 게시판의 태그는 필수입니다."),
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),
@@ -128,9 +131,15 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
 
   
     PAY_BOARD_NOT_FOUND(11018,HttpStatus.NOT_FOUND,"정산 게시판을 찾지 못했습니다."),
+    INVALID_BOARD_SUBSCRIBE(11019, HttpStatus.BAD_REQUEST, "게시판 구독 등록/취소 요청에서 잘못된 값이 존재합니다."),
+    TAG_NOT_FOUND(11020, HttpStatus.NOT_FOUND, "태그를 찾지 못했습니다."),
+    SUBSCRIPTION_NOT_EXIST(11021, HttpStatus.BAD_REQUEST, "해당 사용자가 구독하지 않은 게시판입니다."),
+    SUBSCRIPTION_ALREADY_EXIST(11022, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 구독한 게시판입니다."),
 
+    LIKE_NOT_FOUND(11019, HttpStatus.NOT_FOUND, "존재하지 않는 좋아요 입니다."),
 
-
+    INVALID_CHANGE_LIKE_STATE_REQUEST(11020, HttpStatus.BAD_REQUEST, "좋아요 on/off 요청에서 잘못된 값이 존재합니다."),
+    TAGS_IS_WORNG(11021,HttpStatus.CONFLICT,"생성 중인 tag 들의 board가 같지 않습니다"),
     /**
      * 12000 : Pay 오류
      */
@@ -150,6 +159,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_CREATOR_MISMATCH(12012, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
 
 
+    NOTICE_NOT_FOUND(11020, HttpStatus.NOT_FOUND, "공지사항 게시판을 찾을 수 없습니다."),
 
     /**
      * 13000 : Event 오류
@@ -167,7 +177,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     SEND_MESSAGE_FAIL(14000,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
     DISCORD_THREAD_CREATE_FAIL(14001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
     DISCORD_CHANNEL_NOT_FOUND(14002,HttpStatus.NOT_FOUND,"discord channel을 찾지 못했습니다"),
-    DISCORD_GUILD_NOT_FOUND(14003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습ㄴ디ㅏ"),
+    DISCORD_GUILD_NOT_FOUND(14003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습니다"),
     DISCORD_CHANNEL_TYPE_WRONG(14004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다");
     ;
 

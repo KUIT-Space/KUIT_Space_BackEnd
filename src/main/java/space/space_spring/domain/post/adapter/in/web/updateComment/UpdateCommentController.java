@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import space.space_spring.domain.post.adapter.in.web.createComment.ResponseOfCreateComment;
-import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
 import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
@@ -49,7 +47,6 @@ public class UpdateCommentController {
                 .postId(postId)
                 .commentCreatorId(spaceMemberId)
                 .content(request.getContent())
-                .isAnonymous(request.isAnonymous())
                 .build();
 
         updateCommentUseCase.updateComment(command);

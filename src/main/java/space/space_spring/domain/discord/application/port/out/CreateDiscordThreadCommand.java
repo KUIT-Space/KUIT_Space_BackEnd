@@ -22,6 +22,7 @@ public class CreateDiscordThreadCommand {
     public CreateDiscordWebHookMessageCommand getStartMessage(){
         return CreateDiscordWebHookMessageCommand.builder()
                 .name(this.userName)
+                .title(threadName)
                 .content(this.startMessage)
                 .webHookUrl(this.webHookUrl)
                 .avatarUrl(this.avatarUrl)

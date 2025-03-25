@@ -8,12 +8,29 @@ import space.space_spring.domain.event.domain.EventParticipantInfo;
 import space.space_spring.domain.event.domain.EventParticipantInfos;
 
 @Getter
-public class ReadEventInfoResponse extends EventInfoResponse {
+public class ReadEventInfoResponse {
+
+    private Long id;
+
+    private String name;
+
+    private String image;
+
+    private LocalDateTime date;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
 
     private List<EventParticipantInfo> participants;
 
     private ReadEventInfoResponse(Long id, String name, String image, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, List<EventParticipantInfo> participants) {
-        super(id, name, image, date, startTime, endTime);
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.participants = participants;
     }
 

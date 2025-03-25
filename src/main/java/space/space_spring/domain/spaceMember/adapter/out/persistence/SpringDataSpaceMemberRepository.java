@@ -15,7 +15,7 @@ public interface SpringDataSpaceMemberRepository extends JpaRepository<SpaceMemb
 
     Optional<SpaceMemberJpaEntity> findByUserId(Long userId);
 
-    Optional<SpaceMemberJpaEntity> findBySpaceIdAndDiscordId(Long spaceId, Long discordId);
+    Optional<SpaceMemberJpaEntity> findBySpaceIdAndDiscordIdAndStatus(Long spaceId, Long discordId,BaseStatusType status);
 
 
     Optional<SpaceMemberJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);

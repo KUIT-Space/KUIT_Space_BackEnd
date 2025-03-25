@@ -34,15 +34,19 @@ public class LikeJpaEntity extends BaseJpaEntity {
 
     @Column(name="is_liked")
     @NotNull
-    private boolean isLiked;    // 좋아요 여부
+    private Boolean isLiked;    // 좋아요 여부
 
-    private LikeJpaEntity(PostBaseJpaEntity postBase, SpaceMemberJpaEntity spaceMember, boolean isLiked) {
+    private LikeJpaEntity(PostBaseJpaEntity postBase, SpaceMemberJpaEntity spaceMember, Boolean isLiked) {
         this.postBase = postBase;
         this.spaceMember = spaceMember;
         this.isLiked = isLiked;
     }
 
-    public static LikeJpaEntity create(PostBaseJpaEntity postBase, SpaceMemberJpaEntity spaceMember, boolean isLiked) {
+    public static LikeJpaEntity create(PostBaseJpaEntity postBase, SpaceMemberJpaEntity spaceMember, Boolean isLiked) {
         return new LikeJpaEntity(postBase, spaceMember, isLiked);
+    }
+
+    public void changeLikeState(boolean state) {
+        isLiked = state;
     }
 }

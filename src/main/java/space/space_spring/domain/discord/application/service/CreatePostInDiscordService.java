@@ -64,15 +64,14 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                 .build();
     }
     private CreateDiscordWebHookMessageCommand mapToWebHookMessage(CreatePostInDiscordCommand command){
-        NicknameAndProfileImage userInfo = loadSpaceMemberinfoPort.loadNicknameAndProfileImageById(command.getPostCreatorId());
         Long guildDiscordId = loadSpacePort.loadSpaceById(command.getSpaceId()).get().getDiscordId();
         Board board=loadBoardPort.load(command.getBoardId()).orElseThrow(()->new CustomException(BOARD_NOT_EXIST));
         return CreateDiscordWebHookMessageCommand.builder()
-                .name(userInfo.getNickname())
-                .avatarUrl(userInfo.getProfileImageUrl())
+                .name(command.getUserName())
+                .avatarUrl(command.getProfileUrl())
                 .webHookUrl(board.getWebhookUrl())
                 .title(command.getTitle())
-                .content(command.getTitle())
+                .content(command.getContent().getValue())
                 .guildDiscordId(guildDiscordId)
                 .channelDiscordId(board.getDiscordId())
                 .attachmentsUrl(
@@ -80,9 +79,7 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                                 .sorted(Comparator.comparing(a -> a.getAttachmentType().equals(AttachmentType.IMAGE) ? 0 : 1)) // image 우선 정렬
                                 .map(attachment->attachment.getAttachmentUrl()).toList()
                 )
+                .tags(command.getTagIds())
                 .build();
     }
-
-
-
 }

@@ -3,7 +3,10 @@ package space.space_spring.domain.post.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordUseCase;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentCommand;
+import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.updateComment.UpdateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.domain.*;
@@ -20,6 +23,7 @@ public class UpdateCommentService implements UpdateCommentUseCase {
     private final LoadPostPort loadPostPort;
     private final LoadCommentPort loadCommentPort;
     private final UpdateCommentPort updateCommentPort;
+    private final UpdateCommentInDiscordUseCase updateCommentInDiscordUseCase;
 
     @Override
     @Transactional
@@ -32,9 +36,31 @@ public class UpdateCommentService implements UpdateCommentUseCase {
         // 2. validation
         validate(board, post, comment, command);
 
+        // 3. 디스코드로 수정된 댓글 정보 보내기
+        updateCommentInDiscordUseCase.updateCommentInDiscord(UpdateCommentInDiscordCommand.builder()
+                .discordIdOfBoard(board.getDiscordId())
+                .discordIdOfPost(post.getDiscordId())
+                .discordIdOfComment(comment.getDiscordId())
+                .webHookUrl(board.getWebhookUrl())
+                .build());
+
         // 3. 댓글 update
         comment.changeContent(command.getContent());
-        comment.changeAnonymous(command.isAnonymous());
+        updateCommentPort.updateComment(comment);
+    }
+
+    @Transactional
+    @Override
+    public void updateCommentFromDiscord(UpdateCommentFromDiscordCommand command) {
+        /**
+         * Comment 도메인 엔티티를 조회하지 말고, 그냥 바로 update port로 보내는게 더 좋은건가??
+         * -> 어차피 db 한번 찔러서 CommentJpaEntity 만드는건 똑같긴하다
+         */
+        // 1. discordId로 수정할 comment 찾기
+        Comment comment = loadCommentPort.loadByDiscordId(command.getDiscordMessageId());
+
+        // 2. comment update
+        comment.changeContent(command.getContent());
         updateCommentPort.updateComment(comment);
     }
 
@@ -45,10 +71,6 @@ public class UpdateCommentService implements UpdateCommentUseCase {
 
         if (!post.isInBoard(board.getId())) {       // post가 보드에 속하는지 검증
             throw new CustomException(POST_IS_NOT_IN_BOARD);
-        }
-
-        if (board.getBoardType() != BoardType.QUESTION && command.isAnonymous()) {      // 질문 게시글이 아닌데 댓글 작성자가 익명이라면
-            throw new CustomException(CAN_NOT_BE_ANONYMOUS);
         }
 
         if (!comment.isCommentCreator(command.getCommentCreatorId())) {     // 댓글 작성자가 본인이 맞는지

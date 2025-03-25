@@ -21,7 +21,6 @@ import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMembe
 import space.space_spring.domain.pay.domain.Money;
 import space.space_spring.domain.pay.domain.PayAmountPolicy;
 
-
 import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;

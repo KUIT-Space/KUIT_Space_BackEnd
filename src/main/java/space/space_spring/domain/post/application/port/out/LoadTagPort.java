@@ -1,6 +1,7 @@
 package space.space_spring.domain.post.application.port.out;
 
 import com.amazonaws.services.kms.model.ListGrantsRequest;
+import java.util.Optional;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Tag;
 
@@ -16,4 +17,6 @@ public interface LoadTagPort {
     List<Tag> loadByDiscordId(List<Long> discordIdOfTag);
 
     List<Tag> loadById(List<Long> tagIds);
+
+    Optional<Tag> loadByBoardId(Long boardId);
 }

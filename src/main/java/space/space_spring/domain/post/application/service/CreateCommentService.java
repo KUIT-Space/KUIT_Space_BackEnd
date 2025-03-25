@@ -80,18 +80,19 @@ public class CreateCommentService implements CreateCommentUseCase {
             for (AnonymousCommentCreatorView view : anonymousCommentCreatorViews) {
                 Long creatorId = view.getCreatorId();
                 if (!anonymousNicknameMap.containsKey(creatorId)) {
-                    if (view.getIsPostOwner()) {
-                        anonymousNicknameMap.put(creatorId, "게시글 작성자");
-                    } else {
+                    if (!view.getIsPostOwner()) {
                         anonymousNicknameMap.put(creatorId, "익명 스페이서" + " " + anonymousCount++);
                     }
                 }
             }
 
-            if (anonymousNicknameMap.containsKey(command.getCommentCreatorId())) {
-                creatorNickname = anonymousNicknameMap.get(command.getCommentCreatorId());
-            } else {
-                creatorNickname = "익명 스페이서" + " " + anonymousCount;
+            if (post.isPostCreator(command.getCommentCreatorId())) creatorNickname = "게시글 작성자";
+            else {
+                if (anonymousNicknameMap.containsKey(command.getCommentCreatorId())) {
+                    creatorNickname = anonymousNicknameMap.get(command.getCommentCreatorId());
+                } else {
+                    creatorNickname = "익명 스페이서" + " " + anonymousCount;
+                }
             }
 
             creatorProfileImageUrl = null;

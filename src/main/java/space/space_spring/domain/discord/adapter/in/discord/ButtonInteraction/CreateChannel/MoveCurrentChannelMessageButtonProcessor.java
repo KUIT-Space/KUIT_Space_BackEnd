@@ -99,5 +99,5 @@ public class MoveCurrentChannelMessageButtonProcessor implements ButtonInteracti
 
     }
 
-    
+
 }

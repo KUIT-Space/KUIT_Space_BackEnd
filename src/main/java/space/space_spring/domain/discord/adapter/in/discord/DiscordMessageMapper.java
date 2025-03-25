@@ -32,6 +32,8 @@ public class DiscordMessageMapper {
                 .spaceDiscordId(message.getGuild().getIdLong())
                 .title(parser.getTitle())
                 .tagDiscordIds(List.of())
+                .createdAt(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
                 .content(parser.getContent())
                 .attachments(
                         getAttachments(message))
@@ -53,7 +55,8 @@ public class DiscordMessageMapper {
                 .title(title)
                 .tagDiscordIds(tagDiscordIds)
                 .content(content)
-
+                .createdAt(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
                 .attachments(
                         getAttachments(message))
                 .createdAt(message.getTimeCreated())

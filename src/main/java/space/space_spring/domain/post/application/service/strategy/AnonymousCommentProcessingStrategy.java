@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class AnonymousCommentProcessingStrategy implements CommentDetailProcessingStrategy {
 
-    private static final String ANONYMOUS_POST_AND_COMMENT_CREATOR_NICKNAME = "게시글 작성자";
+    private static final String POST_CREATOR_NICKNAME = "게시글 작성자";
     private static final String ANONYMOUS_COMMENT_CREATOR_NICKNAME = "익명 스페이서";
     private final Map<Long, String> anonymousNicknameMap = new HashMap<>();
     private int anonymousCount = 1;
@@ -22,7 +22,7 @@ public class AnonymousCommentProcessingStrategy implements CommentDetailProcessi
         if (comment.getIsPostOwner()) {
             return CommentDetailView.builder()
                     .creatorId(comment.getCreatorId())
-                    .creatorName(ANONYMOUS_POST_AND_COMMENT_CREATOR_NICKNAME)
+                    .creatorName(POST_CREATOR_NICKNAME)
                     .creatorProfileImageUrl(null)
                     .isPostOwner(comment.getIsPostOwner())
                     .content(comment.getContent())

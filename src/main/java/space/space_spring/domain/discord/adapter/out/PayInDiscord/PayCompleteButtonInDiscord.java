@@ -6,12 +6,11 @@ import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import space.space_spring.domain.discord.application.port.out.Pay.CreatePayCompleteButtonPort;
 
 @Component
 @RequiredArgsConstructor
-public class PayCompleteButtonInDiscord {
+public class PayCompleteButtonInDiscord implements CreatePayCompleteButtonPort {
     private final JDA jda;
 
 

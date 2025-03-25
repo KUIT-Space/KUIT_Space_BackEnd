@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.like.QLikeJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.post.QPostJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.QPostBaseJpaEntity;
+import space.space_spring.domain.post.application.port.out.comment.AnonymousCommentCreatorView;
+import space.space_spring.domain.post.application.port.out.comment.CommentCreatorQueryPort;
 import space.space_spring.domain.post.application.port.out.comment.CommentDetailQueryPort;
 import space.space_spring.domain.post.application.port.out.comment.CommentDetailView;
 import space.space_spring.domain.spaceMember.domian.QSpaceMemberJpaEntity;
@@ -18,7 +20,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CommentQueryAdapter implements CommentDetailQueryPort {
+public class CommentQueryAdapter implements CommentDetailQueryPort, CommentCreatorQueryPort {
 
     private final JPAQueryFactory queryFactory;
 
@@ -74,6 +76,42 @@ public class CommentQueryAdapter implements CommentDetailQueryPort {
                 .join(comment.post, parentPost)
                 .join(commentBase.spaceMember, commentCreator)
                 .where(parentPost.id.eq(postId))
+                .orderBy(commentBase.createdAt.asc())
+                .fetch();
+    }
+
+    /**
+     * 특정 게시글의 익명 댓글 작성자의 정보를 댓글 생성 시각 기준 오름차순으로 정렬하여 반환
+     * -> 이때 삭제된 익명 댓글도 모두 포함 (익명 스페이서 1이 댓글을 삭제하더라도, 그다음은 익명 스페이서 2 여야한다)
+     */
+    @Override
+    public List<AnonymousCommentCreatorView> loadAnonymousCommentCreators(Long postId) {
+        QPostCommentJpaEntity comment = QPostCommentJpaEntity.postCommentJpaEntity;
+        QPostJpaEntity parentPost = QPostJpaEntity.postJpaEntity;
+        QPostBaseJpaEntity commentBase = QPostBaseJpaEntity.postBaseJpaEntity;
+
+        return queryFactory.select(
+                        Projections.constructor(AnonymousCommentCreatorView.class,
+                                // 댓글 작성자 프로필 이미지 URL
+                                commentBase.spaceMember.profileImageUrl,
+                                // 게시글 작성자와 댓글 작성자 비교
+                                Expressions.booleanTemplate(
+                                        "({0} = {1})",
+                                        commentBase.spaceMember.id,
+                                        parentPost.postBase.spaceMember.id),
+                                // 댓글의 상태 -> 삭제된 댓글인지 아닌지
+                                Expressions.booleanTemplate(
+                                        "CASE WHEN {0} = {1} THEN true ELSE false END",
+                                        commentBase.status, Expressions.constant(BaseStatusType.ACTIVE))
+                        )
+                )
+                .from(comment)
+                .join(comment.postBase, commentBase)
+                .join(comment.post, parentPost)
+                .where(
+                        parentPost.id.eq(postId)
+                                .and(comment.isAnonymous.eq(true))
+                )
                 .orderBy(commentBase.createdAt.asc())
                 .fetch();
     }

@@ -102,7 +102,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                 .content(command.getContent())
                 .createdAt(command.getCreatedAt())
                 .lastModifiedAt(command.getLastModifiedAt())
-                .postId(boardId)
+                .postId(command.getMessageDiscordId())
                 .build();
     }
 

@@ -20,7 +20,7 @@ public class PayCompleteButtonInDiscord implements CreatePayCompleteButtonPort {
 
         threadChannel.sendMessage("돈을 송금 하셨으면 버튼을 눌러 정산 완료 처리 해주세요.\n혹은 space web에서 완료 처리 해주세요")
                 .addComponents(
-                        ActionRow.of(Button.primary("pay-complete:"+threadId,"정산 완료"))
+                        ActionRow.of(Button.primary("check:pay-complete:"+threadId,"정산 완료"))
                 )
                 .queue();
     }

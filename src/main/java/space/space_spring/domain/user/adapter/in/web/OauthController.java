@@ -32,15 +32,17 @@ public class OauthController {
         """)
     @GetMapping("/oauth/discord")
     public BaseResponse<OauthLoginResponse> signInDiscord(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        TokenPair tokenPair = oauthUseCase.signIn(code);
+        SignInResult signInResult = oauthUseCase.signIn(code);
 
-        if (tokenPair == null) {
+        if (signInResult.isSignInFail()) {
             return new BaseResponse<>(new OauthLoginResponse(false, List.of()));
         }
 
+        TokenPair tokenPair = signInResult.getTokenPair();
         response.setHeader(ACCESS_TOKEN_HEADER, TOKEN_PREFIX + tokenPair.getAccessToken());
         response.setHeader(REFRESH_TOKEN_HEADER, TOKEN_PREFIX + tokenPair.getRefreshToken());
-        return new BaseResponse<>(new OauthLoginResponse(true, List.of())); // TODO: 속한 스페이스 정보들 담아주기
+
+        return new BaseResponse<>(new OauthLoginResponse(true, signInResult.getSpaceInfos()));
     }
 
 }

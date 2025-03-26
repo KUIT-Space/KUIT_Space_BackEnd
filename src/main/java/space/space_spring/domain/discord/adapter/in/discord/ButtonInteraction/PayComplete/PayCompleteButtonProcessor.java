@@ -24,7 +24,7 @@ public class PayCompleteButtonProcessor implements ButtonInteractionProcessor {
     }
     public void process(ButtonInteractionEvent event){
         Long guildId = event.getGuild().getIdLong();
-        SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildId,event.getMessageIdLong());
+        SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildId,event.getMember().getIdLong());
         Long spaceMemberId = spaceMember.getId();
         completePayUseCase.completeForRequestedPay(
                 spaceMemberId,

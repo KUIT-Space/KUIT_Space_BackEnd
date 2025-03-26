@@ -29,6 +29,12 @@ public class CheckPayCompleteButtonProcessor implements ButtonInteractionProcess
         String[] parts = buttonId.split(":");
         if (parts.length < 3) return;
 
+        if(validatePayTarget(event.getGuild().getIdLong(),Long.valueOf(parts[2]),event.getMember().getIdLong())){
+            event.reply("이 정산의 대상자가 아닙니다")
+                    .setEphemeral(true)
+                    .queue();
+            return;
+        }
 
         int index = buttonId.indexOf(":"); // 첫 번째 ":"의 위치 찾기
         String returnString = (index != -1) ? buttonId.substring(index + 1) : buttonId; // ":" 이후 부분 반환

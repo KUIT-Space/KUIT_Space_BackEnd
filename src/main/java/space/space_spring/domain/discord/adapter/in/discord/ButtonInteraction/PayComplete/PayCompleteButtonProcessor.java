@@ -23,6 +23,9 @@ public class PayCompleteButtonProcessor implements ButtonInteractionProcessor {
         return false;
     }
     public void process(ButtonInteractionEvent event){
+        String buttonId = event.getComponentId();
+        String[] parts = buttonId.split(":");
+        Long payRequestDiscordId = Long.valueOf(parts[1]);
         Long guildId = event.getGuild().getIdLong();
         SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildId,event.getMember().getIdLong());
         Long spaceMemberId = spaceMember.getId();
@@ -30,7 +33,7 @@ public class PayCompleteButtonProcessor implements ButtonInteractionProcessor {
                 spaceMemberId,
                 loadPayRequestTargetPort.loadByTargetMemberId(spaceMemberId).stream()
                         .filter(payTarget-> {
-                            return loadPayRequestPort.loadById(payTarget.getPayRequestId()).getDiscordMessageId().equals(event.getMessageIdLong());
+                            return loadPayRequestPort.loadById(payTarget.getPayRequestId()).getDiscordMessageId().equals(payRequestDiscordId);
                         }).findFirst().orElseThrow().getId());
         event.reply("정산 완료 처리 되었습니다")
                 .setEphemeral(true)

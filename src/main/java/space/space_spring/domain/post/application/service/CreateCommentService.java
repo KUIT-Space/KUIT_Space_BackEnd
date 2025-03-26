@@ -1,8 +1,6 @@
 package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.discord.application.port.in.createComment.CreateCommentInDiscordCommand;
@@ -10,10 +8,16 @@ import space.space_spring.domain.discord.application.port.in.createComment.Creat
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentUseCase;
 import space.space_spring.domain.post.application.port.out.*;
+import space.space_spring.domain.post.application.port.out.comment.AnonymousCommentCreatorView;
+import space.space_spring.domain.post.application.port.out.comment.CommentCreatorQueryPort;
 import space.space_spring.domain.post.domain.*;
 import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberInfoPort;
 import space.space_spring.domain.spaceMember.application.port.out.NicknameAndProfileImage;
 import space.space_spring.global.exception.CustomException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.*;
 
@@ -22,58 +26,31 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Transactional(readOnly = true)
 public class CreateCommentService implements CreateCommentUseCase {
 
-    private static final Logger log = LoggerFactory.getLogger(CreateCommentService.class);
+    private static final String ANONYMOUS_COMMENT_CREATOR = "익명 스페이서";
+    private static final String POST_CREATOR_NICKNAME = "게시글 작성자";
+
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
     private final CreateCommentPort createCommentPort;
     private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
     private final CreateCommentInDiscordUseCase createCommentInDiscordUseCase;
+    private final CommentCreatorQueryPort commentCreatorQueryPort;
 
     @Override
     @Transactional
     public Long createCommentFromWeb(CreateCommentCommand command) {
-        // 1. Board, Post 조회
+        // 1. Board, Post 조회 및 검증
         Board board = loadBoardPort.loadById(command.getBoardId());
         Post post = loadPostPort.loadById(command.getPostId());
-
-        // 2. validation -> 게시판이 space에 속하는게 맞는지, 게시글이 게시판에 속하는게 맞는지
         validateBoardAndPost(board, post, command);
 
-        /**
-         * space 2.0 v1 에서는 댓글 수정 시에 첨부파일 update 요구사항 없음
-         */
+        // 2. 댓글 작성자 정보 조회 및 필요시 변경
+        NicknameAndProfileImage nicknameAndProfileImage = resolveCreatorInfo(command.getCommentCreatorId(), post, command.getIsAnonymous());
 
-//        // 3. s3에 댓글 첨부파일 upload & db에 attachment 저장
-//        Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachmentCommands().stream()
-//                .collect(Collectors.groupingBy(
-//                        CreateAttachmentCommand::getAttachmentType,
-//                        Collectors.mapping(CreateAttachmentCommand::getAttachment, Collectors.toUnmodifiableList())
-//                ));
-//        Map<AttachmentType, List<String>> savedAttachmentUrls = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "comment");
-//
-//        List<Attachment> attachments = new ArrayList<>();
-//        for (Map.Entry<AttachmentType, List<String>> entry : savedAttachmentUrls.entrySet()) {
-//            for (String savedAttachmentUrl : entry.getValue()) {
-//                attachments.add(Attachment.withoutId(command.getPostId(), entry.getKey(), savedAttachmentUrl));
-//            }
-//        }
-//        createAttachmentPort.createAttachments(attachments);
+        // 3. 디스코드로 보내기
+        Long discordId = createCommentInDiscordUseCase.send(CreateCommentInDiscordCommand.of(command, nicknameAndProfileImage.getNickname(), nicknameAndProfileImage.getProfileImageUrl()));
 
-        // 4. discord 로 보내기
-        NicknameAndProfileImage nicknameAndProfileImage = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(command.getCommentCreatorId());
-        String creatorNickname = nicknameAndProfileImage.getNickname();
-        String creatorProfileImageUrl = nicknameAndProfileImage.getProfileImageUrl();
-
-        log.info("anonymous : {}", command.getIsAnonymous());
-
-        if (command.getIsAnonymous()) {
-            creatorNickname = "익명 스페이서 " + command.getPostId() * 10 + command.getCommentCreatorId();
-            creatorProfileImageUrl = null;
-        }
-
-        Long discordId = createCommentInDiscordUseCase.send(CreateCommentInDiscordCommand.of(command, creatorNickname, creatorProfileImageUrl));
-
-        // 5. db에 comment 저장
+        // 4. db에 comment 저장
         return createCommentPort.createComment(command.toDomainEntity(discordId));
     }
 
@@ -81,6 +58,36 @@ public class CreateCommentService implements CreateCommentUseCase {
     @Transactional
     public Long createCommentFromDiscord(CreateCommentCommand command, Long discordId) {
         return createCommentPort.createComment(command.toDomainEntity(discordId));
+    }
+
+    private NicknameAndProfileImage resolveCreatorInfo(Long commentCreatorId, Post post, Boolean isAnonymousComment) {
+        NicknameAndProfileImage nicknameAndProfileImage = loadSpaceMemberInfoPort.loadNicknameAndProfileImageById(commentCreatorId);
+
+        // 비익명 댓글인 경우
+        if (!isAnonymousComment) {
+            return nicknameAndProfileImage;
+        }
+
+        // 익명 댓글인 경우
+        String creatorNickname = resolveAnonymousNickname(commentCreatorId, post);
+        return NicknameAndProfileImage.of(creatorNickname, null);
+    }
+
+    private String resolveAnonymousNickname(Long commentCreatorId, Post post) {
+        if (post.isPostCreator(commentCreatorId)) return POST_CREATOR_NICKNAME;
+
+        List<AnonymousCommentCreatorView> anonymousViews = commentCreatorQueryPort.loadAnonymousCommentCreators(post.getId());
+        Map<Long, String> anonymousNicknameMap = new HashMap<>();
+        int anonymousIndex = 1;
+
+        for (AnonymousCommentCreatorView view : anonymousViews) {
+            Long creatorId = view.getCreatorId();
+            if (!anonymousNicknameMap.containsKey(creatorId) && !view.getIsPostOwner()) {
+                anonymousNicknameMap.put(creatorId, ANONYMOUS_COMMENT_CREATOR + " " + anonymousIndex++);
+            }
+        }
+
+        return anonymousNicknameMap.getOrDefault(commentCreatorId, ANONYMOUS_COMMENT_CREATOR + " " + anonymousIndex);
     }
 
     private void validateBoardAndPost(Board board, Post post, CreateCommentCommand command) {

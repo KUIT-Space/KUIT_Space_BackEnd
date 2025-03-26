@@ -45,8 +45,8 @@ public class CreateCommentCommand {
         this.commentCreatorId = commentCreatorId;
         this.content = content;
         this.isAnonymous = isAnonymous;
-        this.createdAt=createdAt.toLocalDateTime();
-        this.lastModifiedAt=lastModifiedAt==null?createdAt.toLocalDateTime() : lastModifiedAt.toLocalDateTime();
+        this.createdAt = createdAt == null ? null : createdAt.toLocalDateTime();
+        this.lastModifiedAt = lastModifiedAt == null ? null : lastModifiedAt.toLocalDateTime();
     }
 
 

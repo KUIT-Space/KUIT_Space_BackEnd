@@ -239,6 +239,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .threadChannelDiscordId(msgId)
                             .content("reply success")
                             .guildDiscordId(event.getGuild().getIdLong())
+                            .originPostTitle("임시-title")
                             .build();
                     createDiscordMessageOnThreadPort.sendToThread(command).thenAccept(result -> {
                         try {

@@ -28,7 +28,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, UpdatePostPort, DeletePostPort {
 
     private final SpringDataPostBaseRepository postBaseRepository;
-    private final SpringDataPostRepository postRepository;
+    private final PostRepository postRepository;
     private final SpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final PostMapper postMapper;

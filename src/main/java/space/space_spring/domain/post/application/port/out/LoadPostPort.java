@@ -20,4 +20,7 @@ public interface LoadPostPort {
     Optional<Post> loadByDiscordId(Long discordId);
 
     List<Post> loadLatestPostsByBoardIds(List<Long> boardId, int size);
+
+    Optional<Post> loadLatestPostByBoardIdAndTagId(Long boardId, Long tagId);
+
 }

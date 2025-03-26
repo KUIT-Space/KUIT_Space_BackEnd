@@ -10,7 +10,7 @@ import space.space_spring.domain.pay.application.port.out.LoadPayRequestInfoPort
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
 import space.space_spring.domain.pay.domain.Bank;
 import space.space_spring.domain.pay.domain.PayRequest;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -28,7 +28,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadPayRequestPort, LoadPayRequestInfoPort, DeletePayRequestPort {
 
     private final SpringDataPayRequestRepository payRequestRepository;
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final PayRequestMapper payRequestMapper;
 
     /**

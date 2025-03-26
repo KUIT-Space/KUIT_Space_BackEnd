@@ -7,7 +7,7 @@ import space.space_spring.domain.pay.adapter.out.persistence.jpaEntity.PayReques
 import space.space_spring.domain.pay.adapter.out.persistence.mapper.PayRequestTargetMapper;
 import space.space_spring.domain.pay.application.port.out.*;
 import space.space_spring.domain.pay.domain.PayRequestTarget;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -25,7 +25,7 @@ public class PayRequestTargetPersistenceAdapter implements CreatePayRequestTarge
 
     private final SpringDataPayRequestRepository payRequestRepository;
     private final SpringDataPayRequestTargetRepository payRequestTargetRepository;
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final PayRequestTargetMapper payRequestTargetMapper;
 
     @Override

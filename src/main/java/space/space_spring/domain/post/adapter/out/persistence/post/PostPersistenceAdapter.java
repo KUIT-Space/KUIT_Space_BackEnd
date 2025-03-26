@@ -13,7 +13,7 @@ import space.space_spring.domain.post.application.port.out.DeletePostPort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.application.port.out.UpdatePostPort;
 import space.space_spring.domain.post.domain.Post;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -29,7 +29,7 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
 
     private final SpringDataPostBaseRepository postBaseRepository;
     private final PostRepository postRepository;
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final PostMapper postMapper;
     private final PostBaseMapper postBaseMapper;

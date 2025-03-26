@@ -34,7 +34,7 @@ public class ReadPostListController {
             @RequestParam(required = false) Long tagId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("postBase.createdAt").descending());
         ListOfPostSummary postSummaries = readPostListUseCase.readPostList(boardId, tagId, pageable);
         return new BaseResponse<>(ResponseOfReadPostList.of(postSummaries));
     }

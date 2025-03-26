@@ -21,7 +21,7 @@ import space.space_spring.domain.post.application.port.out.CreateSubscriptionPor
 import space.space_spring.domain.post.application.port.out.LoadSubscriptionPort;
 import space.space_spring.domain.post.application.port.out.UpdateSubscriptionPort;
 import space.space_spring.domain.post.domain.Subscription;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.exception.CustomException;
 
@@ -29,7 +29,7 @@ import space.space_spring.global.exception.CustomException;
 @RequiredArgsConstructor
 public class SubscriptionPersistenceAdapter implements LoadSubscriptionPort, CreateSubscriptionPort, UpdateSubscriptionPort {
 
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataTagRepository springDataTagRepository;

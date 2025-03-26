@@ -32,5 +32,8 @@ public class PayCompleteButtonProcessor implements ButtonInteractionProcessor {
                         .filter(payTarget-> {
                             return loadPayRequestPort.loadById(payTarget.getPayRequestId()).getDiscordMessageId().equals(event.getMessageIdLong());
                         }).findFirst().orElseThrow().getId());
+        event.reply("정산 완료 처리 되었습니다")
+                .setEphemeral(true)
+                .queue();
     }
 }

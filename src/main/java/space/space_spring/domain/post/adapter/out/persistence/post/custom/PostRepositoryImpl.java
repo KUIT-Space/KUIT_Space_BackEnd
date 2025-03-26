@@ -5,6 +5,7 @@ import static space.space_spring.domain.post.adapter.out.persistence.post.QPostJ
 import static space.space_spring.domain.post.adapter.out.persistence.postBase.QPostBaseJpaEntity.postBaseJpaEntity;
 import static space.space_spring.domain.post.adapter.out.persistence.postTag.QPostTagJpaEntity.postTagJpaEntity;
 import static space.space_spring.domain.post.adapter.out.persistence.tag.QTagJpaEntity.tagJpaEntity;
+import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,7 +22,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     @Override
     public List<PostJpaEntity> findLatestByBoardIds(List<Long> boardIds, int size) {
         return jpaQueryFactory.selectFrom(postJpaEntity)
-                .where(postJpaEntity.postBase.board.id.in(boardIds))
+                .where(
+                        postJpaEntity.postBase.board.id.in(boardIds),
+                        postJpaEntity.postBase.status.eq(ACTIVE)
+                )
                 .orderBy(postJpaEntity.postBase.createdAt.desc())
                 .limit(size)
                 .fetch();
@@ -34,7 +38,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                  .join(postBaseJpaEntity.board, boardJpaEntity)
                  .where(
                          boardJpaEntity.id.eq(boardId), // 게시판 ID 조건
-                         tagJpaEntity.id.eq(tagId) // 태그 ID 조건
+                         tagJpaEntity.id.eq(tagId), // 태그 ID 조건
+                         postJpaEntity.postBase.status.eq(ACTIVE)
                  )
                  .orderBy(postJpaEntity.postBase.createdAt.desc()) // 최신 글 기준으로 정렬
                  .fetchFirst());

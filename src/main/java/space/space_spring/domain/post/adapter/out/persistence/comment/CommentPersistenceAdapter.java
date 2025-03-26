@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
-import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
+import space.space_spring.domain.post.adapter.out.persistence.post.PostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
@@ -35,7 +35,7 @@ public class CommentPersistenceAdapter implements LoadCommentPort, CreateComment
     private final SpringDataSpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataPostCommentRepository postCommentRepository;
-    private final SpringDataPostRepository postRepository;
+    private final PostRepository postRepository;
     private final SpringDataPostBaseRepository postBaseRepository;
     private final CommentMapper commentMapper;
     private final PostBaseMapper postBaseMapper;

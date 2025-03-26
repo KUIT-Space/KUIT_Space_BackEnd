@@ -10,9 +10,8 @@ import space.space_spring.domain.post.domain.Post;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface SpringDataPostRepository extends JpaRepository<PostJpaEntity, Long>, PostRepositoryCustom {
+public interface PostRepository extends JpaRepository<PostJpaEntity, Long>, PostRepositoryCustom {
     @Query("SELECT p FROM PostJpaEntity p " +
             "JOIN FETCH p.postBase pb " +
             "WHERE pb.board.id = :boardId " +

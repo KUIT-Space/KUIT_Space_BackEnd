@@ -106,6 +106,11 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
         return postRepository.findLatestByBoardIds(boardId, size).stream().map(postMapper::toDomainEntity).toList();
     }
 
+    @Override
+    public Optional<Post> loadLatestPostByBoardIdAndTagId(Long boardId, Long tagId) {
+        return postRepository.findLatestByBoardIdAndTagId(boardId, tagId).map(postMapper::toDomainEntity);
+    }
+
     public void updatePost(Post post) {
         // Post에 해당하는 jpa entity 찾기
         PostJpaEntity postJpaEntity = postRepository.findById(post.getId())

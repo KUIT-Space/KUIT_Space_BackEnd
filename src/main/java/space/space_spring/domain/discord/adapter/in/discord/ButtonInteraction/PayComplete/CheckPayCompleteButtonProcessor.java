@@ -31,7 +31,7 @@ public class CheckPayCompleteButtonProcessor implements ButtonInteractionProcess
         String[] parts = buttonId.split(":");
         if (parts.length < 3) return;
 
-        if(validatePayTarget(event.getGuild().getIdLong(),Long.valueOf(parts[2]),event.getMember().getIdLong())){
+        if(!validatePayTarget(event.getGuild().getIdLong(),Long.valueOf(parts[2]),event.getMember().getIdLong())){
             event.reply("이 정산의 대상자가 아닙니다")
                     .setEphemeral(true)
                     .queue();

@@ -12,7 +12,7 @@ import space.space_spring.domain.event.application.port.out.LoadEventParticipant
 import space.space_spring.domain.event.application.port.out.UpdateEventParticipantPort;
 import space.space_spring.domain.event.domain.EventParticipant;
 import space.space_spring.domain.event.domain.EventParticipants;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.exception.CustomException;
 
@@ -23,14 +23,14 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
 
     private final EventRepository eventRepository;
     private final EventParticipantRepository eventParticipantRepository;
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final EventParticipantMapper eventParticipantMapper;
 
     @Override
     public EventParticipants loadByEventId(Long eventId) {
         EventJpaEntity eventJpaEntity = eventRepository.findByIdAndStatus(eventId, ACTIVE).orElseThrow(
                 () -> new CustomException(EVENT_NOT_FOUND));
-        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEventAndStatus(eventJpaEntity, ACTIVE);
+        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEventAndStatusOrderByCreatedAtDesc(eventJpaEntity, ACTIVE);
 
         List<EventParticipant> participants = new ArrayList<>();
         for (EventParticipantJpaEntity e : eventParticipantJpaEntities) {

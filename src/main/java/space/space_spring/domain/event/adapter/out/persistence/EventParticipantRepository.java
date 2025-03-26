@@ -9,7 +9,7 @@ import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 public interface EventParticipantRepository extends JpaRepository<EventParticipantJpaEntity, Long>,
         EventParticipantRepositoryCustom {
-    List<EventParticipantJpaEntity> findByEventAndStatus(EventJpaEntity event, BaseStatusType statusType);
+    List<EventParticipantJpaEntity> findByEventAndStatusOrderByCreatedAtDesc(EventJpaEntity event, BaseStatusType status);
 
     Optional<EventParticipantJpaEntity> findByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember);
 }

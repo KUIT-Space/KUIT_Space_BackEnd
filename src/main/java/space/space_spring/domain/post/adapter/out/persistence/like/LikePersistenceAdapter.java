@@ -8,7 +8,7 @@ import space.space_spring.domain.post.application.port.out.like.ChangeLikeStateP
 import space.space_spring.domain.post.application.port.out.like.CreateLikePort;
 import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
 import space.space_spring.domain.post.domain.Like;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -25,7 +25,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @RequiredArgsConstructor
 public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, ChangeLikeStatePort {
 
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SpringDataPostBaseRepository postBaseRepository;
     private final SpringDataLikeRepository likeRepository;
     private final LikeMapper likeMapper;
@@ -59,7 +59,7 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
     }
 
     @Override
-    public void changeLikeState(Long spaceMemberId, Long targetId, boolean changeTo) {
+    public void changeLikeState(Long targetId, Long spaceMemberId, boolean changeTo) {
         LikeJpaEntity likeJpaEntity = likeRepository.findBySpaceMemberIdAndPostBaseIdAndStatus(spaceMemberId, targetId, BaseStatusType.ACTIVE)
                 .orElseThrow(() -> new CustomException(LIKE_NOT_FOUND));
 

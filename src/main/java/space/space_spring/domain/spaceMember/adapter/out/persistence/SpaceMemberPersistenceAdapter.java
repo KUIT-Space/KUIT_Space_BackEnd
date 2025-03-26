@@ -1,5 +1,6 @@
 package space.space_spring.domain.spaceMember.adapter.out.persistence;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.space.adapter.out.persistence.SpringDataSpace;
@@ -27,7 +28,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class SpaceMemberPersistenceAdapter
         implements LoadSpaceMemberPort , CreateSpaceMemberPort, LoadSpaceMemberInfoPort , UpdateSpaceMemberPort ,DeleteSpaceMemberPort {
 
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SpaceMemberMapper spaceMemberMapper;
     private final LoadSpacePort loadSpacePort;
     private final LoadUserPort loadUserPort;
@@ -69,11 +70,8 @@ public class SpaceMemberPersistenceAdapter
     }
 
     @Override
-    public SpaceMember loadByUserId(Long userId) {
-        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findByUserId(userId).orElseThrow(() ->
-                new CustomException(SPACE_MEMBER_NOT_FOUND));
-
-        return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
+    public List<SpaceMember> loadByUserId(Long userId) {
+        return spaceMemberRepository.findByUserId(userId).stream().map(spaceMemberMapper::toDomainEntity).toList();
     }
 
     @Override
@@ -137,16 +135,30 @@ public class SpaceMemberPersistenceAdapter
     }
 
     @Override
+    public SpaceMember updateManager(Long spaceMemberId, boolean isManager){
+           SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findByIdAndStatus(spaceMemberId,BaseStatusType.ACTIVE).orElseThrow();
+           if(spaceMemberJpaEntity.isManager()==isManager){
+               return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
+           }
+           return spaceMemberMapper.toDomainEntity(spaceMemberRepository.save(spaceMemberJpaEntity));
+    }
+    @Override
     public SpaceMember loadByDiscord(Long spaceDiscordId , Long spaceMemberDiscordId){
-        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByDiscordId(spaceDiscordId).orElseThrow(()->new CustomException(SPACE_NOT_FOUND));
-        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findBySpaceIdAndDiscordId(spaceJpaEntity.getId(),spaceMemberDiscordId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
+        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByDiscordIdAndStatus(spaceDiscordId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_NOT_FOUND));
+        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findBySpaceIdAndDiscordIdAndStatus(spaceJpaEntity.getId(),spaceMemberDiscordId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
+    }
+
+    @Override
+    public Optional<SpaceMember> loadDefaultSpaceMember(Long userId, String defaultSpaceName) {
+        return spaceMemberRepository.findDefaultSpaceMember(userId, defaultSpaceName).map(spaceMemberMapper::toDomainEntity);
     }
 
     @Override
     public boolean delete(Long spaceId){
         //ToDo change to soft delete
-        spaceMemberRepository.delete(spaceMemberRepository.findById(spaceId).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
-
+        //spaceMemberRepository.delete();
+        spaceMemberRepository.findByIdAndStatus(spaceId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND))
+                .updateToInactive();
         return true;
     }
 }

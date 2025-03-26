@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
-import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
+import space.space_spring.domain.post.adapter.out.persistence.post.PostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
@@ -14,7 +14,7 @@ import space.space_spring.domain.post.application.port.out.DeleteCommentPort;
 import space.space_spring.domain.post.application.port.out.LoadCommentPort;
 import space.space_spring.domain.post.application.port.out.UpdateCommentPort;
 import space.space_spring.domain.post.domain.Comment;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -32,10 +32,10 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @RequiredArgsConstructor
 public class CommentPersistenceAdapter implements LoadCommentPort, CreateCommentPort, UpdateCommentPort, DeleteCommentPort {
 
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataPostCommentRepository postCommentRepository;
-    private final SpringDataPostRepository postRepository;
+    private final PostRepository postRepository;
     private final SpringDataPostBaseRepository postBaseRepository;
     private final CommentMapper commentMapper;
     private final PostBaseMapper postBaseMapper;

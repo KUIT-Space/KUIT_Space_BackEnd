@@ -13,7 +13,7 @@ import space.space_spring.domain.post.application.port.out.DeletePostPort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.application.port.out.UpdatePostPort;
 import space.space_spring.domain.post.domain.Post;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -28,8 +28,8 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, UpdatePostPort, DeletePostPort {
 
     private final SpringDataPostBaseRepository postBaseRepository;
-    private final SpringDataPostRepository postRepository;
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final PostRepository postRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final PostMapper postMapper;
     private final PostBaseMapper postBaseMapper;
@@ -100,6 +100,17 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
         }
         return Optional.of(postMapper.toDomainEntity(postJpaEntity));
   }
+
+    @Override
+    public List<Post> loadLatestPostsByBoardIds(List<Long> boardId, int size) {
+        return postRepository.findLatestByBoardIds(boardId, size).stream().map(postMapper::toDomainEntity).toList();
+    }
+
+    @Override
+    public Optional<Post> loadLatestPostByBoardIdAndTagId(Long boardId, Long tagId) {
+        return postRepository.findLatestByBoardIdAndTagId(boardId, tagId).map(postMapper::toDomainEntity);
+    }
+
     public void updatePost(Post post) {
         // Post에 해당하는 jpa entity 찾기
         PostJpaEntity postJpaEntity = postRepository.findById(post.getId())

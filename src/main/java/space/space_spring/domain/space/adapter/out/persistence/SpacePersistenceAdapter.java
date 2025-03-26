@@ -6,6 +6,7 @@ import space.space_spring.domain.space.application.port.out.CreateSpacePort;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.space.domain.SpaceJpaEntity;
+import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class SpacePersistenceAdapter implements CreateSpacePort , LoadSpacePort 
     @Override
     public Optional<Space> loadSpaceByDiscordId(Long discordId){
         //없으면 Optional.empty() 반환
-        return spaceRepository.findByDiscordId(discordId)
+        return spaceRepository.findByDiscordIdAndStatus(discordId, BaseStatusType.ACTIVE)
                 .map(spaceMapper::toDomainEntity);
 
 

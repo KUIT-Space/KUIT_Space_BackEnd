@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import space.space_spring.domain.discord.adapter.out.EditDiscordMessage.EditDiscordMessageAdapter;
 import space.space_spring.domain.discord.application.port.out.*;
 
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
@@ -45,7 +46,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
     //private final CreateSpaceUseCase createSpaceUseCase;
     private final CreateDiscordMessageOnThreadPort createDiscordMessageOnThreadPort;
     private final WebHookPort webHookPort;
-
+    private final EditDiscordMessageAdapter editDiscordMessageAdapter;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
@@ -157,6 +158,16 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     return;
 
                 }
+                if(msg.getContentRaw().equals("!getWebHook")){
+//                    Webhook webHook = msg.getChannel().asTextChannel().retrieveWebhooks().complete().stream().filter(webhook->{
+//                                return webhook.getName().equals("Space_WebHook");
+//                            })
+//                            //.map(webhook -> webhook.getUrl())
+//                            .findFirst().get();
+                    msg.reply(webHookPort.getOrCreate(msg.getChannelIdLong())).queue();
+
+                }
+
 
                 if (msg.getContentRaw().equals("!send")) {
                     CreateDiscordWebHookMessageCommand command = CreateDiscordWebHookMessageCommand.builder()
@@ -166,6 +177,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .webHookUrl(webHookPort.getOrCreate(event.getChannel().getIdLong()))
                             .guildDiscordId(event.getGuild().getIdLong())
                             .channelDiscordId(event.getChannel().getIdLong())
+                            .tags(List.of())
                             .name(event.getMember().getEffectiveName())
                             .attachmentsUrl(List.of("https://project-space-image-storage.s3.ap-northeast-2.amazonaws.com/test-image/2024년+『ICT멘토링』+프로젝트+모집+공고문.pdf", "https://cdn.discordapp.com/attachments/1325780875614621801/1347884828254666823/DALLE_2025-02-20_16.47.07_-_A_cute_cartoon_frog_with_a_large_wide-open_black_mouth_where_a_bright_green_letter_K_is_inside_standing_out_against_the_dark_background_of_its_mo.webp?ex=67cd7311&is=67cc2191&hm=b6f7de1b787333fbf9386e1d2f1751ef2fe601d14c28f66f7c8ebcfc43e24910&"))
                             .build();
@@ -183,14 +195,12 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                 }
 
 
-            if(msg.getContentRaw().startsWith("!edit:")){
-                String[] commands = msg.getContentRaw().split(":");
-                Long msgId = Long.parseLong(commands[1]);
-                event.getGuildChannel().asTextChannel().retrieveWebhooks().complete().stream().filter(webhook->{
-                    return webhook.getName().equals("Space_WebHook");
-                }).findFirst().get().editMessageById(msgId,"edit success").queue();
-                return;
-            }
+
+        if(msg.getContentRaw().startsWith("!editThreadName")){
+            event.getChannel().asThreadChannel().getManager().setName("바보").queue();
+
+            return;
+        }
 
         if(msg.getContentRaw().startsWith("!pay")){
 
@@ -199,12 +209,18 @@ public class TestTextCommandEventListener extends ListenerAdapter {
 
 
 
-                if(msg.getContentRaw().startsWith("!edit:")){
-                    String[] commands = msg.getContentRaw().split(":");
-                    Long msgId = Long.parseLong(commands[1]);
-                    event.getChannel().editMessageById(msgId,"this message edit").queue();
-                    //Todo apply WebHook to edit webHook Message
-                }
+        if(msg.getContentRaw().startsWith("!edit:")){
+            Long parentChannelId= event.getChannel().asThreadChannel().getParentChannel().getIdLong();
+            Long msgId = Long.parseLong(msg.getContentRaw().split(":")[1]);
+            editDiscordMessageAdapter.editMessage(
+                    webHookPort.getOrCreate(parentChannelId)
+                    ,parentChannelId
+                    ,msgId
+                    ,"임시"
+                    ,"임시 메세지"
+                    ,List.of()
+                    );
+        }
 
 
 
@@ -223,6 +239,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .threadChannelDiscordId(msgId)
                             .content("reply success")
                             .guildDiscordId(event.getGuild().getIdLong())
+                            .originPostTitle("임시-title")
                             .build();
                     createDiscordMessageOnThreadPort.sendToThread(command).thenAccept(result -> {
                         try {

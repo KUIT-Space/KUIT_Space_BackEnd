@@ -16,7 +16,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 2000: Request 오류 (BAD_REQUEST)
      */
     BAD_REQUEST(2000, HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
-    URL_NOT_FOUND(2001, HttpStatus.BAD_REQUEST, "유효하지 않은 URL 입니다."),
+    URL_NOT_FOUND(2001, HttpStatus.NOT_FOUND, "유효하지 않은 URL 입니다."),
     METHOD_NOT_ALLOWED(2002, HttpStatus.METHOD_NOT_ALLOWED, "해당 URL에서는 지원하지 않는 HTTP Method 입니다."),
     HTTP_MESSAGE_NOT_READABLE(2003, HttpStatus.BAD_REQUEST,"request body 양식에 문제가 있습니다"),
     SPACE_ID_PATHVARIABLE_ERROR(2004,HttpStatus.BAD_REQUEST,"URL에 포함된 SPACE_ID 값이 잘못되었습니다."),
@@ -159,6 +159,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_CREATOR_MISMATCH(12012, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
 
 
+    NOTICE_NOT_FOUND(11020, HttpStatus.NOT_FOUND, "공지사항 게시판을 찾을 수 없습니다."),
 
     /**
      * 13000 : Event 오류

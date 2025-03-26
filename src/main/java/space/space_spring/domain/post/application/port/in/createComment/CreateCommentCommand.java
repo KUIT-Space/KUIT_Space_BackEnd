@@ -6,6 +6,8 @@ import space.space_spring.domain.post.adapter.in.web.createComment.RequestOfCrea
 import space.space_spring.domain.post.domain.Comment;
 import space.space_spring.domain.post.domain.Content;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -23,14 +25,28 @@ public class CreateCommentCommand {
 
     private Boolean isAnonymous;        // 익명 댓글 여부
 
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime lastModifiedAt;
+
     @Builder
-    public CreateCommentCommand(Long spaceId, Long boardId, Long postId, Long commentCreatorId, String content, Boolean isAnonymous) {
+    public CreateCommentCommand(Long spaceId,
+                                Long boardId,
+                                Long postId,
+                                Long commentCreatorId,
+                                String content,
+                                Boolean isAnonymous,
+                                OffsetDateTime createdAt,
+                                OffsetDateTime lastModifiedAt) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.postId = postId;
         this.commentCreatorId = commentCreatorId;
         this.content = content;
         this.isAnonymous = isAnonymous;
+        this.createdAt = createdAt == null ? null : createdAt.toLocalDateTime();
+        this.lastModifiedAt = lastModifiedAt == null ? null : lastModifiedAt.toLocalDateTime();
     }
 
 

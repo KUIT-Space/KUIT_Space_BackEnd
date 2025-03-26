@@ -18,12 +18,14 @@ public class CheckPayCompleteButtonProcessor implements ButtonInteractionProcess
     private final LoadPayRequestPort loadPayRequestPort;
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final ValidatePayTargetUseCase validatePayTargetUseCase;
+    @Override
     public boolean supports(String buttonId){
         if (buttonId.startsWith("check:pay-complete:")){
             return true;
         }
         return false;
     }
+    @Override
     public void process(ButtonInteractionEvent event){
         String buttonId = event.getComponentId();
         String[] parts = buttonId.split(":");

@@ -75,6 +75,14 @@ public class PayRequestPersistenceAdapter implements CreatePayRequestPort, LoadP
     }
 
     @Override
+    public PayRequest loadByDiscordId(Long discordId){
+        return payRequestRepository.findBydiscordMessageIdAndStatus(discordId,BaseStatusType.ACTIVE)
+                .map(payRequestMapper::toDomainEntity)
+                .orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));
+
+    }
+
+    @Override
     public void deletePayRequest(Long payRequestId) {
         PayRequestJpaEntity payRequestJpaEntity = payRequestRepository.findByIdAndStatus(payRequestId, BaseStatusType.ACTIVE)
                 .orElseThrow(() -> new CustomException(PAY_REQUEST_NOT_FOUND));

@@ -6,10 +6,18 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.stereotype.Component;
 import space.space_spring.domain.discord.adapter.in.discord.ButtonInteraction.ButtonInteractionProcessor;
+import space.space_spring.domain.pay.application.port.in.validatePayTarget.ValidatePayTargetUseCase;
+import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
+import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
+import space.space_spring.domain.spaceMember.application.port.out.LoadSpaceMemberPort;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
+
 @Component
 @RequiredArgsConstructor
 public class CheckPayCompleteButtonProcessor implements ButtonInteractionProcessor {
-
+    private final LoadPayRequestPort loadPayRequestPort;
+    private final LoadSpaceMemberPort loadSpaceMemberPort;
+    private final ValidatePayTargetUseCase validatePayTargetUseCase;
     public boolean supports(String buttonId){
         if (buttonId.startsWith("check:pay-complete:")){
             return true;
@@ -33,6 +41,13 @@ public class CheckPayCompleteButtonProcessor implements ButtonInteractionProcess
                 )
                 .setEphemeral(true)
                 .queue();
+    }
+
+    private boolean validatePayTarget(Long guildId,Long payRequestDiscordId,Long discordMemberId){
+        //Long guildId = event.getGuild().getIdLong();
+        Long payRequestId = loadPayRequestPort.loadByDiscordId(payRequestDiscordId).getId();
+        Long spaceMemberId = loadSpaceMemberPort.loadByDiscord(guildId,discordMemberId).getId();
+        return validatePayTargetUseCase.hasPayTarget(spaceMemberId, payRequestId);
     }
 
 }

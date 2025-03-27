@@ -29,7 +29,7 @@ public class SubscriptionMapper {
                 subscriptionJpaEntity.getId(),
                 subscriptionJpaEntity.getSpaceMember().getId(),
                 subscriptionJpaEntity.getBoard().getId(),
-                subscriptionJpaEntity.getTag().getId(),
+                subscriptionJpaEntity.getTag() != null ? subscriptionJpaEntity.getTag().getId() : null,
                 baseInfo);
     }
 

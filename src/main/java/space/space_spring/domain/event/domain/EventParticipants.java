@@ -50,4 +50,14 @@ public class EventParticipants {
     public NaturalNumber getTotalNumberOfParticipants() {
         return NaturalNumber.of(participants.size());
     }
+
+    public boolean isSpaceMemberActive(Long spaceMemberId) {
+        return participants.stream()
+                .anyMatch(participant -> participant.getSpaceMemberId().equals(spaceMemberId) && participant.getBaseInfo().isActive());
+    }
+
+    public boolean isSpaceMemberInactive(Long spaceMemberId) {
+        return participants.stream()
+                .anyMatch(participant -> participant.getSpaceMemberId().equals(spaceMemberId) && !participant.getBaseInfo().isActive());
+    }
 }

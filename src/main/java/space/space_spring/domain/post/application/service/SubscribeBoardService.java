@@ -36,28 +36,37 @@ public class SubscribeBoardService implements SubscribeBoardUseCase {
         Long boardId = subscribeBoardCommand.getBoardId();
 
         Subscription newSubscription;
-        if (subscribeBoardCommand.getTagId() == null) {
-            // tag 없으면 -> 보드로만 구독 찾음
+
+        if (subscribeBoardCommand.getTagId() == null) { // 태그가 없는 경우 -> 보드로만 구독 찾음
             Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByBoardId(boardId);
 
+            // 구독 이력이 있는 경우
             if (savedSubscription.isPresent()) {
-                if (savedSubscription.get().isActive()) throw new CustomException(SUBSCRIPTION_ALREADY_EXIST);
-                updateSubscriptionPort.activate(savedSubscription.get());
+                if (savedSubscription.get().isActive()) throw new CustomException(SUBSCRIPTION_ALREADY_EXIST); // 이미 구독한 경우
+
+                updateSubscriptionPort.activate(savedSubscription.get()); // 구독 상태 활성화
                 return;
             }
+            
+            // 구독 이력이 없는 경우
             newSubscription = Subscription.withoutIdAndTag(spaceMemberId, boardId, BaseInfo.ofEmpty());
-        } else {
-            // tag 있으면 -> 태그 + 보드로 구독 찾음
+        } else { // 태그가 있는 경우 -> 태그 + 보드로 구독 찾음
             Tag tag = loadTagPort.loadByIdAndBoard(subscribeBoardCommand.getTagId(), boardId);
             Optional<Subscription> savedSubscription = loadSubscriptionPort.loadByInfos(spaceMemberId, boardId, tag.getId());
 
+            // 구독 이력이 있는 경우
             if (savedSubscription.isPresent()) {
                 if (savedSubscription.get().isActive()) throw new CustomException(SUBSCRIPTION_ALREADY_EXIST);
-                updateSubscriptionPort.activate(savedSubscription.get());
+
+                updateSubscriptionPort.activate(savedSubscription.get()); // 구독 상태 활성화
                 return;
             }
+            
+            // 구독 이력이 없는 경우
             newSubscription = Subscription.withoutId(spaceMemberId, boardId, tag.getId(), BaseInfo.ofEmpty());
         }
+        
+        // 구독 이력이 없는 경우들에 대해 구독 생성
         createSubscriptionPort.createSubscription(newSubscription);
     }
 

@@ -23,9 +23,9 @@ public class Content {
         if (value.length() > MAX_LENGTH) {
             throw new CustomException(BaseExceptionResponseStatus.BAD_REQUEST, "Content의 길이는 최대 " + MAX_LENGTH + "자까지 가능합니다.");
         }
-        if (value.length() < MIN_LENGTH) {
-            throw new CustomException(BaseExceptionResponseStatus.BAD_REQUEST, "Content의 길이는 최소 " + MIN_LENGTH + "자이어야 합니다.");
-        }
+//        if (value.length() < MIN_LENGTH) {
+//            throw new CustomException(BaseExceptionResponseStatus.BAD_REQUEST, "Content의 길이는 최소 " + MIN_LENGTH + "자이어야 합니다.");
+//        }
         this.value = value;
     }
 

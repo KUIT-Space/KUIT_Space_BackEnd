@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.discord.CommentInputFromDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.discord.InputMessageFromDiscordUseCase;
 import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.Tag.LoadTagUseCase;
@@ -40,10 +41,10 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
     @Override
     @Transactional
     public void putPost(MessageInputFromDiscordCommand command){
-        if(!command.validateContentLength()){
-            log.info("post message length less than 20 ");
-            return;
-        }
+//        if(!command.validateContentLength()){
+//            log.info("post message length less than 20 ");
+//            return;
+//        }
 
         Long spaceMemberId = loadSpaceMemberPort.loadByDiscord(
                 command.getSpaceDiscordId(),
@@ -83,13 +84,14 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
         System.out.println(command.toString());
     }
     @Override
-    public void putComment(MessageInputFromDiscordCommand command,Long boardId){
+    @Transactional
+    public void putComment(CommentInputFromDiscordCommand command, Long boardId){
 
         createCommentUseCase.createCommentFromDiscord(mapToCreateComment(command,boardId),command.getCreatorDiscordId());
 
     }
 
-    private CreateCommentCommand mapToCreateComment(MessageInputFromDiscordCommand command,Long boardId){
+    private CreateCommentCommand mapToCreateComment(CommentInputFromDiscordCommand command,Long boardId){
         Long creatorId = loadSpaceMemberPort.loadByDiscord(
                 command.getSpaceDiscordId(),
                 command.getCreatorDiscordId()).getId();
@@ -102,7 +104,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                 .content(command.getContent())
                 .createdAt(command.getCreatedAt())
                 .lastModifiedAt(command.getLastModifiedAt())
-                .postId(boardId)
+                .postId(command.getMessageDiscordId())
                 .build();
     }
 

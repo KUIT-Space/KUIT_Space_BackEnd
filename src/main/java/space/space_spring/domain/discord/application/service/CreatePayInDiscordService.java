@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessageCommand;
+import space.space_spring.domain.discord.application.port.out.Pay.CreatePayCompleteButtonPort;
 import space.space_spring.domain.discord.domain.DiscordPayMessage;
 import space.space_spring.domain.pay.application.port.out.LoadPayBoardPort;
 import space.space_spring.domain.pay.domain.Money;
@@ -37,11 +38,14 @@ public class CreatePayInDiscordService implements CreatePayInDiscordUseCase {
     private final LoadPayBoardPort loadPayBoardPort;
     private final LoadBoardUseCase loadBoardUseCase;
     private final LoadSpaceUseCase loadSpaceUseCase;
+    private final CreatePayCompleteButtonPort createPayCompleteButtonPort;
     @Override
     public Long createPayInDiscord(CreatePayInDiscordCommand command) {
         //String title =" 정산 ";
         try {
-            return createDiscordThreadPort.create(mapToPayMessage(command).getPayMessageCommand()).get();
+            Long payThreadId = createDiscordThreadPort.create(mapToPayMessage(command).getPayMessageCommand()).get();
+            createPayCompleteButtonPort.sendCompleteButton(payThreadId);
+            return payThreadId;
         }catch (Exception e){
             throw new CustomException(DISCORD_THREAD_CREATE_FAIL ,"Exception 발생"+ e.toString());
         }

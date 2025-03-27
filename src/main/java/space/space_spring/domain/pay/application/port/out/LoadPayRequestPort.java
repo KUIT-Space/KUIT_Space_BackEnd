@@ -9,4 +9,5 @@ public interface LoadPayRequestPort {
     List<PayRequest> loadByPayCreatorId(Long payCreatorId);
 
     PayRequest loadById(Long id);
+    PayRequest loadByDiscordId(Long discordId);
 }

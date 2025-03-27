@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.application.port.in.discord.CommentInputFromDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
 import space.space_spring.domain.post.domain.AttachmentType;
 
@@ -20,62 +21,62 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class DiscordMessageMapper {
-    private final JDA jda;
+    public MessageInputFromDiscordCommand mapToPostCommandFromText(@NotNull Message message,Long boardId){
 
-    public MessageInputFromDiscordCommand mapToCommand(@NotNull MessageReceivedEvent event,Long boardId){
-        String title="";
-        String content="";
-        String rowContent =event.getMessage().getContentRaw();
-        boolean isComment=false;
-        List<Long> tagDiscordIds= new ArrayList();
-        ChannelType channelType=event.getChannelType();
-        if(event.isFromThread()){
-
-            if(event.getMessage().getId().equals(event.getChannel().getId())){
-                // Forum channel 에 첫 message
-                title=event.getChannel().getName();
-                content=rowContent;
-                isComment=false;
-                tagDiscordIds.addAll( event.getChannel().asThreadChannel().getAppliedTags().stream().map(
-                        tag->{return tag.getIdLong();}
-                ).toList());
-
-            }else{
-                // Thread 에 달린 댓글
-                content=rowContent;
-                isComment=true;
-
-            }
-
-        }
-
-        if(channelType==ChannelType.TEXT){
-            title = getFirstRow(rowContent,"\n");
-            content = removeFirstRow(rowContent,"\n");
-            isComment=false;
-
-
-        }
-
-        Map<String, AttachmentType> attachments = new HashMap<>();
-
-        event.getMessage().getAttachments().forEach(attachment -> attachments.put(attachment.getUrl(),getAttachmentType(attachment.getContentType())));
-
+        TitleAndContentParser parser = TitleAndContentParser.parse(message.getContentRaw());
 
         return MessageInputFromDiscordCommand.builder()
-                .MessageDiscordId(event.getMessageIdLong())
-                .isComment(isComment)
+                .MessageDiscordId(message.getIdLong())
                 .boardId(boardId)
-                .creatorDiscordId(event.getMember().getIdLong())
-                .spaceDiscordId(event.getGuild().getIdLong())
+                .creatorDiscordId(message.getMember().getIdLong())
+                .spaceDiscordId(message.getGuild().getIdLong())
+                .title(parser.getTitle())
+                .tagDiscordIds(List.of())
+                .createdAt(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
+                .content(parser.getContent())
+                .attachments(
+                        getAttachments(message))
+                .build();
+    }
+    public MessageInputFromDiscordCommand mapToPostCommandFromForum(@NotNull Message message,Long boardId){
+        String title=message.getChannel().getName();
+        String content = message.getContentRaw();
+
+        List<Long> tagDiscordIds= new ArrayList();
+        tagDiscordIds.addAll( message.getChannel().asThreadChannel().getAppliedTags().stream().map(
+                tag->{return tag.getIdLong();}
+        ).toList());
+        return MessageInputFromDiscordCommand.builder()
+                .MessageDiscordId(message.getIdLong())
+                .boardId(boardId)
+                .creatorDiscordId(message.getMember().getIdLong())
+                .spaceDiscordId(message.getGuild().getIdLong())
                 .title(title)
                 .tagDiscordIds(tagDiscordIds)
                 .content(content)
-                .attachments(attachments)
-                .createdAt(event.getMessage().getTimeCreated())
-                .lastModifiedAt(event.getMessage().getTimeEdited())
+                .createdAt(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
+                .attachments(
+                        getAttachments(message))
+                .createdAt(message.getTimeCreated())
+                .lastModifiedAt(message.getTimeEdited())
                 .build();
+    }
 
+
+
+    public CommentInputFromDiscordCommand mapToCommentCommand(@NotNull Message message,Long boardId){
+        return CommentInputFromDiscordCommand.builder()
+                .attachments(getAttachments(message))
+                .MessageDiscordId(message.getIdLong())
+                .boardId(boardId)
+                .content(message.getContentRaw())
+                .createdAt(message.getTimeCreated())
+                .creatorDiscordId(message.getMember().getIdLong())
+                .lastModifiedAt(message.getTimeEdited())
+                .spaceDiscordId(message.getGuild().getIdLong())
+                .build();
     }
 
 

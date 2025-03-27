@@ -32,7 +32,7 @@ public class DiscordForumRepository {
                                 List<ForumTag> allTags = jda.getForumChannelById(command.getChannelDiscordId()).getAvailableTags();
                                 message.getChannel().asThreadChannel().getManager().setAppliedTags(
                                         allTags.stream().filter(tag->command.getTags().contains(tag.getIdLong())).toList()
-                                );
+                                ).queue();
                                 future.complete(message.getIdLong());
                             }else{
                                 future.completeExceptionally(new RuntimeException("Webhook의 return 값이 message 타입이 아닙니다"));

@@ -16,6 +16,7 @@ import space.space_spring.domain.post.application.port.in.createPost.CreatePostC
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.createPost.CreatePostUseCase;
 import space.space_spring.domain.post.application.port.out.CreatePostPort;
+import space.space_spring.domain.post.application.port.out.LoadPostBasePort;
 import space.space_spring.domain.post.application.service.CreateCommentService;
 import space.space_spring.domain.post.domain.Content;
 import space.space_spring.domain.post.domain.Post;
@@ -26,6 +27,7 @@ import space.space_spring.global.common.entity.BaseInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
     private final CreateCommentUseCase createCommentUseCase;
     private final CreatePostUseCase createPostUseCase;
     private final LoadTagUseCase loadTagUseCase;
+    private final LoadPostBasePort loadPostBasePort;
 
     @Override
     @Transactional
@@ -85,13 +88,14 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
     }
     @Override
     @Transactional
-    public void putComment(CommentInputFromDiscordCommand command, Long boardId){
-
-        createCommentUseCase.createCommentFromDiscord(mapToCreateComment(command,boardId),command.getCreatorDiscordId());
+    public void putComment(CommentInputFromDiscordCommand command, Long originPostDiscordId){
+        Long originPostId =  loadPostBasePort.loadByDiscordId(originPostDiscordId).orElse(null);
+        if(originPostId==null){log.error("post not in space data base");}
+        createCommentUseCase.createCommentFromDiscord(mapToCreateComment(command,originPostId),command.getMessageDiscordId());
 
     }
 
-    private CreateCommentCommand mapToCreateComment(CommentInputFromDiscordCommand command,Long boardId){
+    private CreateCommentCommand mapToCreateComment(CommentInputFromDiscordCommand command,Long originPostId){
         Long creatorId = loadSpaceMemberPort.loadByDiscord(
                 command.getSpaceDiscordId(),
                 command.getCreatorDiscordId()).getId();
@@ -104,7 +108,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                 .content(command.getContent())
                 .createdAt(command.getCreatedAt())
                 .lastModifiedAt(command.getLastModifiedAt())
-                .postId(command.getMessageDiscordId())
+                .postId(originPostId)
                 .build();
     }
 

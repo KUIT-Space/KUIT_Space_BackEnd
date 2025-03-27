@@ -1,6 +1,7 @@
 package space.space_spring.domain.discord.adapter.in.discord.MessageCreate.MessageInputProcessor;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import space.space_spring.domain.discord.application.port.in.discord.MessageInpu
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TextPostMessageInputProcessor implements MessageInputProcessor{
     private final DiscordMessageMapper discordMessageMapper;
     private final InputMessageFromDiscordUseCase inputMessageFromDiscordUseCase;
@@ -23,6 +25,7 @@ public class TextPostMessageInputProcessor implements MessageInputProcessor{
 
         if(event.getMessage().getContentRaw().length()<20){
             //text channel의 메세지 글자수가 20자 미만 이라면 메세지 무시
+            log.info("post message length less than 20 ");
             return;
         }
 

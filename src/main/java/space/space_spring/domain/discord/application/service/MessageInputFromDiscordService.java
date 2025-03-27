@@ -41,10 +41,10 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
     @Override
     @Transactional
     public void putPost(MessageInputFromDiscordCommand command){
-        if(!command.validateContentLength()){
-            log.info("post message length less than 20 ");
-            return;
-        }
+//        if(!command.validateContentLength()){
+//            log.info("post message length less than 20 ");
+//            return;
+//        }
 
         Long spaceMemberId = loadSpaceMemberPort.loadByDiscord(
                 command.getSpaceDiscordId(),

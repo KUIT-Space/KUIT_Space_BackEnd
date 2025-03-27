@@ -12,6 +12,7 @@ import space.space_spring.domain.pay.application.port.out.LoadPayRequestPort;
 import space.space_spring.domain.pay.application.port.out.LoadPayRequestTargetPort;
 import space.space_spring.domain.post.application.port.in.boardCache.LoadBoardCacheUseCase;
 import space.space_spring.domain.post.application.port.in.changeLikeState.ChangeLikeStateCommand;
+import space.space_spring.domain.post.application.port.in.changeLikeState.ChangeLikeStateUseCase;
 import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.application.port.in.loadBoard.LoadBoardUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardCachePort;
@@ -41,7 +42,7 @@ public class MessageReactionEventListener extends ListenerAdapter {
     private final LoadSpaceMemberPort loadSpaceMemberPort;
     private final LoadPayRequestTargetPort loadPayRequestTargetPort;
     private final LoadPayRequestPort loadPayRequestPort;
-    private final ChangeLikeStateService changeLikeStateService;
+    private final ChangeLikeStateUseCase changeLikeStateUseCase;
     private final LoadPostBasePort loadPostBasePort;
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event){
@@ -70,12 +71,14 @@ public class MessageReactionEventListener extends ListenerAdapter {
 
 
         //Todo 좋아요 UseCase 호출
-        changeLikeStateService.changeLikeState(
+        changeLikeStateUseCase.changeLikeState(
                 ChangeLikeStateCommand.builder()
                         .boardId(boardId.orElseThrow(()->{
                             throw new CustomException(BOARD_NOT_FOUND);
                         }))
                         .spaceId(spaceId)
+
+                        .changeTo(true)
                         .spaceMemberId(spaceMemberId)
                         .targetId(loadPostBasePort.loadByDiscordId(event.getMessageIdLong()).orElseThrow())
                         .build()
@@ -96,21 +99,29 @@ public class MessageReactionEventListener extends ListenerAdapter {
         Long guildId=event.getGuild().getIdLong();
         Long messageId = event.getMessageIdLong();
         Long memberId = event.getMember().getIdLong();
+        event.re
+        if(event.retrieveMessage().complete().getReactions().stream()
+                .anyMatch(
+                        reaction->reaction.retrieveUsers().complete().stream()
+                                .anyMatch(user->memberId.equals(user.getIdLong())))){
+            return;
+        }
 
         if(isPayBoard(boardId.get())){
             //Todo 정산 완료 취소 UseCase
             // 업음
         }
 
-        SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildId,event.getMessageIdLong());
+        SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildId,event.getMember().getIdLong());
         Long spaceMemberId = spaceMember.getId();
         Long spaceId = spaceMember.getSpaceId();
         //Todo 좋아요  삭제하는 UseCase 호출
-        changeLikeStateService.changeLikeState(
+        changeLikeStateUseCase.changeLikeState(
                 ChangeLikeStateCommand.builder()
                         .boardId(boardId.orElseThrow(()->{
                             throw new CustomException(BOARD_NOT_FOUND);
                         }))
+                        .changeTo(false)
                         .spaceId(spaceId)
                         .spaceMemberId(spaceMemberId)
                         .targetId(loadPostBasePort.loadByDiscordId(event.getMessageIdLong()).orElseThrow())

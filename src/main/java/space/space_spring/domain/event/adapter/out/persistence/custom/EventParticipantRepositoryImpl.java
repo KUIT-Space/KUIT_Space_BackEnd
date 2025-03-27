@@ -17,12 +17,12 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<EventParticipantJpaEntity> findByEventAndStatusOrderByCreatedAtDesc(EventJpaEntity event,
+    public List<EventParticipantJpaEntity> findByEventAndStatusOrderByUpdatedAtDesc(EventJpaEntity event,
                                                                                     BaseStatusType status) {
         return jpaQueryFactory.selectFrom(eventParticipantJpaEntity)
                 .where(eventParticipantJpaEntity.event.id.eq(event.getId())
                         .and(eventParticipantJpaEntity.status.eq(ACTIVE)))
-                .orderBy(eventParticipantJpaEntity.createdAt.desc())
+                .orderBy(eventParticipantJpaEntity.lastModifiedAt.desc())
                 .fetch();
     }
 

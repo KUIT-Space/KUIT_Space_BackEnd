@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface SpringDataSpace extends JpaRepository<SpaceJpaEntity, Long> {
     Optional<SpaceJpaEntity> findByDiscordIdAndStatus(Long discordId, BaseStatusType status);
+    Optional<SpaceJpaEntity> findByIdAndStatus(Long id, BaseStatusType status);
 }

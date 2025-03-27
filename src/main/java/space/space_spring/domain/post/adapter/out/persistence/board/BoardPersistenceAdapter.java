@@ -30,8 +30,8 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort, 
 
     @Override
     public Long createBoard(Board board) {
-        SpaceJpaEntity spaceJpaEntity = spaceRepository.findById(
-                board.getSpaceId()).orElseThrow(() -> new CustomException(SPACE_NOT_FOUND));
+        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByIdAndStatus(
+                board.getSpaceId(),BaseStatusType.ACTIVE).orElseThrow(() -> new CustomException(SPACE_NOT_FOUND));
 
         BoardJpaEntity boardJpaEntity = boardMapper.toJpaEntity(spaceJpaEntity, board);
         return boardRepository.save(boardJpaEntity).getId();
@@ -39,7 +39,7 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort, 
 
     @Override
     public Optional<Board> load(Long boardId){
-        return boardRepository.findById(boardId).map(boardMapper::toDomainEntity);
+        return boardRepository.findByIdAndStatus(boardId,BaseStatusType.ACTIVE).map(boardMapper::toDomainEntity);
     }
 
 
@@ -53,7 +53,8 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort, 
 
     @Override
     public List<Board> loadByType(BoardType type){
-        return boardRepository.findByBoardType(type).stream().map(boardMapper::toDomainEntity).toList();
+        return boardRepository.findByBoardTypeAndStatus(type,BaseStatusType.ACTIVE)
+                .stream().map(boardMapper::toDomainEntity).toList();
     }
 
     @Override
@@ -65,7 +66,9 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort, 
 
     @Override
     public List<Board> findAll(){
-        return boardRepository.findAll().stream().map(boardMapper::toDomainEntity).toList();
+        return boardRepository.findAll().stream()
+                .filter(board->board.isActive())
+                .map(boardMapper::toDomainEntity).toList();
     }
 
     @Override

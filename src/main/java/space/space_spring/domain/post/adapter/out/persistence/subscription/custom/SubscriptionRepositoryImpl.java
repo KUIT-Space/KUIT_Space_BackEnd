@@ -14,20 +14,20 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepositoryCustom 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public void updateActive(SubscriptionJpaEntity subscription) {
+    public void updateActiveById(Long id) {
         jpaQueryFactory
                 .update(subscriptionJpaEntity)
                 .set(subscriptionJpaEntity.status, ACTIVE)
-                .where(subscriptionJpaEntity.id.eq(subscription.getId()))
+                .where(subscriptionJpaEntity.id.eq(id))
                 .execute();
     }
 
     @Override
-    public void softDelete(SubscriptionJpaEntity subscription) {
+    public void softDeleteById(Long id) {
         jpaQueryFactory
                 .update(subscriptionJpaEntity)
                 .set(subscriptionJpaEntity.status, INACTIVE)
-                .where(subscriptionJpaEntity.id.eq(subscription.getId()))
+                .where(subscriptionJpaEntity.id.eq(id))
                 .execute();
     }
 }

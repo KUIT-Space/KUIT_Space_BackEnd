@@ -4,8 +4,7 @@ import space.space_spring.domain.post.adapter.out.persistence.subscription.Subsc
 
 public interface SubscriptionRepositoryCustom {
 
-    void updateActive(SubscriptionJpaEntity jpaEntity);
+    void updateActiveById(Long id);
 
-    void softDelete(SubscriptionJpaEntity jpaEntity);
-
+    void softDeleteById(Long id);
 }

@@ -99,7 +99,6 @@ public class MessageReactionEventListener extends ListenerAdapter {
         Long guildId=event.getGuild().getIdLong();
         Long messageId = event.getMessageIdLong();
         Long memberId = event.getMember().getIdLong();
-        event.re
         if(event.retrieveMessage().complete().getReactions().stream()
                 .anyMatch(
                         reaction->reaction.retrieveUsers().complete().stream()

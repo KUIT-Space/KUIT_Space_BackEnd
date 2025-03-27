@@ -3,6 +3,7 @@ package space.space_spring.domain.post.adapter.out.persistence.board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.application.port.out.CreateBoardPort;
+import space.space_spring.domain.post.application.port.out.DeleteBoardPort;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.BoardType;
@@ -21,7 +22,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
+public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort, DeleteBoardPort {
 
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataSpace spaceRepository;
@@ -72,5 +73,14 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
         BoardJpaEntity boardJpaEntity = boardRepository.findByDiscordIdAndStatus(discordId, BaseStatusType.ACTIVE)
                 .orElseGet(null);
         return Optional.of(boardMapper.toDomainEntity(boardJpaEntity));
+    }
+
+    @Override
+    public void delete(Long boardId){
+        BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(boardId, BaseStatusType.ACTIVE)
+                .orElseGet(null);
+        if(boardJpaEntity!=null){
+            boardJpaEntity.updateToInactive();
+        }
     }
 }

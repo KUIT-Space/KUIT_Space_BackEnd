@@ -9,7 +9,9 @@ import space.space_spring.domain.discord.application.port.out.CreateDiscordThrea
 //import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessagePort;
+import space.space_spring.domain.post.application.port.in.Tag.LoadTagUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
+import space.space_spring.domain.post.application.port.out.LoadTagPort;
 import space.space_spring.domain.post.domain.AttachmentType;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
@@ -32,6 +34,7 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
     //private final CreateDiscordThreadPort createDiscordThreadPort;
     private final CreateDiscordWebHookMessagePort createDiscordWebHookMessagePort;
     private final LoadBoardPort loadBoardPort;
+    private final LoadTagPort loadTagPort;
     public Long CreateMessageInDiscord(CreatePostInDiscordCommand command){
         try{
             return createDiscordWebHookMessagePort.send(mapToWebHookMessage(command)).get();
@@ -79,7 +82,9 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                                 .sorted(Comparator.comparing(a -> a.getAttachmentType().equals(AttachmentType.IMAGE) ? 0 : 1)) // image 우선 정렬
                                 .map(attachment->attachment.getAttachmentUrl()).toList()
                 )
-                .tags(command.getTagIds())
+                .discordTags(
+                        loadTagPort.loadById(command.getTagIds()).stream().map(tag->tag.getDiscordId()).toList()
+                )
                 .build();
     }
 }

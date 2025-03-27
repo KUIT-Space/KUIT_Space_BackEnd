@@ -34,4 +34,5 @@ public class TagService implements CreateTagUseCase, LoadTagUseCase {
         return loadTagPort.loadByDiscordId(discordIds);
 
     }
+
 }

@@ -40,6 +40,9 @@ public class UpdatePostFromDiscordCommand {
     }
 
     public Map<AttachmentType,List<String>> getNewAttachmentUrlMap(){
+        if(newAttachmentUrlMap==null||newAttachmentUrlMap.isEmpty()){
+            return Map.of();
+        }
         // 변환 실행
         if(newAttachmentUrlMap==null){
             return Map.of();

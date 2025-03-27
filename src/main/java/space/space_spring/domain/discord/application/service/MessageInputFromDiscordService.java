@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import space.space_spring.domain.discord.application.port.in.createPost.CreatePostInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.discord.CommentInputFromDiscordCommand;
 import space.space_spring.domain.discord.application.port.in.discord.InputMessageFromDiscordUseCase;
 import space.space_spring.domain.discord.application.port.in.discord.MessageInputFromDiscordCommand;
 import space.space_spring.domain.post.application.port.in.Tag.LoadTagUseCase;
@@ -84,13 +85,13 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
     }
     @Override
     @Transactional
-    public void putComment(MessageInputFromDiscordCommand command,Long boardId){
+    public void putComment(CommentInputFromDiscordCommand command, Long boardId){
 
         createCommentUseCase.createCommentFromDiscord(mapToCreateComment(command,boardId),command.getCreatorDiscordId());
 
     }
 
-    private CreateCommentCommand mapToCreateComment(MessageInputFromDiscordCommand command,Long boardId){
+    private CreateCommentCommand mapToCreateComment(CommentInputFromDiscordCommand command,Long boardId){
         Long creatorId = loadSpaceMemberPort.loadByDiscord(
                 command.getSpaceDiscordId(),
                 command.getCreatorDiscordId()).getId();

@@ -65,9 +65,6 @@ public class MessageUpdateEventListener extends ListenerAdapter {
 
 
 
-
-
-
     }
 
     private boolean isComment(MessageUpdateEvent event){

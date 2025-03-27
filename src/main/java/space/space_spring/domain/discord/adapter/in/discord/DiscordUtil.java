@@ -2,6 +2,7 @@ package space.space_spring.domain.discord.adapter.in.discord;
 
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -29,6 +30,10 @@ public class DiscordUtil {
             return false;
         }
         return true;
+    }
+
+    public boolean isThreadStartMessage(Message message){
+        return message.getChannel().getId().equals(message.getId());
     }
 
 }

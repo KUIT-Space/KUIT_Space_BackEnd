@@ -34,13 +34,6 @@ public class CommentInputFromDiscordCommand {
 
 
 
-    //content 혹은 title 이 20 자가 넘는지 확인 합니다.
-    public boolean validateContentLength(){
-        if(this.content.isEmpty()){
-            return false;
-        }
-        return true;
-    }
 
 
 }

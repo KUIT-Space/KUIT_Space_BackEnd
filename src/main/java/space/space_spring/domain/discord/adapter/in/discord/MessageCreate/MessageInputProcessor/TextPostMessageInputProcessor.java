@@ -20,6 +20,12 @@ public class TextPostMessageInputProcessor implements MessageInputProcessor{
         return false;
     }
     public void process(MessageReceivedEvent event,Long boardId){
+
+        if(event.getMessage().getContentRaw().length()<20){
+            //text channel의 메세지 글자수가 20자 미만 이라면 메세지 무시
+            return;
+        }
+
         MessageInputFromDiscordCommand command = discordMessageMapper.mapToPostCommandFromText(event.getMessage(),boardId);
 
         //input from TEXT Channel

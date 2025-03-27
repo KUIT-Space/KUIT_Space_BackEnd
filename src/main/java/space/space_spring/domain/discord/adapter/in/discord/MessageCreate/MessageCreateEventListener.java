@@ -35,7 +35,7 @@ public class MessageCreateEventListener extends ListenerAdapter {
     private final InputMessageFromDiscordUseCase inputMessageFromDiscordUseCase;
     private final DiscordMessageMapper discordMessageMapper;
     private final CreateBoardUseCase createBoardUseCase;
-    private final List<MessageInputProcessor> buttonInputProcessors;
+    private final List<MessageInputProcessor> messageInputProcessors;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event){
         if(event.getAuthor().isBot()){
@@ -64,7 +64,7 @@ public class MessageCreateEventListener extends ListenerAdapter {
         }
 
         boolean hasProcess=false;
-        for(MessageInputProcessor processor:buttonInputProcessors){
+        for(MessageInputProcessor processor:messageInputProcessors){
             if(processor.supports(event)){
                 hasProcess=true;
                 processor.process(event,boardId.get());

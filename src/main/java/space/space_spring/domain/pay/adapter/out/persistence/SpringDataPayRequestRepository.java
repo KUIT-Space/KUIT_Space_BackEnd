@@ -14,4 +14,5 @@ public interface SpringDataPayRequestRepository extends JpaRepository<PayRequest
     Optional<List<PayRequestJpaEntity>> findListByPayCreatorAndStatus(SpaceMemberJpaEntity payCreator, BaseStatusType baseStatusType);
 
     Optional<PayRequestJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);
+    Optional<PayRequestJpaEntity> findBydiscordMessageIdAndStatus(Long discordId,BaseStatusType baseStatusType);
 }

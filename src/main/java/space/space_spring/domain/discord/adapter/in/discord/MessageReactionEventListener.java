@@ -55,7 +55,7 @@ public class MessageReactionEventListener extends ListenerAdapter {
         Long guildId=event.getGuild().getIdLong();
         Long messageId = event.getMessageIdLong();
         Long memberId = event.getMember().getIdLong();
-        SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildId,event.getMessageIdLong());
+        SpaceMember spaceMember = loadSpaceMemberPort.loadByDiscord(guildId,event.getMember().getIdLong());
         Long spaceMemberId = spaceMember.getId();
         Long spaceId = spaceMember.getSpaceId();
         if(isPayBoard(boardId.get())){

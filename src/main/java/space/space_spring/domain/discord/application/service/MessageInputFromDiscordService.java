@@ -83,6 +83,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
         System.out.println(command.toString());
     }
     @Override
+    @Transactional
     public void putComment(MessageInputFromDiscordCommand command,Long boardId){
 
         createCommentUseCase.createCommentFromDiscord(mapToCreateComment(command,boardId),command.getCreatorDiscordId());
@@ -102,7 +103,7 @@ public class MessageInputFromDiscordService implements InputMessageFromDiscordUs
                 .content(command.getContent())
                 .createdAt(command.getCreatedAt())
                 .lastModifiedAt(command.getLastModifiedAt())
-                .postId(boardId)
+                .postId(command.getMessageDiscordId())
                 .build();
     }
 

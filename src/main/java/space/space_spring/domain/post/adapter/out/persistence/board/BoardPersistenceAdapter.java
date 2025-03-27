@@ -82,8 +82,9 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort, 
     public void delete(Long boardId){
         BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(boardId, BaseStatusType.ACTIVE)
                 .orElseGet(null);
-        if(boardJpaEntity!=null){
-            boardJpaEntity.updateToInactive();
+        if(boardJpaEntity==null){
+            throw new CustomException(BOARD_NOT_FOUND);
         }
+        boardJpaEntity.updateToInactive();
     }
 }

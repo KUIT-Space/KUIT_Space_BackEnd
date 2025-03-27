@@ -6,7 +6,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -50,15 +52,33 @@ public class CreateEventController {
             throw new CustomException(MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY);
         }
 
+        validateDateType(request.getDate(), request.getStartTime(), request.getEndTime());
+
         CreateEventCommand createEventCommand = CreateEventCommand.builder()
                 .name(request.getName())
                 .image(eventImgUrl)
-                .date(Instant.parse(request.getDate()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
-                .startTime(Instant.parse(request.getStartTime()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
-                .endTime(Instant.parse(request.getEndTime()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+                .date(parseDate(request.getDate(), "date"))
+                .startTime(parseDate(request.getStartTime(), "startTime"))
+                .endTime(parseDate(request.getEndTime(), "endTime"))
                 .build();
 
         Long eventId = createEventUseCase.createEvent(spaceMemberId, createEventCommand);
         return new BaseResponse<>(new CreateEventResponse(eventId));
+    }
+
+    private void validateDateType(String date, String startTime, String endTime) {
+        parseDate(date, "date");
+        parseDate(startTime, "startTime");
+        parseDate(endTime, "endTime");
+    }
+
+    private LocalDateTime parseDate(String dateStr, String fieldName) {
+        try {
+            return Instant.parse(dateStr)
+                    .atZone(ZoneId.of("Asia/Seoul"))
+                    .toLocalDateTime();
+        } catch (DateTimeParseException e) {
+            throw new CustomException(INVALID_DATETIME_TYPE);
+        }
     }
 }

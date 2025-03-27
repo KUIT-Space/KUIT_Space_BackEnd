@@ -1,8 +1,10 @@
 package space.space_spring.domain.event.adapter.out.persistence.custom;
 
 import static space.space_spring.domain.event.adapter.out.persistence.QEventParticipantJpaEntity.eventParticipantJpaEntity;
+import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import space.space_spring.domain.event.adapter.out.persistence.EventJpaEntity;
 import space.space_spring.domain.event.adapter.out.persistence.EventParticipantJpaEntity;
@@ -13,6 +15,16 @@ import space.space_spring.global.common.enumStatus.BaseStatusType;
 public class EventParticipantRepositoryImpl implements EventParticipantRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public List<EventParticipantJpaEntity> findByEventAndStatusOrderByCreatedAtDesc(EventJpaEntity event,
+                                                                                    BaseStatusType status) {
+        return jpaQueryFactory.selectFrom(eventParticipantJpaEntity)
+                .where(eventParticipantJpaEntity.event.id.eq(event.getId())
+                        .and(eventParticipantJpaEntity.status.eq(ACTIVE)))
+                .orderBy(eventParticipantJpaEntity.createdAt.desc())
+                .fetch();
+    }
 
     @Override
     public void deleteAllByEvent(EventJpaEntity event) {
@@ -30,7 +42,7 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
                 .from(eventParticipantJpaEntity)
                 .where(eventParticipantJpaEntity.event.eq(event)
                         .and(eventParticipantJpaEntity.spaceMember.eq(spaceMember))
-                        .and(eventParticipantJpaEntity.status.eq(BaseStatusType.ACTIVE)))
+                        .and(eventParticipantJpaEntity.status.eq(ACTIVE)))
                 .fetchFirst();
 
         return count != null;

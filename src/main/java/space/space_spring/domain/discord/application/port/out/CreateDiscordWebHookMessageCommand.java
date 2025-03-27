@@ -22,13 +22,13 @@ public class CreateDiscordWebHookMessageCommand {
 
     private List<String> attachmentsUrl;
     @Getter(AccessLevel.NONE)
-    private List<Long> tags;
+    private List<Long> discordTags;
 
     public List<Long> getTags(){
-        if(tags==null){
+        if(discordTags==null){
             return List.of();
         }
-        return tags;
+        return discordTags;
     }
     public String getMessageContent(){
         if(content.isBlank()||content.isEmpty()){

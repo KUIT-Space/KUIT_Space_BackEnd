@@ -27,7 +27,7 @@ public class CommentMessageInputProcessor implements MessageInputProcessor{
        CommentInputFromDiscordCommand command = discordMessageMapper.mapToCommentCommand(event.getMessage(),boardId);
 
 
-        inputMessageFromDiscordUseCase.putComment(command,boardId);
+        inputMessageFromDiscordUseCase.putComment(command,event.getChannel().getIdLong());
 
     }
 }

@@ -1,8 +1,9 @@
 package space.space_spring.domain.post.adapter.out.persistence.post;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
@@ -64,7 +65,13 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
     }
 
     @Override
-    public List<Post> loadPostListByTagId(Long tagId) {
+    public Page<Post> loadPostListByBoardId(Long boardId, Pageable pageable) {
+        Page<PostJpaEntity> page = postRepository.findPostsByBoardIdPaged(boardId, BaseStatusType.ACTIVE, pageable);
+        return page.map(postMapper::toDomainEntity);
+    }
+
+    @Override
+    public Page<Post> loadPostListByTagId(Long tagId, Pageable pageable) {
         // 1. 태그에 해당하는 PostBaseJpaEntity 조회
         List<PostBaseJpaEntity> postBaseJpaEntities = postBaseRepository.findPostsByTagId(tagId, BaseStatusType.ACTIVE);
 
@@ -73,9 +80,9 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
                 .map(PostBaseJpaEntity::getId)
                 .toList();
 
-        List<PostJpaEntity> postJpaEntities = postRepository.findAllById(postBaseIds);
+        Page<PostJpaEntity> page = postRepository.findByPostBaseIdIn(postBaseIds, pageable);
 
-        return postJpaEntities.stream().map(postMapper::toDomainEntity).toList();
+        return page.map(postMapper::toDomainEntity);
 
     }
 

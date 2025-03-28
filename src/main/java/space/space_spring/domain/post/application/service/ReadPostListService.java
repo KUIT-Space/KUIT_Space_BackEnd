@@ -2,6 +2,8 @@ package space.space_spring.domain.post.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.application.port.in.readPostList.ListOfPostSummary;
@@ -38,7 +40,7 @@ public class ReadPostListService implements ReadPostListUseCase {
     private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
 
     @Override
-    public ListOfPostSummary readPostList(Long boardId, Long tagId) {
+    public ListOfPostSummary readPostList(Long boardId, Long tagId, Pageable pageable) {
         // 1. Board 조회
         Board board = loadBoardPort.loadById(boardId);
 
@@ -48,12 +50,11 @@ public class ReadPostListService implements ReadPostListUseCase {
         }
 
         // 3. 태그 필터링
-        List<Post> posts;
-        if (tagId != null) {
-            posts = loadPostPort.loadPostListByTagId(tagId);
-        } else {
-            posts = loadPostPort.loadPostListByBoardId(boardId);
-        }
+        Page<Post> postPage = tagId != null
+                ? loadPostPort.loadPostListByTagId(tagId, pageable)
+                : loadPostPort.loadPostListByBoardId(boardId, pageable);
+
+        List<Post> posts = postPage.getContent();
 
         // 4. postId 리스트 추출(postId = postBaseId)
         List<Long> postIds = posts.stream()
@@ -86,6 +87,6 @@ public class ReadPostListService implements ReadPostListUseCase {
                 )).toList();
 
         // 9. ListOfPostSummary 생성
-        return ListOfPostSummary.of(postSummaries);
+        return ListOfPostSummary.of(postPage, postSummaries);
     }
 }

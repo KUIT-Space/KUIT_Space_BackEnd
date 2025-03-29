@@ -171,6 +171,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     ALREADY_NOT_IN_EVENT(13003, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여를 취소한 행사입니다."),
     PARTICIPANT_NOT_FOUND(13004, HttpStatus.NOT_FOUND, "존재하지 않는 행사 참여자입니다."),
     INVALID_DATETIME_TYPE(13005, HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다."),
+    INVALID_EVENT_TIME_RANGE(13006, HttpStatus.BAD_REQUEST, "행사 시작 시간이 행사 종료 시간보다 이후입니다."),
+    INVALID_EVENT_STATUS(13007, HttpStatus.BAD_REQUEST, "행사 진행 시간이 아닙니다."),
 
     /**
      * 140000 Discord 오류

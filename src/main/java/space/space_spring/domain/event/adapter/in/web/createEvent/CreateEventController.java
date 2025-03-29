@@ -52,27 +52,30 @@ public class CreateEventController {
             throw new CustomException(MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY);
         }
 
-        validateDateType(request.getDate(), request.getStartTime(), request.getEndTime());
+        LocalDateTime parsedEventDate = parseDate(request.getDate());
+        LocalDateTime parsedStartTime = parseDate(request.getStartTime());
+        LocalDateTime parsedEndTime = parseDate(request.getEndTime());
+        validateDateRange(parsedStartTime, parsedEndTime);
 
         CreateEventCommand createEventCommand = CreateEventCommand.builder()
                 .name(request.getName())
                 .image(eventImgUrl)
-                .date(parseDate(request.getDate(), "date"))
-                .startTime(parseDate(request.getStartTime(), "startTime"))
-                .endTime(parseDate(request.getEndTime(), "endTime"))
+                .date(parsedEventDate)
+                .startTime(parsedStartTime)
+                .endTime(parsedEndTime)
                 .build();
 
         Long eventId = createEventUseCase.createEvent(spaceMemberId, createEventCommand);
         return new BaseResponse<>(new CreateEventResponse(eventId));
     }
 
-    private void validateDateType(String date, String startTime, String endTime) {
-        parseDate(date, "date");
-        parseDate(startTime, "startTime");
-        parseDate(endTime, "endTime");
+    private void validateDateRange(LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime.isAfter(endTime)) {
+            throw new CustomException(INVALID_EVENT_TIME_RANGE);
+        }
     }
 
-    private LocalDateTime parseDate(String dateStr, String fieldName) {
+    private LocalDateTime parseDate(String dateStr) {
         try {
             return Instant.parse(dateStr)
                     .atZone(ZoneId.of("Asia/Seoul"))

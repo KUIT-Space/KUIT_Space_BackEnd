@@ -5,9 +5,9 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
@@ -77,9 +77,11 @@ public class CreateEventController {
 
     private LocalDateTime parseDate(String dateStr) {
         try {
-            return Instant.parse(dateStr)
+            return LocalDateTime.parse(dateStr)
                     .atZone(ZoneId.of("Asia/Seoul"))
+                    .withZoneSameInstant(ZoneId.of("UTC"))
                     .toLocalDateTime();
+
         } catch (DateTimeParseException e) {
             throw new CustomException(INVALID_DATETIME_TYPE);
         }

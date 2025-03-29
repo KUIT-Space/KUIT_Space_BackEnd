@@ -173,6 +173,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_DATETIME_TYPE(13005, HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다."),
     INVALID_EVENT_TIME_RANGE(13006, HttpStatus.BAD_REQUEST, "행사 시작 시간이 행사 종료 시간보다 이후입니다."),
     INVALID_EVENT_STATUS(13007, HttpStatus.BAD_REQUEST, "행사 진행 시간이 아닙니다."),
+    INVALID_EVENT_DATE(13008, HttpStatus.BAD_REQUEST, "행사 날짜가 행사 시작 날짜와 동일하지 않습니다."),
 
     /**
      * 140000 Discord 오류

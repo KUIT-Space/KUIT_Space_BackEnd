@@ -55,7 +55,7 @@ public class CreateEventController {
         LocalDateTime parsedEventDate = parseDate(request.getDate());
         LocalDateTime parsedStartTime = parseDate(request.getStartTime());
         LocalDateTime parsedEndTime = parseDate(request.getEndTime());
-        validateDateRange(parsedStartTime, parsedEndTime);
+        validateDateRange(parsedEventDate, parsedStartTime, parsedEndTime);
 
         CreateEventCommand createEventCommand = CreateEventCommand.builder()
                 .name(request.getName())
@@ -69,9 +69,13 @@ public class CreateEventController {
         return new BaseResponse<>(new CreateEventResponse(eventId));
     }
 
-    private void validateDateRange(LocalDateTime startTime, LocalDateTime endTime) {
+    private void validateDateRange(LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
         if (startTime.isAfter(endTime)) {
             throw new CustomException(INVALID_EVENT_TIME_RANGE);
+        }
+
+        if (!date.toLocalDate().equals(startTime.toLocalDate())) {
+            throw new CustomException(INVALID_EVENT_DATE);
         }
     }
 

@@ -1,10 +1,11 @@
 package space.space_spring.domain.event.adapter.in.web.readEvent;
 
+import static space.space_spring.global.util.TimeConverter.convertUtcToKst;
+
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import space.space_spring.domain.event.application.port.in.ResultOfEventPreviewInfo;
-import space.space_spring.domain.event.domain.Event;
 
 @Getter
 @AllArgsConstructor
@@ -29,9 +30,9 @@ public class EventInfoResponse {
                 result.getId(),
                 result.getName(),
                 result.getImage(),
-                result.getDate(),
-                result.getStartTime(),
-                result.getEndTime(),
+                convertUtcToKst(result.getDate()),
+                convertUtcToKst(result.getStartTime()),
+                convertUtcToKst(result.getEndTime()),
                 result.getTotalNumberOfParticipants().getNumber());
     }
 }

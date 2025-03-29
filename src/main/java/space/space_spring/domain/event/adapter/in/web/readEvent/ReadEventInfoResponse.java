@@ -1,5 +1,7 @@
 package space.space_spring.domain.event.adapter.in.web.readEvent;
 
+import static space.space_spring.global.util.TimeConverter.convertUtcToKst;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -39,9 +41,9 @@ public class ReadEventInfoResponse {
                 event.getId(),
                 event.getName(),
                 event.getImage(),
-                event.getDate(),
-                event.getStartTime(),
-                event.getEndTime(),
+                convertUtcToKst(event.getDate()),
+                convertUtcToKst(event.getStartTime()),
+                convertUtcToKst(event.getEndTime()),
                 eventParticipantInfos.getParticipantInfos()
         );
     }

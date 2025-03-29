@@ -15,4 +15,6 @@ public interface EventParticipantRepositoryCustom {
     boolean existsByEventAndSpaceMember(EventJpaEntity event, SpaceMemberJpaEntity spaceMember);
 
     void softDelete(EventParticipantJpaEntity eventParticipant);
+
+    void updateActiveBySpaceMemberId(Long eventId, Long spaceMemberId);
 }

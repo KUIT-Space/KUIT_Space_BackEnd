@@ -32,13 +32,18 @@ public class ModifyEventService implements ModifyEventUseCase {
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(spaceMemberId);
         validateManager(spaceMember);
 
-        EventParticipants savedEventParticipants = loadEventParticipantPort.loadByEventId(eventId);
+        EventParticipants savedEventParticipants = loadEventParticipantPort.loadAllByEventId(eventId);
         List<Long> spaceMemberIds = updateEventParticipantCommand.getSpaceMemberIds();
-        for (Long id : spaceMemberIds) {
-            if (!savedEventParticipants.isEmpty() && savedEventParticipants.isSpaceMemberIn(id)) throw new CustomException(ALREADY_IN_EVENT);
 
-            EventParticipant eventParticipant = EventParticipant.withoutId(eventId, id);
-            createEventParticipantPort.createParticipant(eventParticipant);
+        for (Long id : spaceMemberIds) {
+            if (savedEventParticipants.isSpaceMemberActive(id)) { // 이미 참여 중
+                throw new CustomException(ALREADY_IN_EVENT);
+            } else if (savedEventParticipants.isSpaceMemberInactive(id)) { // 이전에 참여했던 내역 있음
+                updateEventParticipantPort.activateParticipant(eventId, id);
+            } else { // 참여 내역 없음
+                EventParticipant eventParticipant = EventParticipant.withoutId(eventId, id);
+                createEventParticipantPort.createParticipant(eventParticipant);
+            }
         }
         return true;
     }
@@ -48,12 +53,17 @@ public class ModifyEventService implements ModifyEventUseCase {
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(spaceMemberId);
         validateManager(spaceMember);
 
-        EventParticipants savedEventParticipants = loadEventParticipantPort.loadByEventId(eventId);
+        EventParticipants savedEventParticipants = loadEventParticipantPort.loadAllByEventId(eventId);
         List<Long> spaceMemberIds = updateEventParticipantCommand.getSpaceMemberIds();
-        for (Long id : spaceMemberIds) {
-            if (!savedEventParticipants.isEmpty() && savedEventParticipants.isSpaceMemberNotIn(id)) throw new CustomException(ALREADY_NOT_IN_EVENT);
 
-            updateEventParticipantPort.deleteParticipant(eventId, id);
+        for (Long id : spaceMemberIds) {
+            if (savedEventParticipants.isSpaceMemberNotIn(id)) { // 참여 내역 없음
+                throw new CustomException(ALREADY_NOT_IN_EVENT);
+            } else if (savedEventParticipants.isSpaceMemberActive(id)) { // 이전에 참여했던 내역 있음
+                updateEventParticipantPort.deleteParticipant(eventId, id);
+            } else { // 이전 참여 내역이 이미 삭제됨
+                throw new CustomException(ALREADY_NOT_IN_EVENT);
+            }
         }
         return true;
     }

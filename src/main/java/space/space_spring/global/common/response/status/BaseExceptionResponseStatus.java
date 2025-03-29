@@ -139,7 +139,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     LIKE_NOT_FOUND(11019, HttpStatus.NOT_FOUND, "존재하지 않는 좋아요 입니다."),
 
     INVALID_CHANGE_LIKE_STATE_REQUEST(11020, HttpStatus.BAD_REQUEST, "좋아요 on/off 요청에서 잘못된 값이 존재합니다."),
-    TAGS_IS_WORNG(11021,HttpStatus.CONFLICT,"생성 중인 tag 들의 board가 같지 않습니다"),
+    NOTICE_NOT_FOUND(11021, HttpStatus.NOT_FOUND, "공지사항 게시판을 찾을 수 없습니다."),
+    TAGS_IS_WORNG(11022,HttpStatus.CONFLICT,"생성 중인 tag 들의 board가 같지 않습니다"),
+
+
     /**
      * 12000 : Pay 오류
      */
@@ -158,8 +161,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_TARGET_MISMATCH(12011, HttpStatus.BAD_REQUEST, "정산 요청 대상자가 본인과 일치하지 않습니다."),
     PAY_REQUEST_CREATOR_MISMATCH(12012, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
 
+    ALREADY_COMPLETE_PAY_REQUEST_TARGET(12013, HttpStatus.BAD_REQUEST, "해당 정산 요청 대상자는 이미 송금 완료 하였습니다."),
 
-    NOTICE_NOT_FOUND(11020, HttpStatus.NOT_FOUND, "공지사항 게시판을 찾을 수 없습니다."),
 
     /**
      * 13000 : Event 오류

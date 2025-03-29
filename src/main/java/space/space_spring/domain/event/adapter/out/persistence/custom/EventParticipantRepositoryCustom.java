@@ -8,7 +8,7 @@ import space.space_spring.global.common.enumStatus.BaseStatusType;
 
 public interface EventParticipantRepositoryCustom {
 
-    List<EventParticipantJpaEntity> findByEventAndStatusOrderByCreatedAtDesc(EventJpaEntity event, BaseStatusType status);
+    List<EventParticipantJpaEntity> findByEventAndStatusOrderByUpdatedAtDesc(EventJpaEntity event, BaseStatusType status);
 
     void deleteAllByEvent(EventJpaEntity event);
 

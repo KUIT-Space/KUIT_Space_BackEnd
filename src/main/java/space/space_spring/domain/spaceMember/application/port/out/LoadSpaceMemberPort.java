@@ -16,4 +16,6 @@ public interface LoadSpaceMemberPort {
     SpaceMember loadByDiscord(Long spaceDiscordId , Long spaceMemberDiscordId);
 
     Optional<SpaceMember> loadDefaultSpaceMember(Long userId, String defaultSpaceName);
+
+    List<SpaceMember> loadAllByIdInOrder(List<Long> ids);
 }

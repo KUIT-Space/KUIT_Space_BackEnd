@@ -79,12 +79,18 @@ public class ReadHomeService implements ReadHomeUseCase {
             Optional<Tag> tag = loadTagPort.loadByBoardId(board.getId());
 
             // 각 게시판에서 제일 최신 게시물 정보 가져오기
+            Optional<Post> latestPost;
             String postTitle = "";
             String tagName = "";
             if (tag.isPresent()) {
                 tagName = tag.get().getTagName();
-                Optional<Post> latestPost = loadPostPort.loadLatestPostByBoardIdAndTagId(board.getId(), tag.get().getId());
-                postTitle = latestPost.get().getTitle();
+                latestPost = loadPostPort.loadLatestPostByBoardIdAndTagId(board.getId(), tag.get().getId());
+                if (latestPost.isPresent()) postTitle = latestPost.get().getTitle();
+            } else {
+                latestPost = loadPostPort.loadLatestPostsByBoardIds(List.of(board.getId()), 1)
+                        .stream()
+                        .findFirst();
+                if (latestPost.isPresent()) postTitle = latestPost.get().getTitle();
             }
 
             subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), postTitle, tagName));

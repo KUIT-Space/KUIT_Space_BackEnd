@@ -25,5 +25,6 @@ public class ReadHomeResponse {
         this.memberCnt = readHomeResult.memberCnt;
         this.img = readHomeResult.img;
         this.notices = readHomeResult.notices;
+        this.subscriptions = readHomeResult.subscriptions;
     }
 }

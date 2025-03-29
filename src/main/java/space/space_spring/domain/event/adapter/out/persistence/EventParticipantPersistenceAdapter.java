@@ -30,7 +30,7 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
     public EventParticipants loadByEventId(Long eventId) {
         EventJpaEntity eventJpaEntity = eventRepository.findByIdAndStatus(eventId, ACTIVE).orElseThrow(
                 () -> new CustomException(EVENT_NOT_FOUND));
-        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEventAndStatusOrderByCreatedAtDesc(eventJpaEntity, ACTIVE);
+        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEventAndStatusOrderByUpdatedAtDesc(eventJpaEntity, ACTIVE);
 
         List<EventParticipant> participants = new ArrayList<>();
         for (EventParticipantJpaEntity e : eventParticipantJpaEntities) {

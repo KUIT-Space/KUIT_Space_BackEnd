@@ -71,6 +71,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
         List<InfoOfCommentDetail> result = new ArrayList<>();
         for (CommentDetailView comment : commentDetailViews) {
             result.add(InfoOfCommentDetail.builder()
+                    .commentId(comment.getCommentId())
                     .creatorName(comment.getCreatorName())
                     .creatorProfileImageUrl(comment.getCreatorProfileImageUrl())
                     .isPostOwner(comment.getIsPostOwner())

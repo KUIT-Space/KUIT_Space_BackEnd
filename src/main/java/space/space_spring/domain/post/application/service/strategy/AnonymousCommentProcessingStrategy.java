@@ -21,6 +21,7 @@ public class AnonymousCommentProcessingStrategy implements CommentDetailProcessi
     public CommentDetailView process(CommentDetailView comment) {
         if (comment.getIsPostOwner()) {
             return CommentDetailView.builder()
+                    .commentId(comment.getCommentId())
                     .creatorId(comment.getCreatorId())
                     .creatorName(POST_CREATOR_NICKNAME)
                     .creatorProfileImageUrl(null)
@@ -39,6 +40,7 @@ public class AnonymousCommentProcessingStrategy implements CommentDetailProcessi
         String nickname = anonymousNicknameMap.computeIfAbsent(creatorId,
                 id -> ANONYMOUS_COMMENT_CREATOR_NICKNAME + " " + anonymousCount++);
         return CommentDetailView.builder()
+                .commentId(comment.getCommentId())
                 .creatorId(comment.getCreatorId())
                 .creatorName(nickname)
                 .creatorProfileImageUrl(null)

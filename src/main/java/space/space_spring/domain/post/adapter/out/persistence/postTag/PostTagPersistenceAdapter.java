@@ -12,10 +12,7 @@ import space.space_spring.domain.post.application.port.out.UpdatePostTagPort;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.POST_BASE_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
@@ -51,12 +48,13 @@ public class PostTagPersistenceAdapter implements CreatePostTagPort, UpdatePostT
         Set<Long> newTagIdsForPost = new HashSet<>(tagIds);
         Set<PostTagJpaEntity> previousJpaEntities = new HashSet<>(allByPostBaseIdAndStatus);
 
-        for (Long tagId : newTagIdsForPost) {
-            for (PostTagJpaEntity postTag : previousJpaEntities) {
-                if (postTag.getTag().getId().equals(tagId)) {           // 현재 PostTag 가 여전히 유효한 경우
-                    newTagIdsForPost.remove(tagId);
-                    previousJpaEntities.remove(postTag);
-                }
+        Iterator<PostTagJpaEntity> iterator = previousJpaEntities.iterator();
+        while (iterator.hasNext()) {
+            PostTagJpaEntity postTag = iterator.next();
+            Long tagId = postTag.getTag().getId();          // 기존 게시글의 tag id
+            if (newTagIdsForPost.contains(tagId)) {         // 수정한 게시글의 tag list에 해당 tag가 포함된다면
+                newTagIdsForPost.remove(tagId);
+                iterator.remove();
             }
         }
 

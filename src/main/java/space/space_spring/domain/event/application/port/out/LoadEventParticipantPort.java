@@ -6,4 +6,5 @@ public interface LoadEventParticipantPort {
 
     EventParticipants loadByEventId(Long eventId);
 
+    EventParticipants loadAllByEventId(Long eventId);
 }

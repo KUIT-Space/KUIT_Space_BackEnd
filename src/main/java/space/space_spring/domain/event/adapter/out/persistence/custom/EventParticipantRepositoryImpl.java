@@ -2,6 +2,7 @@ package space.space_spring.domain.event.adapter.out.persistence.custom;
 
 import static space.space_spring.domain.event.adapter.out.persistence.QEventParticipantJpaEntity.eventParticipantJpaEntity;
 import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
+import static space.space_spring.global.common.enumStatus.BaseStatusType.INACTIVE;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -30,7 +31,7 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
     public void deleteAllByEvent(EventJpaEntity event) {
         jpaQueryFactory
                 .update(eventParticipantJpaEntity)
-                .set(eventParticipantJpaEntity.status, BaseStatusType.INACTIVE)
+                .set(eventParticipantJpaEntity.status, INACTIVE)
                 .where(eventParticipantJpaEntity.event.eq(event))
                 .execute();
     }
@@ -52,8 +53,18 @@ public class EventParticipantRepositoryImpl implements EventParticipantRepositor
     public void softDelete(EventParticipantJpaEntity eventParticipant) {
         jpaQueryFactory
                 .update(eventParticipantJpaEntity)
-                .set(eventParticipantJpaEntity.status, BaseStatusType.INACTIVE)
+                .set(eventParticipantJpaEntity.status, INACTIVE)
                 .where(eventParticipantJpaEntity.id.eq(eventParticipant.getId()))
+                .execute();
+    }
+
+    @Override
+    public void updateActiveBySpaceMemberId(Long eventId, Long spaceMemberId) {
+        jpaQueryFactory
+                .update(eventParticipantJpaEntity)
+                .set(eventParticipantJpaEntity.status, ACTIVE)
+                .where(eventParticipantJpaEntity.event.id.eq(eventId)
+                        .and(eventParticipantJpaEntity.spaceMember.id.eq(spaceMemberId)))
                 .execute();
     }
 }

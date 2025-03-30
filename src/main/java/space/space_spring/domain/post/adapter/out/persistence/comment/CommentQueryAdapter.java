@@ -34,6 +34,8 @@ public class CommentQueryAdapter implements CommentDetailQueryPort, CommentCreat
 
         return queryFactory.select(
                         Projections.constructor(CommentDetailView.class,
+                                // 댓글 id
+                                comment.id,
                                 // 댓글 작성자 id
                                 commentBase.spaceMember.id,
                                 // 댓글 작성자 이름

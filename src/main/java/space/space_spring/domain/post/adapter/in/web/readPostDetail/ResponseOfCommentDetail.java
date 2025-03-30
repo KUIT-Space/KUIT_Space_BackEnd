@@ -7,6 +7,8 @@ import space.space_spring.domain.post.application.port.in.readPostDetail.InfoOfC
 @Getter
 public class ResponseOfCommentDetail {
 
+    private Long commentId;
+
     private String creatorName;
 
     private String creatorProfileImageUrl;
@@ -26,8 +28,9 @@ public class ResponseOfCommentDetail {
     private Boolean isActiveComment;
 
     @Builder
-    private ResponseOfCommentDetail(String creatorName, String creatorProfileImageUrl, Boolean isPostOwner, String content, String createdAt,
+    private ResponseOfCommentDetail(Long commentId, String creatorName, String creatorProfileImageUrl, Boolean isPostOwner, String content, String createdAt,
                                     String lastModifiedAt, int likeCount, Boolean isLiked, Boolean isActiveComment) {
+        this.commentId = commentId;
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.isPostOwner = isPostOwner;
@@ -41,6 +44,7 @@ public class ResponseOfCommentDetail {
 
     public static ResponseOfCommentDetail of(InfoOfCommentDetail info) {
         return ResponseOfCommentDetail.builder()
+                .commentId(info.getCommentId())
                 .creatorName(info.getCreatorName())
                 .creatorProfileImageUrl(info.getCreatorProfileImageUrl())
                 .isPostOwner(info.getIsPostOwner())

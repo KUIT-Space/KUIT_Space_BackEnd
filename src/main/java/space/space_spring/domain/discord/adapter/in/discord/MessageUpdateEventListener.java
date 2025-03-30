@@ -68,7 +68,7 @@ public class MessageUpdateEventListener extends ListenerAdapter {
     }
 
     private boolean isComment(MessageUpdateEvent event){
-        return event.isFromThread()&&event.getChannel().getId().equals(event.getMessage().getId());
+        return event.isFromThread()&&!event.getChannel().getId().equals(event.getMessage().getId());
     }
 
     private boolean isAvailableChannelType(MessageChannelUnion channel){

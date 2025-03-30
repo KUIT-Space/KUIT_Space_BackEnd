@@ -65,6 +65,12 @@ public class DeletePostService implements DeletePostUseCase {
         // 첨부파일 삭제
         deleteAttachmentPort.deleteAllAttachments(attachments);
 
+        // 댓글 좋아요 삭제
+        comments.forEach(comment -> {
+            List<Like> commentLikes = loadLikePort.loadAllLikes(comment.getId());
+            deleteLikePort.deleteAllLikes(commentLikes);
+        });
+
         // 댓글 삭제
         deleteCommentPort.deleteAllComments(comments);
 

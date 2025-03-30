@@ -25,7 +25,7 @@ public class ReadEventParticipantService implements ReadEventParticipantUseCase 
         if (participants.isEmpty()) return EventParticipantInfos.createEmpty();
 
         List<Long> participantIds = participants.getSpaceMemberIds();
-        SpaceMembers spaceMemberInfos = SpaceMembers.of(loadSpaceMemberPort.loadAllById(participantIds));
+        SpaceMembers spaceMemberInfos = SpaceMembers.of(loadSpaceMemberPort.loadAllByIdInOrder(participantIds));
 
         return EventParticipantInfos.create(spaceMemberInfos);
     }

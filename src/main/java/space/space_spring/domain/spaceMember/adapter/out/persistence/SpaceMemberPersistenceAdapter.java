@@ -154,6 +154,14 @@ public class SpaceMemberPersistenceAdapter
     }
 
     @Override
+    public List<SpaceMember> loadAllByIdInOrder(List<Long> ids) {
+        List<SpaceMemberJpaEntity> allById = spaceMemberRepository.findAllByIdInOrder(ids);
+
+        return allById.stream().map(spaceMemberMapper::toDomainEntity)
+                .toList();
+    }
+
+    @Override
     public boolean delete(Long spaceId){
         //ToDo change to soft delete
         //spaceMemberRepository.delete();

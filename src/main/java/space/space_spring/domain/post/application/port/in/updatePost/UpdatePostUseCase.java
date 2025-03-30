@@ -8,4 +8,5 @@ public interface UpdatePostUseCase {
 
     void updatePostFromDiscord(UpdatePostFromDiscordCommand command);
     void updateTitle(Long postDiscordId,String newTitle);
+    void updateTags(Long postDiscordId,List<Long> newTagsDiscordId);
 }

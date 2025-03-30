@@ -103,6 +103,25 @@ public class UpdatePostService implements UpdatePostUseCase {
 
     @Transactional
     @Override
+    public void updateTitle(Long postDiscordId,String newTitle){
+        // 1. discordId 로 수정할 post 찾기
+        Optional<Post> optionalPost = loadPostPort.loadByDiscordId(postDiscordId);
+        if (optionalPost.isEmpty()) {
+            log.info("edit discord message not in DB");
+            return;
+        }
+
+        // 2. post title update
+        Post post = optionalPost.get();
+        post.updateTitle(newTitle);
+
+        // 5. db에 post 변경사항 반영
+        updatePostPort.updatePost(post);
+
+    }
+
+    @Transactional
+    @Override
     public void updatePostFromDiscord(UpdatePostFromDiscordCommand command) {
         // 1. discordId 로 수정할 post 찾기
         Optional<Post> optionalPost = loadPostPort.loadByDiscordId(command.getDiscordId());

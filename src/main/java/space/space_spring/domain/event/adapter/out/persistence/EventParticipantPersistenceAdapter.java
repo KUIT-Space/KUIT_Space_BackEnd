@@ -30,7 +30,21 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
     public EventParticipants loadByEventId(Long eventId) {
         EventJpaEntity eventJpaEntity = eventRepository.findByIdAndStatus(eventId, ACTIVE).orElseThrow(
                 () -> new CustomException(EVENT_NOT_FOUND));
-        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEventAndStatusOrderByCreatedAtDesc(eventJpaEntity, ACTIVE);
+        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findByEventAndStatusOrderByUpdatedAtDesc(eventJpaEntity, ACTIVE);
+
+        List<EventParticipant> participants = new ArrayList<>();
+        for (EventParticipantJpaEntity e : eventParticipantJpaEntities) {
+            participants.add(eventParticipantMapper.toDomainEntity(e));
+        }
+
+        return EventParticipants.create(participants);
+    }
+
+    @Override
+    public EventParticipants loadAllByEventId(Long eventId) {
+        EventJpaEntity eventJpaEntity = eventRepository.findByIdAndStatus(eventId, ACTIVE).orElseThrow(
+                () -> new CustomException(EVENT_NOT_FOUND));
+        List<EventParticipantJpaEntity> eventParticipantJpaEntities = eventParticipantRepository.findAllByEventOrderByCreatedAtDesc(eventJpaEntity); // ACTIVE + INACTIVE
 
         List<EventParticipant> participants = new ArrayList<>();
         for (EventParticipantJpaEntity e : eventParticipantJpaEntities) {
@@ -80,5 +94,10 @@ public class EventParticipantPersistenceAdapter implements LoadEventParticipantP
         if (eventParticipantJpaEntity.isNotActive()) throw new CustomException(PARTICIPANT_NOT_FOUND);
 
         eventParticipantRepository.softDelete(eventParticipantJpaEntity);
+    }
+
+    @Override
+    public void activateParticipant(Long eventId, Long spaceMemberId) {
+        eventParticipantRepository.updateActiveBySpaceMemberId(eventId, spaceMemberId);
     }
 }

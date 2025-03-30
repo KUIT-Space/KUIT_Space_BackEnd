@@ -8,6 +8,8 @@ import space.space_spring.global.util.NaturalNumber;
 @Builder
 public class InfoOfCommentDetail {
 
+    private Long commentId;
+
     private String creatorName;
 
     private String creatorProfileImageUrl;

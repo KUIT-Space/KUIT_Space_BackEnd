@@ -14,6 +14,7 @@ public class InactiveCommentProcessingStrategy implements CommentDetailProcessin
     @Override
     public CommentDetailView process(CommentDetailView comment) {
         return CommentDetailView.builder()
+                .commentId(comment.getCommentId())
                 .creatorId(comment.getCreatorId())
                 .creatorName(null)
                 .creatorProfileImageUrl(null)

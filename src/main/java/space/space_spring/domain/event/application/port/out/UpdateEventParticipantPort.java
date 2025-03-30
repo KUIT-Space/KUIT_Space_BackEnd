@@ -6,4 +6,6 @@ public interface UpdateEventParticipantPort {
     void deleteAllByEventId(Long eventId);
 
     void deleteParticipant(Long eventId, Long spaceMemberId);
+
+    void activateParticipant(Long eventId, Long spaceMemberId);
 }

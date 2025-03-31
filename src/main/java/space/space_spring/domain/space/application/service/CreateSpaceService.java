@@ -96,28 +96,11 @@ public class CreateSpaceService implements CreateSpaceUseCase {
 
     private void checkSpacePresent(Optional<Space> space){
         space.ifPresent(value->{
-            checkMemberAgain(value);
             throw  new CustomException(SPACE_ALREADY_EXISTED,
                     SPACE_ALREADY_EXISTED.getMessage()+"\nspaceId: "+value.getId());
         });
     }
 
-
-    private void checkMemberAgain(Space space){
-        //GuildMember 정보 가져오기
-        GuildMembers guildMembers=loadGuildMemberPort.loadAllSpaceMembers(space);
-        if(guildMembers.getGuildMembers()==null||guildMembers.getGuildMembers().isEmpty()){
-            return;
-        }
-        //User가 없는 경우 User 생성
-        guildMembers.toStream().map(guildMember -> {
-            Long userId = createUserUseCase.findOrCreateUser(guildMember);
-            return guildMember.createSpaceMember(space.getId(), userId);
-        }).forEach(spaceMember -> {
-            System.out.println("\nCreateUser:"+createSpaceMemberUseCase.create(spaceMember).getId());
-        });
-
-    }
 
 
 }

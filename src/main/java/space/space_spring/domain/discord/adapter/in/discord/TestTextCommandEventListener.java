@@ -23,6 +23,7 @@ import space.space_spring.domain.discord.application.port.in.updateComment.Updat
 import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordUseCase;
 import space.space_spring.domain.discord.application.port.out.*;
 
+import space.space_spring.domain.discord.application.port.out.deleteWebHookMessage.DeleteDiscordWebHookMessagePort;
 import space.space_spring.domain.discord.application.port.out.updateMessage.UpdateMessageInDiscordPort;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
@@ -53,6 +54,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
     private final EditDiscordMessageAdapter editDiscordMessageAdapter;
     private final DiscordUtil  discordUtil;
     private final UpdateMessageInDiscordPort updateMessageInDiscordPort;
+    private final DeleteDiscordWebHookMessagePort deleteDiscordWebHookMessagePort;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
@@ -225,6 +227,15 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     ,"임시 메세지"
                     ,List.of()
                     );
+        }
+        if(msg.getContentRaw().startsWith("!delete:")) {
+            String[] commands = msg.getContentRaw().split(":");
+            Long msgId = Long.parseLong(commands[1]);
+            Long originChannelId=discordUtil.getRootChannelId(event.getChannel());
+            deleteDiscordWebHookMessagePort.deleteInThread(webHookPort.getOrCreate(originChannelId),
+                    event.getGuild().getIdLong()
+            ,event.getChannel().getIdLong(),msgId);
+
         }
         if(msg.getContentRaw().startsWith("!editcomment:")) {
             String[] commands = msg.getContentRaw().split(":");

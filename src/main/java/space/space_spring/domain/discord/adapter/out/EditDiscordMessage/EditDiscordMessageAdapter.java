@@ -55,7 +55,7 @@ public class EditDiscordMessageAdapter implements UpdateMessageInDiscordPort {
             Throwable cause = e.getCause();
             if (cause instanceof HttpException httpEx) {
                 if (httpEx.getMessage() != null && httpEx.getMessage().contains("10008")) {
-                    System.out.println("해당 Discord 메시지가 존재하지 않음 (이미 삭제됐을 가능성)");
+                    System.out.println("해당 Discord 메시지가 존재하지 않음 (웹훅이 아닌 디스코드에서 작성 되었을 가능성)");
                     throw new CustomException(NOT_PROVIDE_CROSS_EDIT);
                 } else {
                     throw httpEx; // 그대로 다시 던지거나 처리

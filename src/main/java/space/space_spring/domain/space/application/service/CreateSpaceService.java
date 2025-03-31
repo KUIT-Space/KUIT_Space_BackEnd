@@ -12,10 +12,8 @@ import space.space_spring.domain.space.application.port.out.CreateSpacePort;
 import space.space_spring.domain.space.application.port.out.LoadSpacePort;
 import space.space_spring.domain.space.domain.Space;
 import space.space_spring.domain.spaceMember.application.port.in.CreateSpaceMemberUseCase;
-import space.space_spring.domain.spaceMember.application.port.out.CreateSpaceMemberPort;
-import space.space_spring.domain.spaceMember.application.port.out.GuildMember;
-import space.space_spring.domain.spaceMember.application.port.out.GuildMembers;
-import space.space_spring.domain.spaceMember.application.port.out.LoadGuildMemberPort;
+import space.space_spring.domain.spaceMember.application.port.out.*;
+import space.space_spring.domain.spaceMember.domian.SpaceMember;
 import space.space_spring.domain.user.application.port.in.CreateUserUseCase;
 import space.space_spring.domain.user.application.port.out.CreateUserPort;
 import space.space_spring.domain.user.application.port.out.LoadUserPort;
@@ -41,6 +39,7 @@ public class CreateSpaceService implements CreateSpaceUseCase {
     private final CreateSpaceMemberUseCase createSpaceMemberUseCase;
     private final CreateDiscordRolePort createDiscordRolePort;
     private final CreatePrivateDiscordChannelPort createPrivateDiscordChannelPort;
+    private final LoadSpaceMemberPort loadSpaceMemberPort;
 
     @Override
     @Transactional
@@ -114,10 +113,17 @@ public class CreateSpaceService implements CreateSpaceUseCase {
             Long userId = createUserUseCase.findOrCreateUser(guildMember);
             return guildMember.createSpaceMember(space.getId(), userId);
         }).forEach(spaceMember -> {
-            System.out.println("\nCreateUser:"+createSpaceMemberUseCase.create(spaceMember).getId());
+            findOrCreate(space,spaceMember);
         });
 
     }
 
+    private SpaceMember findOrCreate(Space space, SpaceMember spaceMember){
+        SpaceMember findSpaceMember = loadSpaceMemberPort.loadByDiscord(space.getDiscordId(),spaceMember.getDiscordId());
+        if(findSpaceMember==null){
+            return createSpaceMemberUseCase.create(spaceMember);
+        }
+        return findSpaceMember;
+    }
 
 }

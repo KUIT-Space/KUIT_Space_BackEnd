@@ -15,8 +15,8 @@ public class UpdateCommentInDiscordService implements UpdateCommentInDiscordUseC
     @Override
     public void updateCommentInDiscord(UpdateCommentInDiscordCommand command) {
         // 상준님 구현해주세요!
-        updateMessageInDiscordPort.editMessage(command.getWebHookUrl(), command.getDiscordIdOfBoard()
-                ,command.getDiscordIdOfPost(),null, command.getNewContent(), List.of());
+        updateMessageInDiscordPort.editThreadMessage(command.getWebHookUrl(), command.getDiscordIdOfPost()
+                ,command.getDiscordIdOfComment(),command.getNewContent());
 
     }
 }

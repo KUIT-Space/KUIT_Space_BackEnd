@@ -11,6 +11,12 @@ import space.space_spring.domain.post.application.port.out.*;
 import space.space_spring.domain.post.application.port.out.like.DeleteLikePort;
 import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
 import space.space_spring.domain.post.domain.*;
+import space.space_spring.domain.post.domain.Attachment;
+import space.space_spring.domain.post.domain.Board;
+import space.space_spring.domain.post.domain.Comment;
+import space.space_spring.domain.post.domain.Post;
+import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
@@ -33,10 +39,14 @@ public class DeletePostService implements DeletePostUseCase {
     private final DeleteAttachmentPort deleteAttachmentPort;
     private final DeleteLikePort deleteLikePort;
     private final DeletePostInDiscordUseCase deletePostInDiscordUseCase;
+    private final LoadSpaceUseCase loadSpaceUseCase;
 
     @Override
     @Transactional
     public void deletePostFromWeb(DeletePostCommand command) {
+        // 0. Space 조회
+        Space space = loadSpaceUseCase.load(command.getSpaceId());
+
         // 1. Board 조회
         Board board = loadBoardPort.loadById(command.getBoardId());
 
@@ -57,6 +67,8 @@ public class DeletePostService implements DeletePostUseCase {
 
         // 디스코드에서 해당 게시글 & 모든 댓글들 삭제
         deletePostInDiscordUseCase.deletePostInDiscord(DeletePostInDiscordCommand.builder()
+                .webHookUrl(board.getWebhookUrl())
+                .discordIdOfSpace(space.getDiscordId())
                 .discordIdOfBoard(board.getDiscordId())
                 .discordIdOfPost(post.getDiscordId())
                 .discordIdOfComments(comments.stream().map(Comment::getDiscordId).toList())

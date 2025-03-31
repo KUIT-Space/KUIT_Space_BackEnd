@@ -25,12 +25,17 @@ public class MessageDeleteEventListener extends ListenerAdapter {
             //log.info("not Available channel type. ignore");
             return;
         }
-        if(event.isFromThread()){
-            deleteMessageUseCase.delete(messageId);
+        if(!event.isFromThread()){
+            deleteMessageUseCase.deletePost(messageId);
+            return;
         }
 
-        //Todo Delete post 연결
-        //deletePostUseCase.delete(messageId);
+        if((event.getChannel().getIdLong()==event.getMessageIdLong())){
+            deleteMessageUseCase.deletePost(messageId);
+            return;
+        }
+        deleteMessageUseCase.deleteComment(messageId);
+        return;
 
     }
     private boolean isAvailableChannelType(MessageChannelUnion channel){

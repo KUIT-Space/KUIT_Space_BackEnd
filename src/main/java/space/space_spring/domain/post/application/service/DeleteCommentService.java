@@ -17,6 +17,8 @@ import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Comment;
 import space.space_spring.domain.post.domain.Like;
 import space.space_spring.domain.post.domain.Post;
+import space.space_spring.domain.space.application.port.in.LoadSpaceUseCase;
+import space.space_spring.domain.space.domain.Space;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class DeleteCommentService implements DeleteCommentUseCase {
 
     private final LoadBoardPort loadBoardPort;
     private final LoadPostPort loadPostPort;
+    private final LoadSpaceUseCase loadSpaceUseCase;
     private final LoadCommentPort loadCommentPort;
     private final LoadLikePort loadLikePort;
     private final DeleteCommentPort deleteCommentPort;
@@ -40,6 +43,7 @@ public class DeleteCommentService implements DeleteCommentUseCase {
     @Override
     public void deleteCommentFromWeb(DeleteCommentCommand command) {
         // 1. Board, Post 조회
+        Space space = loadSpaceUseCase.load(command.getSpaceId());
         Board board = loadBoardPort.loadById(command.getBoardId());
         Post post = loadPostPort.loadById(command.getPostId());
         Comment comment = loadCommentPort.loadById(command.getCommentId());
@@ -50,6 +54,8 @@ public class DeleteCommentService implements DeleteCommentUseCase {
 
         // 3. 삭제할 댓글 디스코드에 반영
         deleteCommentInDiscordUseCase.deleteCommentInDiscord(DeleteCommentInDiscordCommand.builder()
+                        .discordIdOfSpace(space.getDiscordId())
+                        .webHookUrl(board.getWebhookUrl())
                         .discordIdOfBoard(board.getDiscordId())
                         .discordIdOfPost(post.getDiscordId())
                         .discordIdOfComment(comment.getDiscordId()).build());

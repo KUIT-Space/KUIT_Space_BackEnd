@@ -56,20 +56,20 @@ public class ReadHomeService implements ReadHomeUseCase {
         loadBoardPort.loadByType(NOTICE).forEach(board -> noticeBoardIds.add(board.getId()));
         loadBoardPort.loadByType(SEASON_NOTICE).forEach(board -> noticeBoardIds.add(board.getId()));
 
+        List<NoticeSummary> notices = new ArrayList<>();
         if (!noticeBoardIds.isEmpty()) {
             // 최신순 3개의 공지사항만 가져오기
             List<Post> noticePosts = loadPostPort.loadLatestPostsByBoardIds(noticeBoardIds, 3);
 
-            List<NoticeSummary> notices = new ArrayList<>();
             for (Post post : noticePosts) {
                 notices.add(new NoticeSummary(
+                        post.getId(),
                         post.getContent().getValue(),
                         ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt())
                 ));
             }
-
-            result.addNotice(notices);
         }
+        result.addNotice(notices);
 
         // 구독한 게시판 가져오기
         List<SubscriptionSummary> subscriptions = new ArrayList<>();

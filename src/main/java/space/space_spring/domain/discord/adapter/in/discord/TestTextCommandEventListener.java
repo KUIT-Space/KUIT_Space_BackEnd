@@ -19,10 +19,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import space.space_spring.domain.discord.adapter.out.EditDiscordMessage.EditDiscordMessageAdapter;
+import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordCommand;
+import space.space_spring.domain.discord.application.port.in.updateComment.UpdateCommentInDiscordUseCase;
 import space.space_spring.domain.discord.application.port.out.*;
 
+import space.space_spring.domain.discord.application.port.out.deleteWebHookMessage.DeleteDiscordWebHookMessagePort;
+import space.space_spring.domain.discord.application.port.out.updateMessage.UpdateMessageInDiscordPort;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
+import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
@@ -42,11 +47,14 @@ public class TestTextCommandEventListener extends ListenerAdapter {
     private final CreateDiscordThreadPort createDiscordThreadPort;
 
     private final CreateBoardUseCase createBoardUseCase;
-
+    private final UpdateCommentInDiscordUseCase updateCommentInDiscordUseCase;
     //private final CreateSpaceUseCase createSpaceUseCase;
     private final CreateDiscordMessageOnThreadPort createDiscordMessageOnThreadPort;
     private final WebHookPort webHookPort;
     private final EditDiscordMessageAdapter editDiscordMessageAdapter;
+    private final DiscordUtil  discordUtil;
+    private final UpdateMessageInDiscordPort updateMessageInDiscordPort;
+    private final DeleteDiscordWebHookMessagePort deleteDiscordWebHookMessagePort;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
@@ -174,8 +182,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .title("message")
                             .content("content")
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
-                            .webHookUrl(webHookPort.getOrCreate(event.getChannel().getIdLong()))
-                            .guildDiscordId(event.getGuild().getIdLong())
+                            .webHookUrl(webHookPort.getOrCreate(discordUtil.getRootChannelId(event.getChannel())  ))                          .guildDiscordId(event.getGuild().getIdLong())
                             .channelDiscordId(event.getChannel().getIdLong())
                             .discordTags(List.of())
                             .name(event.getMember().getEffectiveName())
@@ -220,6 +227,63 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     ,"임시 메세지"
                     ,List.of()
                     );
+        }
+        if(msg.getContentRaw().startsWith("!delete:")) {
+            String[] commands = msg.getContentRaw().split(":");
+            Long msgId = Long.parseLong(commands[1]);
+            Long originChannelId=discordUtil.getRootChannelId(event.getChannel());
+            deleteDiscordWebHookMessagePort.deleteInThread(webHookPort.getOrCreate(originChannelId),
+                    event.getGuild().getIdLong()
+            ,event.getChannel().getIdLong(),msgId);
+
+        }
+        if(msg.getContentRaw().startsWith("!editcomment:")) {
+            String[] commands = msg.getContentRaw().split(":");
+            Long msgId = Long.parseLong(commands[1]);
+            Long originChannelId=discordUtil.getRootChannelId(event.getChannel());
+            event.getChannel().getLatestMessageIdLong();
+            System.out.println("last message:"+event.getChannel().getLatestMessageIdLong());
+//            updateMessageInDiscordPort.editThreadMessage(webHookPort.getOrCreate(originChannelId),event.getChannel().getIdLong()
+//            ,msgId,"new content by port");
+            updateCommentInDiscordUseCase.updateCommentInDiscord(UpdateCommentInDiscordCommand.builder()
+                    .discordIdOfBoard(originChannelId)
+                    .discordIdOfPost(event.getChannel().getIdLong())
+                    .discordIdOfComment(msgId)
+                    .webHookUrl(webHookPort.getOrCreate(originChannelId))
+                    .newContent("edited new comment")
+                    .build());
+
+        }
+        if(msg.getContentRaw().startsWith("!channelinfo")) {
+            event.getMessage().reply(event.getChannel().getHistoryBefore(event.getChannel().getLatestMessageIdLong(),10).complete()
+                    .getRetrievedHistory().stream().map(message->message.getContentRaw()+"/"+message.getId()).toList().toString()).queue();
+        }
+        if(msg.getContentRaw().startsWith("!sendcomment:")){
+            Long originChannelId=discordUtil.getRootChannelId(event.getChannel());
+            CreateDiscordMessageOnThreadCommand command = CreateDiscordMessageOnThreadCommand.builder()
+                    .originPostTitle("origin title")
+                    .originChannelId(originChannelId)
+                    .originPostId(1L)
+                    .content("comment content")
+                    .webHookUrl(webHookPort.getOrCreate(originChannelId))
+                    .guildDiscordId(event.getGuild().getIdLong())
+                    .userName(event.getMember().getEffectiveName())
+                    .avatarUrl(event.getMember().getEffectiveAvatarUrl())
+                    .threadChannelDiscordId(event.getChannel().getIdLong())
+                    .build();
+            try {
+                createDiscordMessageOnThreadPort.sendToThread(command).thenAccept(msgId -> {
+                    System.out.println("commentId:" + msgId);
+                    try {
+                        club.minnced.discord.webhook.WebhookClient.withUrl(webHookPort.getOrCreate(originChannelId)).onThread(event.getChannel().getIdLong())
+                                .edit(msgId, "수정된 댓글").get();
+                    }catch(Exception e){
+                        System.out.println("error1 : "+e.getMessage());
+                    }
+                });
+            }catch(Exception e){
+                System.out.println("error2 : "+e.getMessage());
+            }
         }
 
 

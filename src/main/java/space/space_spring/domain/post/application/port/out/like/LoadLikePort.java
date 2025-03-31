@@ -13,4 +13,6 @@ public interface LoadLikePort {
     NaturalNumber countLikeByPostId(Long postId);
 
     boolean hasSpaceMemberLiked(Long spaceMemberId, Long targetId);
+
+    List<Like> loadAllLikes(Long postId);
 }

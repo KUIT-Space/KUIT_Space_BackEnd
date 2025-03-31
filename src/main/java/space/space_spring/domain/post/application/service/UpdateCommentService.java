@@ -41,6 +41,8 @@ public class UpdateCommentService implements UpdateCommentUseCase {
                 .discordIdOfBoard(board.getDiscordId())
                 .discordIdOfPost(post.getDiscordId())
                 .discordIdOfComment(comment.getDiscordId())
+                .newContent(command.getContent())
+                .webHookUrl(board.getWebhookUrl())
                 .build());
 
         // 3. 댓글 update

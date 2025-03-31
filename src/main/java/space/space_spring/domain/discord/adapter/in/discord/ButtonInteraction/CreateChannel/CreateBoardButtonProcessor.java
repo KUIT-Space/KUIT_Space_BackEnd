@@ -29,9 +29,8 @@ import java.util.Optional;
 
 import java.util.List;
 
+import static space.space_spring.domain.post.domain.BoardType.*;
 
-import static space.space_spring.domain.post.domain.BoardType.PAY;
-import static space.space_spring.domain.post.domain.BoardType.POST;
 @Component
 @RequiredArgsConstructor
 @Transactional
@@ -79,7 +78,8 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
                 .build();
 
         if(isExistBoard(targetChannelId)){
-            event.reply("이미 게시판으로 등록된 채널입니다").queue();
+            event.reply("이미 게시판으로 등록된 채널입니다")
+                    .setEphemeral(true).queue();
             return;
         }
 
@@ -114,7 +114,8 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
                 return;
         }
 
-        event.reply("`" + menuType + "` 기능이 `" + targetChannelIdStr + "` 채널에서 실행되었습니다.").queue();
+        event.reply("`" + menuType + "` 기능이 `" + targetChannelIdStr + "` 채널에서 실행되었습니다.")
+                .setEphemeral(true).queue();
 
     }
 
@@ -126,18 +127,18 @@ public class CreateBoardButtonProcessor implements ButtonInteractionProcessor {
     private void createNoticeBoard(ChannelCommand command) {
         System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
         // Todo 중복 저장 검사
-        createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(NOTICE));
     }
     private void createSeasonNoticeBoard(ChannelCommand command) {
         System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
         // Todo 중복 저장 검사
-        createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(SEASON_NOTICE));
     }
 
     private void createTipBoard(ChannelCommand command) {
         System.out.println("createBoard 호출: 채널 ID - " + command.getChannelName());
         // Todo 중복 저장 검사
-        createBoardUseCase.createBoard(command.getCreateBoardCommand(POST));
+        createBoardUseCase.createBoard(command.getCreateBoardCommand(TIP));
     }
 
     private void createPayBoard(ChannelCommand command) {

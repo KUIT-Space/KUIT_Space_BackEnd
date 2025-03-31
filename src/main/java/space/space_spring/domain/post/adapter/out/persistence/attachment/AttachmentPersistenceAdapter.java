@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 import space.space_spring.domain.post.adapter.out.persistence.post.PostJpaEntity;
-import space.space_spring.domain.post.adapter.out.persistence.post.SpringDataPostRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;

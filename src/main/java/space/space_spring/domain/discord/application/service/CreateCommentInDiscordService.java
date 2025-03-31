@@ -50,6 +50,7 @@ public class CreateCommentInDiscordService implements CreateCommentInDiscordUseC
                 .content(command.getContent())
                 .originPostId(command.getOriginPostId())
                 .originChannelId(board.getDiscordId())
+                .originPostTitle(post.getTitle())
                 .build();
     }
 

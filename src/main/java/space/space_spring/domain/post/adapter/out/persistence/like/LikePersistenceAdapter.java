@@ -6,9 +6,10 @@ import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseJ
 import space.space_spring.domain.post.adapter.out.persistence.postBase.SpringDataPostBaseRepository;
 import space.space_spring.domain.post.application.port.out.like.ChangeLikeStatePort;
 import space.space_spring.domain.post.application.port.out.like.CreateLikePort;
+import space.space_spring.domain.post.application.port.out.like.DeleteLikePort;
 import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
 import space.space_spring.domain.post.domain.Like;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -23,9 +24,9 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, ChangeLikeStatePort {
+public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, ChangeLikeStatePort, DeleteLikePort {
 
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SpringDataPostBaseRepository postBaseRepository;
     private final SpringDataLikeRepository likeRepository;
     private final LikeMapper likeMapper;
@@ -59,7 +60,15 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
     }
 
     @Override
-    public void changeLikeState(Long spaceMemberId, Long targetId, boolean changeTo) {
+    public List<Like> loadAllLikes(Long postId) {
+        List<LikeJpaEntity> likeJpaEntities = likeRepository.findByPostBaseIdAndStatus(postId, BaseStatusType.ACTIVE);
+        return likeJpaEntities.stream()
+                .map(likeMapper::toDomainEntity)
+                .toList();
+    }
+
+    @Override
+    public void changeLikeState(Long targetId, Long spaceMemberId, boolean changeTo) {
         LikeJpaEntity likeJpaEntity = likeRepository.findBySpaceMemberIdAndPostBaseIdAndStatus(spaceMemberId, targetId, BaseStatusType.ACTIVE)
                 .orElseThrow(() -> new CustomException(LIKE_NOT_FOUND));
 
@@ -76,5 +85,22 @@ public class LikePersistenceAdapter implements LoadLikePort, CreateLikePort, Cha
 
         LikeJpaEntity save = likeRepository.save(likeMapper.toJpaEntity(postBaseJpaEntity, spaceMemberJpaEntity, like));
         return likeMapper.toDomainEntity(save);
+    }
+
+    @Override
+    public void deleteAllLikes(List<Like> likes) {
+        if (likes.isEmpty()) {
+            return;
+        }
+
+        List<Long> likeIds = likes.stream()
+                .map(Like::getId)
+                .toList();
+
+        List<LikeJpaEntity> likeJpaEntities = likeRepository.findAllById(likeIds);
+
+        for (LikeJpaEntity like : likeJpaEntities) {
+            like.updateToInactive(); // soft Delete 적용
+        }
     }
 }

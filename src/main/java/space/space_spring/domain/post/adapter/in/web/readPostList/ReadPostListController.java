@@ -3,6 +3,9 @@ package space.space_spring.domain.post.adapter.in.web.readPostList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,15 +24,18 @@ public class ReadPostListController {
 
     @Operation(summary = "게시글 리스트 조회", description = """
             
-            스페이스 멤버가 게시판의 게시글 리스트를 조회합니다.
+            스페이스 멤버가 게시판의 게시글 리스트를 조회합니다.(무한 스크롤)
             
             """)
     @GetMapping("/space/{spaceId}/board/{boardId}/post")
     public BaseResponse<ResponseOfReadPostList> readPostList(
             @PathVariable Long spaceId,
             @PathVariable Long boardId,
-            @RequestParam(required = false) Long tagId) {
-        ListOfPostSummary postSummaries = readPostListUseCase.readPostList(boardId, tagId);
+            @RequestParam(required = false) Long tagId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("postBase.createdAt").descending());
+        ListOfPostSummary postSummaries = readPostListUseCase.readPostList(boardId, tagId, pageable);
         return new BaseResponse<>(ResponseOfReadPostList.of(postSummaries));
     }
 }

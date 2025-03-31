@@ -90,7 +90,7 @@ public class DiscordThreadRepository {
         return  webhookClient.onThread(threadId).send( messageBuilder.build()).exceptionally(err-> {
                     throw new CustomException(DISCORD_THREAD_CREATE_FAIL);
                 })
-                .thenApply(msg->msg.getId());
+                .thenApply(msg-> msg.getId());
     }
 
     @Async

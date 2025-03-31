@@ -3,6 +3,7 @@ package space.space_spring.domain.post.adapter.out.persistence.board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.application.port.out.CreateBoardPort;
+import space.space_spring.domain.post.application.port.out.DeleteBoardPort;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.BoardType;
@@ -21,7 +22,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
+public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort, DeleteBoardPort {
 
     private final SpringDataBoardRepository boardRepository;
     private final SpringDataSpace spaceRepository;
@@ -29,15 +30,16 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
 
     @Override
     public Long createBoard(Board board) {
-        SpaceJpaEntity spaceJpaEntity = spaceRepository.findById(
-                board.getSpaceId()).orElseThrow(() -> new CustomException(SPACE_NOT_FOUND));
+        SpaceJpaEntity spaceJpaEntity = spaceRepository.findByIdAndStatus(
+                board.getSpaceId(),BaseStatusType.ACTIVE).orElseThrow(() -> new CustomException(SPACE_NOT_FOUND));
 
         BoardJpaEntity boardJpaEntity = boardMapper.toJpaEntity(spaceJpaEntity, board);
         return boardRepository.save(boardJpaEntity).getId();
     }
+
     @Override
     public Optional<Board> load(Long boardId){
-        return boardRepository.findById(boardId).map(boardMapper::toDomainEntity);
+        return boardRepository.findByIdAndStatus(boardId,BaseStatusType.ACTIVE).map(boardMapper::toDomainEntity);
     }
 
 
@@ -51,7 +53,8 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
 
     @Override
     public List<Board> loadByType(BoardType type){
-        return boardRepository.findByBoardType(type).stream().map(boardMapper::toDomainEntity).toList();
+        return boardRepository.findByBoardTypeAndStatus(type,BaseStatusType.ACTIVE)
+                .stream().map(boardMapper::toDomainEntity).toList();
     }
 
     @Override
@@ -63,7 +66,9 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
 
     @Override
     public List<Board> findAll(){
-        return boardRepository.findAll().stream().map(boardMapper::toDomainEntity).toList();
+        return boardRepository.findAll().stream()
+                .filter(board->board.isActive())
+                .map(boardMapper::toDomainEntity).toList();
     }
 
     @Override
@@ -71,5 +76,15 @@ public class BoardPersistenceAdapter implements CreateBoardPort, LoadBoardPort {
         BoardJpaEntity boardJpaEntity = boardRepository.findByDiscordIdAndStatus(discordId, BaseStatusType.ACTIVE)
                 .orElseGet(null);
         return Optional.of(boardMapper.toDomainEntity(boardJpaEntity));
+    }
+
+    @Override
+    public void delete(Long boardId){
+        BoardJpaEntity boardJpaEntity = boardRepository.findByIdAndStatus(boardId, BaseStatusType.ACTIVE)
+                .orElseGet(null);
+        if(boardJpaEntity==null){
+            throw new CustomException(BOARD_NOT_FOUND);
+        }
+        boardJpaEntity.updateToInactive();
     }
 }

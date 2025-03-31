@@ -41,6 +41,7 @@ public class PostBaseJpaEntity extends BaseJpaEntity {
 
     @Lob
     @NotNull
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     @Builder

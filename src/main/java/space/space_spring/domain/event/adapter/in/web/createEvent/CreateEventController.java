@@ -5,8 +5,10 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -50,15 +52,42 @@ public class CreateEventController {
             throw new CustomException(MULTIPARTFILE_CONVERT_FAIL_IN_MEMORY);
         }
 
+        LocalDateTime parsedEventDate = parseDate(request.getDate());
+        LocalDateTime parsedStartTime = parseDate(request.getStartTime());
+        LocalDateTime parsedEndTime = parseDate(request.getEndTime());
+        validateDateRange(parsedEventDate, parsedStartTime, parsedEndTime);
+
         CreateEventCommand createEventCommand = CreateEventCommand.builder()
                 .name(request.getName())
                 .image(eventImgUrl)
-                .date(Instant.parse(request.getDate()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
-                .startTime(Instant.parse(request.getStartTime()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
-                .endTime(Instant.parse(request.getEndTime()).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
+                .date(parsedEventDate)
+                .startTime(parsedStartTime)
+                .endTime(parsedEndTime)
                 .build();
 
         Long eventId = createEventUseCase.createEvent(spaceMemberId, createEventCommand);
         return new BaseResponse<>(new CreateEventResponse(eventId));
+    }
+
+    private void validateDateRange(LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime.isAfter(endTime)) {
+            throw new CustomException(INVALID_EVENT_TIME_RANGE);
+        }
+
+        if (!date.toLocalDate().equals(startTime.toLocalDate())) {
+            throw new CustomException(INVALID_EVENT_DATE);
+        }
+    }
+
+    private LocalDateTime parseDate(String dateStr) {
+        try {
+            return LocalDateTime.parse(dateStr)
+                    .atZone(ZoneId.of("Asia/Seoul"))
+                    .withZoneSameInstant(ZoneId.of("UTC"))
+                    .toLocalDateTime();
+
+        } catch (DateTimeParseException e) {
+            throw new CustomException(INVALID_DATETIME_TYPE);
+        }
     }
 }

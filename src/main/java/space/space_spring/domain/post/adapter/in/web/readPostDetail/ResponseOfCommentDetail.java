@@ -7,11 +7,13 @@ import space.space_spring.domain.post.application.port.in.readPostDetail.InfoOfC
 @Getter
 public class ResponseOfCommentDetail {
 
+    private Long commentId;
+
     private String creatorName;
 
     private String creatorProfileImageUrl;
 
-    private boolean isPostOwner;
+    private Boolean isPostOwner;
 
     private String content;         // 댓글 내용은 String (Content X)
 
@@ -21,13 +23,14 @@ public class ResponseOfCommentDetail {
 
     private int likeCount;
 
-    private boolean isLiked;
+    private Boolean isLiked;
 
-    private boolean isActiveComment;
+    private Boolean isActiveComment;
 
     @Builder
-    private ResponseOfCommentDetail(String creatorName, String creatorProfileImageUrl, boolean isPostOwner, String content, String createdAt,
-                                    String lastModifiedAt, int likeCount, boolean isLiked, boolean isActiveComment) {
+    private ResponseOfCommentDetail(Long commentId, String creatorName, String creatorProfileImageUrl, Boolean isPostOwner, String content, String createdAt,
+                                    String lastModifiedAt, int likeCount, Boolean isLiked, Boolean isActiveComment) {
+        this.commentId = commentId;
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.isPostOwner = isPostOwner;
@@ -41,15 +44,16 @@ public class ResponseOfCommentDetail {
 
     public static ResponseOfCommentDetail of(InfoOfCommentDetail info) {
         return ResponseOfCommentDetail.builder()
+                .commentId(info.getCommentId())
                 .creatorName(info.getCreatorName())
                 .creatorProfileImageUrl(info.getCreatorProfileImageUrl())
-                .isPostOwner(info.isPostOwner())
+                .isPostOwner(info.getIsPostOwner())
                 .content(info.getContent())
                 .createdAt(info.getCreatedAt())
                 .lastModifiedAt(info.getLastModifiedAt())
-                .likeCount(info.getLikeCount().getNumber())
-                .isLiked(info.isLiked())
-                .isActiveComment(info.isActiveComment())
+                .likeCount(info.getLikeCount())
+                .isLiked(info.getIsLiked())
+                .isActiveComment(info.getIsActiveComment())
                 .build();
     }
 

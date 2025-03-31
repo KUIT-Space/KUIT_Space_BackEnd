@@ -1,8 +1,9 @@
 package space.space_spring.domain.post.adapter.out.persistence.post;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBoardRepository;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.PostBaseMapper;
@@ -13,7 +14,7 @@ import space.space_spring.domain.post.application.port.out.DeletePostPort;
 import space.space_spring.domain.post.application.port.out.LoadPostPort;
 import space.space_spring.domain.post.application.port.out.UpdatePostPort;
 import space.space_spring.domain.post.domain.Post;
-import space.space_spring.domain.spaceMember.adapter.out.persistence.SpringDataSpaceMemberRepository;
+import space.space_spring.domain.spaceMember.adapter.out.persistence.SpaceMemberRepository;
 import space.space_spring.domain.spaceMember.domian.SpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -28,8 +29,8 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, UpdatePostPort, DeletePostPort {
 
     private final SpringDataPostBaseRepository postBaseRepository;
-    private final SpringDataPostRepository postRepository;
-    private final SpringDataSpaceMemberRepository spaceMemberRepository;
+    private final PostRepository postRepository;
+    private final SpaceMemberRepository spaceMemberRepository;
     private final SpringDataBoardRepository boardRepository;
     private final PostMapper postMapper;
     private final PostBaseMapper postBaseMapper;
@@ -64,7 +65,13 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
     }
 
     @Override
-    public List<Post> loadPostListByTagId(Long tagId) {
+    public Page<Post> loadPostListByBoardId(Long boardId, Pageable pageable) {
+        Page<PostJpaEntity> page = postRepository.findPostsByBoardIdPaged(boardId, BaseStatusType.ACTIVE, pageable);
+        return page.map(postMapper::toDomainEntity);
+    }
+
+    @Override
+    public Page<Post> loadPostListByTagId(Long tagId, Pageable pageable) {
         // 1. 태그에 해당하는 PostBaseJpaEntity 조회
         List<PostBaseJpaEntity> postBaseJpaEntities = postBaseRepository.findPostsByTagId(tagId, BaseStatusType.ACTIVE);
 
@@ -73,9 +80,9 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
                 .map(PostBaseJpaEntity::getId)
                 .toList();
 
-        List<PostJpaEntity> postJpaEntities = postRepository.findAllById(postBaseIds);
+        Page<PostJpaEntity> page = postRepository.findByPostBaseIdIn(postBaseIds, pageable);
 
-        return postJpaEntities.stream().map(postMapper::toDomainEntity).toList();
+        return page.map(postMapper::toDomainEntity);
 
     }
 
@@ -100,6 +107,17 @@ public class PostPersistenceAdapter implements CreatePostPort, LoadPostPort, Upd
         }
         return Optional.of(postMapper.toDomainEntity(postJpaEntity));
   }
+
+    @Override
+    public List<Post> loadLatestPostsByBoardIds(List<Long> boardId, int size) {
+        return postRepository.findLatestByBoardIds(boardId, size).stream().map(postMapper::toDomainEntity).toList();
+    }
+
+    @Override
+    public Optional<Post> loadLatestPostByBoardIdAndTagId(Long boardId, Long tagId) {
+        return postRepository.findLatestByBoardIdAndTagId(boardId, tagId).map(postMapper::toDomainEntity);
+    }
+
     public void updatePost(Post post) {
         // Post에 해당하는 jpa entity 찾기
         PostJpaEntity postJpaEntity = postRepository.findById(post.getId())

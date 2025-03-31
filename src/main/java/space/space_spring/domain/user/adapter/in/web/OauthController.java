@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.user.application.port.in.OauthUseCase;
 import space.space_spring.global.common.response.BaseResponse;
-import space.space_spring.global.common.response.SuccessResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,16 +31,18 @@ public class OauthController {
         
         """)
     @GetMapping("/oauth/discord")
-    public BaseResponse<SuccessResponse> signInDiscord(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        TokenPair tokenPair = oauthUseCase.signIn(code);
+    public BaseResponse<OauthLoginResponse> signInDiscord(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        SignInResult signInResult = oauthUseCase.signIn(code);
 
-        if (tokenPair == null) {
-            return new BaseResponse<>(new SuccessResponse(false));
+        if (signInResult.isSignInFail()) {
+            return new BaseResponse<>(new OauthLoginResponse(false, List.of()));
         }
 
+        TokenPair tokenPair = signInResult.getTokenPair();
         response.setHeader(ACCESS_TOKEN_HEADER, TOKEN_PREFIX + tokenPair.getAccessToken());
         response.setHeader(REFRESH_TOKEN_HEADER, TOKEN_PREFIX + tokenPair.getRefreshToken());
-        return new BaseResponse<>(new SuccessResponse(true));
+
+        return new BaseResponse<>(new OauthLoginResponse(true, signInResult.getSpaceInfos()));
     }
 
 }

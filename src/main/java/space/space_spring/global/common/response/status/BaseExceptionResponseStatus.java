@@ -16,7 +16,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 2000: Request 오류 (BAD_REQUEST)
      */
     BAD_REQUEST(2000, HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
-    URL_NOT_FOUND(2001, HttpStatus.BAD_REQUEST, "유효하지 않은 URL 입니다."),
+    URL_NOT_FOUND(2001, HttpStatus.NOT_FOUND, "유효하지 않은 URL 입니다."),
     METHOD_NOT_ALLOWED(2002, HttpStatus.METHOD_NOT_ALLOWED, "해당 URL에서는 지원하지 않는 HTTP Method 입니다."),
     HTTP_MESSAGE_NOT_READABLE(2003, HttpStatus.BAD_REQUEST,"request body 양식에 문제가 있습니다"),
     SPACE_ID_PATHVARIABLE_ERROR(2004,HttpStatus.BAD_REQUEST,"URL에 포함된 SPACE_ID 값이 잘못되었습니다."),
@@ -139,7 +139,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     LIKE_NOT_FOUND(11019, HttpStatus.NOT_FOUND, "존재하지 않는 좋아요 입니다."),
 
     INVALID_CHANGE_LIKE_STATE_REQUEST(11020, HttpStatus.BAD_REQUEST, "좋아요 on/off 요청에서 잘못된 값이 존재합니다."),
-    TAGS_IS_WORNG(11021,HttpStatus.CONFLICT,"생성 중인 tag 들의 board가 같지 않습니다"),
+    NOTICE_NOT_FOUND(11021, HttpStatus.NOT_FOUND, "공지사항 게시판을 찾을 수 없습니다."),
+    TAGS_IS_WORNG(11022,HttpStatus.CONFLICT,"생성 중인 tag 들의 board가 같지 않습니다"),
+
+
     /**
      * 12000 : Pay 오류
      */
@@ -158,6 +161,7 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     PAY_REQUEST_TARGET_MISMATCH(12011, HttpStatus.BAD_REQUEST, "정산 요청 대상자가 본인과 일치하지 않습니다."),
     PAY_REQUEST_CREATOR_MISMATCH(12012, HttpStatus.BAD_REQUEST, "정산 생성자가 본인과 일치하지 않습니다."),
 
+    ALREADY_COMPLETE_PAY_REQUEST_TARGET(12013, HttpStatus.BAD_REQUEST, "해당 정산 요청 대상자는 이미 송금 완료 하였습니다."),
 
 
     /**
@@ -169,6 +173,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     ALREADY_IN_EVENT(13002, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여한 행사입니다."),
     ALREADY_NOT_IN_EVENT(13003, HttpStatus.BAD_REQUEST, "해당 사용자가 이미 참여를 취소한 행사입니다."),
     PARTICIPANT_NOT_FOUND(13004, HttpStatus.NOT_FOUND, "존재하지 않는 행사 참여자입니다."),
+    INVALID_DATETIME_TYPE(13005, HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다."),
+    INVALID_EVENT_TIME_RANGE(13006, HttpStatus.BAD_REQUEST, "행사 시작 시간이 행사 종료 시간보다 이후입니다."),
+    INVALID_EVENT_STATUS(13007, HttpStatus.BAD_REQUEST, "행사 진행 시간이 아닙니다."),
+    INVALID_EVENT_DATE(13008, HttpStatus.BAD_REQUEST, "행사 날짜가 행사 시작 날짜와 동일하지 않습니다."),
 
     /**
      * 140000 Discord 오류
@@ -177,7 +185,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     DISCORD_THREAD_CREATE_FAIL(14001,HttpStatus.INTERNAL_SERVER_ERROR,"discord API에서 오류가 발생했습니다"),
     DISCORD_CHANNEL_NOT_FOUND(14002,HttpStatus.NOT_FOUND,"discord channel을 찾지 못했습니다"),
     DISCORD_GUILD_NOT_FOUND(14003,HttpStatus.NOT_FOUND,"discord Guild를 찾지 못했습니다"),
-    DISCORD_CHANNEL_TYPE_WRONG(14004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다");
+    DISCORD_CHANNEL_TYPE_WRONG(14004,HttpStatus.NOT_FOUND,"discord channel type이 forum/test 가 아닙니다"),
+    NOT_PROVIDE_CROSS_EDIT(14005,HttpStatus.BAD_REQUEST,"message Id not found:디스코드에서 작성된 댓들/게시물은 SAPCE에서 수정 할 수 없습니다"),
+    NOT_PROVIDE_CROSS_DELETE(14005,HttpStatus.BAD_REQUEST,"message Id not found:디스코드에서 작성된 댓들/게시물은 SPACE에서 삭제 할 수 없습니다");
     ;
 
 

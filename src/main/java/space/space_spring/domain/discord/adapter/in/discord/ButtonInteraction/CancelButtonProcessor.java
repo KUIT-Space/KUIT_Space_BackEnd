@@ -2,7 +2,9 @@ package space.space_spring.domain.discord.adapter.in.discord.ButtonInteraction;
 
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CancelButtonProcessor implements ButtonInteractionProcessor{
 
     @Override

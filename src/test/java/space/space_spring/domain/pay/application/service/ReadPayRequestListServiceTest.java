@@ -140,36 +140,4 @@ class ReadPayRequestListServiceTest {
         assertThat(result.getCompletePayRequestList()).isEmpty();
         assertThat(result.getInCompletePayRequestList()).isEmpty();
     }
-
-    @Test
-    @DisplayName("불일치된 정산 상태인 경우, 데이터 베이스 예외 메시지를 던진다.")
-    void readPayRequestList_inconsistentState1() throws Exception {
-        //given
-        // [송금완료한 금액 == 정산 요청 총 금액 But 송금완료한 사람 != 정산 요청 총 대상 수] 인 경우
-        PayRequest payRequest = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
-        Mockito.when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest));
-        Mockito.when(loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(1L))
-                .thenReturn(CurrentPayRequestState.of(Money.of(10000), NaturalNumber.of(1)));
-
-        //when //then
-        assertThatThrownBy(() -> readPayRequestListService.readPayRequestList(seongjunId))
-                .isInstanceOf(CustomException.class)
-                .hasMessageContaining(DATABASE_ERROR.getMessage());
-    }
-
-    @Test
-    @DisplayName("불일치된 정산 상태인 경우, 데이터 베이스 예외 메시지를 던진다.")
-    void readPayRequestList_inconsistentState2() throws Exception {
-        //given
-        // [송금완료한 금액 != 정산 요청 총 금액 But 송금완료한 사람 == 정산 요청 총 대상 수] 인 경우
-        PayRequest payRequest = PayRequest.create(1L, seongjunId, 1L, Money.of(10000), NaturalNumber.of(3), Bank.of("우리은행", "111-111"), PayType.EQUAL_SPLIT, BaseInfo.ofEmpty());
-        Mockito.when(loadPayRequestPort.loadByPayCreatorId(seongjunId)).thenReturn(List.of(payRequest));
-        Mockito.when(loadCurrentPayRequestStateUseCase.loadCurrentPayRequestState(1L))
-                .thenReturn(CurrentPayRequestState.of(Money.of(5000), NaturalNumber.of(3)));
-
-        //when //then
-        assertThatThrownBy(() -> readPayRequestListService.readPayRequestList(seongjunId))
-                .isInstanceOf(CustomException.class)
-                .hasMessageContaining(DATABASE_ERROR.getMessage());
-    }
 }

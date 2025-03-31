@@ -8,6 +8,9 @@ import space.space_spring.domain.discord.application.port.in.deletePost.DeletePo
 import space.space_spring.domain.post.application.port.in.deletePost.DeletePostCommand;
 import space.space_spring.domain.post.application.port.in.deletePost.DeletePostUseCase;
 import space.space_spring.domain.post.application.port.out.*;
+import space.space_spring.domain.post.application.port.out.like.DeleteLikePort;
+import space.space_spring.domain.post.application.port.out.like.LoadLikePort;
+import space.space_spring.domain.post.domain.*;
 import space.space_spring.domain.post.domain.Attachment;
 import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.Comment;
@@ -30,9 +33,11 @@ public class DeletePostService implements DeletePostUseCase {
     private final LoadPostPort loadPostPort;
     private final LoadAttachmentPort loadAttachmentPort;
     private final LoadCommentPort loadCommentPort;
+    private final LoadLikePort loadLikePort;
     private final DeletePostPort deletePostPort;
     private final DeleteCommentPort deleteCommentPort;
     private final DeleteAttachmentPort deleteAttachmentPort;
+    private final DeleteLikePort deleteLikePort;
     private final DeletePostInDiscordUseCase deletePostInDiscordUseCase;
     private final LoadSpaceUseCase loadSpaceUseCase;
 
@@ -41,6 +46,7 @@ public class DeletePostService implements DeletePostUseCase {
     public void deletePostFromWeb(DeletePostCommand command) {
         // 0. Space 조회
         Space space = loadSpaceUseCase.load(command.getSpaceId());
+
         // 1. Board 조회
         Board board = loadBoardPort.loadById(command.getBoardId());
 
@@ -57,9 +63,7 @@ public class DeletePostService implements DeletePostUseCase {
         List<Comment> comments = loadCommentPort.loadAllComments(command.getPostId());
 
         // Like 조회
-        // TODO -> 해당 게시글에 관련된 좋아요도 soft delete 처리 하긴 해야함
-        // BUT 해당 게시글의 postBase만 inactive로 바꿔주면 사실상 attachment들, comment들, like들 모두
-        // db에서 soft delete 된 상태이든지 아니든지 상관없긴 함
+        List<Like> likes = loadLikePort.loadAllLikes(command.getPostId());
 
         // 디스코드에서 해당 게시글 & 모든 댓글들 삭제
         deletePostInDiscordUseCase.deletePostInDiscord(DeletePostInDiscordCommand.builder()
@@ -73,8 +77,17 @@ public class DeletePostService implements DeletePostUseCase {
         // 첨부파일 삭제
         deleteAttachmentPort.deleteAllAttachments(attachments);
 
+        // 댓글 좋아요 삭제
+        comments.forEach(comment -> {
+            List<Like> commentLikes = loadLikePort.loadAllLikes(comment.getId());
+            deleteLikePort.deleteAllLikes(commentLikes);
+        });
+
         // 댓글 삭제
         deleteCommentPort.deleteAllComments(comments);
+
+        // 게시글 좋아요 삭제
+        deleteLikePort.deleteAllLikes(likes);
 
         // 게시글 삭제
         deletePostPort.deletePost(command.getPostId());
@@ -94,11 +107,12 @@ public class DeletePostService implements DeletePostUseCase {
         // post와 연관된 attachment, like, comment 조회 & 삭제
         List<Attachment> attachments = loadAttachmentPort.loadByPostId(post.getId());
         List<Comment> comments = loadCommentPort.loadAllComments(post.getId());
-        // 좋아요는 일단 생략
+        List<Like> likes = loadLikePort.loadAllLikes(post.getBoardId());
 
         // 삭제
         deleteAttachmentPort.deleteAllAttachments(attachments);
         deleteCommentPort.deleteAllComments(comments);
+        deleteLikePort.deleteAllLikes(likes);
         deletePostPort.deletePost(post.getId());
     }
 

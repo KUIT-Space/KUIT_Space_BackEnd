@@ -18,6 +18,6 @@ public class PostBaseAdapter implements LoadPostBasePort {
     public Optional<Long> loadByDiscordId(Long discordId){
         PostBaseJpaEntity postBaseJpaEntity = postBaseRepository.findByDiscordIdAndStatus(discordId, BaseStatusType.ACTIVE)
                 .orElse(null);
-        return Optional.of(postBaseJpaEntity.getId());
+        return postBaseJpaEntity==null? Optional.empty() : Optional.of(postBaseJpaEntity.getId());
     }
 }

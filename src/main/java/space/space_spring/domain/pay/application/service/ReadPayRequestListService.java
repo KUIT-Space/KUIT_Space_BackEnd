@@ -75,7 +75,7 @@ public class ReadPayRequestListService implements ReadPayRequestListUseCase {
 
         if (isAmountComplete ^ isTargetComplete) {      // XOR: 한쪽만 true인 경우
             log.error("DB 에러 - 불일치된 상태 (payRequestId: {}) - totalAmount: {}, receivedAmount: {}, totalTargetNum: {}, sendCompleteTargetNum: {}",
-                    payRequest.getId(), payRequest.getTotalAmount(), receivedAmount, payRequest.getTotalTargetNum(), sendCompleteTargetNum);
+                    payRequest.getId(), payRequest.getTotalAmount().getAmount(), receivedAmount.getAmount(), payRequest.getTotalTargetNum().getNumber(), sendCompleteTargetNum.getNumber());
             throw new CustomException(DATABASE_ERROR);
         }
         return isAmountComplete && isTargetComplete;

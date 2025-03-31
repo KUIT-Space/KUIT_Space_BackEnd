@@ -13,9 +13,14 @@ public class DeletePostInDiscordCommand {
     private Long discordIdOfPost;
 
     private List<Long> discordIdOfComments;
+    private String webHookUrl;
+    private Long discordIdOfSpace;
+
 
     @Builder
-    public DeletePostInDiscordCommand(Long discordIdOfPost, Long discordIdOfBoard, List<Long> discordIdOfComments) {
+    public DeletePostInDiscordCommand(String webHookUrl, Long discordIdOfSpace,Long discordIdOfPost, Long discordIdOfBoard, List<Long> discordIdOfComments) {
+        this.webHookUrl=webHookUrl;
+        this.discordIdOfSpace=discordIdOfSpace;
         this.discordIdOfPost = discordIdOfPost;
         this.discordIdOfBoard = discordIdOfBoard;
         this.discordIdOfComments = discordIdOfComments;

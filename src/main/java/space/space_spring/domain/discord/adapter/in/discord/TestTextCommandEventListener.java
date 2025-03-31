@@ -23,6 +23,7 @@ import space.space_spring.domain.discord.application.port.out.*;
 
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardCommand;
 import space.space_spring.domain.post.application.port.in.createBoard.CreateBoardUseCase;
+import space.space_spring.domain.post.application.port.in.createComment.CreateCommentCommand;
 import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.domain.space.application.port.in.CreateSpaceCommand;
 import space.space_spring.domain.space.application.port.in.CreateSpaceUseCase;
@@ -47,6 +48,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
     private final CreateDiscordMessageOnThreadPort createDiscordMessageOnThreadPort;
     private final WebHookPort webHookPort;
     private final EditDiscordMessageAdapter editDiscordMessageAdapter;
+    private final DiscordUtil  discordUtil;
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
@@ -174,8 +176,7 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                             .title("message")
                             .content("content")
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
-                            .webHookUrl(webHookPort.getOrCreate(event.getChannel().getIdLong()))
-                            .guildDiscordId(event.getGuild().getIdLong())
+                            .webHookUrl(webHookPort.getOrCreate(discordUtil.getRootChannelId(event.getChannel())  ))                          .guildDiscordId(event.getGuild().getIdLong())
                             .channelDiscordId(event.getChannel().getIdLong())
                             .discordTags(List.of())
                             .name(event.getMember().getEffectiveName())
@@ -220,6 +221,33 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     ,"임시 메세지"
                     ,List.of()
                     );
+        }
+        if(msg.getContentRaw().startsWith("!sendcomment:")){
+            Long originChannelId=discordUtil.getRootChannelId(event.getChannel());
+            CreateDiscordMessageOnThreadCommand command = CreateDiscordMessageOnThreadCommand.builder()
+                    .originPostTitle("origin title")
+                    .originChannelId(originChannelId)
+                    .originPostId(1L)
+                    .content("comment content")
+                    .webHookUrl(webHookPort.getOrCreate(originChannelId))
+                    .guildDiscordId(event.getGuild().getIdLong())
+                    .userName(event.getMember().getEffectiveName())
+                    .avatarUrl(event.getMember().getEffectiveAvatarUrl())
+                    .threadChannelDiscordId(event.getChannel().getIdLong())
+                    .build();
+            try {
+                createDiscordMessageOnThreadPort.sendToThread(command).thenAccept(msgId -> {
+                    System.out.println("commentId:" + msgId);
+                    try {
+                        club.minnced.discord.webhook.WebhookClient.withUrl(webHookPort.getOrCreate(originChannelId)).onThread(event.getChannel().getIdLong())
+                                .edit(msgId, "수정된 댓글").get();
+                    }catch(Exception e){
+                        System.out.println("error1 : "+e.getMessage());
+                    }
+                });
+            }catch(Exception e){
+                System.out.println("error2 : "+e.getMessage());
+            }
         }
 
 

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NoticeSummary {
 
+    private Long postId;
+
     private String content;
 
     private String timePassed;

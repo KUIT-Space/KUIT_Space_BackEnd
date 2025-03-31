@@ -145,11 +145,7 @@ public class SpaceMemberPersistenceAdapter
     @Override
     public SpaceMember loadByDiscord(Long spaceDiscordId , Long spaceMemberDiscordId){
         SpaceJpaEntity spaceJpaEntity = spaceRepository.findByDiscordIdAndStatus(spaceDiscordId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_NOT_FOUND));
-        SpaceMemberJpaEntity spaceMemberJpaEntity = spaceMemberRepository.findBySpaceIdAndDiscordIdAndStatus(spaceJpaEntity.getId(),spaceMemberDiscordId,BaseStatusType.ACTIVE).orElse(null);
-        if(spaceMemberJpaEntity==null){
-            return null;
-        }
-        return spaceMemberMapper.toDomainEntity(spaceMemberJpaEntity);
+        return spaceMemberMapper.toDomainEntity(spaceMemberRepository.findBySpaceIdAndDiscordIdAndStatus(spaceJpaEntity.getId(),spaceMemberDiscordId,BaseStatusType.ACTIVE).orElseThrow(()->new CustomException(SPACE_MEMBER_NOT_FOUND)));
     }
 
     @Override

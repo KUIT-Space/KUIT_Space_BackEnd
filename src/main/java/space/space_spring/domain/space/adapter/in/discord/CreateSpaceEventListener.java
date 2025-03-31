@@ -46,6 +46,7 @@ public class CreateSpaceEventListener extends ListenerAdapter {
                 /*
                  * 이미 guild가 space로 등록이 된 경우
                  * */
+                event.deferReply().queue();
                 event.getHook().editOriginal("this guild already initiated")
                         .queue();
                 return;

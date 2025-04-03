@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class TitleAndContentParser {
     private String title;
     private String content;
+    private static final String EVERYONE_MENTION = "@everyone";
 
     private TitleAndContentParser(String title,String content){
         this.title=title;
@@ -42,8 +43,18 @@ public class TitleAndContentParser {
 
     private static boolean validateTitle(String line){
         if(line.isEmpty()||line.isBlank()){return false;}
-        if(line.trim().equalsIgnoreCase("@everyone")){return false;}
+        if(line.trim().equalsIgnoreCase(EVERYONE_MENTION)){return false;}
 
         return true;
+    }
+
+    private static String deleteMention(String input){
+        if(input==null){
+            return null;
+        }
+        if(input.contains(EVERYONE_MENTION)){
+            return input.replace(EVERYONE_MENTION, "");
+        }
+        return input;
     }
 }

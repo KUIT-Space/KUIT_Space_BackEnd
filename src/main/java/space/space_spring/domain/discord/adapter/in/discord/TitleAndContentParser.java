@@ -25,7 +25,7 @@ public class TitleAndContentParser {
         int index = 0;
 
         // 첫 줄이 비어있으면 다음 줄로 이동
-        while (index < lines.length && lines[index].isBlank()) {
+        while (index < lines.length && !validateTitle(lines[index])) {
             index++;
         }
 
@@ -40,5 +40,10 @@ public class TitleAndContentParser {
         return new TitleAndContentParser(title,content);
     }
 
+    private static boolean validateTitle(String line){
+        if(line.isEmpty()||line.isBlank()){return false;}
+        if(line.trim().equalsIgnoreCase("@everyone")){return false;}
 
+        return true;
+    }
 }

@@ -74,11 +74,11 @@ public class ReadHomeService implements ReadHomeUseCase {
         // 구독한 게시판 가져오기
         List<SubscriptionSummary> subscriptions = new ArrayList<>();
         List<Subscription> subscribedBoards = loadSubscriptionPort.loadBySpaceMember(spaceMemberId);
-        Optional<Post> latestPost;
-        String postTitle = "";
-        String tagName = "";
-
         for (Subscription subscription : subscribedBoards) {
+            Optional<Post> latestPost;
+            String postTitle = "";
+            String tagName = "";
+
             Board board = loadBoardPort.loadById(subscription.getBoardId());
             Long tagId = subscription.getTagId();
 

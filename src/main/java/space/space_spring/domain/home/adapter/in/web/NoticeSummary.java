@@ -11,7 +11,7 @@ public class NoticeSummary {
 
     private Long postId;
 
-    private String content;
+    private String title;
 
     private String timePassed;
 }

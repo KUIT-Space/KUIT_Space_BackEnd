@@ -74,17 +74,18 @@ public class ReadHomeService implements ReadHomeUseCase {
         // 구독한 게시판 가져오기
         List<SubscriptionSummary> subscriptions = new ArrayList<>();
         List<Subscription> subscribedBoards = loadSubscriptionPort.loadBySpaceMember(spaceMemberId);
+        Optional<Post> latestPost;
+        String postTitle = "";
+        String tagName = "";
+
         for (Subscription subscription : subscribedBoards) {
             Board board = loadBoardPort.loadById(subscription.getBoardId());
-            Optional<Tag> tag = loadTagPort.loadByBoardId(board.getId());
+            Long tagId = subscription.getTagId();
 
-            // 각 게시판에서 제일 최신 게시물 정보 가져오기
-            Optional<Post> latestPost;
-            String postTitle = "";
-            String tagName = "";
-            if (tag.isPresent()) {
-                tagName = tag.get().getTagName();
-                latestPost = loadPostPort.loadLatestPostByBoardIdAndTagId(board.getId(), tag.get().getId());
+            if (tagId != null) {
+                Tag tag = loadTagPort.loadById(subscription.getTagId());
+                tagName = tag.getTagName();
+                latestPost = loadPostPort.loadLatestPostByBoardIdAndTagId(board.getId(), tag.getId());
                 if (latestPost.isPresent()) postTitle = latestPost.get().getTitle();
             } else {
                 latestPost = loadPostPort.loadLatestPostsByBoardIds(List.of(board.getId()), 1)

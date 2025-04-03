@@ -94,7 +94,7 @@ public class ReadHomeService implements ReadHomeUseCase {
                 if (latestPost.isPresent()) postTitle = latestPost.get().getTitle();
             }
 
-            subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), postTitle, tagName));
+            subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), postTitle, tagId, tagName));
         }
         result.addSubscription(subscriptions);
 

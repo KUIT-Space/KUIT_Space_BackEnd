@@ -15,5 +15,7 @@ public class SubscriptionSummary {
 
     private String postTitle;
 
+    private Long tagId;
+
     private String tagName;
 }

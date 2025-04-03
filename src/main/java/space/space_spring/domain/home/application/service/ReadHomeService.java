@@ -64,7 +64,7 @@ public class ReadHomeService implements ReadHomeUseCase {
             for (Post post : noticePosts) {
                 notices.add(new NoticeSummary(
                         post.getId(),
-                        post.getContent().getValue(),
+                        post.getTitle(),
                         ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt())
                 ));
             }

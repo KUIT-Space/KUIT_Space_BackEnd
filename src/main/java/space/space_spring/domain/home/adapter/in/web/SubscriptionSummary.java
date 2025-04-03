@@ -13,7 +13,7 @@ public class SubscriptionSummary {
 
     private String boardName;
 
-    private String boardTitle;
+    private String postTitle;
 
     private String tagName;
 }

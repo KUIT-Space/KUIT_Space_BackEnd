@@ -31,7 +31,7 @@ public class TitleAndContentParser {
         }
 
         if (index < lines.length) {
-            title = lines[index]; // 첫 번째 유효한 줄을 title로 설정
+            title = deleteMention(lines[index]); // 첫 번째 유효한 줄을 title로 설정
             index++;
         }
 

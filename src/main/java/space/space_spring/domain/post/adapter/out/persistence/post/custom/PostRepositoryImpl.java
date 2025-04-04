@@ -36,7 +36,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return Optional.ofNullable(jpaQueryFactory.selectFrom(postJpaEntity)
                 .join(postJpaEntity.postBase, postBaseJpaEntity)
                 .join(postBaseJpaEntity.board, boardJpaEntity)
-                .join(tagJpaEntity).on(tagJpaEntity.board.eq(boardJpaEntity))
+                .join(postTagJpaEntity).on(postTagJpaEntity.postBase.eq(postBaseJpaEntity))
+                .join(tagJpaEntity).on(postTagJpaEntity.tag.eq(tagJpaEntity))
                 .where(
                         boardJpaEntity.id.eq(boardId),
                         tagJpaEntity.id.eq(tagId),

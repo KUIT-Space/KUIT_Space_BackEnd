@@ -9,7 +9,6 @@ import space.space_spring.domain.discord.application.port.out.CreateDiscordThrea
 //import space.space_spring.domain.discord.application.port.out.CreateDiscordThreadPort;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessageCommand;
 import space.space_spring.domain.discord.application.port.out.CreateDiscordWebHookMessagePort;
-import space.space_spring.domain.post.application.port.in.Tag.LoadTagUseCase;
 import space.space_spring.domain.post.application.port.out.LoadBoardPort;
 import space.space_spring.domain.post.application.port.out.LoadTagPort;
 import space.space_spring.domain.post.domain.AttachmentType;
@@ -21,7 +20,6 @@ import space.space_spring.global.exception.CustomException;
 
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_EXIST;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.DISCORD_THREAD_CREATE_FAIL;
@@ -83,7 +81,7 @@ public class CreatePostInDiscordService implements CreatePostInDiscordUseCase {
                                 .map(attachment->attachment.getAttachmentUrl()).toList()
                 )
                 .discordTags(
-                        loadTagPort.loadById(command.getTagIds()).stream().map(tag->tag.getDiscordId()).toList()
+                        loadTagPort.loadAllByIds(command.getTagIds()).stream().map(tag->tag.getDiscordId()).toList()
                 )
                 .build();
     }

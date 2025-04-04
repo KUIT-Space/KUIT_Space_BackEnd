@@ -78,7 +78,7 @@ public class UpdatePostService implements UpdatePostUseCase {
 
         // tag 수정
         updatePostTagPort.updatePostTag(post.getId(), command.getTagIds());
-        List<Tag> tags = loadTagPort.loadById(command.getTagIds());
+        List<Tag> tags = loadTagPort.loadAllByIds(command.getTagIds());
 
         // 6. TODO:디스코드로 게시글 수정 정보 전송
         List<String> newAttachmentUrls = new ArrayList<>();

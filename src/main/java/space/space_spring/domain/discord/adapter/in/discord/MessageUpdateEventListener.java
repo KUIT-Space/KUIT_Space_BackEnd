@@ -1,6 +1,7 @@
 package space.space_spring.domain.discord.adapter.in.discord;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MessageUpdateEventListener extends ListenerAdapter {
     private final DiscordUtil discordUtil;
     private final LoadBoardCachePort loadBoardCachePort;
@@ -48,7 +50,7 @@ public class MessageUpdateEventListener extends ListenerAdapter {
             //log.info("not in cache. ignore");
             return;
         }
-
+        //log.info("edit message discord id:"+event.getMessageId().toString());
         if(isComment(event)){
             //Todo map comment update command
             //Todo update comment UseCase call
@@ -57,6 +59,7 @@ public class MessageUpdateEventListener extends ListenerAdapter {
                     .content(event.getMessage().getContentRaw())
                     .build();
             updateCommentUseCase.updateCommentFromDiscord(command);
+            return;
         }
 
         //Todo map post update command

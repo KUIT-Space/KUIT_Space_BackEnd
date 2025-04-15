@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import space.space_spring.domain.post.application.port.in.readPostList.ListOfPostSummary;
 import space.space_spring.domain.post.application.port.in.readPostList.ReadPostListUseCase;
+import space.space_spring.global.argumentResolver.jwtLogin.JwtLoginAuth;
 import space.space_spring.global.common.response.BaseResponse;
 
 
@@ -29,13 +30,14 @@ public class ReadPostListController {
             """)
     @GetMapping("/space/{spaceId}/board/{boardId}/post")
     public BaseResponse<ResponseOfReadPostList> readPostList(
+            @JwtLoginAuth Long spaceMemberId,
             @PathVariable Long spaceId,
             @PathVariable Long boardId,
             @RequestParam(required = false) Long tagId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("postBase.createdAt").descending());
-        ListOfPostSummary postSummaries = readPostListUseCase.readPostList(boardId, tagId, pageable);
+        ListOfPostSummary postSummaries = readPostListUseCase.readPostList(spaceMemberId, boardId, tagId, pageable);
         return new BaseResponse<>(ResponseOfReadPostList.of(postSummaries));
     }
 }

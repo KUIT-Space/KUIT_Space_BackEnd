@@ -23,6 +23,7 @@ import space.space_spring.global.util.NaturalNumber;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_IS_REQUIRED_FOR_THIS_BOARD;
 
@@ -40,7 +41,7 @@ public class ReadPostListService implements ReadPostListUseCase {
     private final LoadSpaceMemberInfoPort loadSpaceMemberInfoPort;
 
     @Override
-    public ListOfPostSummary readPostList(Long boardId, Long tagId, Pageable pageable) {
+    public ListOfPostSummary readPostList(Long spaceMemberId, Long boardId, Long tagId, Pageable pageable) {
         // 1. Board 조회
         Board board = loadBoardPort.loadById(boardId);
 
@@ -83,7 +84,8 @@ public class ReadPostListService implements ReadPostListUseCase {
                         commentCounts.getOrDefault(post.getId(), NaturalNumber.of(0)).getNumber(),
                         post.getBaseInfo().getCreatedAt(),
                         creatorNicknames.getOrDefault(post.getPostCreatorId(), "알 수 없음"),
-                        thumbnailImages.getOrDefault(post.getId(), null)
+                        thumbnailImages.getOrDefault(post.getId(), null),
+                        post.getPostCreatorId().equals(spaceMemberId)
                 )).toList();
 
         // 9. ListOfPostSummary 생성

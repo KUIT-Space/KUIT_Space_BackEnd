@@ -63,6 +63,7 @@ public class ReadPostDetailService implements ReadPostDetailUseCase {
                 .attachmentUrls(postDetailView.getAttachmentUrls())
                 .likeCount(postDetailView.getLikeCount().intValue())
                 .isLiked(postDetailView.getIsLiked())
+                .isPostOwner(postDetailView.getIsPostOwner())
                 .infoOfCommentDetails(mapToInfoOfCommentDetails(processedCommentDetailViews))
                 .build();
     }

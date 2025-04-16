@@ -24,7 +24,10 @@ public class PostSummary {
 
     private String postImageUrl;
 
-    private PostSummary(Long postId, String title, Content content, int likeCount, int commentCount, LocalDateTime createdAt, String creatorNickname, String postImageUrl) {
+    private Boolean isPostOwner;
+
+    private PostSummary(Long postId, String title, Content content, int likeCount, int commentCount,
+                        LocalDateTime createdAt, String creatorNickname, String postImageUrl, Boolean isPostOwner) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -33,9 +36,11 @@ public class PostSummary {
         this.createdAt = createdAt;
         this.creatorNickname = creatorNickname;
         this.postImageUrl = postImageUrl;
+        this.isPostOwner = isPostOwner;
     }
 
-    public static PostSummary of(Long postId, String title, Content content, int likeCount, int commentCount, LocalDateTime createdAt, String creatorNickname, String postImageUrl) {
-        return new PostSummary(postId, title, content, likeCount, commentCount, createdAt, creatorNickname, postImageUrl);
+    public static PostSummary of(Long postId, String title, Content content, int likeCount, int commentCount,
+                                 LocalDateTime createdAt, String creatorNickname, String postImageUrl, Boolean isPostOwner) {
+        return new PostSummary(postId, title, content, likeCount, commentCount, createdAt, creatorNickname, postImageUrl, isPostOwner);
     }
 }

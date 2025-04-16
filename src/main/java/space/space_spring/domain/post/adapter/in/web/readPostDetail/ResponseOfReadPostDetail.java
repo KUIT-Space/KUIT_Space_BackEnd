@@ -27,12 +27,14 @@ public class ResponseOfReadPostDetail {
 
     private Boolean isLiked;
 
+    private Boolean isPostOwner;
+
     private List<ResponseOfCommentDetail> responseOfCommentDetails;
 
     @Builder
     private ResponseOfReadPostDetail(String creatorName, String creatorProfileImageUrl, String createdAt, String lastModifiedAt,
                                      String title, String content, List<String> attachmentUrls, int likeCount, Boolean isLiked,
-                                     List<ResponseOfCommentDetail> responseOfCommentDetails) {
+                                     Boolean isPostOwner, List<ResponseOfCommentDetail> responseOfCommentDetails) {
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.createdAt = createdAt;
@@ -42,6 +44,7 @@ public class ResponseOfReadPostDetail {
         this.attachmentUrls = attachmentUrls;
         this.likeCount = likeCount;
         this.isLiked = isLiked;
+        this.isPostOwner = isPostOwner;
         this.responseOfCommentDetails = responseOfCommentDetails;
     }
 
@@ -56,6 +59,7 @@ public class ResponseOfReadPostDetail {
                 .attachmentUrls(result.getAttachmentUrls())
                 .likeCount(result.getLikeCount())
                 .isLiked(result.getIsLiked())
+                .isPostOwner(result.getIsPostOwner())
                 .responseOfCommentDetails(
                         result.getInfoOfCommentDetails().stream()
                                 .map(ResponseOfCommentDetail::of)

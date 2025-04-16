@@ -29,5 +29,7 @@ public class ResultOfReadPostDetail {
 
     private Boolean isLiked;
 
+    private Boolean isPostOwner;
+
     private List<InfoOfCommentDetail> infoOfCommentDetails;
 }

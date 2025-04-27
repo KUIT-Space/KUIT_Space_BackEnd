@@ -142,11 +142,17 @@ public class TestTextCommandEventListener extends ListenerAdapter {
                     return;
                 }
 
-                if (msg.getContentRaw().equals("!forumping")) {
+                if (msg.getContentRaw().startsWith("!forumping:")) {
+                    Long channelId = Long.parseLong(msg.getContentRaw().split(":")[1]);
+                    if(!discordUtil.isForumChannel(channelId)){
+                        event.getMessage().reply("is not forum channel").queue();
+                        System.out.println("is not forum channel");
+                        return ;
+                    }
                     CreateDiscordThreadCommand command = CreateDiscordThreadCommand.builder()
-                            .channelDiscordId(1326507142286544957L)
+                            .channelDiscordId(channelId)
                             .guildDiscordId(event.getGuild().getIdLong())
-                            .webHookUrl("https://discordapp.com/api/webhooks/1341258654082404403/SnSx0qzymTEkwuEeVfXMPsUbSj_yiQ0tlCSOX4WOalSKBrdDlBXbz_TMFqnWIyIBy60m")
+                            .webHookUrl(webHookPort.getOrCreate(event.getGuild().getForumChannelById(channelId).getIdLong()))
                             .contentMessage("spring server message test success\nhi\ncontent")
                             .avatarUrl(event.getMember().getEffectiveAvatarUrl())
                             .userName(event.getMember().getEffectiveName())
@@ -232,9 +238,18 @@ public class TestTextCommandEventListener extends ListenerAdapter {
             String[] commands = msg.getContentRaw().split(":");
             Long msgId = Long.parseLong(commands[1]);
             Long originChannelId=discordUtil.getRootChannelId(event.getChannel());
-            deleteDiscordWebHookMessagePort.deleteInThread(webHookPort.getOrCreate(originChannelId),
+            deleteDiscordWebHookMessagePort.delete(webHookPort.getOrCreate(originChannelId),
                     event.getGuild().getIdLong()
             ,event.getChannel().getIdLong(),msgId);
+
+        }
+        if(msg.getContentRaw().startsWith("!deleteforum:")) {
+            String[] commands = msg.getContentRaw().split(":");
+            Long msgId = Long.parseLong(commands[1]);
+            Long originChannelId=discordUtil.getRootChannelId(event.getChannel());
+            deleteDiscordWebHookMessagePort.deleteThread(webHookPort.getOrCreate(originChannelId),
+                    event.getGuild().getIdLong()
+                    ,event.getChannel().getIdLong(),msgId);
 
         }
         if(msg.getContentRaw().startsWith("!editcomment:")) {

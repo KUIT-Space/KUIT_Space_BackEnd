@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.WebhookClient;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.springframework.stereotype.Component;
+import space.space_spring.domain.discord.adapter.in.discord.DiscordUtil;
 import space.space_spring.domain.discord.application.port.out.deleteWebHookMessage.DeleteDiscordWebHookMessagePort;
 import space.space_spring.global.exception.CustomException;
 
@@ -20,15 +21,23 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 @Slf4j
 public class DeleteWebHookMessageAdapter implements DeleteDiscordWebHookMessagePort {
     private final JDA jda;
+    private final DiscordUtil discordUtil;
     @Override
     public void delete(String webHook,Long guildDiscordId, Long channelDiscordId,Long messageId){
         try {
+            if(discordUtil.isForumChannel(channelDiscordId)){
+                deleteThread(webHook,guildDiscordId,channelDiscordId,messageId);
+                return;
+            }
             WebhookClient.createClient(jda, webHook).deleteMessageById(messageId).complete();
         }catch(ErrorResponseException e){
             if(e.getErrorCode()==10008){
                 throw new CustomException(NOT_PROVIDE_CROSS_DELETE);
             }
         }
+    }
+    public void deleteThread(String webHook,Long guildDiscordId, Long channelDiscordId,Long messageId){
+        jda.getThreadChannelById(messageId).delete().complete();
     }
 
     public void deleteInThread(String webHook,Long guildDiscordId, Long threadDiscordId,Long messageId){

@@ -28,11 +28,13 @@ public class PostDetailView {
 
     private Boolean isLiked;
 
+    private Boolean isPostOwner;
+
     // Querydsl에서 사용할 생성자
     public PostDetailView(String creatorName, String creatorProfileImageUrl,
                           LocalDateTime createdAt, LocalDateTime lastModifiedAt,
                           String title, String content, List<String> attachmentUrls,
-                          Long likeCount, Boolean isLiked) {
+                          Long likeCount, Boolean isLiked, Boolean isPostOwner) {
         this.creatorName = creatorName;
         this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.createdAt = createdAt;
@@ -42,5 +44,6 @@ public class PostDetailView {
         this.attachmentUrls = attachmentUrls;
         this.likeCount = likeCount;
         this.isLiked = isLiked;
+        this.isPostOwner = isPostOwner;
     }
 }

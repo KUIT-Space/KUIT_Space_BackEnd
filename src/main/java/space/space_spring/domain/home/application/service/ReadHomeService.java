@@ -63,8 +63,9 @@ public class ReadHomeService implements ReadHomeUseCase {
 
             for (Post post : noticePosts) {
                 notices.add(new NoticeSummary(
+                        post.getBoardId(),
                         post.getId(),
-                        post.getContent().getValue(),
+                        post.getTitle(),
                         ConvertCreatedDate.setCreatedDate(post.getBaseInfo().getCreatedAt())
                 ));
             }
@@ -75,16 +76,17 @@ public class ReadHomeService implements ReadHomeUseCase {
         List<SubscriptionSummary> subscriptions = new ArrayList<>();
         List<Subscription> subscribedBoards = loadSubscriptionPort.loadBySpaceMember(spaceMemberId);
         for (Subscription subscription : subscribedBoards) {
-            Board board = loadBoardPort.loadById(subscription.getBoardId());
-            Optional<Tag> tag = loadTagPort.loadByBoardId(board.getId());
-
-            // 각 게시판에서 제일 최신 게시물 정보 가져오기
             Optional<Post> latestPost;
             String postTitle = "";
             String tagName = "";
-            if (tag.isPresent()) {
-                tagName = tag.get().getTagName();
-                latestPost = loadPostPort.loadLatestPostByBoardIdAndTagId(board.getId(), tag.get().getId());
+
+            Board board = loadBoardPort.loadById(subscription.getBoardId());
+            Long tagId = subscription.getTagId();
+
+            if (tagId != null) {
+                Tag tag = loadTagPort.loadById(subscription.getTagId());
+                tagName = tag.getTagName();
+                latestPost = loadPostPort.loadLatestPostByBoardIdAndTagId(board.getId(), tag.getId());
                 if (latestPost.isPresent()) postTitle = latestPost.get().getTitle();
             } else {
                 latestPost = loadPostPort.loadLatestPostsByBoardIds(List.of(board.getId()), 1)
@@ -93,7 +95,7 @@ public class ReadHomeService implements ReadHomeUseCase {
                 if (latestPost.isPresent()) postTitle = latestPost.get().getTitle();
             }
 
-            subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), postTitle, tagName));
+            subscriptions.add(new SubscriptionSummary(board.getId(), board.getBoardName(), postTitle, tagId, tagName));
         }
         result.addSubscription(subscriptions);
 

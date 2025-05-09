@@ -1,6 +1,5 @@
 package space.space_spring.domain.post.adapter.out.persistence.post;
 
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -75,7 +74,12 @@ public class PostQueryAdapter implements PostDetailQueryPort {
                                         .and(postLike.spaceMember.id.eq(spaceMemberId))
                                         .and(postLike.isLiked.eq(true))
                                         .and(postLike.status.eq(BaseStatusType.ACTIVE)))
-                                .exists()
+                                .exists(),
+                        // 스페이스 멤버가 해당 게시글 작성자인지
+                        Expressions.booleanTemplate(
+                                "CASE WHEN {0} = {1} THEN true ELSE false END",
+                                postCreator.id,
+                                spaceMemberId)
                 ))
                 .from(post)
                 .leftJoin(post.postBase, postBase)
@@ -106,6 +110,7 @@ public class PostQueryAdapter implements PostDetailQueryPort {
                 .attachmentUrls(attachmentUrls)
                 .likeCount(detail.getLikeCount())
                 .isLiked(detail.getIsLiked())
+                .isPostOwner(detail.getIsPostOwner())
                 .build();
     }
 }

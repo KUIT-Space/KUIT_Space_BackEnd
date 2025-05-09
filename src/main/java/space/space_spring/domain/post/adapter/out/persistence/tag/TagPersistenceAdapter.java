@@ -5,7 +5,6 @@ import static space.space_spring.global.common.enumStatus.BaseStatusType.ACTIVE;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.BOARD_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_NOT_FOUND;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.board.BoardJpaEntity;
@@ -13,7 +12,6 @@ import space.space_spring.domain.post.adapter.out.persistence.board.SpringDataBo
 import space.space_spring.domain.post.application.port.out.CreateTagPort;
 import space.space_spring.domain.post.application.port.out.LoadTagPort;
 import space.space_spring.domain.post.domain.Tag;
-import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
 
 import java.util.List;
@@ -74,7 +72,7 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
     }
 
     @Override
-    public List<Tag> loadById(List<Long> tagIds) {
+    public List<Tag> loadAllByIds(List<Long> tagIds) {
         List<TagJpaEntity> allByIdAndStatus = tagRepository.findAllByIdAndStatus(tagIds, ACTIVE);
 
         return allByIdAndStatus.stream().map(tagMapper::toDomainEntity).toList();
@@ -82,7 +80,7 @@ public class TagPersistenceAdapter implements LoadTagPort, CreateTagPort {
     }
 
     @Override
-    public Optional<Tag> loadByBoardId(Long boardId) {
-        return tagRepository.findByBoardId(boardId).map(tagMapper::toDomainEntity);
+    public Tag loadById(Long tagId) {
+        return tagRepository.findByIdAndStatus(tagId, ACTIVE).map(tagMapper::toDomainEntity).orElseThrow(() -> new CustomException(TAG_NOT_FOUND));
     }
 }

@@ -49,8 +49,11 @@ public class PostQueryAdapter implements PostDetailQueryPort {
                                 post.isAnonymous,
                                 Expressions.constant(ANONYMOUS_POST_CREATOR_NICKNAME),
                                 postCreator.nickname),
-                        // 게시글 작성자 프로필 이미지 URL
-                        postCreator.profileImageUrl,
+                        // 게시글 작성자 프로필 이미지 URL: 익명이면 null, 아니면 실제 URL
+                        Expressions.stringTemplate(
+                                "CASE WHEN {0} = true THEN null ELSE {1} END",
+                                post.isAnonymous,
+                                postCreator.profileImageUrl),
                         // 게시글 생성 시각
                         postBase.createdAt,
                         // 게시글 수정 시각

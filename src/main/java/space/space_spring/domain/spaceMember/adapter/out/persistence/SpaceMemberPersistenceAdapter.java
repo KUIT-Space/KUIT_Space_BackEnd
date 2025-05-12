@@ -17,8 +17,6 @@ import space.space_spring.global.exception.CustomException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_MEMBER_NOT_FOUND;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.SPACE_NOT_FOUND;
@@ -89,17 +87,6 @@ public class SpaceMemberPersistenceAdapter
 
         return NicknameAndProfileImage.of(spaceMemberJpaEntity.getNickname(), spaceMemberJpaEntity.getProfileImageUrl());
     }
-
-    @Override
-    public Map<Long, String> loadNicknamesByIds(List<Long> spaceMemberIds) {
-        List<PostCreatorNickname> creatorNicknames = spaceMemberRepository.findNicknamesByIds(spaceMemberIds, BaseStatusType.ACTIVE);
-        return creatorNicknames.stream()
-                .collect(Collectors.toMap(
-                        PostCreatorNickname::getSpaceMemberId,
-                        PostCreatorNickname::getNickname
-                ));
-    }
-
 
     @Override
     public List<SpaceMember> createSpaceMembers(List<SpaceMember> spaceMembers){

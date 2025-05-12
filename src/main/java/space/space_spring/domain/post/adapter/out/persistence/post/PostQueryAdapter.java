@@ -5,12 +5,20 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import space.space_spring.domain.post.adapter.out.persistence.attachment.QAttachmentJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.comment.QPostCommentJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.like.QLikeJpaEntity;
 import space.space_spring.domain.post.adapter.out.persistence.postBase.QPostBaseJpaEntity;
+import space.space_spring.domain.post.adapter.out.persistence.postTag.QPostTagJpaEntity;
+import space.space_spring.domain.post.application.port.in.readPostList.PostSummary;
 import space.space_spring.domain.post.application.port.out.post.PostDetailQueryPort;
 import space.space_spring.domain.post.application.port.out.post.PostDetailView;
+import space.space_spring.domain.post.application.port.out.post.PostListQueryPort;
 import space.space_spring.domain.spaceMember.domian.QSpaceMemberJpaEntity;
 import space.space_spring.global.common.enumStatus.BaseStatusType;
 import space.space_spring.global.exception.CustomException;
@@ -21,7 +29,7 @@ import static space.space_spring.global.common.response.status.BaseExceptionResp
 
 @Repository
 @RequiredArgsConstructor
-public class PostQueryAdapter implements PostDetailQueryPort {
+public class PostQueryAdapter implements PostDetailQueryPort, PostListQueryPort {
 
     private static final String ANONYMOUS_POST_CREATOR_NICKNAME = "익명 스페이서";
     private final JPAQueryFactory queryFactory;
@@ -115,5 +123,97 @@ public class PostQueryAdapter implements PostDetailQueryPort {
                 .isLiked(detail.getIsLiked())
                 .isPostOwner(detail.getIsPostOwner())
                 .build();
+    }
+
+    @Override
+    public Page<PostSummary> queryPostSummaries(Long spaceMemberId, Long boardId, @Nullable Long tagId, Pageable pageable) {
+        QPostJpaEntity post = QPostJpaEntity.postJpaEntity;
+        QPostBaseJpaEntity postBase = QPostBaseJpaEntity.postBaseJpaEntity;
+        QPostTagJpaEntity postTag = QPostTagJpaEntity.postTagJpaEntity;
+        QPostCommentJpaEntity comment = QPostCommentJpaEntity.postCommentJpaEntity;
+        QSpaceMemberJpaEntity postCreator = QSpaceMemberJpaEntity.spaceMemberJpaEntity;
+        QAttachmentJpaEntity attachment = QAttachmentJpaEntity.attachmentJpaEntity;
+        QLikeJpaEntity postLike = QLikeJpaEntity.likeJpaEntity;
+
+        // 1. 게시글 별 첫번째 이미지 URL (서브 쿼리)
+        var thumbnailSubquery = JPAExpressions
+                .select(attachment.attachmentUrl)
+                .from(attachment)
+                .where(attachment.postBase.eq(postBase)
+                        .and(attachment.status.eq(BaseStatusType.ACTIVE)))
+                .orderBy(attachment.id.asc())
+                .limit(1);
+
+        // 2. PostSummary 프로젝션
+        var query = queryFactory
+                .select(Projections.constructor(PostSummary.class,
+                        post.id,
+                        post.title,
+                        postBase.content,
+                        postLike.id.countDistinct().coalesce(0L).intValue(),
+                        comment.id.countDistinct().coalesce(0L).intValue(),
+                        postBase.createdAt,
+                        // 작성자 닉네임 (익명 처리)
+                        Expressions.stringTemplate(
+                                "CASE WHEN {0} = true THEN {1} ELSE {2} END",
+                                post.isAnonymous,
+                                Expressions.constant(ANONYMOUS_POST_CREATOR_NICKNAME),
+                                postCreator.nickname
+                        ),
+                        // 작성자 프로필 (익명 시 null)
+                        Expressions.stringTemplate(
+                                "CASE WHEN {0} = true THEN null ELSE {1} END",
+                                post.isAnonymous,
+                                postCreator.profileImageUrl
+                        ),
+                        // 서브쿼리 추가 (게시글 썸네일 조회)
+                        thumbnailSubquery,
+                        // 본인 글 여부
+                        Expressions.booleanTemplate(
+                                "{0} = {1}",
+                                postBase.spaceMember.id,
+                                spaceMemberId
+                        )
+                ))
+                .from(post)
+                .join(post.postBase, postBase)
+                .leftJoin(postBase.spaceMember, postCreator)
+                .leftJoin(postLike)
+                    .on(postLike.postBase.eq(postBase)
+                            .and(postLike.isLiked.eq(true))
+                            .and(postLike.status.eq(BaseStatusType.ACTIVE)))
+                .leftJoin(comment)
+                    .on(comment.postBase.eq(postBase)
+                            .and(comment.postBase.status.eq(BaseStatusType.ACTIVE)))
+                .leftJoin(postTag)
+                    .on(postTag.postBase.eq(postBase))
+                .where(
+                        postBase.board.id.eq(boardId),
+                        postBase.status.eq(BaseStatusType.ACTIVE),
+                        // tagId가 null이 아닐 경우에만 tag 필터 적용
+                        tagId != null ? postTag.tag.id.eq(tagId) : null
+                )
+                .groupBy(post.id)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(postBase.createdAt.desc());        // 최신순 조회
+
+        List<PostSummary> content = query.fetch();
+
+        Long totalResult = queryFactory
+                .select(post.id.countDistinct().coalesce(0L))
+                .from(post)
+                .join(post.postBase, postBase)
+                .leftJoin(postTag).on(postTag.postBase.eq(postBase))
+                .where(
+                        postBase.board.id.eq(boardId),
+                        postBase.status.eq(BaseStatusType.ACTIVE),
+                        tagId != null ? postTag.tag.id.eq(tagId) : null
+                )
+                .fetchOne();
+
+        long total = totalResult != null ? totalResult : 0L;
+
+        return new PageImpl<>(content, pageable, total);
     }
 }

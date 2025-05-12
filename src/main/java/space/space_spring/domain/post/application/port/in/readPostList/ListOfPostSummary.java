@@ -2,7 +2,6 @@ package space.space_spring.domain.post.application.port.in.readPostList;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;
-import space.space_spring.domain.post.domain.Post;
 
 import java.util.List;
 
@@ -30,13 +29,13 @@ public class ListOfPostSummary {
         this.isLast = isLast;
     }
 
-    public static ListOfPostSummary of(Page<Post> postPage, List<PostSummary> summaries) {
+    public static ListOfPostSummary of(Page<PostSummary> postSummaries, List<PostSummary> summaries) {
         return new ListOfPostSummary(
                 summaries,
-                postPage.getNumber(),
-                postPage.getSize(),
-                postPage.getTotalElements(),
-                postPage.getTotalPages(),
-                postPage.isLast());
+                postSummaries.getNumber(),
+                postSummaries.getSize(),
+                postSummaries.getTotalElements(),
+                postSummaries.getTotalPages(),
+                postSummaries.isLast());
     }
 }

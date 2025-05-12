@@ -21,12 +21,14 @@ public class ResponseOfPostSummary {
 
     private String creatorNickname;
 
+    private String creatorProfileImageUrl;
+
     private String postImageUrl;
 
     private Boolean isPostOwner;
 
     private ResponseOfPostSummary(Long postId, String title, String content, int likeCount, int commentCount,
-                                  String createdAt, String creatorNickname, String postImageUrl, Boolean isPostOwner){
+                                  String createdAt, String creatorNickname, String creatorProfileImageUrl, String postImageUrl, Boolean isPostOwner){
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -34,6 +36,7 @@ public class ResponseOfPostSummary {
         this.commentCount = commentCount;
         this.createdAt = createdAt;
         this.creatorNickname = creatorNickname;
+        this.creatorProfileImageUrl = creatorProfileImageUrl;
         this.postImageUrl = postImageUrl;
         this.isPostOwner = isPostOwner;
     }
@@ -42,11 +45,12 @@ public class ResponseOfPostSummary {
         return new ResponseOfPostSummary(
                 summaryOfPost.getPostId(),
                 summaryOfPost.getTitle(),
-                summaryOfPost.getContent().getValue(),
+                summaryOfPost.getContent(),
                 summaryOfPost.getLikeCount(),
                 summaryOfPost.getCommentCount(),
                 ConvertCreatedDate.setCreatedDate(summaryOfPost.getCreatedAt()),
                 summaryOfPost.getCreatorNickname(),
+                summaryOfPost.getCreatorProfileImageUrl(),
                 summaryOfPost.getPostImageUrl(),
                 summaryOfPost.getIsPostOwner()
         );

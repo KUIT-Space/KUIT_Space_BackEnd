@@ -21,10 +21,4 @@ public interface SpaceMemberRepository extends JpaRepository<SpaceMemberJpaEntit
 
     Optional<SpaceMemberJpaEntity> findByIdAndStatus(Long id, BaseStatusType baseStatusType);
 
-    @Query("SELECT new space.space_spring.domain.spaceMember.application.port.out.PostCreatorNickname(sm.id, sm.nickname) " +
-            "FROM SpaceMemberJpaEntity sm " +
-            "WHERE sm.id IN :spaceMemberIds " +
-            "AND sm.status = :status")
-    List<PostCreatorNickname> findNicknamesByIds(@Param("spaceMemberIds") List<Long> spaceMemberIds,
-                                                 @Param("status") BaseStatusType status);
 }

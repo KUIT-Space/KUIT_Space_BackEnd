@@ -6,6 +6,4 @@ import java.util.Map;
 public interface LoadSpaceMemberInfoPort {
 
     NicknameAndProfileImage loadNicknameAndProfileImageById(Long spaceMemberId);
-
-    Map<Long, String> loadNicknamesByIds(List<Long> spaceMemberIds);
 }

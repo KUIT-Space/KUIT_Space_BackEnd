@@ -15,6 +15,7 @@ import space.space_spring.domain.post.domain.Board;
 import space.space_spring.domain.post.domain.BoardType;
 import space.space_spring.global.exception.CustomException;
 
+import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_IS_NOT_REQUIRED_FOR_THIS_BOARD;
 import static space.space_spring.global.common.response.status.BaseExceptionResponseStatus.TAG_IS_REQUIRED_FOR_THIS_BOARD;
 
 @Service
@@ -34,6 +35,9 @@ public class ReadPostListService implements ReadPostListUseCase {
         // 2. 태그 검증
         if ((board.getBoardType() == BoardType.QUESTION || board.getBoardType() == BoardType.TIP) && tagId == null) {
             throw new CustomException(TAG_IS_REQUIRED_FOR_THIS_BOARD);
+        }
+        if ((board.getBoardType() == BoardType.POST || board.getBoardType() == BoardType.PAY || board.getBoardType() == BoardType.NOTICE || board.getBoardType() == BoardType.SEASON_NOTICE) && tagId != null) {
+            throw new CustomException(TAG_IS_NOT_REQUIRED_FOR_THIS_BOARD);
         }
 
         // 3. 태그 필터링

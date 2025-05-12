@@ -105,6 +105,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_POST_UPDATE(11004, HttpStatus.BAD_REQUEST, "게시글 수정 요청에서 잘못된 값이 존재합니다."),
 
     TAG_IS_REQUIRED_FOR_THIS_BOARD(11005, HttpStatus.BAD_REQUEST, "해당 게시판의 태그는 필수입니다."),
+    TAG_IS_NOT_REQUIRED_FOR_THIS_BOARD(11006, HttpStatus.BAD_REQUEST, "해당 게시판은 태그가 없는 게시판입니다."),
+
+
     POST_IS_NOT_IN_SPACE(11002, HttpStatus.NOT_FOUND, "해당 게시글은 이 스페이스에 속하지 않습니다."),
     ALREADY_LIKED_THE_POST(11003, HttpStatus.BAD_REQUEST, "해당 게시글에 이미 좋아요를 눌렀습니다."),
     NOT_LIKED_THE_POST_YET(11003, HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다."),

@@ -17,7 +17,6 @@ public class AttachmentJpaEntity extends BaseJpaEntity {
 
     @Id
     @GeneratedValue
-    @Column(name="like_id")
     @NotNull
     private Long id;
 

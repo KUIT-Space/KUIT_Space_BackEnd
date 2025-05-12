@@ -68,6 +68,15 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
     }
 
     @Override
+    public List<Attachment> loadAttachmentsByUrls(List<String> removeAttachmentUrls) {
+        List<AttachmentJpaEntity> jpaEntities = attachmentRepository.findAllByUrlsAndStatus(removeAttachmentUrls, BaseStatusType.ACTIVE);
+
+        return jpaEntities.stream()
+                .map(attachmentMapper::toDomainEntity)
+                .toList();
+    }
+
+    @Override
     public Map<AttachmentType, List<String>> uploadAllAttachments(Map<AttachmentType, List<MultipartFile>> map, String dirName) {
         Map<AttachmentType, List<String>> savedAttachmentUrls = new HashMap<>();
 
@@ -128,7 +137,7 @@ public class AttachmentPersistenceAdapter implements LoadAttachmentPort, UploadA
                 .map(Attachment::getId)
                 .toList();
 
-        List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findAllById(attachmentIds);
+        List<AttachmentJpaEntity> attachmentJpaEntities = attachmentRepository.findAllByIdInAndStatus(attachmentIds, BaseStatusType.ACTIVE);
 
         for (AttachmentJpaEntity attachment : attachmentJpaEntities) {
             attachment.softDelete();

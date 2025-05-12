@@ -22,4 +22,9 @@ public interface SpringDataAttachmentRepository extends JpaRepository<Attachment
     Optional<List<AttachmentJpaEntity>> findAllByPostBaseIdAndStatus(Long postId, BaseStatusType status);
 
     List<AttachmentJpaEntity> findByPostBaseIdAndStatus(Long postId, BaseStatusType type);
+
+    @Query("SELECT a FROM AttachmentJpaEntity a WHERE a.attachmentUrl IN :urls AND a.status = :status")
+    List<AttachmentJpaEntity> findAllByUrlsAndStatus(@Param("urls") List<String> urls, @Param("status") BaseStatusType status);
+
+    List<AttachmentJpaEntity> findAllByIdInAndStatus(List<Long> attachmentIds, BaseStatusType status);
 }

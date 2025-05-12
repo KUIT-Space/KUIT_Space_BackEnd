@@ -13,4 +13,5 @@ public interface LoadAttachmentPort {
 
     List<Attachment> loadByPostId(Long postId);
 
+    List<Attachment> loadAttachmentsByUrls(List<String> removeAttachmentUrls);
 }

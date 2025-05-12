@@ -49,7 +49,8 @@ public class UpdatePostController {
                 .postCreatorId(spaceMemberId)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .attachments(request.getAttachments())
+                .attachments(request.getNewAttachments())
+                .removeAttachmentUrls(request.getRemoveAttachmentUrls())
                 .tagIds(request.getTagIds())
                 .build();
 

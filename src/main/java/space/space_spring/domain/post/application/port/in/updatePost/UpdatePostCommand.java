@@ -22,19 +22,22 @@ public class UpdatePostCommand {
 
     private Content content;
 
-    private List<MultipartFile> attachments;
+    private List<MultipartFile> newAttachments;
+
+    private List<String> removeAttachmentUrls;
 
     private List<Long> tagIds;
 
     @Builder
-    public UpdatePostCommand(Long spaceId, Long boardId, Long postId, Long postCreatorId, String title, String content, List<MultipartFile> attachments, List<Long> tagIds) {
+    public UpdatePostCommand(Long spaceId, Long boardId, Long postId, Long postCreatorId, String title, String content, List<MultipartFile> attachments, List<String> removeAttachmentUrls, List<Long> tagIds) {
         this.spaceId = spaceId;
         this.boardId = boardId;
         this.postId = postId;
         this.postCreatorId = postCreatorId;
         this.title = title;
         this.content = Content.of(content);
-        this.attachments = attachments;
+        this.newAttachments = attachments;
+        this.removeAttachmentUrls = removeAttachmentUrls;
         this.tagIds = tagIds;
     }
 }

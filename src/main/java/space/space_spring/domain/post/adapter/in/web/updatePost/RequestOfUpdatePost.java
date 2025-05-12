@@ -1,9 +1,7 @@
 package space.space_spring.domain.post.adapter.in.web.updatePost;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +23,10 @@ public class RequestOfUpdatePost extends SelfValidating<RequestOfUpdatePost> {
     private String content;
 
     @Nullable
-    private List<MultipartFile> attachments = new ArrayList<>();
+    private List<MultipartFile> newAttachments = new ArrayList<>();
+
+    @Nullable
+    private List<String> removeAttachmentUrls = new ArrayList<>();
 
     @Nullable
     private List<Long> tagIds = new ArrayList<>();

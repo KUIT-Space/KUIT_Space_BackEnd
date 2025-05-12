@@ -60,14 +60,14 @@ public class UpdatePostService implements UpdatePostUseCase {
         SpaceMember spaceMember = loadSpaceMemberPort.loadById(command.getPostCreatorId());
 
         // 4. Attachment 조회
-        List<Attachment> attachments = loadAttachmentPort.loadByPostId(command.getPostId());
+        List<Attachment> removeAttachments = loadAttachmentPort.loadAttachmentsByUrls(command.getRemoveAttachmentUrls());
 
-        // 4. validate
+        // 5. validate
         validate(board, post, spaceMember, command);
 
-        // 5. 이미지 수정
-        deleteAttachmentPort.deleteAllAttachments(attachments);
-        Map<AttachmentType, List<MultipartFile>> attachmentMap = makeAttachmentMap(command.getAttachments());
+        // 6. 이미지 수정
+        deleteAttachmentPort.deleteAllAttachments(removeAttachments);
+        Map<AttachmentType, List<MultipartFile>> attachmentMap = makeAttachmentMap(command.getNewAttachments());
         Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentMap, "post");
 
         List<Attachment> newAttachments = new ArrayList<>();
@@ -93,6 +93,7 @@ public class UpdatePostService implements UpdatePostUseCase {
                         .newContent(command.getContent())
                         .newAttachmentUrls(newAttachmentUrls)
                         .newDiscordIdOfTags(tags.stream().map(Tag::getDiscordId).toList())
+                        .webHookUrl(board.getWebhookUrl())
                         .build());
 
         // 7. 게시글 update
@@ -202,38 +203,6 @@ public class UpdatePostService implements UpdatePostUseCase {
         // 4. 게시글 작성자가 본인이 맞는지
         if (!post.isPostCreator(command.getPostCreatorId())) {
             throw new CustomException(UNAUTHORIZED_USER);
-        }
-    }
-
-
-
-
-    private void updateAttachments(List<Attachment> existingAttachments, UpdatePostCommand command) {
-        // 1. 기존 첨부파일 삭제
-        deleteAttachmentPort.deleteAllAttachments(existingAttachments);
-
-        // 2. 새로운 첨부파일 업로드
-        if (!command.getAttachments().isEmpty()) {
-            Map<AttachmentType, List<MultipartFile>> attachmentsMap = command.getAttachments().stream()
-                    .collect(Collectors.groupingBy(file -> {
-                        if (isImageFile(file)) {
-                            return AttachmentType.IMAGE; // 만약 BoardType.Image가 필요하다면 해당 enum으로 변경하세요.
-                        } else if (isDocumentFile(file)) {
-                            return AttachmentType.FILE; // 마찬가지로 BoardType.File로 변경 가능.
-                        } else {
-                            throw new CustomException(UNSUPPORTED_FILE_TYPE); // 지원하지 않는 파일 형식일 경우 예외 처리
-                        }
-                    }));
-
-            // S3에 업로드
-            Map<AttachmentType, List<String>> attachmentUrlsMap = uploadAttachmentPort.uploadAllAttachments(attachmentsMap, "post");
-
-            // Attachment 도메인 엔티티 생성 후 db에 저장
-            List<Attachment> newAttachments = new ArrayList<>();
-            attachmentUrlsMap.forEach((type, urls) -> urls.forEach(url ->
-                    newAttachments.add(Attachment.withoutId(command.getPostId(), type, url))
-            ));
-            createAttachmentPort.createAttachments(newAttachments);
         }
     }
 

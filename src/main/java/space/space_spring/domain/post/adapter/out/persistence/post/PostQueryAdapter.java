@@ -107,7 +107,8 @@ public class PostQueryAdapter implements PostDetailQueryPort, PostListQueryPort 
         List<String> attachmentUrls = queryFactory
                 .select(attachment.attachmentUrl)
                 .from(attachment)
-                .where(attachment.postBase.id.eq(postId))
+                .where(attachment.postBase.id.eq(postId)
+                        .and(attachment.status.eq(BaseStatusType.ACTIVE)))
                 .fetch();
 
         // 3. return
